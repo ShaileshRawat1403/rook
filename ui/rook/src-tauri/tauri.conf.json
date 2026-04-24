@@ -5,10 +5,10 @@
   "identifier": "com.rook.app",
   "build": {
     "beforeDevCommand": {
-    "script": "pnpm dev",
-    "cwd": "..",
-    "wait": false
-  },
+      "script": "pnpm dev",
+      "cwd": "..",
+      "wait": false
+    },
     "devUrl": "http://localhost:1520",
     "beforeBuildCommand": "pnpm build",
     "frontendDist": "../dist"
