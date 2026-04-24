@@ -25,6 +25,7 @@ pub fn run() {
                 .with_state_flags(StateFlags::all() & !StateFlags::VISIBLE)
                 .build(),
         )
+        .plugin(tauri_plugin_deep_link::init())
         .manage(PersonaStore::new())
         .manage(RookConfig::new());
 
