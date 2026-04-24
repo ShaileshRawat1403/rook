@@ -31,7 +31,7 @@ pub fn run() {
                 .build(),
         )
         .plugin(tauri_plugin_deep_link::init())
-        .plugin(tauri_plugin_tray::init())
+        .plugin(tauri_plugin_notification::init())
         .manage(PersonaStore::new())
         .manage(RookConfig::new());
 
@@ -99,6 +99,11 @@ pub fn run() {
             commands::system::inspect_attachment_paths,
             commands::system::list_files_for_mentions,
             commands::system::read_image_attachment,
+            commands::notifications::request_notification_permission,
+            commands::notifications::send_notification,
+            commands::notifications::send_approval_notification,
+            commands::notifications::send_task_completed_notification,
+            commands::notifications::send_task_failed_notification,
         ])
         .setup(|app| {
             let show_item = MenuItem::with_id(app, "show", "Show Rook", true, None::<&str>)?;
