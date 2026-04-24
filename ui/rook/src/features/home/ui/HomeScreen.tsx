@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { useTranslation } from "react-i18next";
 import {
   getStoredProvider,
   useAgentStore,
@@ -10,6 +9,7 @@ import { useChatStore } from "@/features/chat/stores/chatStore";
 import type { ChatAttachmentDraft } from "@/shared/types/messages";
 import { useProjectStore } from "@/features/projects/stores/projectStore";
 import { useLocaleFormatting } from "@/shared/i18n";
+import { RookGreeting } from "@/shared/ui/animations";
 
 const HOME_DRAFT_KEY = "home";
 
@@ -41,12 +41,6 @@ function HomeClock() {
   );
 }
 
-function getGreetingKey(hour: number): "morning" | "afternoon" | "evening" {
-  if (hour < 12) return "morning";
-  if (hour < 17) return "afternoon";
-  return "evening";
-}
-
 interface HomeScreenProps {
   onStartChat?: (
     initialMessage?: string,
@@ -61,10 +55,6 @@ interface HomeScreenProps {
 }
 
 export function HomeScreen({ onStartChat, onCreateProject }: HomeScreenProps) {
-  const { t } = useTranslation("home");
-  const [hour] = useState(() => new Date().getHours());
-  const greeting = t(`greeting.${getGreetingKey(hour)}`);
-
   const personas = useAgentStore((s) => s.personas);
   const {
     providers,
@@ -133,9 +123,7 @@ export function HomeScreen({ onStartChat, onCreateProject }: HomeScreenProps) {
           <HomeClock />
 
           {/* Greeting */}
-          <p className="mb-6 pl-4 text-xl font-normal font-display text-muted-foreground">
-            {greeting}
-          </p>
+          <RookGreeting className="mb-6 pl-4 text-xl font-normal font-display text-muted-foreground" />
 
           {/* Chat input */}
           <ChatInput
