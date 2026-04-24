@@ -35,13 +35,13 @@ docker run --rm \
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/aaif-goose/goose.git
+git clone https://github.com/ShaileshRawat1403/rook.git
 cd goose
 ```
 
 2. Build the Docker image:
 ```bash
-docker build -t goose:local .
+docker build -t rook:local .
 ```
 
 The build process:
@@ -53,29 +53,29 @@ The build process:
 
 For a development build with debug symbols:
 ```bash
-docker build --build-arg CARGO_PROFILE_RELEASE_STRIP=false -t goose:dev .
+docker build --build-arg CARGO_PROFILE_RELEASE_STRIP=false -t rook:dev .
 ```
 
 For multi-platform builds:
 ```bash
-docker buildx build --platform linux/amd64,linux/arm64 -t goose:multi .
+docker buildx build --platform linux/amd64,linux/arm64 -t rook:multi .
 ```
 
-## Running goose in Docker
+## Running rook in Docker
 
 ### CLI Mode
 
 Basic usage:
 ```bash
 # Show help
-docker run --rm goose:local --help
+docker run --rm rook:local --help
 
 # Run a command
 docker run --rm \
   -e GOOSE_PROVIDER=openai \
   -e GOOSE_MODEL=gpt-4o \
   -e OPENAI_API_KEY=$OPENAI_API_KEY \
-  goose:local run -t "Explain Docker containers"
+  rook:local run -t "Explain Docker containers"
 ```
 
 With volume mounts for file access:
@@ -86,7 +86,7 @@ docker run --rm \
   -e GOOSE_PROVIDER=openai \
   -e GOOSE_MODEL=gpt-4o \
   -e OPENAI_API_KEY=$OPENAI_API_KEY \
-  goose:local run -t "Analyze the code in this directory"
+  rook:local run -t "Analyze the code in this directory"
 ```
 
 Interactive session mode with Databricks:
@@ -96,7 +96,7 @@ docker run -it --rm \
   -e GOOSE_MODEL=databricks-dbrx-instruct \
   -e DATABRICKS_HOST="$DATABRICKS_HOST" \
   -e DATABRICKS_TOKEN="$DATABRICKS_TOKEN" \
-  goose:local session
+  rook:local session
 ```
 
 
@@ -109,33 +109,33 @@ Create a `docker-compose.yml`:
 version: '3.8'
 
 services:
-  goose:
-    image: ghcr.io/aaif-goose/goose:latest
+  rook:
+    image: ghcr.io/ShaileshRawat1403/rook:latest
     environment:
       - GOOSE_PROVIDER=${GOOSE_PROVIDER:-openai}
       - GOOSE_MODEL=${GOOSE_MODEL:-gpt-4o}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
     volumes:
       - ./workspace:/workspace
-      - goose-config:/home/goose/.config/goose
+      - rook-config:/home/rook/.config/goose
     working_dir: /workspace
     stdin_open: true
     tty: true
 
 volumes:
-  goose-config:
+  rook-config:
 ```
 
 Run with:
 ```bash
-docker-compose run --rm goose session
+docker-compose run --rm rook session
 ```
 
 ## Configuration
 
 ### Environment Variables
 
-The Docker image accepts all standard goose environment variables:
+The Docker image accepts all standard rook environment variables:
 
 - `GOOSE_PROVIDER`: LLM provider (openai, anthropic, google, etc.)
 - `GOOSE_MODEL`: Model to use (gpt-4o, claude-sonnet-4, etc.)
@@ -146,8 +146,8 @@ The Docker image accepts all standard goose environment variables:
 Mount the configuration directory to persist settings:
 ```bash
 docker run --rm \
-  -v ~/.config/goose:/home/goose/.config/goose \
-  goose:local configure
+  -v ~/.config/goose:/home/rook/.config/goose \
+  rook:local configure
 ```
 
 ### Installing Additional Tools
@@ -159,11 +159,11 @@ The image runs as a non-root user by default. To install additional packages:
 docker run --rm \
   -u root \
   --entrypoint bash \
-  goose:local \
-  -c "apt-get update && apt-get install -y vim && goose --version"
+  rook:local \
+  -c "apt-get update && apt-get install -y vim && rook --version"
 
 # Or create a custom Dockerfile
-FROM ghcr.io/aaif-goose/goose:latest
+FROM ghcr.io/ShaileshRawat1403/rook:latest
 USER root
 RUN apt-get update && apt-get install -y \
     vim \
@@ -181,28 +181,28 @@ jobs:
   analyze:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/aaif-goose/goose:latest
+      image: ghcr.io/ShaileshRawat1403/rook:latest
       env:
         GOOSE_PROVIDER: openai
         GOOSE_MODEL: gpt-4o
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
     steps:
       - uses: actions/checkout@v4
-      - name: Run goose analysis
+      - name: Run rook analysis
         run: |
-          goose run -t "Review this codebase for security issues"
+          rook run -t "Review this codebase for security issues"
 ```
 
 ### GitLab CI
 
 ```yaml
 analyze:
-  image: ghcr.io/aaif-goose/goose:latest
+  image: ghcr.io/ShaileshRawat1403/rook:latest
   variables:
     GOOSE_PROVIDER: openai
     GOOSE_MODEL: gpt-4o
   script:
-    - goose run -t "Generate documentation for this project"
+    - rook run -t "Generate documentation for this project"
 ```
 
 ## Image Details
@@ -222,7 +222,7 @@ analyze:
 
 ### Included Tools
 
-The image includes essential tools for goose operation:
+The image includes essential tools for rook operation:
 - `git` - Version control operations
 - `curl` - HTTP requests
 - `ca-certificates` - SSL/TLS support
@@ -238,7 +238,7 @@ If you encounter permission errors when mounting volumes:
 docker run --rm \
   -v $(pwd):/workspace \
   -u $(id -u):$(id -g) \
-  goose:local run -t "List files"
+  rook:local run -t "List files"
 ```
 
 ### API Key Issues
@@ -253,7 +253,7 @@ If API keys aren't being recognized:
 For accessing local services from within the container:
 ```bash
 # Use host network mode
-docker run --rm --network host goose:local
+docker run --rm --network host rook:local
 ```
 
 ## Advanced Usage
@@ -262,7 +262,7 @@ docker run --rm --network host goose:local
 
 Override the default entrypoint for debugging:
 ```bash
-docker run --rm -it --entrypoint bash goose:local
+docker run --rm -it --entrypoint bash rook:local
 ```
 
 ### Resource Limits
@@ -272,7 +272,7 @@ Set memory and CPU limits:
 docker run --rm \
   --memory="2g" \
   --cpus="2" \
-  goose:local
+  rook:local
 ```
 
 ### Multi-stage Development
@@ -298,7 +298,7 @@ For production deployments:
 
 Example production Dockerfile:
 ```dockerfile
-FROM ghcr.io/aaif-goose/goose:v1.6.0
+FROM ghcr.io/ShaileshRawat1403/rook:v1.6.0
 # Add any additional tools needed for your use case
 USER root
 RUN apt-get update && apt-get install -y your-tools && rm -rf /var/lib/apt/lists/*

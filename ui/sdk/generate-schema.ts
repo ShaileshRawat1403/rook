@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Generates TypeScript types + Zod validators for Goose custom extension methods.
+ * Generates TypeScript types + Zod validators for Rook custom extension methods.
  *
  * Usage:
  *   npm run generate              # build Rust schema, then generate TS

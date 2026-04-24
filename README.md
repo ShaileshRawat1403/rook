@@ -11,30 +11,20 @@ _an open source AI agent for the terminal: tool-using, coordinated, and transpar
 </p>
 </div>
 
-Rook is a Rust AI agent framework with a terminal-first CLI, MCP support, multi-provider model access, and a desktop surface. It is built for people who want an agent that can inspect, plan, use tools, and execute work from a real workstation interface instead of a toy chat shell.
-
-Rook was born out of Goose. The fork keeps the strong open-source agent foundation and pushes the product toward a more governed, terminal-native, workstation-grade experience.
+Rook is a Rust AI agent framework with a terminal-first CLI, MCP support, multi-provider model access, and a desktop surface. It is built for people who want an agent that can inspect, plan, use tools, and execute work from a real workstation interface.
 
 ## Why "Rook"?
 
-Rook is the bird, not the chess piece.
+Rook is a bird, not the chess piece.
 
 The identity is about biological intelligence and coordinated agency:
 
-- Sophisticated tool-user: rooks select and improvise the right tool for the task. That maps directly to agency.
-- Orchestrated multi-agent logic: rooks operate as a coordinated colony. That maps naturally to scalable, parallel agent systems.
-- Bare bill transparency: the rook's defining light bill patch suggests white-box clarity instead of a sealed black box.
-- Sentinel behavior: rooks watch while the rest of the colony works. That fits proactive monitoring, governance, and autonomous reliability.
-- Non-predatory wisdom: rooks forage and uncover what is hidden. That makes the product feel supportive, precise, and insight-driven rather than aggressive.
+- Sophisticated tool-user: rooks select and improvise the right tool for the task.
+- Orchestrated multi-agent logic: rooks operate as a coordinated colony.
+- Sentinel behavior: rooks watch while the rest of the colony works.
+- Non-predatory wisdom: rooks forage and uncover what is hidden.
 
-The result is a product identity that is expert, collaborative, and hard-working.
 The philosophy is simple: the power is in the collective.
-
-## Why Did The Goose Turn Into A Rook?
-
-Because the goose kept honking, and the rook started shipping.
-
-The serious version: Goose gave us a strong starting point. Rook is the next step: more coordination, better tool use, stronger governance, and a product identity that points to collective intelligence rather than noise.
 
 ## Get Started
 

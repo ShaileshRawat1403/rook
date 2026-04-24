@@ -1063,7 +1063,7 @@ pub async fn run_prompt_image<C: Connection>() {
         )
         .await
         .unwrap();
-    assert_eq!(output.text, "Hello Goose!\nThis is a test image.");
+    assert_eq!(output.text, "Hello Rook!\nThis is a test image.");
     assert_notifications(
         &session.notifications(),
         &[
@@ -1100,7 +1100,7 @@ pub async fn run_prompt_image_attachment<C: Connection>() {
         )
         .await
         .unwrap();
-    assert!(output.text.contains("Hello Goose!"));
+    assert!(output.text.contains("Hello Rook!"));
     assert_notifications(&session.notifications(), &[Notification::AgentMessage]);
     expected_session_id.assert_matches(&session.session_id().0);
 }

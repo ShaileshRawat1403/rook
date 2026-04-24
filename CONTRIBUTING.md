@@ -1,6 +1,6 @@
 # Contribution Guide
 
-goose is open source!
+Rook is open source!
 
 We welcome pull requests for general contributions! In these days of AI it is easier than ever to contribute, but
 there are some pitfalls to avoid. This document describes the best practices for new and experienced contributors
@@ -13,8 +13,8 @@ to get work landed as smoothly as possible.
 
 ## Getting Started
 
-Your first contribution to goose should probably be a small bug fix. The goose maintainers have a lot of incoming
-PRs to review, and the reputation of the author is an important signal. While contributions to goose are generally
+Your first contribution to rook should probably be a small bug fix. The rook maintainers have a lot of incoming
+PRs to review, and the reputation of the author is an important signal. While contributions to rook are generally
 of remarkably high quality, we do get our fair share of AI slop. When a first-time contributor opens a
 3k line PR touching 20 files, we have no easy way to tell whether it’s thoughtful work or
 blindly AI-generated without doing a deep dive.
@@ -76,7 +76,7 @@ are responsible for the final code. Before submitting a PR for review, make sure
 We'll close any vibe coded submissions that obviously skip this step.
 
 You can use whatever agent and whatever methodology you like as long as you stick to that principle. We hope
-you like goose of course and use that. One thing to watch out for is LLM eagerness. They like to please and
+you like rook of course and use that. One thing to watch out for is LLM eagerness. They like to please and
 are in a hurry. 
 
    * **Think first**. Agents tend to jump straight to code writing. Explain the architecture you want first to 
@@ -123,34 +123,14 @@ sudo apt install libxcb1-dev      # libxcb1-dev is the development package for t
 
 ### Rust
 
-First let's compile goose and try it out
-Since goose requires Hermit for managing dependencies, let's activate hermit.
-
-```
-cd goose
-source ./bin/activate-hermit
-cargo build
-```
-
-When that completes, debug builds of the binaries are available, including the goose CLI:
-
-```
-./target/debug/goose --help
-```
-
-For first-time setup, run the configure command:
-
-```
-./target/debug/goose configure
-```
-
-Once a connection to an LLM provider is working, start a session:
-
-```
-./target/debug/goose session
-```
-
-These same commands can be recompiled and immediately run using `cargo run -p goose-cli` for iteration.
+First let's compile rook and try it out
+Since rook requires Hermit for managing dependencies, let's activate hermit.
+cd rook
+When that completes, debug builds of the binaries are available, including the rook CLI:
+./target/debug/rook --help
+./target/debug/rook configure
+./target/debug/rook session
+These same commands can be recompiled and immediately run using `cargo run -p rook-cli` for iteration.
 When making changes to the Rust code, test them on the CLI or run checks, tests, and the linter:
 
 ```
@@ -204,19 +184,14 @@ the already-running instance.
 
 To fork the repository:
 
-1. Go to https://github.com/aaif-goose/goose and click “Fork” (top-right corner).
-2. This creates https://github.com/<your-username>/goose under your GitHub account.
+1. Go to https://github.com/ShaileshRawat1403/rook and click “Fork” (top-right corner).
+2. This creates https://github.com/<your-username>/rook under your GitHub account.
 3. Clone your fork (not the main repo):
 
 ```
-git clone https://github.com/<your-username>/goose.git
-cd goose
-```
-
-4. Add the main repository as upstream:
-
-```
-git remote add upstream https://github.com/aaif-goose/goose.git
+git clone https://github.com/<your-username>/rook.git
+cd rook
+git remote add upstream https://github.com/ShaileshRawat1403/rook.git
 ```
 
 5. Create a branch in your fork for your changes:
@@ -253,7 +228,7 @@ repository. This helps avoid conflicts and allows us to merge your pull requests
 1. **Add the Main Repository as a Remote** (Skip if you have already set this up):
 
    ```bash
-   git remote add upstream https://github.com/aaif-goose/goose.git
+   git remote add upstream https://github.com/ShaileshRawat1403/rook.git
    ```
 
 2. **Fetch the Latest Changes from the Main Repository**:
@@ -313,18 +288,18 @@ When testing changes or running multiple goose configurations, use `GOOSE_PATH_R
 ```bash
 # Test with a clean environment
 export GOOSE_PATH_ROOT="/tmp/goose-test"
-./target/debug/goose session
+./target/debug/rook session
 
 # Or for a single command
 GOOSE_PATH_ROOT="/tmp/goose-dev" cargo run -p goose-cli -- session
 ```
 
-This creates isolated `config/`, `data/`, and `state/` directories under the specified path, preventing your test sessions from affecting your main goose installation. See the [environment variables guide](./documentation/docs/guides/environment-variables.md#development--testing) for more details.
+This creates isolated `config/`, `data/`, and `state/` directories under the specified path, preventing your test sessions from affecting your main rook installation. See the [environment variables guide](./documentation/docs/guides/environment-variables.md#development--testing) for more details.
 
-## Enable traces in goose with [locally hosted Langfuse](https://langfuse.com/docs/deployment/self-host)
+## Enable traces in rook with [locally hosted Langfuse](https://langfuse.com/docs/deployment/self-host)
 
 - [Start a local Langfuse using the docs](https://langfuse.com/self-hosting/docker-compose). Create an organization and project and create API credentials.
-- Set the environment variables so that goose can connect to the langfuse server:
+- Set the environment variables so that rook can connect to the langfuse server:
 
 ```
 export LANGFUSE_INIT_PROJECT_PUBLIC_KEY=publickey-local
@@ -337,7 +312,7 @@ Then you can view your traces at http://localhost:3000
 
 This project follows the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification for PR titles. Conventional Commits make it easier to understand the history of a project and facilitate automation around versioning and changelog generation.
 
-[issues]: https://github.com/aaif-goose/goose/issues
+[issues]: https://github.com/ShaileshRawat1403/rook/issues
 [hermit]: https://cashapp.github.io/hermit/
 [just]: https://github.com/casey/just?tab=readme-ov-file#installation
 
@@ -353,12 +328,12 @@ git commit -s ...
 
 ## Other Ways to Contribute
 
-There are numerous ways to be an open source contributor and contribute to goose. We're here to help you on your way! Here are some suggestions to get started. If you have any questions or need help, feel free to reach out to us on [Discord](https://discord.gg/goose-oss).
+There are numerous ways to be an open source contributor and contribute to rook. We're here to help you on your way! Here are some suggestions to get started. If you have any questions or need help, feel free to reach out to us on [Discord](https://discord.gg/rook-oss).
 
-- **Stars on GitHub:** If you resonate with our project and find it valuable, consider starring our goose on GitHub! 🌟
-- **Ask Questions:** Your questions not only help us improve but also benefit the community. If you have a question, don't hesitate to ask it on [Discord](https://discord.gg/goose-oss).
-- **Give Feedback:** Have a feature you want to see or encounter an issue with goose, [click here to open an issue](https://github.com/aaif-goose/goose/issues/new/choose), [start a discussion](https://github.com/aaif-goose/goose/discussions) or tell us on Discord.
-- **Participate in Community Events:** We host a variety of community events and livestreams on Discord every month, ranging from workshops to brainstorming sessions. You can subscribe to our [events calendar](https://calget.com/c/t7jszrie) or follow us on [social media](https://linktr.ee/goose_oss) to stay in touch.
+- **Stars on GitHub:** If you resonate with our project and find it valuable, consider starring our rook on GitHub! 🌟
+- **Ask Questions:** Your questions not only help us improve but also benefit the community. If you have a question, don't hesitate to ask it on [Discord](https://discord.gg/rook-oss).
+- **Give Feedback:** Have a feature you want to see or encounter an issue with rook, [click here to open an issue](https://github.com/ShaileshRawat1403/rook/issues/new/choose), [start a discussion](https://github.com/ShaileshRawat1403/rook/discussions) or tell us on Discord.
+- **Participate in Community Events:** We host a variety of community events and livestreams on Discord every month, ranging from workshops to brainstorming sessions. You can subscribe to our [events calendar](https://calget.com/c/t7jszrie) or follow us on [social media](https://linktr.ee/rook_oss) to stay in touch.
 - **Improve Documentation:** Good documentation is key to the success of any project. You can help improve the quality of our existing docs or add new pages.
 - **Help Other Members:** See another community member stuck? Or a contributor blocked by a question you know the answer to? Reply to community threads or do a code review for others to help.
 - **Showcase Your Work:** Working on a project or written a blog post recently? Share it with the community in our [#share-your-work](https://discord.com/channels/1287729918100246654/1287729920797179958) channel.
