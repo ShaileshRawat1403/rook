@@ -2,6 +2,25 @@
   "greeting": {
     "afternoon": "Good afternoon",
     "evening": "Good evening",
-    "morning": "Good morning"
+    "morning": "Good morning",
+    "readyToGetStarted": "Ready to get started?",
+    "whatToWorkOn": "What would you like to work on?",
+    "readyToBuild": "Ready to build something amazing?",
+    "whatToExplore": "What would you like to explore?",
+    "whatsOnYourMind": "What's on your mind?",
+    "whatShallWeCreate": "What shall we create today?",
+    "whatProjectNeedsAttention": "What project needs attention?",
+    "whatToTackle": "What would you like to tackle?",
+    "whatNeedsToBeDone": "What needs to be done?",
+    "whatsThePlan": "What's the plan for today?",
+    "readyToCreateGreat": "Ready to create something great?",
+    "whatCanBeBuilt": "What can be built today?",
+    "whatsNextChallenge": "What's the next challenge?",
+    "whatProgress": "What progress can be made?",
+    "whatToAccomplish": "What would you like to accomplish?",
+    "whatTaskAwaits": "What task awaits?",
+    "whatsTheMission": "What's the mission today?",
+    "whatCanBeAchieved": "What can be achieved?",
+    "whatProjectReadyToBegin": "What project is ready to begin?"
   }
 }

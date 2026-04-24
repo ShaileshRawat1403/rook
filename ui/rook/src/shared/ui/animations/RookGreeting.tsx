@@ -33,7 +33,7 @@ export function RookGreeting({
   className = "mt-1 text-4xl font-light",
   forceRefresh = false,
 }: RookGreetingProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation("home");
   const greetingKey = useState(() => {
     const randomIndex = Math.floor(Math.random() * GREETING_KEYS.length);
     return GREETING_KEYS[randomIndex];

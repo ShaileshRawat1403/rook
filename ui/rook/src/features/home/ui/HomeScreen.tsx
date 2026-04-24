@@ -10,6 +10,7 @@ import type { ChatAttachmentDraft } from "@/shared/types/messages";
 import { useProjectStore } from "@/features/projects/stores/projectStore";
 import { useLocaleFormatting } from "@/shared/i18n";
 import { RookGreeting } from "@/shared/ui/animations";
+import { RookIcon } from "@/shared/ui/icons/RookIcon";
 
 const HOME_DRAFT_KEY = "home";
 
@@ -117,10 +118,13 @@ export function HomeScreen({ onStartChat, onCreateProject }: HomeScreenProps) {
 
   return (
     <div className="h-full w-full overflow-y-auto">
-      <div className="relative flex min-h-full flex-col items-center justify-center px-6 pb-4">
+      <div className="relative flex min-h-full flex-col items-center justify-start px-6 pt-16 pb-4">
         <div className="flex w-full max-w-[600px] flex-col antialiased">
-          {/* Greeting */}
-          <RookGreeting className="mb-1 pl-4 text-xl font-normal font-display text-muted-foreground" />
+          {/* Hero: icon + greeting at top */}
+          <div className="flex flex-col gap-3 pl-4 mb-10">
+            <RookIcon className="h-8 w-8 text-foreground" />
+            <RookGreeting className="text-4xl font-light text-foreground" />
+          </div>
 
           {/* Clock */}
           <HomeClock />
