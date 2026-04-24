@@ -38,6 +38,7 @@ base64 = "0.22"
 mime_guess = "2"
 tauri-plugin-shell = "2"
 tauri-plugin-deep-link = "2"
+tauri = { version = "2", features = ["protocol-asset", "tray-icon"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 keyring = { version = "3", features = ["apple-native"] }
