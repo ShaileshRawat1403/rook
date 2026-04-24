@@ -119,11 +119,11 @@ export function HomeScreen({ onStartChat, onCreateProject }: HomeScreenProps) {
     <div className="h-full w-full overflow-y-auto">
       <div className="relative flex min-h-full flex-col items-center justify-center px-6 pb-4">
         <div className="flex w-full max-w-[600px] flex-col antialiased">
+          {/* Greeting */}
+          <RookGreeting className="mb-1 pl-4 text-xl font-normal font-display text-muted-foreground" />
+
           {/* Clock */}
           <HomeClock />
-
-          {/* Greeting */}
-          <RookGreeting className="mb-6 pl-4 text-xl font-normal font-display text-muted-foreground" />
 
           {/* Chat input */}
           <ChatInput
