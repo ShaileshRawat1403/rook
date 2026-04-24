@@ -1,0 +1,7 @@
+{
+  "identifier": "com.rook.app.dev",
+  "productName": "Rook Dev",
+  "bundle": {
+    "externalBin": []
+  }
+}

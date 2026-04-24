@@ -1,0 +1,5 @@
+packages:
+  - 'sdk'
+  - 'text'
+  - 'rook'
+  - 'rook-binary/*'

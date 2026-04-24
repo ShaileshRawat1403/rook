@@ -1,0 +1,28 @@
+{
+  "name": "@aaif/rook-binary-darwin-x64",
+  "version": "0.17.0",
+  "description": "Rook binary for macOS x64",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aaif-rook/rook.git"
+  },
+  "bin": {
+    "rook": "bin/rook"
+  },
+  "keywords": [
+    "rook",
+    "ai",
+    "agent",
+    "binary"
+  ],
+  "os": [
+    "darwin"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "files": [
+    "bin/rook"
+  ]
+}

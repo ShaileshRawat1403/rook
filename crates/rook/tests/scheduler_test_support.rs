@@ -1,0 +1,21 @@
+//! Test-only utilities for the scheduler
+#![cfg(test)]
+
+use once_cell::sync::Lazy;
+use std::sync::Arc;
+use tokio::sync::Mutex;
+
+use rook::providers::base::Provider as RookProvider;
+
+static TEST_PROVIDER: Lazy<Mutex<Option<Arc<dyn RookProvider>>>> = Lazy::new(|| Mutex::new(None));
+
+/// Register a default provider for scheduler job executions when running under tests.
+/// The provider will be used by [`Scheduler`] when no provider_override is supplied.
+pub async fn set_test_provider(p: Arc<dyn RookProvider>) {
+    let mut guard = TEST_PROVIDER.lock().await;
+    *guard = Some(p);
+}
+
+pub async fn get_test_provider() -> Option<Arc<dyn RookProvider>> {
+    TEST_PROVIDER.lock().await.clone()
+}
