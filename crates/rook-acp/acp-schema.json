@@ -18,7 +18,7 @@
       ],
       "description": "Add an extension to an active session.",
       "x-side": "agent",
-      "x-method": "_goose/extensions/add"
+      "x-method": "_rook/extensions/add"
     },
     "EmptyResponse": {
       "type": "object",
@@ -41,7 +41,7 @@
       ],
       "description": "Remove an extension from an active session.",
       "x-side": "agent",
-      "x-method": "_goose/extensions/remove"
+      "x-method": "_rook/extensions/remove"
     },
     "GetToolsRequest": {
       "type": "object",
@@ -55,7 +55,7 @@
       ],
       "description": "List all tools available in a session.",
       "x-side": "agent",
-      "x-method": "_goose/tools"
+      "x-method": "_rook/tools"
     },
     "GetToolsResponse": {
       "type": "object",
@@ -71,7 +71,7 @@
       ],
       "description": "Tools response.",
       "x-side": "agent",
-      "x-method": "_goose/tools"
+      "x-method": "_rook/tools"
     },
     "ReadResourceRequest": {
       "type": "object",
@@ -93,7 +93,7 @@
       ],
       "description": "Read a resource from an extension.",
       "x-side": "agent",
-      "x-method": "_goose/resource/read"
+      "x-method": "_rook/resource/read"
     },
     "ReadResourceResponse": {
       "type": "object",
@@ -105,7 +105,7 @@
       },
       "description": "Resource read response.",
       "x-side": "agent",
-      "x-method": "_goose/resource/read"
+      "x-method": "_rook/resource/read"
     },
     "UpdateWorkingDirRequest": {
       "type": "object",
@@ -123,7 +123,7 @@
       ],
       "description": "Update the working directory for a session.",
       "x-side": "agent",
-      "x-method": "_goose/working_dir/update"
+      "x-method": "_rook/working_dir/update"
     },
     "DeleteSessionRequest": {
       "type": "object",
@@ -143,7 +143,7 @@
       "type": "object",
       "description": "List configured extensions and any warnings.",
       "x-side": "agent",
-      "x-method": "_goose/config/extensions"
+      "x-method": "_rook/config/extensions"
     },
     "GetExtensionsResponse": {
       "type": "object",
@@ -166,7 +166,7 @@
       ],
       "description": "List configured extensions and any warnings.",
       "x-side": "agent",
-      "x-method": "_goose/config/extensions"
+      "x-method": "_rook/config/extensions"
     },
     "GetSessionExtensionsRequest": {
       "type": "object",
@@ -179,7 +179,7 @@
         "sessionId"
       ],
       "x-side": "agent",
-      "x-method": "_goose/session/extensions"
+      "x-method": "_rook/session/extensions"
     },
     "GetSessionExtensionsResponse": {
       "type": "object",
@@ -193,13 +193,13 @@
         "extensions"
       ],
       "x-side": "agent",
-      "x-method": "_goose/session/extensions"
+      "x-method": "_rook/session/extensions"
     },
     "ListProvidersRequest": {
       "type": "object",
       "description": "List providers available through goose, including the config-default sentinel.",
       "x-side": "agent",
-      "x-method": "_goose/providers/list"
+      "x-method": "_rook/providers/list"
     },
     "ListProvidersResponse": {
       "type": "object",
@@ -216,7 +216,7 @@
       ],
       "description": "Provider list response.",
       "x-side": "agent",
-      "x-method": "_goose/providers/list"
+      "x-method": "_rook/providers/list"
     },
     "ProviderListEntry": {
       "type": "object",
@@ -237,7 +237,7 @@
       "type": "object",
       "description": "List providers with full metadata (config keys, setup steps, etc.).",
       "x-side": "agent",
-      "x-method": "_goose/providers/details"
+      "x-method": "_rook/providers/details"
     },
     "GetProviderDetailsResponse": {
       "type": "object",
@@ -254,7 +254,7 @@
       ],
       "description": "Provider details response.",
       "x-side": "agent",
-      "x-method": "_goose/providers/details"
+      "x-method": "_rook/providers/details"
     },
     "ProviderDetailEntry": {
       "type": "object",
@@ -374,7 +374,7 @@
       ],
       "description": "Fetch the full list of models available for a specific provider.",
       "x-side": "agent",
-      "x-method": "_goose/providers/models"
+      "x-method": "_rook/providers/models"
     },
     "GetProviderModelsResponse": {
       "type": "object",
@@ -391,7 +391,7 @@
       ],
       "description": "Provider models response.",
       "x-side": "agent",
-      "x-method": "_goose/providers/models"
+      "x-method": "_rook/providers/models"
     },
     "ReadConfigRequest": {
       "type": "object",
@@ -405,7 +405,7 @@
       ],
       "description": "Read a single non-secret config value.",
       "x-side": "agent",
-      "x-method": "_goose/config/read"
+      "x-method": "_rook/config/read"
     },
     "ReadConfigResponse": {
       "type": "object",
@@ -416,7 +416,7 @@
       },
       "description": "Config read response.",
       "x-side": "agent",
-      "x-method": "_goose/config/read"
+      "x-method": "_rook/config/read"
     },
     "UpsertConfigRequest": {
       "type": "object",
@@ -432,7 +432,7 @@
       ],
       "description": "Upsert a single non-secret config value.",
       "x-side": "agent",
-      "x-method": "_goose/config/upsert"
+      "x-method": "_rook/config/upsert"
     },
     "RemoveConfigRequest": {
       "type": "object",
@@ -446,7 +446,7 @@
       ],
       "description": "Remove a single non-secret config value.",
       "x-side": "agent",
-      "x-method": "_goose/config/remove"
+      "x-method": "_rook/config/remove"
     },
     "CheckSecretRequest": {
       "type": "object",
@@ -460,7 +460,7 @@
       ],
       "description": "Check whether a secret exists. Never returns the actual value.",
       "x-side": "agent",
-      "x-method": "_goose/secret/check"
+      "x-method": "_rook/secret/check"
     },
     "CheckSecretResponse": {
       "type": "object",
@@ -474,7 +474,7 @@
       ],
       "description": "Secret check response.",
       "x-side": "agent",
-      "x-method": "_goose/secret/check"
+      "x-method": "_rook/secret/check"
     },
     "UpsertSecretRequest": {
       "type": "object",
@@ -490,7 +490,7 @@
       ],
       "description": "Set a secret value (write-only).",
       "x-side": "agent",
-      "x-method": "_goose/secret/upsert"
+      "x-method": "_rook/secret/upsert"
     },
     "RemoveSecretRequest": {
       "type": "object",
@@ -504,7 +504,7 @@
       ],
       "description": "Remove a secret.",
       "x-side": "agent",
-      "x-method": "_goose/secret/remove"
+      "x-method": "_rook/secret/remove"
     },
     "ExportSessionRequest": {
       "type": "object",
@@ -518,7 +518,7 @@
       ],
       "description": "Export a session as a JSON string.",
       "x-side": "agent",
-      "x-method": "_goose/session/export"
+      "x-method": "_rook/session/export"
     },
     "ExportSessionResponse": {
       "type": "object",
@@ -532,7 +532,7 @@
       ],
       "description": "Export session response — raw JSON of the goose session with `conversation`.",
       "x-side": "agent",
-      "x-method": "_goose/session/export"
+      "x-method": "_rook/session/export"
     },
     "ImportSessionRequest": {
       "type": "object",
@@ -546,7 +546,7 @@
       ],
       "description": "Import a session from a JSON string.",
       "x-side": "agent",
-      "x-method": "_goose/session/import"
+      "x-method": "_rook/session/import"
     },
     "ImportSessionResponse": {
       "type": "object",
@@ -577,7 +577,7 @@
       ],
       "description": "Import session response — metadata about the newly created session.",
       "x-side": "agent",
-      "x-method": "_goose/session/import"
+      "x-method": "_rook/session/import"
     },
     "ArchiveSessionRequest": {
       "type": "object",
@@ -591,7 +591,7 @@
       ],
       "description": "Archive a session (soft delete).",
       "x-side": "agent",
-      "x-method": "_goose/session/archive"
+      "x-method": "_rook/session/archive"
     },
     "UnarchiveSessionRequest": {
       "type": "object",
@@ -605,7 +605,7 @@
       ],
       "description": "Unarchive a previously archived session.",
       "x-side": "agent",
-      "x-method": "_goose/session/unarchive"
+      "x-method": "_rook/session/unarchive"
     },
     "ExtRequest": {
       "properties": {
@@ -625,7 +625,7 @@
                       "$ref": "#/$defs/AddExtensionRequest"
                     }
                   ],
-                  "description": "Params for _goose/extensions/add",
+                  "description": "Params for _rook/extensions/add",
                   "title": "AddExtensionRequest"
                 },
                 {
@@ -634,7 +634,7 @@
                       "$ref": "#/$defs/RemoveExtensionRequest"
                     }
                   ],
-                  "description": "Params for _goose/extensions/remove",
+                  "description": "Params for _rook/extensions/remove",
                   "title": "RemoveExtensionRequest"
                 },
                 {
@@ -643,7 +643,7 @@
                       "$ref": "#/$defs/GetToolsRequest"
                     }
                   ],
-                  "description": "Params for _goose/tools",
+                  "description": "Params for _rook/tools",
                   "title": "GetToolsRequest"
                 },
                 {
@@ -652,7 +652,7 @@
                       "$ref": "#/$defs/ReadResourceRequest"
                     }
                   ],
-                  "description": "Params for _goose/resource/read",
+                  "description": "Params for _rook/resource/read",
                   "title": "ReadResourceRequest"
                 },
                 {
@@ -661,7 +661,7 @@
                       "$ref": "#/$defs/UpdateWorkingDirRequest"
                     }
                   ],
-                  "description": "Params for _goose/working_dir/update",
+                  "description": "Params for _rook/working_dir/update",
                   "title": "UpdateWorkingDirRequest"
                 },
                 {
@@ -679,7 +679,7 @@
                       "$ref": "#/$defs/GetExtensionsRequest"
                     }
                   ],
-                  "description": "Params for _goose/config/extensions",
+                  "description": "Params for _rook/config/extensions",
                   "title": "GetExtensionsRequest"
                 },
                 {
@@ -688,7 +688,7 @@
                       "$ref": "#/$defs/GetSessionExtensionsRequest"
                     }
                   ],
-                  "description": "Params for _goose/session/extensions",
+                  "description": "Params for _rook/session/extensions",
                   "title": "GetSessionExtensionsRequest"
                 },
                 {
@@ -697,7 +697,7 @@
                       "$ref": "#/$defs/ListProvidersRequest"
                     }
                   ],
-                  "description": "Params for _goose/providers/list",
+                  "description": "Params for _rook/providers/list",
                   "title": "ListProvidersRequest"
                 },
                 {
@@ -706,7 +706,7 @@
                       "$ref": "#/$defs/GetProviderDetailsRequest"
                     }
                   ],
-                  "description": "Params for _goose/providers/details",
+                  "description": "Params for _rook/providers/details",
                   "title": "GetProviderDetailsRequest"
                 },
                 {
@@ -715,7 +715,7 @@
                       "$ref": "#/$defs/GetProviderModelsRequest"
                     }
                   ],
-                  "description": "Params for _goose/providers/models",
+                  "description": "Params for _rook/providers/models",
                   "title": "GetProviderModelsRequest"
                 },
                 {
@@ -724,7 +724,7 @@
                       "$ref": "#/$defs/ReadConfigRequest"
                     }
                   ],
-                  "description": "Params for _goose/config/read",
+                  "description": "Params for _rook/config/read",
                   "title": "ReadConfigRequest"
                 },
                 {
@@ -733,7 +733,7 @@
                       "$ref": "#/$defs/UpsertConfigRequest"
                     }
                   ],
-                  "description": "Params for _goose/config/upsert",
+                  "description": "Params for _rook/config/upsert",
                   "title": "UpsertConfigRequest"
                 },
                 {
@@ -742,7 +742,7 @@
                       "$ref": "#/$defs/RemoveConfigRequest"
                     }
                   ],
-                  "description": "Params for _goose/config/remove",
+                  "description": "Params for _rook/config/remove",
                   "title": "RemoveConfigRequest"
                 },
                 {
@@ -751,7 +751,7 @@
                       "$ref": "#/$defs/CheckSecretRequest"
                     }
                   ],
-                  "description": "Params for _goose/secret/check",
+                  "description": "Params for _rook/secret/check",
                   "title": "CheckSecretRequest"
                 },
                 {
@@ -760,7 +760,7 @@
                       "$ref": "#/$defs/UpsertSecretRequest"
                     }
                   ],
-                  "description": "Params for _goose/secret/upsert",
+                  "description": "Params for _rook/secret/upsert",
                   "title": "UpsertSecretRequest"
                 },
                 {
@@ -769,7 +769,7 @@
                       "$ref": "#/$defs/RemoveSecretRequest"
                     }
                   ],
-                  "description": "Params for _goose/secret/remove",
+                  "description": "Params for _rook/secret/remove",
                   "title": "RemoveSecretRequest"
                 },
                 {
@@ -778,7 +778,7 @@
                       "$ref": "#/$defs/ExportSessionRequest"
                     }
                   ],
-                  "description": "Params for _goose/session/export",
+                  "description": "Params for _rook/session/export",
                   "title": "ExportSessionRequest"
                 },
                 {
@@ -787,7 +787,7 @@
                       "$ref": "#/$defs/ImportSessionRequest"
                     }
                   ],
-                  "description": "Params for _goose/session/import",
+                  "description": "Params for _rook/session/import",
                   "title": "ImportSessionRequest"
                 },
                 {
@@ -796,7 +796,7 @@
                       "$ref": "#/$defs/ArchiveSessionRequest"
                     }
                   ],
-                  "description": "Params for _goose/session/archive",
+                  "description": "Params for _rook/session/archive",
                   "title": "ArchiveSessionRequest"
                 },
                 {
@@ -805,7 +805,7 @@
                       "$ref": "#/$defs/UnarchiveSessionRequest"
                     }
                   ],
-                  "description": "Params for _goose/session/unarchive",
+                  "description": "Params for _rook/session/unarchive",
                   "title": "UnarchiveSessionRequest"
                 }
               ]

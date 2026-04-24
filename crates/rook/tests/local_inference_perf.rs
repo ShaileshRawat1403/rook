@@ -2,13 +2,13 @@
 //!
 //! These tests require a downloaded GGUF model and are ignored by default.
 //! Download a model first:
-//!   goose local-models download bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M
+//!   rook local-models download bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M
 //!
 //! Run with the default model:
-//!   cargo test -p goose --test local_inference_perf -- --ignored --nocapture
+//!   cargo test -p rook --test local_inference_perf -- --ignored --nocapture
 //!
 //! Run with a specific model:
-//!   TEST_MODEL="bartowski/Qwen_Qwen3-32B-GGUF:Q4_K_M" cargo test -p goose --test local_inference_perf -- --ignored --nocapture
+//!   TEST_MODEL="bartowski/Qwen_Qwen3-32B-GGUF:Q4_K_M" cargo test -p rook --test local_inference_perf -- --ignored --nocapture
 
 use rook::conversation::message::Message;
 use rook::model::ModelConfig;

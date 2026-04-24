@@ -23,7 +23,7 @@ const DEPRECATED_PROVIDER_IDS = new Set(["claude-code", "codex", "gemini-cli"]);
 
 export async function listProviders(): Promise<AcpProvider[]> {
   const client = await getClient();
-  const result = await client.rook.GooseProvidersList({});
+  const result = await client.rook.RookProvidersList({});
   // biome-ignore lint/suspicious/noExplicitAny: ACP SDK types don't expose providers field
   return (result as any).providers
     .filter(
@@ -56,14 +56,14 @@ export async function listSessions(): Promise<AcpSessionInfo[]> {
 
 export async function exportSession(sessionId: string): Promise<string> {
   const client = await getClient();
-  const result = await client.rook.GooseSessionExport({ sessionId });
+  const result = await client.rook.RookSessionExport({ sessionId });
   // biome-ignore lint/suspicious/noExplicitAny: SDK doesn't expose data field on export result
   return (result as any).data;
 }
 
 export async function importSession(json: string): Promise<AcpSessionInfo> {
   const client = await getClient();
-  const result = await client.rook.GooseSessionImport({ data: json });
+  const result = await client.rook.RookSessionImport({ data: json });
   return result as unknown as AcpSessionInfo;
 }
 

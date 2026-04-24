@@ -2,16 +2,16 @@
 //!
 //! These tests require a downloaded GGUF model and are ignored by default.
 //! Download a model first:
-//!   goose local-models download bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M
+//!   rook local-models download bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M
 //!
 //! Run with the default model:
-//!   cargo test -p goose --test local_inference_integration -- --ignored
+//!   cargo test -p rook --test local_inference_integration -- --ignored
 //!
 //! Run with a specific model:
-//!   TEST_MODEL="bartowski/Qwen_Qwen3-32B-GGUF:Q4_K_M" cargo test -p goose --test local_inference_integration -- --ignored
+//!   TEST_MODEL="bartowski/Qwen_Qwen3-32B-GGUF:Q4_K_M" cargo test -p rook --test local_inference_integration -- --ignored
 //!
 //! Run vision tests (requires a vision-capable model like gemma-4):
-//!   TEST_VISION_MODEL="unsloth/gemma-4-E4B-it-GGUF:Q4_K_M" cargo test -p goose --test local_inference_integration test_local_inference_vision -- --ignored
+//!   TEST_VISION_MODEL="unsloth/gemma-4-E4B-it-GGUF:Q4_K_M" cargo test -p rook --test local_inference_integration test_local_inference_vision -- --ignored
 
 use base64::prelude::*;
 use futures::StreamExt;
@@ -122,7 +122,7 @@ fn tiny_red_png() -> Vec<u8> {
 /// Requires TEST_VISION_MODEL to be set to a downloaded vision model.
 /// Example:
 ///   TEST_VISION_MODEL="unsloth/gemma-4-E4B-it-GGUF:Q4_K_M" \
-///     cargo test -p goose --test local_inference_integration test_local_inference_vision -- --ignored
+///     cargo test -p rook --test local_inference_integration test_local_inference_vision -- --ignored
 #[tokio::test]
 #[ignore]
 async fn test_local_inference_vision_produces_output() {

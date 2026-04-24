@@ -144,7 +144,7 @@ mod tests {
                 .description
                 .clone()
                 .unwrap_or_default()
-                .contains("Manage goose's internal scheduled recipe execution"));
+                .contains("Manage rook's internal scheduled recipe execution"));
         }
 
         #[tokio::test]
@@ -190,7 +190,7 @@ mod tests {
                 .description
                 .clone()
                 .unwrap_or_default()
-                .contains("Manage goose's internal scheduled recipe execution"));
+                .contains("Manage rook's internal scheduled recipe execution"));
 
             // Verify the tool has the expected actions in its schema
             if let Some(properties) = tool.input_schema.get("properties") {
@@ -745,7 +745,7 @@ mod tests {
                 config: ExtensionConfig::Platform {
                     name: "todo".to_string(),
                     description:
-                        "Enable a todo list for goose so it can keep track of what it is doing"
+                        "Enable a todo list for rook so it can keep track of what it is doing"
                             .to_string(),
                     display_name: Some("Todo".to_string()),
                     bundled: Some(true),

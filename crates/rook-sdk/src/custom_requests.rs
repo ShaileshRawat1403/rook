@@ -22,7 +22,7 @@ pub struct CustomMethodSchema {
 
 /// Add an extension to an active session.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/extensions/add", response = EmptyResponse)]
+#[request(method = "_rook/extensions/add", response = EmptyResponse)]
 #[serde(rename_all = "camelCase")]
 pub struct AddExtensionRequest {
     pub session_id: String,
@@ -33,7 +33,7 @@ pub struct AddExtensionRequest {
 
 /// Remove an extension from an active session.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/extensions/remove", response = EmptyResponse)]
+#[request(method = "_rook/extensions/remove", response = EmptyResponse)]
 #[serde(rename_all = "camelCase")]
 pub struct RemoveExtensionRequest {
     pub session_id: String,
@@ -42,7 +42,7 @@ pub struct RemoveExtensionRequest {
 
 /// List all tools available in a session.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/tools", response = GetToolsResponse)]
+#[request(method = "_rook/tools", response = GetToolsResponse)]
 #[serde(rename_all = "camelCase")]
 pub struct GetToolsRequest {
     pub session_id: String,
@@ -57,7 +57,7 @@ pub struct GetToolsResponse {
 
 /// Read a resource from an extension.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/resource/read", response = ReadResourceResponse)]
+#[request(method = "_rook/resource/read", response = ReadResourceResponse)]
 #[serde(rename_all = "camelCase")]
 pub struct ReadResourceRequest {
     pub session_id: String,
@@ -75,7 +75,7 @@ pub struct ReadResourceResponse {
 
 /// Update the working directory for a session.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/working_dir/update", response = EmptyResponse)]
+#[request(method = "_rook/working_dir/update", response = EmptyResponse)]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateWorkingDirRequest {
     pub session_id: String,
@@ -92,7 +92,7 @@ pub struct DeleteSessionRequest {
 
 /// List configured extensions and any warnings.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/config/extensions", response = GetExtensionsResponse)]
+#[request(method = "_rook/config/extensions", response = GetExtensionsResponse)]
 pub struct GetExtensionsRequest {}
 
 /// List configured extensions and any warnings.
@@ -104,7 +104,7 @@ pub struct GetExtensionsResponse {
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/session/extensions", response = GetSessionExtensionsResponse)]
+#[request(method = "_rook/session/extensions", response = GetSessionExtensionsResponse)]
 #[serde(rename_all = "camelCase")]
 pub struct GetSessionExtensionsRequest {
     pub session_id: String,
@@ -117,7 +117,7 @@ pub struct GetSessionExtensionsResponse {
 
 /// Read a single non-secret config value.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/config/read", response = ReadConfigResponse)]
+#[request(method = "_rook/config/read", response = ReadConfigResponse)]
 #[serde(rename_all = "camelCase")]
 pub struct ReadConfigRequest {
     pub key: String,
@@ -133,7 +133,7 @@ pub struct ReadConfigResponse {
 
 /// Upsert a single non-secret config value.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/config/upsert", response = EmptyResponse)]
+#[request(method = "_rook/config/upsert", response = EmptyResponse)]
 #[serde(rename_all = "camelCase")]
 pub struct UpsertConfigRequest {
     pub key: String,
@@ -142,7 +142,7 @@ pub struct UpsertConfigRequest {
 
 /// Remove a single non-secret config value.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/config/remove", response = EmptyResponse)]
+#[request(method = "_rook/config/remove", response = EmptyResponse)]
 #[serde(rename_all = "camelCase")]
 pub struct RemoveConfigRequest {
     pub key: String,
@@ -150,7 +150,7 @@ pub struct RemoveConfigRequest {
 
 /// Check whether a secret exists. Never returns the actual value.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/secret/check", response = CheckSecretResponse)]
+#[request(method = "_rook/secret/check", response = CheckSecretResponse)]
 #[serde(rename_all = "camelCase")]
 pub struct CheckSecretRequest {
     pub key: String,
@@ -165,7 +165,7 @@ pub struct CheckSecretResponse {
 
 /// Set a secret value (write-only).
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/secret/upsert", response = EmptyResponse)]
+#[request(method = "_rook/secret/upsert", response = EmptyResponse)]
 #[serde(rename_all = "camelCase")]
 pub struct UpsertSecretRequest {
     pub key: String,
@@ -174,7 +174,7 @@ pub struct UpsertSecretRequest {
 
 /// Remove a secret.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/secret/remove", response = EmptyResponse)]
+#[request(method = "_rook/secret/remove", response = EmptyResponse)]
 #[serde(rename_all = "camelCase")]
 pub struct RemoveSecretRequest {
     pub key: String,
@@ -182,7 +182,7 @@ pub struct RemoveSecretRequest {
 
 /// List providers available through goose, including the config-default sentinel.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/providers/list", response = ListProvidersResponse)]
+#[request(method = "_rook/providers/list", response = ListProvidersResponse)]
 pub struct ListProvidersRequest {}
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema)]
@@ -200,7 +200,7 @@ pub struct ListProvidersResponse {
 
 /// Archive a session (soft delete).
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/session/archive", response = EmptyResponse)]
+#[request(method = "_rook/session/archive", response = EmptyResponse)]
 #[serde(rename_all = "camelCase")]
 pub struct ArchiveSessionRequest {
     pub session_id: String,
@@ -208,7 +208,7 @@ pub struct ArchiveSessionRequest {
 
 /// Unarchive a previously archived session.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/session/unarchive", response = EmptyResponse)]
+#[request(method = "_rook/session/unarchive", response = EmptyResponse)]
 #[serde(rename_all = "camelCase")]
 pub struct UnarchiveSessionRequest {
     pub session_id: String,
@@ -216,7 +216,7 @@ pub struct UnarchiveSessionRequest {
 
 /// Export a session as a JSON string.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/session/export", response = ExportSessionResponse)]
+#[request(method = "_rook/session/export", response = ExportSessionResponse)]
 #[serde(rename_all = "camelCase")]
 pub struct ExportSessionRequest {
     pub session_id: String,
@@ -230,7 +230,7 @@ pub struct ExportSessionResponse {
 
 /// Import a session from a JSON string.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/session/import", response = ImportSessionResponse)]
+#[request(method = "_rook/session/import", response = ImportSessionResponse)]
 pub struct ImportSessionRequest {
     pub data: String,
 }
@@ -247,7 +247,7 @@ pub struct ImportSessionResponse {
 
 /// List providers with full metadata (config keys, setup steps, etc.).
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/providers/details", response = GetProviderDetailsResponse)]
+#[request(method = "_rook/providers/details", response = GetProviderDetailsResponse)]
 pub struct GetProviderDetailsRequest {}
 
 /// Provider details response.
@@ -258,7 +258,7 @@ pub struct GetProviderDetailsResponse {
 
 /// Fetch the full list of models available for a specific provider.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
-#[request(method = "_goose/providers/models", response = GetProviderModelsResponse)]
+#[request(method = "_rook/providers/models", response = GetProviderModelsResponse)]
 #[serde(rename_all = "camelCase")]
 pub struct GetProviderModelsRequest {
     pub provider_name: String,

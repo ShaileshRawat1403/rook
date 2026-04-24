@@ -352,7 +352,7 @@ impl Session for AcpProviderSession {
     }
 }
 
-// Strips config_options from responses so goose falls back to legacy set_mode/set_model.
+// Strips config_options from responses so rook falls back to legacy set_mode/set_model.
 #[allow(dead_code)]
 fn strip_config_options(transport: DuplexTransport) -> Channel {
     let (server, server_future) = ConnectTo::<Client>::into_channel_and_future(transport);

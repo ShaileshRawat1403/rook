@@ -66,15 +66,15 @@ pub type AcpProviderFactory = Arc<
         + Sync,
 >;
 
-const DEFAULT_PROVIDER_ID: &str = "goose";
+const DEFAULT_PROVIDER_ID: &str = "rook";
 const DEFAULT_PROVIDER_LABEL: &str = "Rook (Default)";
 
 /// In-memory state for an active ACP session.
 ///
-/// ## Terminology (temporary, until all clients migrate to ACP)
+/// ## Terminology
 ///
 /// The ACP protocol uses "session" to mean the conversation as the human sees it —
-/// a durable, append-only exchange of messages. Internally, goose also has a concept
+/// a durable, append-only exchange of messages. Internally, rook also has a concept
 /// called "Session" (the `sessions` DB table) which represents the agent's working
 /// state: the message list the LLM sees, compaction state, provider binding, etc.
 ///
@@ -86,7 +86,7 @@ const DEFAULT_PROVIDER_LABEL: &str = "Rook (Default)";
 ///   Clients never see or manage these directly.
 ///
 /// The `sessions` HashMap below is keyed by **thread ID** (= ACP session ID).
-/// The `internal_session_id` field tracks which goose Session is currently active.
+/// The `internal_session_id` field tracks which rook Session is currently active.
 struct RookAcpSession {
     agent: AgentHandle,
     internal_session_id: String,
@@ -624,7 +624,7 @@ impl RookAcpAgent {
         Arc::clone(&self.permission_manager)
     }
 
-    // TODO: goose reads Paths::in_state_dir globally (e.g. RequestLog), ignoring this data_dir.
+    // TODO: rook reads Paths::in_state_dir globally (e.g. RequestLog), ignoring this data_dir.
     pub async fn new(
         provider_factory: AcpProviderFactory,
         builtins: Vec<String>,
@@ -714,7 +714,7 @@ impl RookAcpAgent {
                 )));
 
                 let config_path = config_dir.join(CONFIG_YAML_NAME);
-                let mut extensions = Config::new(&config_path, "goose")
+                let mut extensions = Config::new(&config_path, "rook")
                     .ok()
                     .map(|c| get_enabled_extensions_with_config(&c))
                     .unwrap_or_default();
@@ -822,7 +822,7 @@ impl RookAcpAgent {
                 // available (already computed in on_new_session), otherwise
                 // fall back to reading config (e.g. load_session path).
                 let t_prov = std::time::Instant::now();
-                let config = Config::new(config_dir.join(CONFIG_YAML_NAME), "goose")
+                let config = Config::new(config_dir.join(CONFIG_YAML_NAME), "rook")
                     .map_err(|e| e.to_string())?;
                 let (provider_name, model_config) = match resolved_provider {
                     Some(resolved) => resolved,
@@ -1440,7 +1440,7 @@ impl RookAcpAgent {
         Ok(response)
     }
 
-    /// Create a new internal goose Session linked to a thread.
+    /// Create a new internal rook Session linked to a thread.
     /// This is the agent's working state — invisible to ACP clients.
     async fn create_internal_session(
         &self,
@@ -2319,7 +2319,7 @@ impl RookAcpAgent {
     }
 
     async fn on_list_sessions(&self) -> Result<ListSessionsResponse, sacp::Error> {
-        // Return threads (= ACP sessions), not internal goose sessions.
+        // Return threads (= ACP sessions), not internal rook sessions.
         let threads = self
             .thread_manager
             .list_threads(false)
@@ -2984,7 +2984,7 @@ impl HandleDispatchFrom<Client> for RookAcpHandler {
                 .await
                 .if_notification(|notif: CancelNotification| async { agent.on_cancel(notif).await })
                 .await
-                // set_config_option (SACP 11) and legacy set_mode/set_model; custom _goose/* in otherwise.
+                // set_config_option (SACP 11) and legacy set_mode/set_model; custom _rook/* in otherwise.
                 .if_request({
                     let agent = agent.clone();
                     let cx = cx.clone();

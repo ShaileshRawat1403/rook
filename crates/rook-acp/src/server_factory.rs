@@ -24,7 +24,7 @@ impl AcpServer {
             .config
             .config_dir
             .join(rook::config::base::CONFIG_YAML_NAME);
-        let config = rook::config::Config::new(&config_path, "goose")?;
+        let config = rook::config::Config::new(&config_path, "rook")?;
 
         let rook_mode = config
             .get_rook_mode()
