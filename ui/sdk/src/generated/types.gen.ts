@@ -105,7 +105,7 @@ export type GetSessionExtensionsResponse = {
 };
 
 /**
- * List providers available through goose, including the config-default sentinel.
+ * List providers available through Rook, including the config-default sentinel.
  */
 export type ListProvidersRequest = {
     [key: string]: unknown;
@@ -244,7 +244,7 @@ export type ExportSessionRequest = {
 };
 
 /**
- * Export session response — raw JSON of the goose session with `conversation`.
+ * Export session response — raw JSON of the Rook session with `conversation`.
  */
 export type ExportSessionResponse = {
     data: string;

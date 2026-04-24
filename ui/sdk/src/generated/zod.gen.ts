@@ -90,7 +90,7 @@ export const zGetSessionExtensionsResponse = z.object({
 });
 
 /**
- * List providers available through goose, including the config-default sentinel.
+ * List providers available through Rook, including the config-default sentinel.
  */
 export const zListProvidersRequest = z.record(z.unknown());
 
@@ -228,7 +228,7 @@ export const zExportSessionRequest = z.object({
 });
 
 /**
- * Export session response — raw JSON of the goose session with `conversation`.
+ * Export session response — raw JSON of the Rook session with `conversation`.
  */
 export const zExportSessionResponse = z.object({
     data: z.string()

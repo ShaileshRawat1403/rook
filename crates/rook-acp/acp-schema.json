@@ -197,7 +197,7 @@
     },
     "ListProvidersRequest": {
       "type": "object",
-      "description": "List providers available through goose, including the config-default sentinel.",
+      "description": "List providers available through Rook, including the config-default sentinel.",
       "x-side": "agent",
       "x-method": "_rook/providers/list"
     },
@@ -530,7 +530,7 @@
       "required": [
         "data"
       ],
-      "description": "Export session response — raw JSON of the goose session with `conversation`.",
+      "description": "Export session response — raw JSON of the Rook session with `conversation`.",
       "x-side": "agent",
       "x-method": "_rook/session/export"
     },

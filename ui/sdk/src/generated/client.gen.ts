@@ -58,120 +58,118 @@ import {
 export class RookExtClient {
   constructor(private conn: ExtMethodProvider) {}
 
-  async GooseExtensionsAdd(params: AddExtensionRequest): Promise<void> {
-    await this.conn.extMethod("_goose/extensions/add", params);
+  async RookExtensionsAdd(params: AddExtensionRequest): Promise<void> {
+    await this.conn.extMethod("_rook/extensions/add", params);
   }
 
-  async GooseExtensionsRemove(params: RemoveExtensionRequest): Promise<void> {
-    await this.conn.extMethod("_goose/extensions/remove", params);
+  async RookExtensionsRemove(params: RemoveExtensionRequest): Promise<void> {
+    await this.conn.extMethod("_rook/extensions/remove", params);
   }
 
-  async GooseTools(params: GetToolsRequest): Promise<GetToolsResponse> {
-    const raw = await this.conn.extMethod("_goose/tools", params);
+  async RookTools(params: GetToolsRequest): Promise<GetToolsResponse> {
+    const raw = await this.conn.extMethod("_rook/tools", params);
     return zGetToolsResponse.parse(raw) as GetToolsResponse;
   }
 
-  async GooseResourceRead(
+  async RookResourceRead(
     params: ReadResourceRequest,
   ): Promise<ReadResourceResponse> {
-    const raw = await this.conn.extMethod("_goose/resource/read", params);
+    const raw = await this.conn.extMethod("_rook/resource/read", params);
     return zReadResourceResponse.parse(raw) as ReadResourceResponse;
   }
 
-  async GooseWorkingDirUpdate(params: UpdateWorkingDirRequest): Promise<void> {
-    await this.conn.extMethod("_goose/working_dir/update", params);
+  async RookWorkingDirUpdate(params: UpdateWorkingDirRequest): Promise<void> {
+    await this.conn.extMethod("_rook/working_dir/update", params);
   }
 
   async sessionDelete(params: DeleteSessionRequest): Promise<void> {
     await this.conn.extMethod("session/delete", params);
   }
 
-  async GooseConfigExtensions(
+  async RookConfigExtensions(
     params: GetExtensionsRequest,
   ): Promise<GetExtensionsResponse> {
-    const raw = await this.conn.extMethod("_goose/config/extensions", params);
+    const raw = await this.conn.extMethod("_rook/config/extensions", params);
     return zGetExtensionsResponse.parse(raw) as GetExtensionsResponse;
   }
 
-  async GooseSessionExtensions(
+  async RookSessionExtensions(
     params: GetSessionExtensionsRequest,
   ): Promise<GetSessionExtensionsResponse> {
-    const raw = await this.conn.extMethod("_goose/session/extensions", params);
+    const raw = await this.conn.extMethod("_rook/session/extensions", params);
     return zGetSessionExtensionsResponse.parse(
       raw,
     ) as GetSessionExtensionsResponse;
   }
 
-  async GooseProvidersList(
+  async RookProvidersList(
     params: ListProvidersRequest,
   ): Promise<ListProvidersResponse> {
-    const raw = await this.conn.extMethod("_goose/providers/list", params);
+    const raw = await this.conn.extMethod("_rook/providers/list", params);
     return zListProvidersResponse.parse(raw) as ListProvidersResponse;
   }
 
-  async GooseProvidersDetails(
+  async RookProvidersDetails(
     params: GetProviderDetailsRequest,
   ): Promise<GetProviderDetailsResponse> {
-    const raw = await this.conn.extMethod("_goose/providers/details", params);
+    const raw = await this.conn.extMethod("_rook/providers/details", params);
     return zGetProviderDetailsResponse.parse(raw) as GetProviderDetailsResponse;
   }
 
-  async GooseProvidersModels(
+  async RookProvidersModels(
     params: GetProviderModelsRequest,
   ): Promise<GetProviderModelsResponse> {
-    const raw = await this.conn.extMethod("_goose/providers/models", params);
+    const raw = await this.conn.extMethod("_rook/providers/models", params);
     return zGetProviderModelsResponse.parse(raw) as GetProviderModelsResponse;
   }
 
-  async GooseConfigRead(
-    params: ReadConfigRequest,
-  ): Promise<ReadConfigResponse> {
-    const raw = await this.conn.extMethod("_goose/config/read", params);
+  async RookConfigRead(params: ReadConfigRequest): Promise<ReadConfigResponse> {
+    const raw = await this.conn.extMethod("_rook/config/read", params);
     return zReadConfigResponse.parse(raw) as ReadConfigResponse;
   }
 
-  async GooseConfigUpsert(params: UpsertConfigRequest): Promise<void> {
-    await this.conn.extMethod("_goose/config/upsert", params);
+  async RookConfigUpsert(params: UpsertConfigRequest): Promise<void> {
+    await this.conn.extMethod("_rook/config/upsert", params);
   }
 
-  async GooseConfigRemove(params: RemoveConfigRequest): Promise<void> {
-    await this.conn.extMethod("_goose/config/remove", params);
+  async RookConfigRemove(params: RemoveConfigRequest): Promise<void> {
+    await this.conn.extMethod("_rook/config/remove", params);
   }
 
-  async GooseSecretCheck(
+  async RookSecretCheck(
     params: CheckSecretRequest,
   ): Promise<CheckSecretResponse> {
-    const raw = await this.conn.extMethod("_goose/secret/check", params);
+    const raw = await this.conn.extMethod("_rook/secret/check", params);
     return zCheckSecretResponse.parse(raw) as CheckSecretResponse;
   }
 
-  async GooseSecretUpsert(params: UpsertSecretRequest): Promise<void> {
-    await this.conn.extMethod("_goose/secret/upsert", params);
+  async RookSecretUpsert(params: UpsertSecretRequest): Promise<void> {
+    await this.conn.extMethod("_rook/secret/upsert", params);
   }
 
-  async GooseSecretRemove(params: RemoveSecretRequest): Promise<void> {
-    await this.conn.extMethod("_goose/secret/remove", params);
+  async RookSecretRemove(params: RemoveSecretRequest): Promise<void> {
+    await this.conn.extMethod("_rook/secret/remove", params);
   }
 
-  async GooseSessionExport(
+  async RookSessionExport(
     params: ExportSessionRequest,
   ): Promise<ExportSessionResponse> {
-    const raw = await this.conn.extMethod("_goose/session/export", params);
+    const raw = await this.conn.extMethod("_rook/session/export", params);
     return zExportSessionResponse.parse(raw) as ExportSessionResponse;
   }
 
-  async GooseSessionImport(
+  async RookSessionImport(
     params: ImportSessionRequest,
   ): Promise<ImportSessionResponse> {
-    const raw = await this.conn.extMethod("_goose/session/import", params);
+    const raw = await this.conn.extMethod("_rook/session/import", params);
     return zImportSessionResponse.parse(raw) as ImportSessionResponse;
   }
 
-  async GooseSessionArchive(params: ArchiveSessionRequest): Promise<void> {
-    await this.conn.extMethod("_goose/session/archive", params);
+  async RookSessionArchive(params: ArchiveSessionRequest): Promise<void> {
+    await this.conn.extMethod("_rook/session/archive", params);
   }
 
-  async GooseSessionUnarchive(params: UnarchiveSessionRequest): Promise<void> {
-    await this.conn.extMethod("_goose/session/unarchive", params);
+  async RookSessionUnarchive(params: UnarchiveSessionRequest): Promise<void> {
+    await this.conn.extMethod("_rook/session/unarchive", params);
   }
 }
