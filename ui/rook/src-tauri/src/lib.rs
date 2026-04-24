@@ -17,7 +17,7 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(
             tauri_plugin_log::Builder::new()
-                .level(log::LevelFilter::Debug)
+                .level(log::LevelFilter::Info)
                 .targets([tauri_plugin_log::Target::new(
                     tauri_plugin_log::TargetKind::Stdout,
                 )])
@@ -30,7 +30,6 @@ pub fn run() {
                 .with_state_flags(StateFlags::all() & !StateFlags::VISIBLE)
                 .build(),
         )
-        .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_notification::init())
         .manage(PersonaStore::new())
         .manage(RookConfig::new());
