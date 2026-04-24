@@ -3,28 +3,22 @@ export function RookIcon({ className = "" }: { className?: string }) {
     <svg
       width="24"
       height="24"
-      viewBox="0 0 24 24"
+      viewBox="0 0 1000 1000"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       aria-hidden="true"
     >
       <title>Rook</title>
-      <ellipse cx="12" cy="12" rx="1.8" ry="3.6" fill="currentColor" />
-      <circle cx="12" cy="7.5" r="1.5" fill="currentColor" />
-      <path d="M 12 5.5 L 12.7 6.8 L 11.3 6.8 Z" fill="currentColor" />
       <path
-        d="M 12 15.2 L 14.5 17.7 L 12 16.5 L 9.5 17.7 Z"
+        d="M420,180 C480,140 580,120 680,140 C720,150 780,180 820,240 C860,300 880,400 860,500 C840,600 780,720 700,800 C620,880 500,940 400,960 C300,980 180,940 100,860 C40,800 20,700 40,600 C60,500 120,420 180,380 C240,340 340,320 420,340 L420,180 Z"
         fill="currentColor"
       />
       <path
-        d="M 10.4 10.8 Q 5.5 10 1 11 Q 5.5 12.8 10.8 12.5 Z"
+        d="M420,180 C400,160 360,140 320,140 C280,140 240,160 220,180 C200,200 190,240 200,280 C210,320 240,360 280,380 C320,400 360,400 400,380 L420,180 Z"
         fill="currentColor"
       />
-      <path
-        d="M 13.6 10.8 Q 18.5 10 23 11 Q 18.5 12.8 13.2 12.5 Z"
-        fill="currentColor"
-      />
+      <circle cx="320" cy="250" r="25" fill="#000000" fillOpacity="0.5" />
     </svg>
   );
 }
