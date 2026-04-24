@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { RookLogo } from "@/shared/ui/RookLogo";
 import { StatusGlyphSpinner } from "./StatusGlyphSpinner";
-import { RookBirdSpinner } from "./RookBirdSpinner";
+import { CrowFlap } from "./CrowFlap";
 
 export type ChatLoadingState =
   | "loading-conversation"
@@ -24,7 +24,7 @@ const STATE_ICONS: Record<ChatLoadingState, React.ReactNode> = {
   thinking: (
     <StatusGlyphSpinner className="flex-shrink-0" cycleInterval={600} />
   ),
-  streaming: <RookBirdSpinner className="flex-shrink-0" cycleInterval={150} />,
+  streaming: <CrowFlap className="flex-shrink-0 h-4 w-4" />,
   "waiting-for-user": (
     <StatusGlyphSpinner
       className="flex-shrink-0"
