@@ -29,7 +29,7 @@ pub fn send_approval_notification(app: AppHandle, session_id: String) -> Result<
     app.notification()
         .builder()
         .title("Rook - Approval Required")
-        .body(&format!("A task requires your approval in session {}", truncated))
+        .body(format!("A task requires your approval in session {}", truncated))
         .show()
         .map_err(|e| e.to_string())
 }
@@ -39,7 +39,7 @@ pub fn send_task_completed_notification(app: AppHandle, task_name: String) -> Re
     app.notification()
         .builder()
         .title("Rook - Task Completed")
-        .body(&format!("Task '{}' completed successfully", task_name))
+        .body(format!("Task '{}' completed successfully", task_name))
         .show()
         .map_err(|e| e.to_string())
 }
@@ -53,7 +53,7 @@ pub fn send_task_failed_notification(
     app.notification()
         .builder()
         .title("Rook - Task Failed")
-        .body(&format!("Task '{}' failed: {}", task_name, error))
+        .body(format!("Task '{}' failed: {}", task_name, error))
         .show()
         .map_err(|e| e.to_string())
 }

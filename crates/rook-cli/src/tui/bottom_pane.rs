@@ -1,3 +1,4 @@
+use crate::tui::state::{ApprovalRequest, CYAN, TEXT_MUTED, TEXT_PRIMARY, YELLOW};
 use ratatui::{
     buffer::Buffer,
     layout::Rect,
@@ -5,7 +6,6 @@ use ratatui::{
     text::{Line, Span},
     widgets::{Block, BorderType, Borders, Paragraph, Widget},
 };
-use crate::tui::state::{ApprovalRequest, TEXT_PRIMARY, TEXT_MUTED, CYAN, YELLOW};
 
 pub struct ApprovalOverlayWidget<'a> {
     pub request: &'a ApprovalRequest,
@@ -29,27 +29,48 @@ impl<'a> Widget for ApprovalOverlayWidget<'a> {
 
         let lines = vec![
             Line::from(vec![
-                Span::styled("Action required for tool: ", Style::default().fg(TEXT_MUTED)),
-                Span::styled(&self.request.tool_name, Style::default().fg(CYAN).add_modifier(Modifier::BOLD)),
+                Span::styled(
+                    "Action required for tool: ",
+                    Style::default().fg(TEXT_MUTED),
+                ),
+                Span::styled(
+                    &self.request.tool_name,
+                    Style::default().fg(CYAN).add_modifier(Modifier::BOLD),
+                ),
             ]),
             Line::from(vec![
                 Span::styled("Risk level: ", Style::default().fg(TEXT_MUTED)),
-                Span::styled(self.request.risk_level.to_string(), Style::default().fg(YELLOW)),
+                Span::styled(
+                    self.request.risk_level.to_string(),
+                    Style::default().fg(YELLOW),
+                ),
             ]),
             Line::from(""),
             Line::from(vec![
                 Span::styled("Command: ", Style::default().fg(TEXT_MUTED)),
-                Span::styled(self.request.command.as_deref().unwrap_or("N/A"), Style::default().fg(TEXT_PRIMARY)),
+                Span::styled(
+                    self.request.command.as_deref().unwrap_or("N/A"),
+                    Style::default().fg(TEXT_PRIMARY),
+                ),
             ]),
             Line::from(vec![
                 Span::styled("File path: ", Style::default().fg(TEXT_MUTED)),
-                Span::styled(self.request.file_path.as_deref().unwrap_or("N/A"), Style::default().fg(TEXT_PRIMARY)),
+                Span::styled(
+                    self.request.file_path.as_deref().unwrap_or("N/A"),
+                    Style::default().fg(TEXT_PRIMARY),
+                ),
             ]),
             Line::from(""),
             Line::from(vec![
-                Span::styled(" [A] Approve ", Style::default().bg(Color::Green).fg(Color::Black)),
+                Span::styled(
+                    " [A] Approve ",
+                    Style::default().bg(Color::Green).fg(Color::Black),
+                ),
                 Span::raw("  "),
-                Span::styled(" [R] Reject ", Style::default().bg(Color::Red).fg(Color::Black)),
+                Span::styled(
+                    " [R] Reject ",
+                    Style::default().bg(Color::Red).fg(Color::Black),
+                ),
             ]),
         ];
 

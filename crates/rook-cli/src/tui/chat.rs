@@ -57,7 +57,7 @@ impl Widget for ChatPanel {
         }
 
         let lines = flatten_thread(&self.thread, area.width);
-        
+
         let viewport_height = area.height as usize;
         let max_scroll = lines.len().saturating_sub(viewport_height) as u16;
         let scroll = self.scroll.min(max_scroll);
@@ -231,24 +231,24 @@ fn wrap_text(content: &str, width: usize) -> Vec<String> {
         let mut current_line = String::new();
         for word in raw_line.split(' ') {
             let mut word = word;
-            
+
             while !word.is_empty() {
                 let space_left = width.saturating_sub(current_line.chars().count());
-                
+
                 if current_line.is_empty() {
                     // Start of a new line
                     let take = word.chars().count().min(width);
                     let (head, tail) = split_at_char_index(word, take);
                     current_line.push_str(head);
                     word = tail;
-                    
+
                     if word.is_empty() {
                         // Word finished
                     } else {
                         // Word was too long, push current line and continue with the rest of the word
                         rows.push(std::mem::take(&mut current_line));
                     }
-                } else if word.chars().count() + 1 <= space_left {
+                } else if word.chars().count() < space_left {
                     // Word fits in current line with a space
                     current_line.push(' ');
                     current_line.push_str(word);

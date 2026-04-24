@@ -20,7 +20,10 @@ use tokio::sync::mpsc;
 use crate::tui::{
     chat::ChatPanel,
     commands::SlashCommand,
-    state::{AppCommand, AppState, ConfigStep, MessageRole, RunState, SharedState, TuiEvent, TEXT_PRIMARY, TEXT_MUTED, CYAN, GREEN, YELLOW, RED},
+    state::{
+        AppCommand, AppState, ConfigStep, MessageRole, RunState, SharedState, TuiEvent, CYAN,
+        GREEN, RED, TEXT_MUTED, TEXT_PRIMARY, YELLOW,
+    },
 };
 
 pub const APP_TITLE: &str = "ROOK";
@@ -279,7 +282,8 @@ where
                                                         }
                                                     }
                                                     SlashCommand::Clear => {
-                                                        let session_id = guard.projected.thread.id.clone();
+                                                        let session_id =
+                                                            guard.projected.thread.id.clone();
                                                         guard.emit(crate::tui::events::RunEvent::RunStarted { session_id });
                                                         guard.input_buffer.clear();
                                                     }
@@ -297,7 +301,11 @@ where
                                         {
                                             let input = guard.input_buffer.clone();
                                             guard.is_processing = true;
-                                            guard.emit(crate::tui::events::RunEvent::IntentCreated { prompt: input.clone() });
+                                            guard.emit(
+                                                crate::tui::events::RunEvent::IntentCreated {
+                                                    prompt: input.clone(),
+                                                },
+                                            );
                                             let _ = cmd_tx
                                                 .blocking_send(AppCommand::SubmitPrompt(input));
                                             guard.input_buffer.clear();
@@ -800,10 +808,7 @@ fn render_codex_status_line(
 
     let detail = format!(
         "Phase {}  Provider {}/{}  Posture {:?}",
-        run_state,
-        provider,
-        model,
-        posture
+        run_state, provider, model, posture
     );
 
     let mut lines = vec![Line::from(phase_spans)];
@@ -814,9 +819,8 @@ fn render_codex_status_line(
         )]));
     }
 
-    let paragraph = ratatui::widgets::Paragraph::new(lines)
-        .style(Style::default().bg(FOOTER_BG));
-    
+    let paragraph = ratatui::widgets::Paragraph::new(lines).style(Style::default().bg(FOOTER_BG));
+
     f.render_widget(paragraph, area);
 }
 
@@ -915,8 +919,7 @@ fn render_workstation_header(
         ),
     ]);
 
-    let paragraph = ratatui::widgets::Paragraph::new(line)
-        .style(Style::default().bg(HEADER_BG));
+    let paragraph = ratatui::widgets::Paragraph::new(line).style(Style::default().bg(HEADER_BG));
     f.render_widget(paragraph, area);
 }
 

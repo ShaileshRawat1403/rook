@@ -13,7 +13,10 @@ export async function ensureNotificationPermission(): Promise<boolean> {
   return permissionGranted;
 }
 
-export async function showNotification(title: string, body: string): Promise<void> {
+export async function showNotification(
+  title: string,
+  body: string,
+): Promise<void> {
   const hasPermission = await ensureNotificationPermission();
   if (!hasPermission) {
     console.warn("Notification permission not granted");
@@ -23,21 +26,31 @@ export async function showNotification(title: string, body: string): Promise<voi
   await sendNotification({ title, body });
 }
 
-export async function showApprovalNotification(sessionId: string): Promise<void> {
+export async function showApprovalNotification(
+  sessionId: string,
+): Promise<void> {
   const truncated = sessionId.slice(0, 8);
   await showNotification(
     "Rook - Approval Required",
-    `A task requires your approval in session ${truncated}`
+    `A task requires your approval in session ${truncated}`,
   );
 }
 
-export async function showTaskCompletedNotification(taskName: string): Promise<void> {
-  await showNotification("Rook - Task Completed", `Task '${taskName}' completed successfully`);
+export async function showTaskCompletedNotification(
+  taskName: string,
+): Promise<void> {
+  await showNotification(
+    "Rook - Task Completed",
+    `Task '${taskName}' completed successfully`,
+  );
 }
 
 export async function showTaskFailedNotification(
   taskName: string,
-  error: string
+  error: string,
 ): Promise<void> {
-  await showNotification("Rook - Task Failed", `Task '${taskName}' failed: ${error}`);
+  await showNotification(
+    "Rook - Task Failed",
+    `Task '${taskName}' failed: ${error}`,
+  );
 }

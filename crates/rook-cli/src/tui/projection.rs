@@ -1,5 +1,8 @@
-use crate::tui::events::{RunEvent, ApprovalDecision};
-use crate::tui::state::{Thread, ApprovalRequest, MessageRole, Turn, Item, RiskLevel, RunState, ShellActivity, FileChangeActivity};
+use crate::tui::events::{ApprovalDecision, RunEvent};
+use crate::tui::state::{
+    ApprovalRequest, FileChangeActivity, Item, MessageRole, RiskLevel, RunState, ShellActivity,
+    Thread, Turn,
+};
 use chrono::{DateTime, Utc};
 
 #[derive(Debug, Clone)]
@@ -34,35 +37,71 @@ impl ProjectedRun {
                 }
                 RunEvent::IntentCreated { prompt } => {
                     let dt = Utc::now();
-                    add_item(&mut thread, &format!("intent-{}", dt.timestamp_millis()), MessageRole::User, Item::Text(prompt.clone()), dt);
+                    add_item(
+                        &mut thread,
+                        &format!("intent-{}", dt.timestamp_millis()),
+                        MessageRole::User,
+                        Item::Text(prompt.clone()),
+                        dt,
+                    );
                     run_state = RunState::Understanding;
                 }
-                RunEvent::StepProposed { call_id, tool_name, arguments } => {
+                RunEvent::StepProposed {
+                    call_id,
+                    tool_name,
+                    arguments,
+                } => {
                     run_state = RunState::Planning;
                     let timestamp = Utc::now();
                     if is_shell_tool(tool_name) {
-                        let command = extract_string_argument(arguments.as_object().unwrap(), &["cmd", "command", "input", "script"])
-                            .unwrap_or_else(|| tool_name.clone());
-                        add_item(&mut thread, &call_id, MessageRole::Assistant, Item::Shell(ShellActivity {
-                            id: call_id.clone(),
-                            label: tool_name.clone(),
-                            command,
-                            output: String::new(),
-                            exit_code: None,
-                            is_running: true,
-                        }), timestamp);
+                        let command = extract_string_argument(
+                            arguments.as_object().unwrap(),
+                            &["cmd", "command", "input", "script"],
+                        )
+                        .unwrap_or_else(|| tool_name.clone());
+                        add_item(
+                            &mut thread,
+                            call_id,
+                            MessageRole::Assistant,
+                            Item::Shell(ShellActivity {
+                                id: call_id.clone(),
+                                label: tool_name.clone(),
+                                command,
+                                output: String::new(),
+                                exit_code: None,
+                                is_running: true,
+                            }),
+                            timestamp,
+                        );
                     } else if is_file_tool(tool_name) {
-                        let file_path = extract_string_argument(arguments.as_object().unwrap(), &["path", "file_path", "file", "filename", "target_file"])
-                            .unwrap_or_else(|| "workspace".to_string());
-                        add_item(&mut thread, &call_id, MessageRole::Assistant, Item::FileChange(FileChangeActivity {
-                            id: call_id.clone(),
-                            file_path,
-                            description: tool_name.clone(),
-                            risk_level: derive_risk_level(tool_name, arguments.as_object()).to_string().to_lowercase(),
-                            status: "pending".to_string(),
-                        }), timestamp);
+                        let file_path = extract_string_argument(
+                            arguments.as_object().unwrap(),
+                            &["path", "file_path", "file", "filename", "target_file"],
+                        )
+                        .unwrap_or_else(|| "workspace".to_string());
+                        add_item(
+                            &mut thread,
+                            call_id,
+                            MessageRole::Assistant,
+                            Item::FileChange(FileChangeActivity {
+                                id: call_id.clone(),
+                                file_path,
+                                description: tool_name.clone(),
+                                risk_level: derive_risk_level(tool_name, arguments.as_object())
+                                    .to_string()
+                                    .to_lowercase(),
+                                status: "pending".to_string(),
+                            }),
+                            timestamp,
+                        );
                     } else {
-                        add_item(&mut thread, &call_id, MessageRole::Assistant, Item::Text(format!("Using `{}`.", tool_name)), timestamp);
+                        add_item(
+                            &mut thread,
+                            call_id,
+                            MessageRole::Assistant,
+                            Item::Text(format!("Using `{}`.", tool_name)),
+                            timestamp,
+                        );
                     }
                 }
                 RunEvent::ApprovalRequested(request) => {
@@ -87,9 +126,21 @@ impl ProjectedRun {
                     run_state = RunState::Verifying;
                     update_tool_result(&mut thread, call_id, result);
                 }
-                RunEvent::MessageAdded { id, role, content, timestamp } => {
-                    let dt = DateTime::<Utc>::from_timestamp(*timestamp, 0).unwrap_or_else(Utc::now);
-                    add_item(&mut thread, id, role.clone(), Item::Text(content.clone()), dt);
+                RunEvent::MessageAdded {
+                    id,
+                    role,
+                    content,
+                    timestamp,
+                } => {
+                    let dt =
+                        DateTime::<Utc>::from_timestamp(*timestamp, 0).unwrap_or_else(Utc::now);
+                    add_item(
+                        &mut thread,
+                        id,
+                        role.clone(),
+                        Item::Text(content.clone()),
+                        dt,
+                    );
                 }
                 RunEvent::RunCompleted => {
                     run_state = RunState::Completed;
@@ -110,7 +161,13 @@ impl ProjectedRun {
     }
 }
 
-fn add_item(thread: &mut Thread, turn_id: &str, role: MessageRole, item: Item, timestamp: DateTime<Utc>) {
+fn add_item(
+    thread: &mut Thread,
+    turn_id: &str,
+    role: MessageRole,
+    item: Item,
+    timestamp: DateTime<Utc>,
+) {
     let is_stream_role = role == MessageRole::Assistant || role == MessageRole::System;
 
     if let Some(last_turn) = thread.turns.last_mut() {
@@ -144,7 +201,11 @@ fn add_item(thread: &mut Thread, turn_id: &str, role: MessageRole, item: Item, t
     });
 }
 
-fn update_tool_result(thread: &mut Thread, call_id: &str, result: &Result<serde_json::Value, String>) {
+fn update_tool_result(
+    thread: &mut Thread,
+    call_id: &str,
+    result: &Result<serde_json::Value, String>,
+) {
     for turn in thread.turns.iter_mut().rev() {
         for item in turn.items.iter_mut().rev() {
             match item {

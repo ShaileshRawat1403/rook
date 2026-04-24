@@ -17,9 +17,11 @@
     "windows": [
       {
         "title": "Rook",
-        "width": 800,
-        "height": 600,
-        "visible": false,
+        "width": 1200,
+        "height": 800,
+        "minWidth": 600,
+        "minHeight": 400,
+        "visible": true,
         "titleBarStyle": "Overlay",
         "hiddenTitle": true,
         "dragDropEnabled": false,
@@ -27,11 +29,6 @@
         "center": true
       }
     ],
-    "trayIcon": {
-      "iconPath": "icons/32x32.png",
-      "iconAsTemplate": true,
-      "id": "main-tray"
-    },
     "security": {
       "csp": null,
       "assetProtocol": {

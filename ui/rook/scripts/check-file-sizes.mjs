@@ -60,6 +60,11 @@ const EXCEPTIONS = {
     justification:
       "Desktop system commands still centralize file mentions, attachment inspection, platform-aware path dedupe, guarded image loading, and export helpers in one Tauri command surface.",
   },
+  "src/features/providers/providerCatalog.ts": {
+    limit: 530,
+    justification:
+      "Complete provider catalog with all model providers including Gemini OAuth/CLI and agent providers.",
+  },
 };
 
 // Directories excluded from size checks (imported library code)

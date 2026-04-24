@@ -9,13 +9,11 @@ pub const RED: Color = Color::Rgb(255, 120, 120);
 
 use chrono::{DateTime, Utc};
 use rook::agents::AgentEvent;
-use rook::conversation::message::{
-    ActionRequiredData, MessageContent,
-};
+use rook::conversation::message::{ActionRequiredData, MessageContent};
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
-use serde::{Deserialize, Serialize};
 
 use crate::tui::events::RunEvent;
 use crate::tui::projection::ProjectedRun;
@@ -208,7 +206,9 @@ pub struct AppState {
 
 impl AppState {
     pub fn new(session_id: String) -> Self {
-        let events = vec![RunEvent::RunStarted { session_id: session_id.clone() }];
+        let events = vec![RunEvent::RunStarted {
+            session_id: session_id.clone(),
+        }];
         let projected = ProjectedRun::project(&session_id, &events);
         Self {
             events,
@@ -285,7 +285,10 @@ impl AppState {
                     match content {
                         MessageContent::Text(text) => {
                             self.emit(RunEvent::MessageAdded {
-                                id: msg.id.clone().unwrap_or_else(|| format!("msg-{}", timestamp)),
+                                id: msg
+                                    .id
+                                    .clone()
+                                    .unwrap_or_else(|| format!("msg-{}", timestamp)),
                                 role: role.clone(),
                                 content: text.text.clone(),
                                 timestamp,
@@ -302,7 +305,10 @@ impl AppState {
                                 self.emit(RunEvent::ApprovalRequested(ApprovalRequest {
                                     id,
                                     tool_name: tool_name.clone(),
-                                    command: extract_string_argument(&arguments, &["cmd", "command"]),
+                                    command: extract_string_argument(
+                                        &arguments,
+                                        &["cmd", "command"],
+                                    ),
                                     file_path: extract_string_argument(
                                         &arguments,
                                         &["path", "file_path", "file", "filename"],
@@ -315,8 +321,18 @@ impl AppState {
                         MessageContent::ToolRequest(req) => {
                             self.emit(RunEvent::StepProposed {
                                 call_id: req.id,
-                                tool_name: req.tool_call.as_ref().map(|tc| tc.name.to_string()).unwrap_or_default(),
-                                arguments: req.tool_call.as_ref().map(|tc| Value::Object(tc.arguments.clone().unwrap_or_default())).unwrap_or_default(),
+                                tool_name: req
+                                    .tool_call
+                                    .as_ref()
+                                    .map(|tc| tc.name.to_string())
+                                    .unwrap_or_default(),
+                                arguments: req
+                                    .tool_call
+                                    .as_ref()
+                                    .map(|tc| {
+                                        Value::Object(tc.arguments.clone().unwrap_or_default())
+                                    })
+                                    .unwrap_or_default(),
                             });
                         }
                         MessageContent::ToolResponse(resp) => {
@@ -332,14 +348,14 @@ impl AppState {
                     }
                 }
             }
-            AgentEvent::RunStateChanged(state) => {
-                match state {
-                    rook::agents::RunState::Idle => self.emit(RunEvent::RunCompleted),
-                    rook::agents::RunState::Error(e) => self.emit(RunEvent::RunFailed(e)),
-                    rook::agents::RunState::Acting => self.emit(RunEvent::StepStarted { call_id: "active".to_string() }),
-                    _ => {}
-                }
-            }
+            AgentEvent::RunStateChanged(state) => match state {
+                rook::agents::RunState::Idle => self.emit(RunEvent::RunCompleted),
+                rook::agents::RunState::Error(e) => self.emit(RunEvent::RunFailed(e)),
+                rook::agents::RunState::Acting => self.emit(RunEvent::StepStarted {
+                    call_id: "active".to_string(),
+                }),
+                _ => {}
+            },
             _ => {}
         }
     }

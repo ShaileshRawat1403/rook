@@ -7,9 +7,20 @@ use services::personas::PersonaStore;
 use tauri::{
     menu::{Menu, MenuItem},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-    Manager,
+    Manager, Emitter,
 };
+#[allow(unused_imports)]
+use tauri_plugin_global_shortcut::{Code, Modifiers, Shortcut, ShortcutState};
 use tauri_plugin_window_state::StateFlags;
+
+fn toggle_window(window: &tauri::WebviewWindow) {
+    if window.is_visible().unwrap_or(false) {
+        let _ = window.hide();
+    } else {
+        let _ = window.show();
+        let _ = window.set_focus();
+    }
+}
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -31,6 +42,75 @@ pub fn run() {
                 .build(),
         )
         .plugin(tauri_plugin_notification::init())
+        .plugin(tauri_plugin_global_shortcut::Builder::new().build())
+        .plugin(
+            tauri_plugin_single_instance::init(|app, argv, _cwd| {
+                if let Some(window) = app.get_webview_window("main") {
+                    let _ = window.show();
+                    let _ = window.set_focus();
+                }
+                if argv.len() > 1 {
+                    let url = &argv[1];
+                    if url.starts_with("rook://") {
+                        let _ = app.emit("deep-link", url);
+                    }
+                }
+            }),
+        )
+        .setup(|app| {
+            let show_hide = MenuItem::with_id(app, "show_hide", "Show/Hide Rook", true, None::<&str>)?;
+            let quit = MenuItem::with_id(app, "quit", "Quit Rook", true, None::<&str>)?;
+            let menu = Menu::with_items(app, &[&show_hide, &quit])?;
+
+            let _tray = TrayIconBuilder::new()
+                .icon(app.default_window_icon().unwrap().clone())
+                .menu(&menu)
+                .tooltip("Rook")
+                .on_menu_event(|app, event| {
+                    match event.id.as_ref() {
+                        "show_hide" => {
+                            if let Some(window) = app.get_webview_window("main") {
+                                toggle_window(&window);
+                            }
+                        }
+                        "quit" => {
+                            app.exit(0);
+                        }
+                        _ => {}
+                    }
+                })
+                .on_tray_icon_event(|tray, event| {
+                    if let TrayIconEvent::Click { button: MouseButton::Left, button_state: MouseButtonState::Up, .. } = event {
+                        let app = tray.app_handle();
+                        if let Some(window) = app.get_webview_window("main") {
+                            toggle_window(&window);
+                        }
+                    }
+                })
+                .build(app)?;
+
+            #[cfg(desktop)]
+            {
+                use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut, ShortcutState};
+
+                let cmd_comma = Shortcut::new(Some(Modifiers::META), Code::Comma);
+                let cmd_b = Shortcut::new(Some(Modifiers::META), Code::KeyB);
+                let cmd_n = Shortcut::new(Some(Modifiers::META), Code::KeyN);
+                let cmd_k = Shortcut::new(Some(Modifiers::META), Code::KeyK);
+
+                let _ = app.global_shortcut().on_shortcuts([cmd_comma, cmd_b, cmd_n, cmd_k], |app, shortcut, event| {
+                    if event.state == ShortcutState::Pressed {
+                        if let Some(window) = app.get_webview_window("main") {
+                            let _ = window.show();
+                            let _ = window.set_focus();
+                            let _ = app.emit("shortcut", shortcut.to_string());
+                        }
+                    }
+                });
+            }
+
+            Ok(())
+        })
         .manage(PersonaStore::new())
         .manage(RookConfig::new());
 
@@ -104,45 +184,7 @@ pub fn run() {
             commands::notifications::send_task_completed_notification,
             commands::notifications::send_task_failed_notification,
         ])
-        .setup(|app| {
-            let show_item = MenuItem::with_id(app, "show", "Show Rook", true, None::<&str>)?;
-            let quit_item = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
-            let menu = Menu::with_items(app, &[&show_item, &quit_item])?;
-
-            let _tray = TrayIconBuilder::with_id("main-tray")
-                .icon(app.default_window_icon().unwrap().clone())
-                .menu(&menu)
-                .tooltip("Rook")
-                .on_menu_event(|app, event| match event.id.as_ref() {
-                    "show" => {
-                        if let Some(window) = app.get_webview_window("main") {
-                            let _ = window.show();
-                            let _ = window.set_focus();
-                        }
-                    }
-                    "quit" => {
-                        app.exit(0);
-                    }
-                    _ => {}
-                })
-                .on_tray_icon_event(|tray, event| {
-                    if let TrayIconEvent::Click {
-                        button: MouseButton::Left,
-                        button_state: MouseButtonState::Up,
-                        ..
-                    } = event
-                    {
-                        let app = tray.app_handle();
-                        if let Some(window) = app.get_webview_window("main") {
-                            let _ = window.show();
-                            let _ = window.set_focus();
-                        }
-                    }
-                })
-                .build(app)?;
-
-            Ok(())
-        })
+        .setup(|_app| Ok(()))
         .build(tauri::generate_context!())
         .expect("error while building tauri application")
         .run(|_app, _event| {});

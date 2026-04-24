@@ -1,4 +1,13 @@
 {
+  "loadingRook": {
+    "loadingConversation": "loading conversation…",
+    "thinking": "rook is thinking…",
+    "streaming": "rook is working on it…",
+    "waiting": "rook is waiting…",
+    "compacting": "rook is compacting the conversation…",
+    "idle": "rook is ready",
+    "restartingAgent": "restarting session…"
+  },
   "noModel": "No model",
   "sessionTitle": "Session: {{id}}",
   "tokens_one": "{{displayCount}} token",

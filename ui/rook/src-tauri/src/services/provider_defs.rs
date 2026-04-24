@@ -35,6 +35,16 @@ pub(crate) static PROVIDER_CONFIG_DEFS: &[ProviderConfigDef] = &[
         oauth_cache_path: None,
     },
     ProviderConfigDef {
+        id: "gemini_oauth",
+        keys: &[],
+        oauth_cache_path: Some("gemini_oauth/info.json"),
+    },
+    ProviderConfigDef {
+        id: "gemini_cli",
+        keys: &[],
+        oauth_cache_path: Some("gemini_cli/info.json"),
+    },
+    ProviderConfigDef {
         id: "openrouter",
         keys: &[key("OPENROUTER_API_KEY", true, true)],
         oauth_cache_path: None,
