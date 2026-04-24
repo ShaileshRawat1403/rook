@@ -3,6 +3,7 @@ use tauri_plugin_shell::ShellExt;
 use std::path::PathBuf;
 use std::time::{Duration, Instant};
 
+use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::process::{Child, Command};
 use tokio::sync::OnceCell;
 
@@ -64,8 +65,8 @@ impl RookServeProcess {
             .arg(port.to_string())
             .current_dir(&working_dir)
             .stdin(std::process::Stdio::null())
-            .stdout(std::process::Stdio::null())
-            .stderr(std::process::Stdio::null())
+            .stdout(std::process::Stdio::piped())
+            .stderr(std::process::Stdio::piped())
             .kill_on_drop(true);
 
         log::info!(
@@ -80,6 +81,7 @@ impl RookServeProcess {
             )
         })?;
 
+        forward_child_output(&mut child);
         wait_for_server_ready(port, &mut child).await?;
 
         log::info!("Rook serve is ready on port {port}");
@@ -93,15 +95,41 @@ impl RookServeProcess {
 
 pub fn get_rook_command(app_handle: &tauri::AppHandle) -> Result<Command, String> {
     if let Ok(override_path) = std::env::var("ROOK_BIN") {
-        Ok(Command::new(override_path))
-    } else {
-        let tauri_command = app_handle
-            .shell()
-            .sidecar("rook")
-            .map_err(|e| format!("could not resolve rook binary: {e}"))?;
-        let std_command: std::process::Command = tauri_command.into();
-        Ok(std_command.into())
+        return Ok(Command::new(override_path));
     }
+
+    if let Some(cli_path) = resolve_workspace_cli() {
+        log::info!("Using workspace rook CLI at {}", cli_path.display());
+        return Ok(Command::new(cli_path));
+    }
+
+    let tauri_command = app_handle
+        .shell()
+        .sidecar("rook")
+        .map_err(|e| format!("could not resolve rook binary: {e}"))?;
+    let std_command: std::process::Command = tauri_command.into();
+    Ok(std_command.into())
+}
+
+/// In dev builds the Tauri app binary is also named `rook`, so resolving
+/// `sidecar("rook")` silently returns the Tauri app itself. Walk up past the
+/// Tauri crate to the outer workspace root and use its rook CLI binary.
+fn resolve_workspace_cli() -> Option<PathBuf> {
+    let current_exe = std::env::current_exe().ok()?;
+    let mut dir = current_exe.parent()?.to_path_buf();
+    let mut best: Option<PathBuf> = None;
+
+    while dir.pop() {
+        if dir.join("Cargo.lock").is_file() {
+            for profile in ["debug", "release"] {
+                let candidate = dir.join("target").join(profile).join("rook");
+                if candidate.is_file() && candidate != current_exe {
+                    best = Some(candidate);
+                }
+            }
+        }
+    }
+    best
 }
 
 async fn wait_for_server_ready(port: u16, child: &mut Child) -> Result<(), String> {
@@ -145,4 +173,23 @@ fn reserve_free_port() -> Result<u16, String> {
         .local_addr()
         .map(|address| address.port())
         .map_err(|error| format!("Failed to resolve reserved Rook serve port: {error}"))
+}
+
+fn forward_child_output(child: &mut Child) {
+    if let Some(stdout) = child.stdout.take() {
+        tokio::spawn(async move {
+            let mut lines = BufReader::new(stdout).lines();
+            while let Ok(Some(line)) = lines.next_line().await {
+                log::info!("[rook serve stdout] {line}");
+            }
+        });
+    }
+    if let Some(stderr) = child.stderr.take() {
+        tokio::spawn(async move {
+            let mut lines = BufReader::new(stderr).lines();
+            while let Ok(Some(line)) = lines.next_line().await {
+                log::warn!("[rook serve stderr] {line}");
+            }
+        });
+    }
 }
