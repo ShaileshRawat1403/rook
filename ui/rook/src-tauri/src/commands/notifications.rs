@@ -1,5 +1,5 @@
-use tauri::{AppHandle, Manager};
-use tauri_plugin_notification::{NotificationExt, PermissionState};
+use tauri::AppHandle;
+use tauri_plugin_notification::NotificationExt;
 
 #[tauri::command]
 pub async fn request_notification_permission(app: AppHandle) -> Result<String, String> {
