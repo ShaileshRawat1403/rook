@@ -149,7 +149,11 @@ export function ContextPanel({
     (filePath: string) => {
       if (!gitTargetPath) return;
       const fullPath = `${gitTargetPath}/${filePath}`;
-      void openPath(fullPath);
+      if (window.__TAURI_INTERNALS__) {
+        void openPath(fullPath);
+        return;
+      }
+      window.open(`file://${fullPath}`, "_blank", "noopener,noreferrer");
     },
     [gitTargetPath],
   );

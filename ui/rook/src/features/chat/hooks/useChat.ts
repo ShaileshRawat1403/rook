@@ -252,7 +252,13 @@ export function useChat(
       streamingPersonaIdRef.current = effectivePersonaInfo?.id ?? null;
 
       try {
-        if (wasDraft || selectedModelId) {
+        const needsSessionPreparation =
+          wasDraft ||
+          selectedModelId !== undefined ||
+          (typeof getWorkingDir === "function" &&
+            getRookSessionId(sessionId, effectivePersonaInfo?.id) === null);
+
+        if (needsSessionPreparation) {
           const workingDir = await getWorkingDir?.();
           if (!workingDir) {
             throw new Error("Missing session working directory");
@@ -262,15 +268,16 @@ export function useChat(
             personaId: effectivePersonaInfo?.id,
           });
           perfLog(
-            `[perf:send] ${sid} acpPrepareSession in ${(performance.now() - tPrep).toFixed(1)}ms (wasDraft=${wasDraft})`,
+            `[perf:send] ${sid} acpPrepareSession in ${(performance.now() - tPrep).toFixed(1)}ms (draft=${wasDraft} model=${selectedModelId ?? "none"})`,
           );
-          if (selectedModelId) {
-            const tModel = performance.now();
-            await acpSetModel(sessionId, selectedModelId);
-            perfLog(
-              `[perf:send] ${sid} acpSetModel(${selectedModelId}) in ${(performance.now() - tModel).toFixed(1)}ms`,
-            );
-          }
+        }
+
+        if (selectedModelId) {
+          const tModel = performance.now();
+          await acpSetModel(sessionId, selectedModelId);
+          perfLog(
+            `[perf:send] ${sid} acpSetModel(${selectedModelId}) in ${(performance.now() - tModel).toFixed(1)}ms`,
+          );
         }
 
         store.setChatState(sessionId, "streaming");

@@ -5,9 +5,128 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Rook</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        background: #ffffff;
+        color: #171717;
+      }
+
+      html,
+      body,
+      #root {
+        margin: 0;
+        min-height: 100%;
+        width: 100%;
+      }
+
+      body {
+        background: #ffffff;
+      }
+
+      #boot-fallback {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: #ffffff;
+        color: #171717;
+      }
+
+      #boot-panel {
+        width: min(720px, 100%);
+        border: 1px solid #e5e5e5;
+        border-radius: 24px;
+        padding: 24px;
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.08);
+      }
+
+      #boot-kicker {
+        margin-bottom: 12px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #737373;
+      }
+
+      #boot-title {
+        margin: 0 0 10px;
+        font-size: 28px;
+        line-height: 1.1;
+      }
+
+      #boot-copy {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.6;
+        color: #525252;
+      }
+
+      #boot-error {
+        display: none;
+        margin-top: 18px;
+        padding: 16px;
+        border-radius: 18px;
+        background: #f5f5f5;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-size: 12px;
+        line-height: 1.55;
+        color: #171717;
+      }
+    </style>
   </head>
   <body>
+    <div id="boot-fallback">
+      <div id="boot-panel">
+        <div id="boot-kicker">Rook Startup</div>
+        <h1 id="boot-title">Loading the app…</h1>
+        <p id="boot-copy">
+          If the renderer fails before React mounts, the exact startup error
+          will appear here instead of a blank window.
+        </p>
+        <pre id="boot-error"></pre>
+      </div>
+    </div>
     <div id="root"></div>
+    <script>
+      window.addEventListener("error", function (event) {
+        var fallback = document.getElementById("boot-fallback");
+        var errorBlock = document.getElementById("boot-error");
+        var title = document.getElementById("boot-title");
+        if (!fallback || !errorBlock || !title) return;
+        title.textContent = "The app failed before the UI mounted.";
+        errorBlock.style.display = "block";
+        errorBlock.textContent =
+          (event.error && (event.error.stack || event.error.message)) ||
+          event.message ||
+          "Unknown startup error";
+      });
+      window.addEventListener("unhandledrejection", function (event) {
+        var fallback = document.getElementById("boot-fallback");
+        var errorBlock = document.getElementById("boot-error");
+        var title = document.getElementById("boot-title");
+        if (!fallback || !errorBlock || !title) return;
+        title.textContent = "The app hit an unhandled startup rejection.";
+        errorBlock.style.display = "block";
+        errorBlock.textContent =
+          (event.reason &&
+            (event.reason.stack || event.reason.message || String(event.reason))) ||
+          "Unknown startup rejection";
+      });
+      window.__ROOK_HIDE_BOOT__ = function () {
+        var fallback = document.getElementById("boot-fallback");
+        if (fallback) {
+          fallback.remove();
+        }
+      };
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

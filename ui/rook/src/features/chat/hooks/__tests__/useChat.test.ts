@@ -396,6 +396,48 @@ describe("useChat", () => {
     });
   });
 
+  it("prepares an existing session when the ACP session is not registered yet", async () => {
+    useChatSessionStore.setState({
+      sessions: [
+        {
+          id: "session-1",
+          title: "Existing Chat",
+          providerId: "rook",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          messageCount: 1,
+        },
+      ],
+    });
+
+    const { result } = renderHook(() =>
+      useChat("session-1", "rook", undefined, undefined, async () => "/tmp"),
+    );
+
+    await act(async () => {
+      await result.current.sendMessage("Hello again");
+    });
+
+    expect(mockAcpPrepareSession).toHaveBeenCalledWith(
+      "session-1",
+      "rook",
+      "/tmp",
+      {
+        personaId: undefined,
+      },
+    );
+    expect(mockAcpSendMessage).toHaveBeenCalledWith(
+      "session-1",
+      "Hello again",
+      {
+        systemPrompt: undefined,
+        personaId: undefined,
+        personaName: undefined,
+        images: undefined,
+      },
+    );
+  });
+
   it("appends an error message and removes the empty assistant placeholder when send fails", async () => {
     mockAcpSendMessage.mockRejectedValue(
       new Error("Working directory missing"),

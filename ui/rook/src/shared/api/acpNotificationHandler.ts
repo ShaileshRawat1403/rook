@@ -14,6 +14,7 @@ import type {
   ToolResponseContent,
 } from "@/shared/types/messages";
 import type { AcpNotificationHandler } from "./acpConnection";
+import { applyConfigOptions } from "./acpConfigOptions";
 import {
   getLocalSessionId,
   subscribeToSessionRegistration,
@@ -429,39 +430,7 @@ function handleShared(sessionId: string, update: SessionUpdate): void {
         sessionUpdate: "config_option_update";
       };
       if ("options" in configUpdate && Array.isArray(configUpdate.options)) {
-        const modelOption = configUpdate.options.find(
-          (opt: { category?: string; kind?: Record<string, unknown> }) =>
-            opt.category === "model",
-        );
-        if (modelOption?.kind?.type === "select") {
-          const select = modelOption.kind;
-          const currentModelId = select.currentValue;
-          const availableModels: Array<{ id: string; name: string }> = [];
-
-          if (select.options?.type === "ungrouped") {
-            for (const v of select.options.values) {
-              availableModels.push({ id: v.value, name: v.name });
-            }
-          } else if (select.options?.type === "grouped") {
-            for (const group of select.options.groups) {
-              for (const v of group.options) {
-                availableModels.push({ id: v.value, name: v.name });
-              }
-            }
-          }
-
-          const currentModelName =
-            availableModels.find((m) => m.id === currentModelId)?.name ??
-            currentModelId;
-
-          const sessionStore = useChatSessionStore.getState();
-          sessionStore.setSessionModels(sessionId, availableModels);
-          sessionStore.updateSession(
-            sessionId,
-            { modelId: currentModelId, modelName: currentModelName },
-            { persistOverlay: false },
-          );
-        }
+        applyConfigOptions(sessionId, configUpdate.options);
       }
       break;
     }

@@ -1,5 +1,7 @@
 import * as acpApi from "./acpApi";
+import { applyConfigOptions } from "./acpConfigOptions";
 import { perfLog } from "@/shared/lib/perfLog";
+import { useChatSessionStore } from "@/features/chat/stores/chatSessionStore";
 
 interface PreparedSession {
   rookSessionId: string;
@@ -88,8 +90,15 @@ export async function prepareSession(
 
   const tLoad = performance.now();
   try {
-    await acpApi.loadSession(sessionId, workingDir);
+    const loadResponse = await acpApi.loadSession(sessionId, workingDir);
     rookSessionId = sessionId;
+    if (
+      loadResponse &&
+      "configOptions" in loadResponse &&
+      Array.isArray(loadResponse.configOptions)
+    ) {
+      applyConfigOptions(sessionId, loadResponse.configOptions);
+    }
     perfLog(
       `[perf:prepare] ${sid} tracker loadSession ok in ${(performance.now() - tLoad).toFixed(1)}ms`,
     );
@@ -103,6 +112,12 @@ export async function prepareSession(
     const tNew = performance.now();
     const response = await acpApi.newSession(workingDir, providerId);
     rookSessionId = response.sessionId;
+    if (
+      "configOptions" in response &&
+      Array.isArray(response.configOptions)
+    ) {
+      applyConfigOptions(sessionId, response.configOptions);
+    }
     perfLog(
       `[perf:prepare] ${sid} tracker newSession done in ${(performance.now() - tNew).toFixed(1)}ms (rook_sid=${rookSessionId.slice(0, 8)})`,
     );
@@ -118,6 +133,7 @@ export async function prepareSession(
   prepared.set(key, { rookSessionId, providerId, workingDir });
   prepared.set(sessionId, { rookSessionId, providerId, workingDir });
   rookToLocal.set(rookSessionId, sessionId);
+  useChatSessionStore.getState().setSessionAcpId(sessionId, rookSessionId);
   notifySessionRegistered(sessionId, rookSessionId);
 
   return rookSessionId;
@@ -162,6 +178,7 @@ export function registerSession(
 
   prepared.set(sessionId, entry);
   rookToLocal.set(rookSessionId, sessionId);
+  useChatSessionStore.getState().setSessionAcpId(sessionId, rookSessionId);
   notifySessionRegistered(sessionId, rookSessionId);
 
   return () => {

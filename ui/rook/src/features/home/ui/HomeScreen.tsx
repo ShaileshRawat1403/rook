@@ -6,6 +6,7 @@ import {
 import { useProviderSelection } from "@/features/agents/hooks/useProviderSelection";
 import { ChatInput } from "@/features/chat/ui/ChatInput";
 import { useChatStore } from "@/features/chat/stores/chatStore";
+import { useChatSessionStore } from "@/features/chat/stores/chatSessionStore";
 import type { ChatAttachmentDraft } from "@/shared/types/messages";
 import { useProjectStore } from "@/features/projects/stores/projectStore";
 import { useLocaleFormatting } from "@/shared/i18n";
@@ -68,6 +69,9 @@ export function HomeScreen({
     setSelectedProviderWithoutPersist,
   } = useProviderSelection();
   const projects = useProjectStore((s) => s.projects);
+  const cachedModels = useChatSessionStore((s) =>
+    s.getCachedModels(selectedProvider),
+  );
   const [selectedPersonaId, setSelectedPersonaId] = useState<string | null>(
     null,
   );
@@ -143,6 +147,9 @@ export function HomeScreen({
             providersLoading={providersLoading}
             selectedProvider={selectedProvider}
             onProviderChange={setSelectedProvider}
+            currentModelId={cachedModels[0]?.id ?? null}
+            currentModel={cachedModels[0]?.displayName ?? cachedModels[0]?.name}
+            availableModels={cachedModels}
             selectedProjectId={selectedProjectId}
             availableProjects={projects.map((project) => ({
               id: project.id,

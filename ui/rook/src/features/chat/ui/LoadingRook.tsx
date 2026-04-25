@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "motion/react";
 import { Shimmer } from "@/shared/ui/ai-elements/shimmer";
-import { CrowFlap } from "@/shared/ui/animations/CrowFlap";
+import { RookBirdSpinner } from "@/shared/ui/animations/RookBirdSpinner";
 import { StatusGlyphSpinner } from "@/shared/ui/animations/StatusGlyphSpinner";
 
 export type LoadingChatState =
@@ -42,13 +42,14 @@ export function LoadingRook({ chatState = "idle" }: LoadingRookProps) {
 
   const LoadingIcon =
     chatState === "streaming" ? (
-      <CrowFlap
-        className="inline-block size-6 text-foreground/85"
-        autoplay={false}
+      <RookBirdSpinner
+        className="inline-block flex-shrink-0 -ml-0.5"
+        cycleInterval={150}
+        frameSizeClass="w-8 h-8"
       />
     ) : (
       <StatusGlyphSpinner
-        className="inline-block"
+        className="inline-block flex-shrink-0"
         cycleInterval={600}
         variant={chatState === "waiting" ? "waiting" : "thinking"}
       />
