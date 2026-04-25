@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { convertFileSrc } from "@tauri-apps/api/core";
 import {
   inspectAttachmentPaths,
   readImageAttachment,
 } from "@/shared/api/system";
+import { isTauriRuntimeAvailable, toFileSrc } from "@/shared/api/tauri";
 import type {
   ChatAttachmentDraft,
   ChatDirectoryAttachmentDraft,
@@ -24,9 +24,7 @@ function revokeAttachmentPreview(attachment: ChatAttachmentDraft) {
 }
 
 function pathToPreviewUrl(path: string) {
-  return typeof window !== "undefined" && window.__TAURI_INTERNALS__
-    ? convertFileSrc(path)
-    : path;
+  return isTauriRuntimeAvailable() ? toFileSrc(path) : path;
 }
 
 function attachmentPathKey(path?: string) {

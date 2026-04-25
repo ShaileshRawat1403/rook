@@ -1,4 +1,3 @@
-import { invoke } from "@tauri-apps/api/core";
 import { RookClient } from "@aaif/rook-sdk";
 import {
   PROTOCOL_VERSION,
@@ -8,6 +7,7 @@ import {
   type RequestPermissionResponse,
 } from "@agentclientprotocol/sdk";
 import { createWebSocketStream } from "./createWebSocketStream";
+import { invokeTauri, isTauriRuntimeAvailable } from "./tauri";
 import { perfLog } from "@/shared/lib/perfLog";
 
 let notificationHandler: AcpNotificationHandler | null = null;
@@ -23,10 +23,6 @@ export function setNotificationHandler(handler: AcpNotificationHandler): void {
 let clientPromise: Promise<RookClient> | null = null;
 let resolvedClient: RookClient | null = null;
 const DEFAULT_DEV_ACP_URL = "ws://127.0.0.1:52551/acp";
-
-function isTauriRuntimeAvailable(): boolean {
-  return typeof window !== "undefined" && Boolean(window.__TAURI_INTERNALS__);
-}
 
 function getBrowserAcpUrl(): string {
   const envUrl = import.meta.env.VITE_ROOK_SERVE_URL;
@@ -80,7 +76,7 @@ function monitorConnection(client: RookClient): void {
 async function initializeConnection(): Promise<RookClient> {
   const tStart = performance.now();
   const wsUrl: string = isTauriRuntimeAvailable()
-    ? await invoke("get_rook_serve_url")
+    ? await invokeTauri("get_rook_serve_url")
     : getBrowserAcpUrl();
   perfLog(
     `[perf:conn] acp url resolved in ${(performance.now() - tStart).toFixed(1)}ms (${wsUrl})`,

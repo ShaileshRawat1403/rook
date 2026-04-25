@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api/core";
+import { invokeTauri, isTauriRuntimeAvailable } from "@/shared/api/tauri";
 import type { ExtensionConfig, ExtensionEntry } from "../types";
 
 export function nameToKey(name: string): string {
@@ -9,7 +9,10 @@ export function nameToKey(name: string): string {
 }
 
 export async function listExtensions(): Promise<ExtensionEntry[]> {
-  return invoke("list_extensions");
+  if (!isTauriRuntimeAvailable()) {
+    return [];
+  }
+  return invokeTauri("list_extensions");
 }
 
 export async function addExtension(
@@ -17,7 +20,7 @@ export async function addExtension(
   extensionConfig: ExtensionConfig,
   enabled: boolean,
 ): Promise<void> {
-  return invoke("add_extension", {
+  return invokeTauri("add_extension", {
     name,
     extensionConfig,
     enabled,
@@ -25,12 +28,12 @@ export async function addExtension(
 }
 
 export async function removeExtension(configKey: string): Promise<void> {
-  return invoke("remove_extension", { configKey });
+  return invokeTauri("remove_extension", { configKey });
 }
 
 export async function toggleExtension(
   configKey: string,
   enabled: boolean,
 ): Promise<void> {
-  return invoke("toggle_extension", { configKey, enabled });
+  return invokeTauri("toggle_extension", { configKey, enabled });
 }

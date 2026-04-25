@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api/core";
+import { invokeTauri, isTauriRuntimeAvailable } from "./tauri";
 
 export interface ResolvePathParams {
   parts: string[];
@@ -6,10 +6,6 @@ export interface ResolvePathParams {
 
 export interface ResolvedPath {
   path: string;
-}
-
-function isTauriRuntimeAvailable(): boolean {
-  return typeof window !== "undefined" && Boolean(window.__TAURI_INTERNALS__);
 }
 
 export async function resolvePath({
@@ -21,7 +17,7 @@ export async function resolvePath({
     };
   }
 
-  return invoke("resolve_path", {
+  return invokeTauri("resolve_path", {
     request: { parts },
   });
 }

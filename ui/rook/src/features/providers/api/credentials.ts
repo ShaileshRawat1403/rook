@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api/core";
+import { invokeTauri, isTauriRuntimeAvailable } from "@/shared/api/tauri";
 import type { ProviderFieldValue } from "@/shared/types/providers";
 
 export interface ProviderStatus {
@@ -9,24 +9,30 @@ export interface ProviderStatus {
 export async function getProviderConfig(
   providerId: string,
 ): Promise<ProviderFieldValue[]> {
-  return invoke("get_provider_config", { providerId });
+  if (!isTauriRuntimeAvailable()) {
+    return [];
+  }
+  return invokeTauri("get_provider_config", { providerId });
 }
 
 export async function saveProviderField(
   key: string,
   value: string,
 ): Promise<void> {
-  return invoke("save_provider_field", { key, value });
+  return invokeTauri("save_provider_field", { key, value });
 }
 
 export async function deleteProviderConfig(providerId: string): Promise<void> {
-  return invoke("delete_provider_config", { providerId });
+  return invokeTauri("delete_provider_config", { providerId });
 }
 
 export async function checkAllProviderStatus(): Promise<ProviderStatus[]> {
-  return invoke("check_all_provider_status");
+  if (!isTauriRuntimeAvailable()) {
+    return [];
+  }
+  return invokeTauri("check_all_provider_status");
 }
 
 export async function restartApp(): Promise<void> {
-  return invoke("restart_app");
+  return invokeTauri("restart_app");
 }

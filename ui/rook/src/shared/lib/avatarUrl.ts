@@ -1,5 +1,5 @@
-import { convertFileSrc } from "@tauri-apps/api/core";
 import { getAvatarsDir } from "@/shared/api/agents";
+import { toFileSrc } from "@/shared/api/tauri";
 import type { Avatar } from "@/shared/types/agents";
 
 let cachedAvatarsDir: string | null = null;
@@ -22,7 +22,7 @@ export async function resolveAvatarSrc(
   if (avatar.type === "url") return avatar.value;
   if (avatar.type === "local") {
     const dir = await ensureAvatarsDir();
-    return convertFileSrc(`${dir}/${avatar.value}`);
+    return toFileSrc(`${dir}/${avatar.value}`);
   }
   return undefined;
 }

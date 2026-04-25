@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api/core";
+import { invokeTauri, isTauriRuntimeAvailable } from "@/shared/api/tauri";
 
 export interface ProjectInfo {
   id: string;
@@ -19,7 +19,10 @@ export interface ProjectInfo {
 }
 
 export async function listProjects(): Promise<ProjectInfo[]> {
-  return invoke("list_projects");
+  if (!isTauriRuntimeAvailable()) {
+    return [];
+  }
+  return invokeTauri("list_projects");
 }
 
 export async function createProject(
@@ -33,7 +36,7 @@ export async function createProject(
   workingDirs: string[],
   useWorktrees: boolean,
 ): Promise<ProjectInfo> {
-  return invoke("create_project", {
+  return invokeTauri("create_project", {
     name,
     description,
     prompt,
@@ -58,7 +61,7 @@ export async function updateProject(
   workingDirs: string[],
   useWorktrees: boolean,
 ): Promise<ProjectInfo> {
-  return invoke("update_project", {
+  return invokeTauri("update_project", {
     id,
     name,
     description,
@@ -73,27 +76,30 @@ export async function updateProject(
 }
 
 export async function deleteProject(id: string): Promise<void> {
-  return invoke("delete_project", { id });
+  return invokeTauri("delete_project", { id });
 }
 
 export async function getProject(id: string): Promise<ProjectInfo> {
-  return invoke("get_project", { id });
+  return invokeTauri("get_project", { id });
 }
 
 export async function listArchivedProjects(): Promise<ProjectInfo[]> {
-  return invoke("list_archived_projects");
+  if (!isTauriRuntimeAvailable()) {
+    return [];
+  }
+  return invokeTauri("list_archived_projects");
 }
 
 export async function archiveProject(id: string): Promise<void> {
-  return invoke("archive_project", { id });
+  return invokeTauri("archive_project", { id });
 }
 
 export async function reorderProjects(
   order: [string, number][],
 ): Promise<void> {
-  return invoke("reorder_projects", { order });
+  return invokeTauri("reorder_projects", { order });
 }
 
 export async function restoreProject(id: string): Promise<void> {
-  return invoke("restore_project", { id });
+  return invokeTauri("restore_project", { id });
 }

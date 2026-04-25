@@ -1,5 +1,5 @@
-import { invoke } from "@tauri-apps/api/core";
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
+import { invokeTauri, isTauriRuntimeAvailable } from "@/shared/api/tauri";
 
 interface AgentSetupOutput {
   providerId: string;
@@ -9,25 +9,34 @@ interface AgentSetupOutput {
 export async function checkAgentInstalled(
   providerId: string,
 ): Promise<boolean> {
-  return invoke("check_agent_installed", { providerId });
+  if (!isTauriRuntimeAvailable()) {
+    return false;
+  }
+  return invokeTauri("check_agent_installed", { providerId });
 }
 
 export async function checkAgentAuth(providerId: string): Promise<boolean> {
-  return invoke("check_agent_auth", { providerId });
+  if (!isTauriRuntimeAvailable()) {
+    return false;
+  }
+  return invokeTauri("check_agent_auth", { providerId });
 }
 
 export async function installAgent(providerId: string): Promise<void> {
-  return invoke("install_agent", { providerId });
+  return invokeTauri("install_agent", { providerId });
 }
 
 export async function authenticateAgent(providerId: string): Promise<void> {
-  return invoke("authenticate_agent", { providerId });
+  return invokeTauri("authenticate_agent", { providerId });
 }
 
 export function onAgentSetupOutput(
   providerId: string,
   callback: (line: string) => void,
 ): Promise<UnlistenFn> {
+  if (!isTauriRuntimeAvailable()) {
+    return Promise.resolve(async () => {});
+  }
   return listen<AgentSetupOutput>("agent-setup:output", (event) => {
     if (event.payload.providerId === providerId) {
       callback(event.payload.line);

@@ -1,13 +1,9 @@
-import { invoke } from "@tauri-apps/api/core";
+import { invokeTauri, isTauriRuntimeAvailable } from "./tauri";
 import type {
   ChangedFile,
   CreatedWorktree,
   GitState,
 } from "@/shared/types/git";
-
-function isTauriRuntimeAvailable(): boolean {
-  return typeof window !== "undefined" && Boolean(window.__TAURI_INTERNALS__);
-}
 
 function requireTauri(command: string): void {
   if (isTauriRuntimeAvailable()) {
@@ -30,7 +26,7 @@ export async function getGitState(path: string): Promise<GitState> {
       localBranches: [],
     };
   }
-  return invoke("get_git_state", { path });
+  return invokeTauri("get_git_state", { path });
 }
 
 export async function switchBranch(
@@ -38,27 +34,27 @@ export async function switchBranch(
   branch: string,
 ): Promise<void> {
   requireTauri("git_switch_branch");
-  return invoke("git_switch_branch", { path, branch });
+  return invokeTauri("git_switch_branch", { path, branch });
 }
 
 export async function stashChanges(path: string): Promise<void> {
   requireTauri("git_stash");
-  return invoke("git_stash", { path });
+  return invokeTauri("git_stash", { path });
 }
 
 export async function initRepo(path: string): Promise<void> {
   requireTauri("git_init");
-  return invoke("git_init", { path });
+  return invokeTauri("git_init", { path });
 }
 
 export async function fetchRepo(path: string): Promise<void> {
   requireTauri("git_fetch");
-  return invoke("git_fetch", { path });
+  return invokeTauri("git_fetch", { path });
 }
 
 export async function pullRepo(path: string): Promise<void> {
   requireTauri("git_pull");
-  return invoke("git_pull", { path });
+  return invokeTauri("git_pull", { path });
 }
 
 export async function createBranch(
@@ -67,14 +63,14 @@ export async function createBranch(
   baseBranch: string,
 ): Promise<void> {
   requireTauri("git_create_branch");
-  return invoke("git_create_branch", { path, name, baseBranch });
+  return invokeTauri("git_create_branch", { path, name, baseBranch });
 }
 
 export async function getChangedFiles(path: string): Promise<ChangedFile[]> {
   if (!isTauriRuntimeAvailable()) {
     return [];
   }
-  return invoke("get_changed_files", { path });
+  return invokeTauri("get_changed_files", { path });
 }
 
 export async function createWorktree(
@@ -85,7 +81,7 @@ export async function createWorktree(
   baseBranch?: string,
 ): Promise<CreatedWorktree> {
   requireTauri("git_create_worktree");
-  return invoke("git_create_worktree", {
+  return invokeTauri("git_create_worktree", {
     path,
     name,
     branch,
