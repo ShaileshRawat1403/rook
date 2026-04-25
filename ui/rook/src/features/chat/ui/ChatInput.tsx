@@ -22,6 +22,7 @@ import {
 } from "../hooks/useChatInputAttachments";
 import type { ModelOption } from "../types";
 import { ChatInputAttachments } from "./ChatInputAttachments";
+import { ChatInputCommands, type SlashCommandId } from "./ChatInputCommands";
 
 export interface ProjectOption {
   id: string;
@@ -67,6 +68,10 @@ interface ChatInputProps {
   onCompactContext?: () => void | Promise<void>;
   canCompactContext?: boolean;
   isCompactingContext?: boolean;
+  onRequestNewChat?: () => void;
+  onRequestOpenSettings?: (section?: "appearance" | "providers") => void;
+  onRequestClearChat?: () => void;
+  onRequestHelp?: () => void;
 }
 
 export function ChatInput({
@@ -100,6 +105,10 @@ export function ChatInput({
   onCompactContext,
   canCompactContext = false,
   isCompactingContext = false,
+  onRequestNewChat,
+  onRequestOpenSettings,
+  onRequestClearChat,
+  onRequestHelp,
 }: ChatInputProps) {
   const { t } = useTranslation("chat");
   const [text, setTextRaw] = useState(initialValue);
@@ -132,6 +141,7 @@ export function ChatInput({
     [availableProjects, selectedProjectId],
   );
   const stickyPersona = activePersona;
+  const [selectedSlashIndex, setSelectedSlashIndex] = useState(0);
 
   const hasQueuedMessage = queuedMessage !== null;
   const canSend =
@@ -177,6 +187,162 @@ export function ChatInput({
 
   useEffect(() => textareaRef.current?.focus(), []);
 
+  const slashQuery = useMemo(() => {
+    const trimmed = text.trimStart();
+    if (!trimmed.startsWith("/")) {
+      return null;
+    }
+
+    const line = trimmed.split("\n")[0];
+    if (line.includes(" ")) {
+      return null;
+    }
+
+    return line.slice(1).toLowerCase();
+  }, [text]);
+
+  const slashCommands = useMemo(() => {
+    const all = [
+      {
+        id: "help",
+        label: t("commands.items.help.label"),
+        description: t("commands.items.help.description"),
+        disabled: !onRequestHelp,
+      },
+      {
+        id: "new",
+        label: t("commands.items.new.label"),
+        description: t("commands.items.new.description"),
+        disabled: !onRequestNewChat,
+      },
+      {
+        id: "settings",
+        label: t("commands.items.settings.label"),
+        description: t("commands.items.settings.description"),
+        disabled: !onRequestOpenSettings,
+      },
+      {
+        id: "providers",
+        label: t("commands.items.providers.label"),
+        description: t("commands.items.providers.description"),
+        disabled: !onRequestOpenSettings,
+      },
+      {
+        id: "project",
+        label: t("commands.items.project.label"),
+        description: t("commands.items.project.description"),
+        disabled: !onCreateProject,
+      },
+      {
+        id: "compact",
+        label: t("commands.items.compact.label"),
+        description: t("commands.items.compact.description"),
+        disabled:
+          !onCompactContext || !canCompactContext || isCompactingContext,
+      },
+      {
+        id: "stop",
+        label: t("commands.items.stop.label"),
+        description: t("commands.items.stop.description"),
+        disabled: !onStop || !isStreaming,
+      },
+      {
+        id: "clear",
+        label: t("commands.items.clear.label"),
+        description: t("commands.items.clear.description"),
+        disabled: !onRequestClearChat,
+      },
+    ] satisfies Array<{
+      id: SlashCommandId;
+      label: string;
+      description: string;
+      disabled: boolean;
+    }>;
+
+    if (slashQuery === null) {
+      return [];
+    }
+
+    const normalized = slashQuery.trim();
+    return all.filter((command) => {
+      if (command.disabled) {
+        return false;
+      }
+
+      if (!normalized) {
+        return true;
+      }
+
+      return command.label.toLowerCase().includes(normalized);
+    });
+  }, [
+    canCompactContext,
+    isCompactingContext,
+    isStreaming,
+    onCompactContext,
+    onCreateProject,
+    onRequestClearChat,
+    onRequestHelp,
+    onRequestNewChat,
+    onRequestOpenSettings,
+    onStop,
+    slashQuery,
+    t,
+  ]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reset selection when the slash query changes
+  useEffect(() => {
+    setSelectedSlashIndex(0);
+  }, [slashQuery]);
+
+  const executeSlashCommand = useCallback(
+    (commandId: SlashCommandId) => {
+      switch (commandId) {
+        case "help":
+          onRequestHelp?.();
+          break;
+        case "new":
+          onRequestNewChat?.();
+          break;
+        case "settings":
+          onRequestOpenSettings?.("appearance");
+          break;
+        case "providers":
+          onRequestOpenSettings?.("providers");
+          break;
+        case "project":
+          onCreateProject?.();
+          break;
+        case "compact":
+          if (onCompactContext) {
+            void onCompactContext();
+          }
+          break;
+        case "stop":
+          onStop?.();
+          break;
+        case "clear":
+          onRequestClearChat?.();
+          break;
+      }
+
+      setText("");
+      closeMention();
+      textareaRef.current?.focus();
+    },
+    [
+      closeMention,
+      onCompactContext,
+      onCreateProject,
+      onRequestClearChat,
+      onRequestHelp,
+      onRequestNewChat,
+      onRequestOpenSettings,
+      onStop,
+      setText,
+    ],
+  );
+
   const handleSend = useCallback(() => {
     if (!canSend) {
       return;
@@ -203,6 +369,33 @@ export function ChatInput({
   ]);
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (slashQuery !== null) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setText("");
+        return;
+      }
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        if (slashCommands.length > 0) {
+          setSelectedSlashIndex((current) => {
+            const delta = event.key === "ArrowDown" ? 1 : -1;
+            return (
+              (current + delta + slashCommands.length) % slashCommands.length
+            );
+          });
+        }
+        return;
+      }
+      if (event.key === "Enter" || event.key === "Tab") {
+        if (slashCommands.length > 0) {
+          event.preventDefault();
+          executeSlashCommand(slashCommands[selectedSlashIndex].id);
+        }
+        return;
+      }
+    }
+
     if (mentionOpen) {
       if (event.key === "Escape") {
         event.preventDefault();
@@ -349,6 +542,20 @@ export function ChatInput({
                     {t("attachments.dropToAttach")}
                   </Badge>
                 </div>
+              )}
+
+              {slashQuery !== null && (
+                <ChatInputCommands
+                  commands={slashCommands}
+                  selectedIndex={Math.min(
+                    selectedSlashIndex,
+                    Math.max(slashCommands.length - 1, 0),
+                  )}
+                  onSelect={executeSlashCommand}
+                  emptyLabel={t("commands.empty")}
+                  title={t("commands.title")}
+                  hint={t("commands.hint")}
+                />
               )}
 
               <MentionAutocomplete

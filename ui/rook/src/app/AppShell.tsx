@@ -38,6 +38,55 @@ const SIDEBAR_MAX_WIDTH = 380;
 const SIDEBAR_SNAP_COLLAPSE_THRESHOLD = 100;
 const SIDEBAR_COLLAPSED_WIDTH = 48;
 
+type ShellShortcutCommand =
+  | "open-settings"
+  | "toggle-sidebar"
+  | "new-chat"
+  | "focus-sidebar-search";
+
+type DeepLinkDetail = {
+  action: string;
+  params: Record<string, string>;
+  pathSegments: string[];
+  rawUrl: string;
+};
+
+function isEditableTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) {
+    return false;
+  }
+
+  if (target.isContentEditable) {
+    return true;
+  }
+
+  return Boolean(
+    target.closest("input, textarea, select, [contenteditable='true']"),
+  );
+}
+
+function getShortcutCommand(shortcut: string): ShellShortcutCommand | null {
+  const normalized = shortcut.toLowerCase().replace(/\s+/g, "");
+
+  if (normalized.includes("comma")) {
+    return "open-settings";
+  }
+
+  if (normalized.endsWith("+b") || normalized.endsWith("keyb")) {
+    return "toggle-sidebar";
+  }
+
+  if (normalized.endsWith("+n") || normalized.endsWith("keyn")) {
+    return "new-chat";
+  }
+
+  if (normalized.endsWith("+k") || normalized.endsWith("keyk")) {
+    return "focus-sidebar-search";
+  }
+
+  return null;
+}
+
 export function AppShell({ children }: { children?: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT_WIDTH);
@@ -424,6 +473,41 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
 
   const toggleSidebar = () => setSidebarCollapsed((prev) => !prev);
 
+  const focusSidebarSearch = useCallback(() => {
+    setSidebarCollapsed(false);
+    window.setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("rook:focus-sidebar-search"));
+    }, 80);
+  }, []);
+
+  const runShellShortcut = useCallback(
+    (
+      command: ShellShortcutCommand,
+      options?: { allowWhileEditing?: boolean; target?: EventTarget | null },
+    ) => {
+      const target = options?.target ?? document.activeElement;
+      if (!options?.allowWhileEditing && isEditableTarget(target)) {
+        return;
+      }
+
+      switch (command) {
+        case "open-settings":
+          openSettings();
+          break;
+        case "toggle-sidebar":
+          setSidebarCollapsed((prev) => !prev);
+          break;
+        case "new-chat":
+          createNewTab();
+          break;
+        case "focus-sidebar-search":
+          focusSidebarSearch();
+          break;
+      }
+    },
+    [createNewTab, focusSidebarSearch, openSettings],
+  );
+
   const handleResizeStart = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();
@@ -474,34 +558,132 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      // Cmd+, for settings
-      if (e.key === "," && e.metaKey) {
-        e.preventDefault();
-        setSettingsOpen((prev) => !prev);
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!event.metaKey || event.ctrlKey || event.altKey) {
+        return;
       }
-      // Cmd+B for sidebar toggle
-      if (e.key === "b" && e.metaKey) {
-        e.preventDefault();
-        setSidebarCollapsed((prev) => !prev);
-      }
-      // Cmd+W returns to home instead of closing the window
-      if (e.key === "w" && e.metaKey) {
-        e.preventDefault();
+
+      if (event.key === "w") {
+        event.preventDefault();
         const { activeSessionId } = useChatSessionStore.getState();
         if (activeSessionId) {
           clearActiveSession(activeSessionId);
         }
+        return;
       }
-      // Cmd+N opens new conversation screen
-      if (e.key === "n" && e.metaKey) {
-        e.preventDefault();
-        createNewTab();
+
+      if (window.__TAURI_INTERNALS__) {
+        return;
+      }
+
+      const command =
+        event.key === ","
+          ? "open-settings"
+          : event.key === "b"
+            ? "toggle-sidebar"
+            : event.key === "n"
+              ? "new-chat"
+              : event.key === "k"
+                ? "focus-sidebar-search"
+                : null;
+
+      if (!command) {
+        return;
+      }
+
+      event.preventDefault();
+      runShellShortcut(command, {
+        allowWhileEditing: command === "open-settings",
+        target: event.target,
+      });
+    };
+
+    const handleShortcutEvent = (event: Event) => {
+      const shortcut = (event as CustomEvent<{ shortcut: string }>).detail
+        ?.shortcut;
+      if (!shortcut) {
+        return;
+      }
+
+      const command = getShortcutCommand(shortcut);
+      if (!command) {
+        return;
+      }
+
+      runShellShortcut(command, {
+        allowWhileEditing: command === "open-settings",
+      });
+    };
+
+    const handleDeepLinkEvent = (event: Event) => {
+      const detail = (event as CustomEvent<DeepLinkDetail>).detail;
+      if (!detail) {
+        return;
+      }
+
+      switch (detail.action) {
+        case "settings":
+          openSettings();
+          break;
+        case "agents":
+          handleNavigate("agents");
+          break;
+        case "skills":
+          handleNavigate("skills");
+          break;
+        case "projects":
+          handleNavigate("projects");
+          break;
+        case "chat":
+          createNewTab();
+          break;
+        case "session": {
+          const sessionId =
+            detail.pathSegments[0] ??
+            detail.params.sessionId ??
+            detail.params.id;
+          if (
+            sessionId &&
+            useChatSessionStore.getState().getSession(sessionId)
+          ) {
+            handleSelectSession(sessionId);
+          }
+          break;
+        }
+        default:
+          console.info("Unhandled deep link:", detail.rawUrl);
       }
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [clearActiveSession, createNewTab]);
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener(
+      "rook:shortcut",
+      handleShortcutEvent as EventListener,
+    );
+    window.addEventListener(
+      "rook:deeplink",
+      handleDeepLinkEvent as EventListener,
+    );
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener(
+        "rook:shortcut",
+        handleShortcutEvent as EventListener,
+      );
+      window.removeEventListener(
+        "rook:deeplink",
+        handleDeepLinkEvent as EventListener,
+      );
+    };
+  }, [
+    clearActiveSession,
+    createNewTab,
+    handleNavigate,
+    handleSelectSession,
+    openSettings,
+    runShellShortcut,
+  ]);
 
   const activeSessionPersonaId = activeSession?.personaId;
   const handleInitialMessageConsumed = useCallback(() => {
@@ -589,11 +771,15 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
               pendingInitialAttachments={pendingInitialAttachments}
               onArchiveChat={handleArchiveChat}
               onCreateProject={openCreateProjectDialog}
+              onOpenSettings={openSettings}
               onHomeStartChat={handleHomeStartChat}
               onInitialMessageConsumed={handleInitialMessageConsumed}
               onRenameChat={handleRenameChat}
               onSelectSession={handleSelectSession}
               onSelectSearchResult={handleSelectSearchResult}
+              onStartNewChat={() => {
+                createNewTab();
+              }}
               onStartChatFromProject={handleStartChatFromProject}
             />
           )}

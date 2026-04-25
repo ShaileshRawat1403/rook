@@ -95,6 +95,45 @@
       "workspace": "Workspace"
     }
   },
+  "commands": {
+    "title": "Slash commands",
+    "empty": "No matching commands",
+    "hint": "↵ select · esc dismiss",
+    "items": {
+      "help": {
+        "label": "help",
+        "description": "Show the available chat commands"
+      },
+      "new": {
+        "label": "new",
+        "description": "Start a fresh conversation"
+      },
+      "settings": {
+        "label": "settings",
+        "description": "Open appearance and app settings"
+      },
+      "providers": {
+        "label": "providers",
+        "description": "Open provider setup and model settings"
+      },
+      "project": {
+        "label": "project",
+        "description": "Create a new project for working directories"
+      },
+      "compact": {
+        "label": "compact",
+        "description": "Compact the current conversation context"
+      },
+      "stop": {
+        "label": "stop",
+        "description": "Stop the current response"
+      },
+      "clear": {
+        "label": "clear",
+        "description": "Clear messages in the current chat"
+      }
+    }
+  },
   "files": {
     "empty": "Project files are unavailable until a project with working directories is assigned.",
     "folderEmpty": "Folder is empty",
@@ -163,6 +202,7 @@
     "createProject": "Create project",
     "generalChatWithoutProject": "General chat without project context",
     "loading": "Loading...",
+    "loadingModels": "Loading models...",
     "model": "Model",
     "noProject": "No project",
     "selectModel": "Select model",

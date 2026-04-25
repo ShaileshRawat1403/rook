@@ -95,6 +95,45 @@
       "workspace": "Espacio de trabajo"
     }
   },
+  "commands": {
+    "title": "Comandos con barra",
+    "empty": "No hay comandos coincidentes",
+    "hint": "↵ seleccionar · esc cerrar",
+    "items": {
+      "help": {
+        "label": "help",
+        "description": "Muestra los comandos disponibles del chat"
+      },
+      "new": {
+        "label": "new",
+        "description": "Inicia una conversación nueva"
+      },
+      "settings": {
+        "label": "settings",
+        "description": "Abre la configuración de apariencia y app"
+      },
+      "providers": {
+        "label": "providers",
+        "description": "Abre la configuración de proveedores y modelos"
+      },
+      "project": {
+        "label": "project",
+        "description": "Crea un proyecto nuevo con directorios de trabajo"
+      },
+      "compact": {
+        "label": "compact",
+        "description": "Compacta el contexto de la conversación actual"
+      },
+      "stop": {
+        "label": "stop",
+        "description": "Detiene la respuesta actual"
+      },
+      "clear": {
+        "label": "clear",
+        "description": "Limpia los mensajes del chat actual"
+      }
+    }
+  },
   "files": {
     "empty": "Los archivos del proyecto no están disponibles hasta que se asigne un proyecto con directorios de trabajo.",
     "folderEmpty": "La carpeta está vacía",
@@ -163,6 +202,7 @@
     "createProject": "Crear proyecto",
     "generalChatWithoutProject": "Chat general sin contexto de proyecto",
     "loading": "Cargando...",
+    "loadingModels": "Cargando modelos...",
     "model": "Modelo",
     "noProject": "Sin proyecto",
     "selectModel": "Seleccionar modelo",

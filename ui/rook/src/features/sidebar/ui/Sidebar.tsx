@@ -228,14 +228,13 @@ export function Sidebar({
   }, [projects]);
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "k" && e.metaKey) {
-        e.preventDefault();
-        searchInputRef.current?.focus();
-      }
+    const handler = () => {
+      searchInputRef.current?.focus();
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    window.addEventListener("rook:focus-sidebar-search", handler);
+    return () => {
+      window.removeEventListener("rook:focus-sidebar-search", handler);
+    };
   }, []);
 
   const toggleProject = (projectId: string) =>
@@ -315,7 +314,12 @@ export function Sidebar({
               collapsed ? "justify-center" : "justify-between",
             )}
           >
-            <RookIcon className="text-foreground" />
+            <RookIcon
+              className={cn(
+                "text-foreground/90",
+                collapsed ? "size-5" : "size-4",
+              )}
+            />
             {!collapsed && (
               <Button
                 type="button"

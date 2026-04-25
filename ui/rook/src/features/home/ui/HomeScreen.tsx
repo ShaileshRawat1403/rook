@@ -29,14 +29,12 @@ function HomeClock() {
   });
 
   return (
-    <div className="mb-1 flex items-baseline gap-1.5 pl-4">
-      <span className="text-6xl font-normal font-display tracking-tight text-foreground">
+    <div className="flex items-baseline gap-1 pl-4 text-muted-foreground">
+      <span className="text-sm font-normal tabular-nums">
         {hour}:{minute}
       </span>
       {dayPeriod ? (
-        <span className="text-lg font-normal text-muted-foreground">
-          {dayPeriod}
-        </span>
+        <span className="text-xs font-normal opacity-70">{dayPeriod}</span>
       ) : null}
     </div>
   );
@@ -53,9 +51,14 @@ interface HomeScreenProps {
   onCreateProject?: (options?: {
     onCreated?: (projectId: string) => void;
   }) => void;
+  onOpenSettings?: (section?: "appearance" | "providers") => void;
 }
 
-export function HomeScreen({ onStartChat, onCreateProject }: HomeScreenProps) {
+export function HomeScreen({
+  onStartChat,
+  onCreateProject,
+  onOpenSettings,
+}: HomeScreenProps) {
   const personas = useAgentStore((s) => s.personas);
   const {
     providers,
@@ -118,16 +121,14 @@ export function HomeScreen({ onStartChat, onCreateProject }: HomeScreenProps) {
 
   return (
     <div className="h-full w-full overflow-y-auto">
-      <div className="relative flex min-h-full flex-col items-center justify-start px-6 pt-16 pb-4">
-        <div className="flex w-full max-w-[600px] flex-col antialiased">
-          {/* Hero: icon + greeting at top */}
-          <div className="flex flex-col gap-3 pl-4 mb-10">
-            <RookIcon className="h-8 w-8 text-foreground" />
-            <RookGreeting className="text-4xl font-light text-foreground" />
+      <div className="relative flex min-h-full flex-col items-center justify-center px-6 py-12">
+        <div className="flex w-full max-w-[640px] flex-col antialiased">
+          {/* Hero: icon + greeting + clock anchored together */}
+          <div className="flex flex-col gap-2 pl-4 mb-5">
+            <RookIcon className="h-6 w-6 text-foreground/80" />
+            <RookGreeting className="text-4xl font-light tracking-tight text-foreground" />
+            <HomeClock />
           </div>
-
-          {/* Clock */}
-          <HomeClock />
 
           {/* Chat input */}
           <ChatInput
@@ -158,6 +159,7 @@ export function HomeScreen({ onStartChat, onCreateProject }: HomeScreenProps) {
                 },
               })
             }
+            onRequestOpenSettings={onOpenSettings}
           />
         </div>
       </div>

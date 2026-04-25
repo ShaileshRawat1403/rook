@@ -11,9 +11,9 @@ const EXCEPTIONS = {
       "Drag-and-drop handlers for session-to-project moves and project reorder, plus activeProjectId highlight.",
   },
   "src/features/chat/ui/ChatView.tsx": {
-    limit: 570,
+    limit: 620,
     justification:
-      "ACP prewarm guards, project-aware working dir selection, working context sync, chat bootstrapping, context-ring compaction wiring, and gated [perf:chatview] logging via perfLog (dev-only by default).",
+      "ACP prewarm guards, project-aware working dir selection, working context sync, chat bootstrapping, context-ring compaction wiring, slash-help/clear handlers, and gated [perf:chatview] logging via perfLog (dev-only by default).",
   },
   "src/features/chat/hooks/useChat.ts": {
     limit: 510,
@@ -36,9 +36,9 @@ const EXCEPTIONS = {
       "Search-as-you-type filtering and draft-aware sidebar highlight logic.",
   },
   "src/app/AppShell.tsx": {
-    limit: 660,
+    limit: 850,
     justification:
-      "Shell still coordinates ACP session loading, replay-buffer cleanup on load failure, project reassignment, and app-level chat routing. Includes gated [perf:load]/[perf:newtab] logging via perfLog (dev-only by default).",
+      "Shell coordinates ACP session loading, replay-buffer cleanup, project reassignment, app-level chat routing, deep-link routing, and the global keyboard shortcut command bus. Includes gated [perf:load]/[perf:newtab] logging via perfLog (dev-only by default).",
   },
   "src/features/chat/stores/__tests__/chatSessionStore.test.ts": {
     limit: 540,
@@ -64,6 +64,11 @@ const EXCEPTIONS = {
     limit: 530,
     justification:
       "Complete provider catalog with all model providers including Gemini OAuth/CLI and agent providers.",
+  },
+  "src/features/chat/ui/ChatInput.tsx": {
+    limit: 700,
+    justification:
+      "Composer hosts mention autocomplete, slash command surface, attachment drop targets, queue UI, sticky persona chip, and toolbar wiring all in one keyboard-driven control surface.",
   },
 };
 

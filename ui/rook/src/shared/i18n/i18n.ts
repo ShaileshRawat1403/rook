@@ -6,6 +6,7 @@ import {
   DEFAULT_LOCALE,
   DEFAULT_NAMESPACE,
   SUPPORTED_LOCALES,
+  TRANSLATION_NAMESPACES,
   type AppLocale,
   type TranslationNamespace,
 } from "./constants";
@@ -77,7 +78,7 @@ void i18n
     supportedLngs: SUPPORTED_LOCALES,
     defaultNS: DEFAULT_NAMESPACE,
     fallbackNS: DEFAULT_NAMESPACE,
-    ns: [DEFAULT_NAMESPACE],
+    ns: [...TRANSLATION_NAMESPACES],
     interpolation: {
       escapeValue: false,
     },

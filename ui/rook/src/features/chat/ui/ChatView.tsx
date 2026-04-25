@@ -3,7 +3,10 @@ import { useTranslation } from "react-i18next";
 import { AnimatePresence } from "motion/react";
 import { MessageTimeline } from "./MessageTimeline";
 import { ChatInput } from "./ChatInput";
-import type { ChatAttachmentDraft } from "@/shared/types/messages";
+import {
+  createSystemNotificationMessage,
+  type ChatAttachmentDraft,
+} from "@/shared/types/messages";
 import { LoadingRook } from "./LoadingRook";
 import { ChatLoadingSkeleton } from "./ChatLoadingSkeleton";
 import { useChat } from "../hooks/useChat";
@@ -39,6 +42,8 @@ interface ChatViewProps {
   onCreateProject?: (options?: {
     onCreated?: (projectId: string) => void;
   }) => void;
+  onOpenSettings?: (section?: "appearance" | "providers") => void;
+  onStartNewChat?: () => void;
 }
 
 export function ChatView({
@@ -49,6 +54,8 @@ export function ChatView({
   initialAttachments,
   onInitialMessageConsumed,
   onCreateProject,
+  onOpenSettings,
+  onStartNewChat,
 }: ChatViewProps) {
   const { t } = useTranslation("chat");
   const activeSessionId = sessionId;
@@ -474,6 +481,26 @@ export function ChatView({
     },
     [activeSessionId],
   );
+  const handleSlashHelp = useCallback(() => {
+    const lines = [
+      "/help - Show available commands",
+      "/new - Start a fresh conversation",
+      "/settings - Open appearance settings",
+      "/providers - Open provider settings",
+      "/project - Create a project",
+      "/compact - Compact the current conversation",
+      "/stop - Stop the current response",
+      "/clear - Clear messages in this chat",
+    ];
+
+    chatStore.addMessage(
+      activeSessionId,
+      createSystemNotificationMessage(lines.join("\n"), "info"),
+    );
+  }, [activeSessionId, chatStore]);
+  const handleClearConversation = useCallback(() => {
+    useChatStore.getState().clearMessages(activeSessionId);
+  }, [activeSessionId]);
   const handleScrollTargetHandled = useCallback(() => {
     useChatStore.getState().clearScrollTargetMessage(activeSessionId);
   }, [activeSessionId]);
@@ -552,6 +579,10 @@ export function ChatView({
               !projectMetadataPending
             }
             isCompactingContext={isCompacting}
+            onRequestNewChat={onStartNewChat}
+            onRequestOpenSettings={onOpenSettings}
+            onRequestClearChat={handleClearConversation}
+            onRequestHelp={handleSlashHelp}
           />
         </div>
 

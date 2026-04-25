@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "motion/react";
 import { Shimmer } from "@/shared/ui/ai-elements/shimmer";
-import { RookBirdSpinner } from "@/shared/ui/animations/RookBirdSpinner";
+import { CrowFlap } from "@/shared/ui/animations/CrowFlap";
 import { StatusGlyphSpinner } from "@/shared/ui/animations/StatusGlyphSpinner";
 
 export type LoadingChatState =
@@ -42,7 +42,7 @@ export function LoadingRook({ chatState = "idle" }: LoadingRookProps) {
 
   const LoadingIcon =
     chatState === "streaming" ? (
-      <RookBirdSpinner className="inline-block" cycleInterval={150} />
+      <CrowFlap className="inline-block size-7 text-foreground/80" />
     ) : (
       <StatusGlyphSpinner
         className="inline-block"
@@ -62,14 +62,14 @@ export function LoadingRook({ chatState = "idle" }: LoadingRookProps) {
       transition={{ duration: shouldReduceMotion ? 0 : LOADING_FADE_S }}
     >
       <div className="max-w-3xl mx-auto w-full">
-        <div className="py-2 text-xs text-muted-foreground flex items-center gap-2">
+        <div className="py-3 text-sm text-muted-foreground flex items-center gap-3">
           {LoadingIcon}
           {shouldReduceMotion ? (
             <span>{message}</span>
           ) : (
             <Shimmer
               as="span"
-              className="text-xs"
+              className="text-sm"
               tone="soft"
               delay={LOADING_SHIMMER_DELAY_S}
               duration={LOADING_SHIMMER_S}

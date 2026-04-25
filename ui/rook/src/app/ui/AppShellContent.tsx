@@ -8,6 +8,7 @@ import type { ChatSession } from "@/features/chat/stores/chatSessionStore";
 import type { ChatAttachmentDraft } from "@/shared/types/messages";
 import type { ProjectInfo } from "@/features/projects/api/projects";
 import type { AppView } from "../AppShell";
+import type { SectionId } from "@/features/settings/ui/SettingsModal";
 
 interface AppShellContentProps {
   activeView: AppView;
@@ -22,6 +23,7 @@ interface AppShellContentProps {
     initialWorkingDir?: string | null;
     onCreated?: (projectId: string) => void;
   }) => void;
+  onOpenSettings: (section?: SectionId) => void;
   onHomeStartChat: (
     initialMessage?: string,
     providerId?: string,
@@ -37,6 +39,7 @@ interface AppShellContentProps {
     messageId?: string,
     query?: string,
   ) => void;
+  onStartNewChat: () => void;
   onStartChatFromProject: (project: ProjectInfo) => void;
 }
 
@@ -50,11 +53,13 @@ export function AppShellContent({
   pendingInitialAttachments,
   onArchiveChat,
   onCreateProject,
+  onOpenSettings,
   onHomeStartChat,
   onInitialMessageConsumed,
   onRenameChat,
   onSelectSession,
   onSelectSearchResult,
+  onStartNewChat,
   onStartChatFromProject,
 }: AppShellContentProps) {
   switch (activeView) {
@@ -85,11 +90,14 @@ export function AppShellContent({
           initialAttachments={pendingInitialAttachments}
           onCreateProject={onCreateProject}
           onInitialMessageConsumed={onInitialMessageConsumed}
+          onOpenSettings={onOpenSettings}
+          onStartNewChat={onStartNewChat}
         />
       ) : (
         <HomeScreen
           onStartChat={onHomeStartChat}
           onCreateProject={onCreateProject}
+          onOpenSettings={onOpenSettings}
         />
       );
   }

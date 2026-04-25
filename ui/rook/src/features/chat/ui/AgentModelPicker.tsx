@@ -371,9 +371,24 @@ export function AgentModelPicker({
                   </div>
                 </ScrollArea>
               ) : (
-                <div className="px-2 py-2">
-                  <div className="text-sm text-muted-foreground">
-                    {currentModelName ? currentModelName : t("toolbar.loading")}
+                <div className="flex flex-1 flex-col gap-2 px-2 pt-2">
+                  {currentModelName ? (
+                    <div className="rounded-sm bg-muted/40 px-2 py-1.5 text-sm font-medium text-foreground">
+                      {currentModelName}
+                    </div>
+                  ) : null}
+                  {[0, 1, 2].map((row) => (
+                    <div
+                      key={row}
+                      className="h-6 animate-pulse rounded-sm bg-muted/30"
+                      style={{
+                        opacity: 1 - row * 0.25,
+                        animationDelay: `${row * 0.1}s`,
+                      }}
+                    />
+                  ))}
+                  <div className="mt-1 text-xs text-muted-foreground/70">
+                    {t("toolbar.loadingModels")}
                   </div>
                 </div>
               )}

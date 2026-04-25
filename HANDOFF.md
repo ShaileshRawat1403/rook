@@ -1,105 +1,55 @@
-# Handoff: Rook Desktop App Enhancements
+# Handoff: Rook Tauri Feature Blend
 
 ## Current Status
 
 ### Branch
-- `main` - all changes committed
+- `feature/rook-persona-and-art`
 
-### Recent Commits
-```
-b59806af feat: add RookGreeting animation to home screen
-dd8e1b30 fix: resolve clippy warnings in rook-cli and add missing providers
-dbc5857c fix: remove deep-link plugin causing multiple app instances
-```
+### Focus
+- The migration phase is mostly over.
+- The current work is feature blending and product stabilization.
+- The controlling document is now [ROOK_FEATURE_BLEND_LEDGER.md](ROOK_FEATURE_BLEND_LEDGER.md).
 
-## Completed Work
+## What Is Already Landed
 
-### 1. Animation Components
-Created in `ui/rook/src/shared/ui/animations/`:
-- `RookBirdSpinner.tsx` - 6-frame bird animation for streaming state
-- `StatusGlyphSpinner.tsx` - cycling thinking icons
-- `LoadingIndicator.tsx` - state-driven loading component
-- `RookGreeting.tsx` - animated text with SplitType
-- `useRookTextAnimator.tsx` - hook for text animations
-- `index.ts` - barrel exports
+- Rook greeting and crow-brand animation work is on this branch.
+- Tauri shell behavior exists for:
+  - single instance
+  - tray
+  - deep-link emission
+  - global shortcut registration
+  - notifications
+- Provider catalog work has expanded model and agent setup coverage.
+- Project working directories already feed ACP session preparation and updates.
 
-### 2. Providers Added
-- `gemini_oauth` and `gemini_cli` added to provider catalog
-- `nativeConnectQuery` added for OAuth providers
+## What Was Fixed In This Pass
 
-### 3. Tauri Desktop Features
-- System tray with Show/Hide, Quit menu items
-- Global shortcuts registration
-- Single-instance protection
+- Replaced stale planning assumptions with the feature blend ledger.
+- Removed the stale `main` branch claim from handoff guidance.
+- Fixed the deep-link bridge so the frontend receives the actual `rook://...` URL shape instead of treating it as a string array.
+- Routed native shortcut events through one frontend command path instead of mixing:
+  - top-level listeners
+  - `AppShell` keydown handling
+  - Sidebar-local `Cmd+K` handling
+- Added deep-link path parsing so routes like `rook://session/<id>` can be handled intentionally.
 
-### 4. Bug Fixes
-- Fixed clippy warnings in `rook-cli` (projection.rs, chat.rs)
-- Fixed `split-type` dependency installation issue (workspace symlink)
+## Next Recommended Work
 
-## Issue to Fix
-
-### Greeting Position Bug
-**Location:** `ui/rook/src/features/home/ui/HomeScreen.tsx`
-
-**Problem:** The RookGreeting appears below the clock instead of at the top of the screen.
-
-**Current Layout (lines 122-126):**
-```tsx
-{/* Clock */}
-<HomeClock />
-
-{/* Greeting */}
-<RookGreeting className="mb-6 pl-4 text-xl font-normal font-display text-muted-foreground" />
-```
-
-**Required Fix:** Move RookGreeting ABOVE HomeClock so the greeting appears first at the top of the screen.
-
-**Expected Layout:**
-```tsx
-{/* Greeting - should be at top */}
-<RookGreeting className="mb-6 pl-4 text-xl font-normal font-display text-muted-foreground" />
-
-{/* Clock */}
-<HomeClock />
-```
-
-## How to Test
-
-1. Run the app:
-```bash
-cd /Users/Shailesh/MYAIAGENTS/rook
-source bin/activate-hermit
-just run-ui
-```
-
-2. Verify on the home screen:
-   - Greeting text should appear at the TOP of the screen
-   - Greeting should animate (characters scramble then resolve)
-   - Clock should appear below the greeting
-
-## Commands to Run After Fix
-
-```bash
-# Format and lint
-cargo fmt
-cargo clippy --all-targets -- -D warnings
-
-# UI checks
-cd ui/rook && pnpm check && pnpm typecheck
-
-# Commit
-git add -A
-git commit -s
-git push
-```
+1. Run `just run-ui` on this feature branch.
+2. Manually verify the shell features listed in the ledger.
+3. Verify the golden product path:
+   - configure a provider
+   - restart the app
+   - send a real chat
+   - verify streaming and persistence
+4. Only after that, port the dedicated working-directory switcher UX.
 
 ## Relevant Files
 
 | File | Purpose |
 |------|---------|
-| `ui/rook/src/features/home/ui/HomeScreen.tsx` | Home screen - greeting position |
-| `ui/rook/src/shared/ui/animations/RookGreeting.tsx` | Animated greeting component |
-| `ui/rook/src/shared/ui/animations/useRookTextAnimator.tsx` | Text animation hook |
-| `ui/rook/src-tauri/src/lib.rs` | Tauri setup (tray, shortcuts, single instance) |
-| `ui/rook/src-tauri/src/services/provider_defs.rs` | Provider definitions |
-| `ui/rook/src/features/providers/providerCatalog.ts` | Frontend provider catalog |
+| `ROOK_FEATURE_BLEND_LEDGER.md` | Current control surface for feature status |
+| `ui/rook/src/app/App.tsx` | Tauri shell event bridge with cleanup |
+| `ui/rook/src/app/AppShell.tsx` | Central frontend handling for shell shortcuts and deep links |
+| `ui/rook/src/features/sidebar/ui/Sidebar.tsx` | Sidebar search focus integration |
+| `ui/rook/src-tauri/src/lib.rs` | Tauri tray, single instance, notifications, and shortcut registration |
