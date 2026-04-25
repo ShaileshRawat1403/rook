@@ -391,9 +391,6 @@ export function AgentModelPicker({
                       }}
                     />
                   ))}
-                  <div className="mt-1 text-xs text-muted-foreground/70">
-                    {t("toolbar.loadingModels")}
-                  </div>
                 </div>
               )}
             </div>
