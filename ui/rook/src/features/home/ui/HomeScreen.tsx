@@ -124,8 +124,8 @@ export function HomeScreen({
       <div className="relative flex min-h-full flex-col items-center justify-center px-6 py-12">
         <div className="flex w-full max-w-[640px] flex-col antialiased">
           {/* Hero: icon + greeting + clock anchored together */}
-          <div className="flex flex-col gap-2 pl-4 mb-5">
-            <RookIcon className="h-6 w-6 text-foreground/80" />
+          <div className="flex flex-col gap-3 pl-4 mb-6">
+            <RookIcon className="size-9 text-foreground" />
             <RookGreeting className="text-4xl font-light tracking-tight text-foreground" />
             <HomeClock />
           </div>

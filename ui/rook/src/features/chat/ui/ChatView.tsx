@@ -65,7 +65,7 @@ export function ChatView({
     perfLog(`[perf:chatview] ${sessionId.slice(0, 8)} mounted in ${ms}ms`);
   }, [sessionId]);
   const isContextPanelOpen = useChatSessionStore(
-    (s) => s.contextPanelOpenBySession[activeSessionId] ?? false,
+    (s) => s.contextPanelOpenBySession[activeSessionId] ?? true,
   );
   const setContextPanelOpen = useChatSessionStore((s) => s.setContextPanelOpen);
   const activeWorkspace = useChatSessionStore(

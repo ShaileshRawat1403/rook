@@ -314,12 +314,7 @@ export function Sidebar({
               collapsed ? "justify-center" : "justify-between",
             )}
           >
-            <RookIcon
-              className={cn(
-                "text-foreground/90",
-                collapsed ? "size-5" : "size-4",
-              )}
-            />
+            <RookIcon className="size-6 text-foreground" />
             {!collapsed && (
               <Button
                 type="button"

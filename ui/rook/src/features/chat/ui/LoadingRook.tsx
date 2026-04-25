@@ -42,7 +42,10 @@ export function LoadingRook({ chatState = "idle" }: LoadingRookProps) {
 
   const LoadingIcon =
     chatState === "streaming" ? (
-      <CrowFlap className="inline-block size-7 text-foreground/80" />
+      <CrowFlap
+        className="inline-block size-6 text-foreground/85"
+        autoplay={false}
+      />
     ) : (
       <StatusGlyphSpinner
         className="inline-block"

@@ -139,9 +139,7 @@ export function AgentModelPicker({
     [availableModels, currentModelId],
   );
   const hasModelInfo = currentModelName !== null || availableModels.length > 0;
-  const triggerModelLabel = hasModelInfo
-    ? (currentModelName ?? t("toolbar.loading"))
-    : null;
+  const triggerModelLabel = hasModelInfo ? (currentModelName ?? null) : null;
 
   useEffect(() => {
     if (open) {
@@ -192,11 +190,17 @@ export function AgentModelPicker({
           rightIcon={<IconChevronDown className="opacity-50" />}
           className="min-w-0"
         >
-          <span className={cn("truncate", isCompact ? "max-w-32" : "max-w-56")}>
-            {loading
-              ? t("toolbar.loading")
-              : (triggerModelLabel ?? selectedAgentLabel)}
-          </span>
+          {loading ? (
+            <span className="inline-flex items-center gap-2">
+              <span className="inline-block h-3 w-20 animate-pulse rounded-sm bg-muted" />
+            </span>
+          ) : (
+            <span
+              className={cn("truncate", isCompact ? "max-w-32" : "max-w-56")}
+            >
+              {triggerModelLabel ?? selectedAgentLabel}
+            </span>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent
