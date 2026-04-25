@@ -4,7 +4,7 @@ export const PASTE_PREVIEW_LEN = 40;
 export const INPUT_MAX_ROWS = 8;
 export const SENT_PREVIEW_LEN = 60;
 
-export const GOOSE_FRAMES = [
+export const ROOK_FRAMES = [
   [
     "    ,_",
     "   (o >",

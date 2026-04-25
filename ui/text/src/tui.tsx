@@ -15,8 +15,8 @@ import type {
   ToolCallUpdate,
 } from "@agentclientprotocol/sdk";
 import { ndJsonStream } from "@agentclientprotocol/sdk";
-import { GooseClient } from "@aaif/goose-sdk";
-import { resolveGooseBinary } from "@aaif/goose-sdk/node";
+import { RookClient } from "@aaif/rook-sdk";
+import { resolveRookBinary } from "@aaif/rook-sdk/node";
 import Onboarding from "./onboarding.js";
 import ConfigureScreen, { ConfigureIntent } from "./configure.js";
 import ExtensionsManager from "./extensions.js";
@@ -47,7 +47,7 @@ import {
   PASTE_THRESHOLD,
   INPUT_MAX_ROWS,
   SENT_PREVIEW_LEN,
-  GOOSE_FRAMES,
+  ROOK_FRAMES,
   INITIAL_GREETING,
   PERMISSION_LABELS,
   PERMISSION_KEYS,
@@ -207,7 +207,7 @@ const InputBar = React.memo(function InputBar({
       {queued && (
         <Box>
           <Text color={GOLD} dimColor italic>
-            message queued — will send when goose finishes
+            message queued — will send when rook finishes
           </Text>
         </Box>
       )}
@@ -489,7 +489,7 @@ const SplashScreen = React.memo(function SplashScreen({
   loading: boolean;
   spinIdx: number;
 }) {
-  const frame = GOOSE_FRAMES[animFrame % GOOSE_FRAMES.length]!;
+  const frame = ROOK_FRAMES[animFrame % ROOK_FRAMES.length]!;
   const statusColor =
     status === "ready" ? TEAL : isErrorStatus(status) ? CRANBERRY : TEXT_DIM;
 
@@ -519,7 +519,7 @@ const SplashScreen = React.memo(function SplashScreen({
       </Box>
       <Box marginTop={1}>
         <Text color={TEXT_PRIMARY} bold>
-          goose
+          rook
         </Text>
       </Box>
       <Box alignItems="center">
@@ -550,7 +550,7 @@ function App({
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState("connecting…");
   const [spinIdx, setSpinIdx] = useState(0);
-  const [gooseFrame, setGooseFrame] = useState(0);
+  const [rookFrame, setRookFrame] = useState(0);
   const [bannerVisible, setBannerVisible] = useState(true);
   const [pendingPermission, setPendingPermission] =
     useState<PendingPermission | null>(null);
@@ -567,7 +567,7 @@ function App({
     | { screen: "extensions" };
   const [overlay, setOverlay] = useState<Overlay | null>(null);
 
-  const clientRef = useRef<GooseClient | null>(null);
+  const clientRef = useRef<RookClient | null>(null);
   const sessionIdRef = useRef<string | null>(null);
   const streamBuf = useRef("");
   const sentInitialPrompt = useRef(false);
@@ -575,14 +575,14 @@ function App({
   const isProcessingRef = useRef(false);
 
   // Only run the animation tick when something is actually animating:
-  // the splash goose while the banner is up, or the spinner while loading.
+  // the splash rook while the banner is up, or the spinner while loading.
   // Otherwise we were re-rendering the entire viewport every 300ms forever,
   // which rebuilds every turn's markdown and can OOM long-running sessions.
   useEffect(() => {
     if (!bannerVisible && !loading) return;
     const t = setInterval(() => {
       if (loading) setSpinIdx((i) => (i + 1) % SPINNER_FRAMES.length);
-      if (bannerVisible) setGooseFrame((f) => (f + 1) % GOOSE_FRAMES.length);
+      if (bannerVisible) setRookFrame((f) => (f + 1) % ROOK_FRAMES.length);
     }, 300);
     return () => clearInterval(t);
   }, [bannerVisible, loading]);
@@ -762,7 +762,7 @@ function App({
   );
 
   const createSession = useCallback(
-    async (client: GooseClient) => {
+    async (client: RookClient) => {
       setStatus("creating session…");
       setLoading(true);
       try {
@@ -801,7 +801,7 @@ function App({
       try {
         setStatus("initializing…");
 
-        const client = new GooseClient(
+        const client = new RookClient(
           () => ({
             sessionUpdate: async (params: SessionNotification) => {
               const update = params.update;
@@ -842,7 +842,7 @@ function App({
         setStatus("handshaking…");
         await client.initialize({
           protocolVersion: 0,
-          clientInfo: { name: "goose-text", version: "0.1.0" },
+          clientInfo: { name: "rook-text", version: "0.1.0" },
           clientCapabilities: {},
         });
         if (cancelled) return;
@@ -850,8 +850,8 @@ function App({
         setStatus("checking provider…");
         let hasProvider = false;
         try {
-          const resp = await client.goose.GooseConfigRead({
-            key: "GOOSE_PROVIDER",
+          const resp = await client.rook.RookConfigRead({
+            key: "ROOK_PROVIDER",
           });
           hasProvider =
             resp.value != null && resp.value !== "" && resp.value !== "null";
@@ -1144,7 +1144,7 @@ function App({
     >
       {bannerVisible ? (
         <SplashScreen
-          animFrame={gooseFrame}
+          animFrame={rookFrame}
           width={contentWidth}
           height={Math.max(safeTermHeight - PAD_Y * 2 - inputBarH, 0)}
           status={status}
@@ -1207,7 +1207,7 @@ function App({
 const cli = meow(
   `
   Usage
-    $ goose
+    $ rook
 
   Options
     --server, -s  Server URL (default: auto-launch bundled server)
@@ -1226,7 +1226,7 @@ let serverProcess: ReturnType<typeof spawn> | null = null;
 
 async function runTextMode(serverConnection: Stream | string, prompt: string) {
   try {
-    const client = new GooseClient(
+    const client = new RookClient(
       () => ({
         sessionUpdate: async (params: SessionNotification) => {
           const update = params.update;
@@ -1256,7 +1256,7 @@ async function runTextMode(serverConnection: Stream | string, prompt: string) {
 
     await client.initialize({
       protocolVersion: 0,
-      clientInfo: { name: "goose-text", version: "0.1.0" },
+      clientInfo: { name: "rook-text", version: "0.1.0" },
       clientCapabilities: {},
     });
 
@@ -1284,14 +1284,14 @@ async function main() {
   if (cli.flags.server) {
     serverConnection = cli.flags.server;
   } else {
-    const binary = resolveGooseBinary();
+    const binary = resolveRookBinary();
     serverProcess = spawn(binary, ["acp"], {
       stdio: ["pipe", "pipe", "ignore"],
       detached: false,
     });
 
     serverProcess.on("error", (err) => {
-      console.error(`Failed to start goose acp: ${err.message}`);
+      console.error(`Failed to start rook acp: ${err.message}`);
       process.exit(1);
     });
 

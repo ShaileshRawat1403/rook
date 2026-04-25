@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Box, Text, useInput, useStdout } from "ink";
-import type { GooseClient, ProviderDetailEntry } from "@aaif/goose-sdk";
+import type { RookClient, ProviderDetailEntry } from "@aaif/rook-sdk";
 import {
   CRANBERRY,
   TEAL,
@@ -27,7 +27,7 @@ type Phase =
 export type ConfigureIntent = "provider" | "model";
 
 interface ConfigureProps {
-  client: GooseClient;
+  client: RookClient;
   sessionId: string;
   width: number;
   height: number;
@@ -37,7 +37,7 @@ interface ConfigureProps {
 }
 
 interface ModelSelectorProps {
-  client: GooseClient;
+  client: RookClient;
   provider: ProviderDetailEntry;
   height: number;
   onSelect: (model: string) => void;
@@ -73,7 +73,7 @@ const ModelSelector = React.memo(function ModelSelector({
       try {
         setLoading(true);
         setError(null);
-        const resp = await client.goose.GooseProvidersModels({
+        const resp = await client.rook.RookProvidersModels({
           providerName: provider.name,
         });
         if (!cancelled) {
@@ -378,7 +378,7 @@ export default function ConfigureScreen({
 
     (async () => {
       try {
-        const resp = await client.goose.GooseProvidersDetails({});
+        const resp = await client.rook.RookProvidersDetails({});
         if (cancelled) return;
         const sorted = [...resp.providers].sort((a, b) => {
           const aP = a.providerType === "Preferred" ? 0 : 1;
@@ -390,7 +390,7 @@ export default function ConfigureScreen({
 
         if (initialIntent === "model") {
           try {
-            const cfg = await client.goose.GooseConfigRead({ key: "GOOSE_PROVIDER" });
+            const cfg = await client.rook.RookConfigRead({ key: "ROOK_PROVIDER" });
             if (cancelled) return;
             const current = sorted.find((p) => p.name === cfg.value);
             if (current) {
@@ -425,18 +425,13 @@ export default function ConfigureScreen({
         for (const [key, value] of Object.entries(configValues)) {
           const configKey = provider.configKeys.find((k) => k.name === key);
           if (configKey?.secret) {
-            await client.goose.GooseSecretUpsert({ key, value });
+            await client.rook.RookSecretUpsert({ key, value });
           } else {
-            await client.goose.GooseConfigUpsert({ key, value });
+            await client.rook.RookConfigUpsert({ key, value });
           }
         }
-        await client.goose.GooseConfigUpsert({ key: "GOOSE_PROVIDER", value: provider.name });
-        await client.goose.GooseConfigUpsert({ key: "GOOSE_MODEL", value: model });
-        await client.goose.GooseSessionProviderUpdate({
-          sessionId,
-          provider: provider.name,
-          model,
-        });
+        await client.rook.RookConfigUpsert({ key: "ROOK_PROVIDER", value: provider.name });
+        await client.rook.RookConfigUpsert({ key: "ROOK_MODEL", value: model });
         onComplete();
       } catch (e: unknown) {
         setErrorMsg(e instanceof Error ? e.message : String(e));

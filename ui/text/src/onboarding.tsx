@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Box, Text, useInput, useStdout } from "ink";
 import { TextInput, PasswordInput } from '@inkjs/ui';
-import type { GooseClient, ProviderDetailEntry } from "@aaif/goose-sdk";
+import type { RookClient, ProviderDetailEntry } from "@aaif/rook-sdk";
 import {
   CRANBERRY,
   TEAL,
@@ -23,7 +23,7 @@ type Phase =
   | "error";
 
 interface OnboardingProps {
-  client: GooseClient;
+  client: RookClient;
   width: number;
   height: number;
   onComplete: () => void;
@@ -238,7 +238,7 @@ export const ProviderSelector = React.memo(function ProviderSelector({ providers
       <Box marginTop={1} />
       <Box justifyContent="center" marginBottom={1}>
         <Text color={TEXT_PRIMARY} bold>
-          {title ?? "◆ Welcome to goose ◆"}
+          {title ?? "◆ Welcome to rook ◆"}
         </Text>
       </Box>
       <Box justifyContent="center" marginBottom={2}>
@@ -535,7 +535,7 @@ export default function Onboarding({
   useEffect(() => {
     (async () => {
       try {
-        const resp = await client.goose.GooseProvidersDetails({});
+        const resp = await client.rook.RookProvidersDetails({});
         const sorted = [...resp.providers].sort((a, b) => {
           const aP = a.providerType === "Preferred" ? 0 : 1;
           const bP = b.providerType === "Preferred" ? 0 : 1;
@@ -558,17 +558,17 @@ export default function Onboarding({
         for (const [key, value] of Object.entries(values)) {
           const configKey = provider.configKeys.find((k) => k.name === key);
           if (configKey?.secret) {
-            await client.goose.GooseSecretUpsert({ key, value });
+            await client.rook.RookSecretUpsert({ key, value });
           } else {
-            await client.goose.GooseConfigUpsert({ key, value });
+            await client.rook.RookConfigUpsert({ key, value });
           }
         }
-        await client.goose.GooseConfigUpsert({
-          key: "GOOSE_PROVIDER",
+        await client.rook.RookConfigUpsert({
+          key: "ROOK_PROVIDER",
           value: provider.name,
         });
-        await client.goose.GooseConfigUpsert({
-          key: "GOOSE_MODEL",
+        await client.rook.RookConfigUpsert({
+          key: "ROOK_MODEL",
           value: provider.defaultModel,
         });
         setPhase("success");

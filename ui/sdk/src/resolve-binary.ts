@@ -18,7 +18,7 @@ const PLATFORMS: Record<string, string> = {
  *
  * @throws if no binary can be found
  */
-export function resolveGooseBinary(): string {
+export function resolveRookBinary(): string {
   const envBinary = process.env.GOOSE_BINARY;
   if (envBinary) return envBinary;
 

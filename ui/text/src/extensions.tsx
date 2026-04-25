@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {Box, Text, useInput, useStdout} from "ink";
 import {TextInput} from "@inkjs/ui";
-import type {GooseClient} from "@aaif/goose-sdk";
+import type {RookClient} from "@aaif/rook-sdk";
 import {CRANBERRY, GOLD, RULE_COLOR, TEAL, TEXT_DIM, TEXT_PRIMARY} from "./colors.js";
 import {Spinner, SPINNER_FRAMES} from "./components/Spinner.js";
 import {ErrorScreen} from "./components/ErrorScreen.js";
@@ -50,7 +50,7 @@ export default function ExtensionsManager({
   height,
   onClose,
 }: {
-  client: GooseClient;
+  client: RookClient;
   sessionId: string;
   height: number;
   onClose: () => void;
@@ -80,8 +80,8 @@ export default function ExtensionsManager({
     setPhase("loading");
     try {
       const [configResp, sessionResp] = await Promise.all([
-        client.goose.GooseConfigExtensions({}),
-        client.goose.GooseSessionExtensions({sessionId}),
+        client.rook.RookConfigExtensions({}),
+        client.rook.RookSessionExtensions({sessionId}),
       ]);
 
       const allExtensions = (configResp.extensions as unknown[]).filter(isExtEntry);
@@ -116,9 +116,9 @@ export default function ExtensionsManager({
     if (!sel) return;
     withSaving(async () => {
       if (sel.enabled) {
-        await client.goose.GooseExtensionsRemove({sessionId, name: sel.name});
+        await client.rook.RookExtensionsRemove({sessionId, name: sel.name});
       } else {
-        await client.goose.GooseExtensionsAdd({sessionId, config: sel as any});
+        await client.rook.RookExtensionsAdd({sessionId, config: sel as any});
       }
     });
   }, [entries, selectedIdx, client, sessionId, withSaving]);
@@ -129,12 +129,12 @@ export default function ExtensionsManager({
     withSaving(async () => {
       let extMap: Record<string, unknown> = {};
       try {
-        const raw = await client.goose.GooseConfigRead({key: "extensions"});
+        const raw = await client.rook.RookConfigRead({key: "extensions"});
         if (raw.value && typeof raw.value === "object") extMap = raw.value as Record<string, unknown>;
       } catch { }
       extMap[key] = config;
-      await client.goose.GooseConfigUpsert({key: "extensions", value: extMap as any});
-      await client.goose.GooseExtensionsAdd({sessionId, config: config as any});
+      await client.rook.RookConfigUpsert({key: "extensions", value: extMap as any});
+      await client.rook.RookExtensionsAdd({sessionId, config: config as any});
     });
   }, [addType, addValue, addName, client, sessionId, withSaving]);
 
