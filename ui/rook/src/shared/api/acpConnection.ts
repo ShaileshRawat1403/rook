@@ -23,6 +23,10 @@ export function setNotificationHandler(handler: AcpNotificationHandler): void {
 let clientPromise: Promise<RookClient> | null = null;
 let resolvedClient: RookClient | null = null;
 
+function isTauriRuntimeAvailable(): boolean {
+  return typeof window !== "undefined" && Boolean(window.__TAURI_INTERNALS__);
+}
+
 function createClientCallbacks(): () => Client {
   return () => ({
     requestPermission: async (
@@ -64,6 +68,12 @@ function monitorConnection(client: RookClient): void {
 }
 
 async function initializeConnection(): Promise<RookClient> {
+  if (!isTauriRuntimeAvailable()) {
+    throw new Error(
+      "Live chat requires the Rook desktop app. Use `just run-ui` instead of the browser preview for ACP-backed conversations.",
+    );
+  }
+
   const tStart = performance.now();
   const wsUrl: string = await invoke("get_rook_serve_url");
   perfLog(
