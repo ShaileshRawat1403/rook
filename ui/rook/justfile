@@ -1,6 +1,5 @@
-# Derive a stable port from the working directory so the same worktree
-# always gets the same port.
-vite_port := `python3 -c "import hashlib,os; h=int(hashlib.sha256(os.getcwd().encode()).hexdigest(),16); print(10000 + h % 55000)"`
+# Keep the frontend on the familiar dev port unless explicitly overridden.
+vite_port := `python3 -c "import os; print(os.environ.get('VITE_PORT', '1520'))"`
 
 # Default recipe
 default:
@@ -84,6 +83,8 @@ dev:
 
     VITE_PORT={{ vite_port }}
     export VITE_PORT
+    export ROOK_SERVE_PORT="${ROOK_SERVE_PORT:-52551}"
+    export VITE_ROOK_SERVE_URL="ws://127.0.0.1:${ROOK_SERVE_PORT}/acp"
     # Enable perf logs in the child `rook serve` process by default.
     # Override with e.g. RUST_LOG=info just dev to disable.
     export RUST_LOG="${RUST_LOG:-perf=debug,info}"
@@ -133,6 +134,8 @@ dev-debug:
 
     VITE_PORT={{ vite_port }}
     export VITE_PORT
+    export ROOK_SERVE_PORT="${ROOK_SERVE_PORT:-52551}"
+    export VITE_ROOK_SERVE_URL="ws://127.0.0.1:${ROOK_SERVE_PORT}/acp"
     # Enable perf logs in the child `rook serve` process by default.
     # Override with e.g. RUST_LOG=info just dev-debug to disable.
     export RUST_LOG="${RUST_LOG:-perf=debug,info}"

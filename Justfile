@@ -80,7 +80,7 @@ install-deps:
 # Run the Tauri app in dev mode
 run-ui:
     @just require-hermit
-    cd ui/rook && pnpm tauri dev
+    cd ui/rook && ROOK_SERVE_PORT="${ROOK_SERVE_PORT:-52551}" VITE_ROOK_SERVE_URL="ws://127.0.0.1:${ROOK_SERVE_PORT:-52551}/acp" VITE_PORT="${VITE_PORT:-1520}" pnpm tauri dev
 
 # Lint/typecheck the Tauri app
 lint-ui:

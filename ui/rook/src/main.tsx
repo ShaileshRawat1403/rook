@@ -64,6 +64,12 @@ class RootErrorBoundary extends React.Component<
 const root = document.getElementById("root");
 if (!root) throw new Error("Root element not found");
 
+(
+  window as Window & {
+    __ROOK_HIDE_BOOT__?: () => void;
+  }
+).__ROOK_HIDE_BOOT__?.();
+
 ReactDOM.createRoot(root).render(
   <React.StrictMode>
     <RootErrorBoundary>
@@ -77,9 +83,3 @@ ReactDOM.createRoot(root).render(
     </RootErrorBoundary>
   </React.StrictMode>,
 );
-
-(
-  window as Window & {
-    __ROOK_HIDE_BOOT__?: () => void;
-  }
-).__ROOK_HIDE_BOOT__?.();

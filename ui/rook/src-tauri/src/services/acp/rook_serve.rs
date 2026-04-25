@@ -21,7 +21,7 @@ const LOCALHOST: &str = "127.0.0.1";
 /// concurrent sessions.
 pub struct RookServeProcess {
     port: u16,
-    _child: Child,
+    _child: Option<Child>,
 }
 
 /// Global singleton — initialised once at app startup.
@@ -42,7 +42,12 @@ impl RookServeProcess {
     }
 
     async fn spawn(app_handle: tauri::AppHandle) -> Result<RookServeProcess, String> {
-        let port = reserve_free_port()?;
+        let port = resolve_serve_port()?;
+
+        if is_server_ready(port).await {
+            log::info!("Using existing rook serve on port {port}");
+            return Ok(RookServeProcess { port, _child: None });
+        }
 
         // Use a stable working directory for the long-lived server process.
         // Individual sessions will set their own cwd via the ACP protocol.
@@ -88,7 +93,7 @@ impl RookServeProcess {
 
         Ok(RookServeProcess {
             port,
-            _child: child,
+            _child: Some(child),
         })
     }
 }
@@ -134,12 +139,11 @@ fn resolve_workspace_cli() -> Option<PathBuf> {
 
 async fn wait_for_server_ready(port: u16, child: &mut Child) -> Result<(), String> {
     let deadline = Instant::now() + ROOK_SERVE_CONNECT_TIMEOUT;
-    let addr = format!("{LOCALHOST}:{port}");
 
     loop {
-        match tokio::net::TcpStream::connect(&addr).await {
-            Ok(_) => return Ok(()),
-            Err(_) => {
+        match is_server_ready(port).await {
+            true => return Ok(()),
+            false => {
                 if let Some(status) = child
                     .try_wait()
                     .map_err(|e| format!("Failed to poll rook serve process: {e}"))?
@@ -159,6 +163,11 @@ async fn wait_for_server_ready(port: u16, child: &mut Child) -> Result<(), Strin
     }
 }
 
+async fn is_server_ready(port: u16) -> bool {
+    let addr = format!("{LOCALHOST}:{port}");
+    tokio::net::TcpStream::connect(&addr).await.is_ok()
+}
+
 fn default_serve_working_dir() -> PathBuf {
     dirs::home_dir()
         .unwrap_or_else(|| PathBuf::from("/tmp"))
@@ -173,6 +182,22 @@ fn reserve_free_port() -> Result<u16, String> {
         .local_addr()
         .map(|address| address.port())
         .map_err(|error| format!("Failed to resolve reserved Rook serve port: {error}"))
+}
+
+fn resolve_serve_port() -> Result<u16, String> {
+    if let Ok(value) = std::env::var("ROOK_SERVE_PORT") {
+        let trimmed = value.trim();
+        if trimmed.is_empty() {
+            return reserve_free_port();
+        }
+
+        let port = trimmed
+            .parse::<u16>()
+            .map_err(|error| format!("Invalid ROOK_SERVE_PORT `{trimmed}`: {error}"))?;
+        return Ok(port);
+    }
+
+    reserve_free_port()
 }
 
 fn forward_child_output(child: &mut Child) {
