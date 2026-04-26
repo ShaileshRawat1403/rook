@@ -26,8 +26,7 @@
         "hiddenTitle": true,
         "dragDropEnabled": false,
         "trafficLightPosition": { "x": 12, "y": 22 },
-        "center": true,
-        "deepLink": "rook://"
+        "center": true
       }
     ],
     "security": {
@@ -36,6 +35,9 @@
         "enable": true,
         "scope": ["$HOME/.rook/avatars/**"]
       }
+    },
+    "deepLink": {
+      "schemes": ["rook"]
     }
   },
   "bundle": {
