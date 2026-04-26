@@ -6,6 +6,7 @@ compile_error!("Features `rustls-tls` and `native-tls` are mutually exclusive");
 
 pub mod cli;
 pub mod commands;
+pub mod console;
 pub mod error;
 pub mod logging;
 pub mod project_tracker;
@@ -17,5 +18,6 @@ pub mod tui;
 
 // Re-export commonly used types
 pub use cli::Cli;
+pub use console::{error, info, success, warning};
 pub use error::{CliError, CliResult};
 pub use session::CliSession;
