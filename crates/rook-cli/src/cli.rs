@@ -1192,8 +1192,9 @@ async fn handle_interactive_session(
     }) = &identifier
     {
         if !resume {
-            eprintln!("Error: --session-id can only be used with --resume flag");
-            std::process::exit(1);
+            return Err(anyhow::anyhow!(
+                "--session-id can only be used with --resume flag"
+            ));
         }
     }
 
@@ -1298,7 +1299,7 @@ fn parse_run_input(
             let mut contents = String::new();
             std::io::stdin()
                 .read_to_string(&mut contents)
-                .expect("Failed to read from stdin");
+                .map_err(|e| anyhow::anyhow!("Failed to read from stdin: {}", e))?;
             Ok(Some((
                 InputConfig {
                     contents: Some(contents),
@@ -1308,13 +1309,12 @@ fn parse_run_input(
             )))
         }
         (Some(file), _, _) => {
-            let contents = std::fs::read_to_string(file).unwrap_or_else(|err| {
-                eprintln!(
+            let contents = std::fs::read_to_string(file).map_err(|err| {
+                anyhow::anyhow!(
                     "Instruction file not found — did you mean to use rook run --text?\n{}",
                     err
-                );
-                std::process::exit(1);
-            });
+                )
+            })?;
             Ok(Some((
                 InputConfig {
                     contents: Some(contents),
@@ -1353,10 +1353,7 @@ fn parse_run_input(
                 return Ok(None);
             }
             if input_opts.render_recipe {
-                if let Err(err) = render_recipe_as_yaml(recipe_name, input_opts.params.clone()) {
-                    eprintln!("{}: {}", console::style("Error").red().bold(), err);
-                    std::process::exit(1);
-                }
+                render_recipe_as_yaml(recipe_name, input_opts.params.clone())?;
                 return Ok(None);
             }
 
@@ -1377,10 +1374,9 @@ fn parse_run_input(
             )?;
             Ok(Some((input_config, Some(recipe))))
         }
-        (None, None, None) => {
-            eprintln!("Error: Must provide either --instructions (-i), --text (-t), or --recipe. Use -i - for stdin.");
-            std::process::exit(1);
-        }
+        (None, None, None) => Err(anyhow::anyhow!(
+                "Must provide either --instructions (-i), --text (-t), or --recipe. Use -i - for stdin."
+            )),
     }
 }
 
@@ -1410,8 +1406,9 @@ async fn handle_run_command(
     }) = &identifier
     {
         if !run_behavior.resume {
-            eprintln!("Error: --session-id can only be used with --resume flag");
-            std::process::exit(1);
+            return Err(anyhow::anyhow!(
+                "--session-id can only be used with --resume flag"
+            ));
         }
     }
 
@@ -1846,16 +1843,9 @@ pub async fn cli() -> anyhow::Result<()> {
         Some(Command::LocalModels { command }) => handle_local_models_command(command).await,
         Some(Command::ValidateExtensions { file }) => {
             use rook::agents::validate_extensions::validate_bundled_extensions;
-            match validate_bundled_extensions(&file) {
-                Ok(msg) => {
-                    println!("{msg}");
-                    Ok(())
-                }
-                Err(e) => {
-                    eprintln!("{e}");
-                    std::process::exit(1);
-                }
-            }
+            validate_bundled_extensions(&file).map(|msg| {
+                println!("{msg}");
+            })
         }
         None => handle_default_session().await,
     }

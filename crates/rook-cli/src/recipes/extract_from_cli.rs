@@ -14,10 +14,8 @@ pub fn extract_recipe_info_from_cli(
     additional_sub_recipes: Vec<String>,
     quiet: bool,
 ) -> Result<(InputConfig, Recipe)> {
-    let mut recipe = load_recipe(&recipe_name, params.clone()).unwrap_or_else(|err| {
-        eprintln!("{}: {}", console::style("Error").red().bold(), err);
-        std::process::exit(1);
-    });
+    let mut recipe = load_recipe(&recipe_name, params.clone())
+        .map_err(|err| anyhow::anyhow!("Failed to load recipe: {}", err))?;
     if !quiet {
         print_recipe_info(&recipe, params);
     }

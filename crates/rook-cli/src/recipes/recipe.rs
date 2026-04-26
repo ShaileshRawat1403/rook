@@ -120,16 +120,9 @@ pub fn collect_missing_secrets(requirements: &[SecretRequirement]) -> Result<()>
 
 pub fn render_recipe_as_yaml(recipe_name: &str, params: Vec<(String, String)>) -> Result<()> {
     let recipe = load_recipe(recipe_name, params)?;
-    match serde_yaml::to_string(&recipe) {
-        Ok(yaml_content) => {
-            println!("{}", yaml_content);
-            Ok(())
-        }
-        Err(_) => {
-            eprintln!("Failed to serialize recipe to YAML");
-            std::process::exit(1);
-        }
-    }
+    serde_yaml::to_string(&recipe)
+        .map(|yaml_content| println!("{}", yaml_content))
+        .map_err(|e| anyhow::anyhow!("Failed to serialize recipe to YAML: {}", e))
 }
 
 pub fn explain_recipe(recipe_name: &str, params: Vec<(String, String)>) -> Result<()> {

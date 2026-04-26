@@ -729,8 +729,12 @@ pub async fn build_session(
 
     let debug_mode = session_config.debug || config.get_param("ROOK_DEBUG").unwrap_or(false);
 
+    let agent = match Arc::try_unwrap(agent_ptr) {
+        Ok(a) => a,
+        Err(_) => unreachable!("Session agent should have no other references"),
+    };
     let session = CliSession::new(
-        Arc::try_unwrap(agent_ptr).unwrap_or_else(|_| panic!("There should be no more references")),
+        agent,
         session_id.clone(),
         debug_mode,
         session_config.scheduled_job_id.clone(),
