@@ -7,7 +7,7 @@ use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::process::{Child, Command};
 use tokio::sync::OnceCell;
 
-const ROOK_SERVE_CONNECT_TIMEOUT: Duration = Duration::from_secs(30);
+const ROOK_SERVE_CONNECT_TIMEOUT: Duration = Duration::from_secs(10);
 const ROOK_SERVE_CONNECT_RETRY_DELAY: Duration = Duration::from_millis(100);
 const LOCALHOST: &str = "127.0.0.1";
 // ---------------------------------------------------------------------------
@@ -79,6 +79,7 @@ impl RookServeProcess {
             working_dir.display(),
         );
 
+        // Spawn without waiting for output - just check port availability
         let mut child = command.spawn().map_err(|error| {
             format!(
                 "Failed to spawn rook serve (binary: {binary_display}, cwd: {}): {error}",
@@ -86,7 +87,7 @@ impl RookServeProcess {
             )
         })?;
 
-        forward_child_output(&mut child);
+        // Simply check if port becomes available - don't parse output
         wait_for_server_ready(port, &mut child).await?;
 
         log::info!("Rook serve is ready on port {port}");
@@ -138,18 +139,27 @@ fn resolve_workspace_cli() -> Option<PathBuf> {
 }
 
 async fn wait_for_server_ready(port: u16, child: &mut Child) -> Result<(), String> {
-    let deadline = Instant::now() + ROOK_SERVE_CONNECT_TIMEOUT;
+    let deadline = Instant::now() + Duration::from_secs(15);
 
+    // First check quickly if port is already available (existing process)
+    if is_server_ready(port).await {
+        log::info!("Rook serve is ready on port {port}");
+        return Ok(());
+    }
+
+    // Wait for port to become available
     loop {
         match is_server_ready(port).await {
-            true => return Ok(()),
+            true => {
+                log::info!("Rook serve is ready on port {port}");
+                return Ok(());
+            }
             false => {
-                if let Some(status) = child
-                    .try_wait()
-                    .map_err(|e| format!("Failed to poll rook serve process: {e}"))?
-                {
+                // Check if process exited already
+                if let Ok(Some(status)) = child.try_wait() {
                     return Err(format!(
-                        "Rook serve exited before becoming ready: {status}"
+                        "Rook serve exited before becoming ready: exit status: {}",
+                        status
                     ));
                 }
 
@@ -157,7 +167,7 @@ async fn wait_for_server_ready(port: u16, child: &mut Child) -> Result<(), Strin
                     return Err(format!("Timed out waiting for rook serve on port {port}"));
                 }
 
-                tokio::time::sleep(ROOK_SERVE_CONNECT_RETRY_DELAY).await;
+                tokio::time::sleep(Duration::from_millis(500)).await;
             }
         }
     }
