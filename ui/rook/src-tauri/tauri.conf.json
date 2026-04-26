@@ -26,7 +26,8 @@
         "hiddenTitle": true,
         "dragDropEnabled": false,
         "trafficLightPosition": { "x": 12, "y": 22 },
-        "center": true
+        "center": true,
+        "deepLink": "rook://"
       }
     ],
     "security": {
