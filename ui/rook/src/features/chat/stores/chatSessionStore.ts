@@ -110,14 +110,32 @@ async function fetchModelsFromRook(provider: string): Promise<ModelOption[]> {
     console.log("[models] Fetching models for provider:", provider);
     const { getClient } = await import("@/shared/api/acpConnection");
     const client = await getClient();
-    const result = await client.rook.RookProvidersModels({ providerName: provider });
-    console.log("[models] Response:", result);
-    if (result.models) {
-      return result.models.map((m: string) => ({ id: m, name: m }));
+    if (!client) {
+      console.error("[models] No client available");
+      return [];
+    }
+    console.log("[models] Client ready, trying direct extMethod...");
+    try {
+      const result = await client.extMethod("_rook/providers/models", { providerName: provider });
+      console.log("[models] Direct extMethod result:", result);
+      if (result && typeof result === 'object' && 'models' in result) {
+        const models = (result as { models: string[] }).models;
+        if (models) {
+          return models.map((m: string) => ({ id: m, name: m }));
+        }
+      }
+    } catch (extErr) {
+      console.log("[models] Direct extMethod failed, trying SDK:", extErr);
+    }
+    console.log("[models] Client ready, calling RookProvidersModels SDK...");
+    const sdkResult = await client.rook.RookProvidersModels({ providerName: provider });
+    console.log("[models] SDK Response:", sdkResult);
+    if (sdkResult.models) {
+      return sdkResult.models.map((m: string) => ({ id: m, name: m }));
     }
     return [];
   } catch (e) {
-    console.error("Failed to fetch models:", e);
+    console.error("[models] Failed to fetch models:", e);
     return [];
   }
 }
