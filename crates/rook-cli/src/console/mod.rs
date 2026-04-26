@@ -1,9 +1,13 @@
 pub mod progress;
+pub mod stream;
 pub mod style;
 pub mod summary;
 pub mod table;
 
 pub use progress::{progress_bar, simple_spinner, Spinners};
+pub use stream::{
+    format_stream_header, format_stream_status, render_lines, render_stream_state, StreamState,
+};
 pub use style::{
     badge, bold, code, dim, eprint_error, eprint_info, eprint_success, eprint_warning, error,
     highlight, info, italic, secondary, success, warning,
