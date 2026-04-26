@@ -40,7 +40,7 @@ export default function DeeplinkGenerator() {
       is_builtin: false,
       id: "example-extension",
       name: "Example Extension",
-      description: "An example Goose extension",
+      description: "An example rook extension",
       command: "npx @gooseai/example-extension",
       environmentVariables: [
         {
@@ -240,7 +240,7 @@ export default function DeeplinkGenerator() {
             Deeplink Generator
           </h1>
           <p className="text-textProminent">
-            Generate installation deeplinks for Goose extensions that can be shared with others.
+            Generate installation deeplinks for rook extensions that can be shared with others.
           </p>
         </div>
 
@@ -461,7 +461,7 @@ export default function DeeplinkGenerator() {
               </ul>
             </li>
             <li>Click "Generate Deeplink" to create your installation deeplink.</li>
-            <li>Copy and share the generated deeplink - when users click it, it will open Goose Desktop and prompt them to install your extension.</li>
+            <li>Copy and share the generated deeplink - when users click it, it will open rook Desktop and prompt them to install your extension.</li>
           </ol>
         </div>
       </div>

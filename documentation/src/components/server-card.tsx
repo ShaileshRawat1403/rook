@@ -9,12 +9,12 @@ import { fetchGitHubStars, formatStarCount } from "@site/src/utils/github-stars"
 const getExtensionCommand = (server: MCPServer): string => {
   switch (server.type) {
     case "remote":
-      return `goose session --with-remote-extension "${server.url}"`;
+      return `rook session --with-remote-extension "${server.url}"`;
     case "streamable-http":
-      return `goose session --with-streamable-http-extension "${server.url}"`;
+      return `rook session --with-streamable-http-extension "${server.url}"`;
     case "local":
     default:
-      return `goose session --with-extension "${server.command}"`;
+      return `rook session --with-extension "${server.command}"`;
   }
 };
 
@@ -135,7 +135,7 @@ export function ServerCard({ server }: { server: MCPServer }) {
                 {server.is_builtin ? (
                   <div
                     className="built-in-badge"
-                    title="This extension is built into goose and can be enabled in the settings page"
+                    title="This extension is built into rook and can be enabled in the settings page"
                   >
                     Built-in
                   </div>

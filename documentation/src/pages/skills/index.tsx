@@ -92,7 +92,7 @@ export default function SkillsPage() {
   return (
     <Layout
       title="Skills Marketplace"
-      description="Browse and install community-contributed skills for goose"
+      description="Browse and install community-contributed skills for rook"
     >
       <div className="container mx-auto px-4 py-8 md:p-24">
         <div className="pb-8 md:pb-16">

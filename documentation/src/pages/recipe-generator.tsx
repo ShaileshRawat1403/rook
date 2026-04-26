@@ -178,7 +178,7 @@ instructions: ${instructions}
             Recipe Generator
           </h1>
           <p className="text-textProminent">
-            Create a shareable Goose recipe URL that others can use to launch a session with your predefined settings.
+            Create a shareable rook recipe URL that others can use to launch a session with your predefined settings.
           </p>
         </div>
 
@@ -426,15 +426,15 @@ instructions: ${instructions}
             <li>For URL format:
               <ul className="list-disc pl-6 mt-2">
                 <li>Copy the generated URL using the "Copy URL" button.</li>
-                <li>Share the URL with others who have Goose Desktop installed.</li>
-                <li>When someone clicks the URL, it will open Goose Desktop with your recipe configuration.</li>
+                <li>Share the URL with others who have rook Desktop installed.</li>
+                <li>When someone clicks the URL, it will open rook Desktop with your recipe configuration.</li>
               </ul>
             </li>
             <li>For YAML format:
               <ul className="list-disc pl-6 mt-2">
                 <li>Copy the generated YAML using the "Copy YAML" button.</li>
                 <li>Save it as a <code>.yaml</code> file.</li>
-                <li>Use with the CLI: <code>goose run --recipe your-recipe.yaml</code></li>
+                <li>Use with the CLI: <code>rook run --recipe your-recipe.yaml</code></li>
                 <li>Or create a deeplink with: <code>goose recipe deeplink your-recipe.yaml</code></li>
               </ul>
             </li>

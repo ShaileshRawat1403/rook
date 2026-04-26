@@ -112,15 +112,15 @@ const getDocumentationPath = (serverId: string): string => {
                         <div className="command-content">
                           {(server.type === "local" || !server.type) ? (
                             <code className="text-sm block">
-                              {`goose session --with-extension "${server.command}"`}
+                              {`rook session --with-extension "${server.command}"`}
                             </code>
                           ) : server.type === "remote" ? (
                             <code className="text-sm block">
-                              {`goose session --with-remote-extension "${server.url}"`}
+                              {`rook session --with-remote-extension "${server.url}"`}
                             </code>
                           ) : server.type === "streamable-http" ? (
                             <code className="text-sm block">
-                              {`goose session --with-streamable-http-extension "${server.url}"`}
+                              {`rook session --with-streamable-http-extension "${server.url}"`}
                             </code>
                           ) : (
                             <code className="text-sm block">
@@ -211,7 +211,7 @@ const getDocumentationPath = (serverId: string): string => {
                     {server.is_builtin ? (
                       <div
                         className="built-in-badge"
-                        title="This extension is built into Goose and can be enabled on the Extensions page"
+                        title="This extension is built into rook and can be enabled on the Extensions page"
                       >
                         Built-in
                       </div>

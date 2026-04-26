@@ -21,7 +21,7 @@ function HeroSection() {
           workflows, and everything in between.
         </p>
         <p className={styles.heroSubtitle}>
-          Rook was born out of Goose, but the identity now comes from the bird:
+          Rook was born out of rook, but the identity now comes from the bird:
           tool-using, coordinated, transparent, and built for collective agency.
         </p>
         <div className={styles.heroActions}>
@@ -405,7 +405,7 @@ function VideoSection() {
           <iframe
             src="https://www.youtube.com/embed/D-DpDunrbpo"
             className={styles.video}
-            title="vibe coding with goose"
+            title="vibe coding with rook"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           />

@@ -50,7 +50,7 @@ export default function CLIExtensionInstructions({
       <ol>
         <li>Run the <code>configure</code> command:</li>
       </ol>
-      <CodeBlock language="sh">{`goose configure`}</CodeBlock>
+      <CodeBlock language="sh">{`rook configure`}</CodeBlock>
 
       <ol start={2}>
         <li>
