@@ -96,6 +96,12 @@ export function HomeScreen({
     useAgentStore.getState().openPersonaEditor();
   }, []);
 
+  useEffect(() => {
+    if (selectedProvider && cachedModels.length === 0 && !providersLoading) {
+      useChatSessionStore.getState().loadModelsForProvider(selectedProvider);
+    }
+  }, [selectedProvider, cachedModels, providersLoading]);
+
   const homeDraft = useChatStore(
     (s) => s.draftsBySession[HOME_DRAFT_KEY] ?? "",
   );

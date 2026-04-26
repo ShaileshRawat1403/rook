@@ -93,6 +93,7 @@ interface ChatSessionStoreActions {
   ) => void;
   cacheModelsForProvider: (providerId: string, models: ModelOption[]) => void;
   getCachedModels: (providerId: string) => ModelOption[];
+  loadModelsForProvider: (providerId: string) => Promise<void>;
 
   getSession: (id: string) => ChatSession | undefined;
   getActiveSession: () => ChatSession | null;
@@ -103,6 +104,30 @@ interface ChatSessionStoreActions {
 export type ChatSessionStore = ChatSessionStoreState & ChatSessionStoreActions;
 
 const MODEL_CACHE_STORAGE_KEY = "rook:model-cache";
+const ROOK_SERVE_URL = "http://127.0.0.1:52551";
+
+async function fetchModelsFromRook(provider: string): Promise<ModelOption[]> {
+  try {
+    const resp = await fetch(ROOK_SERVE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "rook_providers_models",
+        params: { provider },
+        id: Math.floor(Math.random() * 10000),
+      }),
+    });
+    const data = await resp.json();
+    if (data.result?.models) {
+      return data.result.models.map((m: string) => ({ id: m, name: m }));
+    }
+    return [];
+  } catch (e) {
+    console.error("Failed to fetch models:", e);
+    return [];
+  }
+}
 
 function loadModelCache(): Record<string, ModelOption[]> {
   if (typeof window === "undefined") return {};
@@ -620,6 +645,15 @@ export const useChatSessionStore = create<ChatSessionStore>((set, get) => ({
 
   getCachedModels: (providerId) =>
     get().modelCacheByProvider[providerId] ?? EMPTY_MODELS,
+
+  loadModelsForProvider: async (providerId: string) => {
+    const current = get().modelCacheByProvider[providerId];
+    if (current && current.length > 0) return;
+    const models = await fetchModelsFromRook(providerId);
+    if (models.length > 0) {
+      get().cacheModelsForProvider(providerId, models);
+    }
+  },
 
   getSession: (id) => get().sessions.find((session) => session.id === id),
 
