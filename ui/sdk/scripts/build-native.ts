@@ -54,7 +54,7 @@ function buildTarget(platform: string): void {
   const pkgDir = resolve(NATIVE_DIR, `rook-binary-${platform}`);
   const binDir = resolve(pkgDir, "bin");
 
-  console.log(`==> Building goose for ${platform} (${rustTarget})`);
+  console.log(`==> Building rook for ${platform} (${rustTarget})`);
 
   try {
     execSync(`cargo build --release --target ${rustTarget} --bin rook`, {
@@ -69,7 +69,7 @@ function buildTarget(platform: string): void {
   mkdirSync(binDir, { recursive: true });
 
   const ext = platform.startsWith("win32") ? ".exe" : "";
-  const binaryName = `goose${ext}`;
+  const binaryName = `rook${ext}`;
   const srcPath = resolve(ROOT, "target", rustTarget, "release", binaryName);
   const destPath = resolve(binDir, binaryName);
 
