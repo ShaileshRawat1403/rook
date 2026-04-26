@@ -104,23 +104,16 @@ interface ChatSessionStoreActions {
 export type ChatSessionStore = ChatSessionStoreState & ChatSessionStoreActions;
 
 const MODEL_CACHE_STORAGE_KEY = "rook:model-cache";
-const ROOK_SERVE_URL = "http://127.0.0.1:52551";
 
 async function fetchModelsFromRook(provider: string): Promise<ModelOption[]> {
   try {
-    const resp = await fetch(ROOK_SERVE_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        method: "rook_providers_models",
-        params: { provider },
-        id: Math.floor(Math.random() * 10000),
-      }),
-    });
-    const data = await resp.json();
-    if (data.result?.models) {
-      return data.result.models.map((m: string) => ({ id: m, name: m }));
+    console.log("[models] Fetching models for provider:", provider);
+    const { getClient } = await import("@/shared/api/acpConnection");
+    const client = await getClient();
+    const result = await client.rook.RookProvidersModels({ providerName: provider });
+    console.log("[models] Response:", result);
+    if (result.models) {
+      return result.models.map((m: string) => ({ id: m, name: m }));
     }
     return [];
   } catch (e) {
