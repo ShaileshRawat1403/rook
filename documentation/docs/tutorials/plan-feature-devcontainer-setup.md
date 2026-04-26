@@ -1,6 +1,6 @@
 ---
 title: "Planning Complex Tasks"
-description: "Learn how to use goose's Plan feature to break down complex tasks into manageable, executable steps."
+description: "Learn how to use rook's Plan feature to break down complex tasks into manageable, executable steps."
 ---
 
 # Planning Complex Tasks
@@ -10,13 +10,13 @@ description: "Learn how to use goose's Plan feature to break down complex tasks 
 
 Using rook for large, complex tasks can feel overwhelming, especially when you're unsure of exactly how you want to approach it in advance. I experienced this when I needed to set up a complex development environment for an [API course](https://github.com/LinkedInLearning/java-automated-api-testing-with-rest-assured-5989068) I published. Between Docker configurations, database initialization, devcontainer setup, and GitHub Codespaces integration, there are dozens of moving pieces that need to work together perfectly. One missing configuration or incorrect dependency can derail the entire process.
 
-This tutorial shows you how to use goose's [Plan feature](/docs/guides/creating-plans) to transform a complex devcontainer setup into a systematic, executable roadmap. You'll learn how to brainstorm with goose, refine your requirements, and let rook create both a detailed plan and implementation checklist.
+This tutorial shows you how to use rook's [Plan feature](/docs/guides/creating-plans) to transform a complex devcontainer setup into a systematic, executable roadmap. You'll learn how to brainstorm with rook, refine your requirements, and let rook create both a detailed plan and implementation checklist.
 
 ## What You'll Learn
 
 By the end of this tutorial, you'll understand how to:
 
-- Use goose's Plan feature to break down complex technical projects
+- Use rook's Plan feature to break down complex technical projects
 - Brainstorm and refine requirements through AI-assisted conversation
 - Transform high-level goals into detailed, executable steps
 - Create comprehensive checklists for validation and quality assurance
@@ -43,7 +43,7 @@ Let's start by having a brainstorming conversation with rook to clarify our requ
 The rook Desktop doesn't have a `/plan` keyword like the CLI. In Desktop, you need to explicitly ask rook to create a plan:
 
 ```
-"Hey goose, can you create a plan to set up my GitHub repo for Codespaces with automatic Docker startup? Please don't start the actual work yet."
+"Hey rook, can you create a plan to set up my GitHub repo for Codespaces with automatic Docker startup? Please don't start the actual work yet."
 ```
 
 In the CLI, you can enter plan mode with `/plan` and rook will ask clarifying questions before generating the plan. Unless you specifically ask rook Desktop to "create a plan", it might jump straight into implementation.
@@ -53,7 +53,7 @@ In the CLI, you can enter plan mode with `/plan` and rook will ask clarifying qu
 
 **You:** _"I need help setting up a GitHub repository for automated API testing. Students should be able to open it in GitHub Codespaces and immediately start writing tests without any manual setup. Can you help me think through what's needed?"_
 
-**goose:** _"I'd be happy to help you design this automated setup! Let me ask some clarifying questions to understand your requirements better:_
+**rook:** _"I'd be happy to help you design this automated setup! Let me ask some clarifying questions to understand your requirements better:_
 
 1. What type of API are you working with? (REST, GraphQL, etc.)
 2. What testing framework do you want students to use?
@@ -65,7 +65,7 @@ In the CLI, you can enter plan mode with `/plan` and rook will ask clarifying qu
 
 **You:** _"It's a REST API built in PHP that students will test using Rest Assured in Java. They need a real MySQL database with actual test data so they can practice realistic scenarios. The API has endpoints for managing products and categories in an e-commerce system."_
 
-**goose:** _"Perfect! That gives me a clear picture. A few more questions to ensure we design this correctly:_
+**rook:** _"Perfect! That gives me a clear picture. A few more questions to ensure we design this correctly:_
 
 1. Do you already have the PHP API code, or do we need to create it?
 2. What version of Java should the environment support?
@@ -408,7 +408,7 @@ If issues arise during implementation or testing, use the plan as a reference to
 - **Permission Problems**: Update Dockerfile with proper permissions
 - **Configuration Errors**: Verify environment variables and connection strings
 
-## Best Practices for Planning with goose
+## Best Practices for Planning with rook
 
 1. Start with brainstorming. Don't jump straight to asking for a plan. Have a conversation to clarify requirements and explore options.
 2. Be specific about deliverables. Ask for concrete deliverables, file names, and validation criteria for each step.
@@ -435,7 +435,7 @@ Explore different implementation strategies:
 
 ## Conclusion
 
-goose's Plan feature transforms complex technical challenges from overwhelming problems into systematic, executable roadmaps. By following this tutorial's approach:
+rook's Plan feature transforms complex technical challenges from overwhelming problems into systematic, executable roadmaps. By following this tutorial's approach:
 
 1. **Brainstorm** to clarify requirements and explore options
 2. **Plan** to break down complexity into manageable steps
@@ -451,7 +451,7 @@ The key is treating rook as a planning partner, not just a code generator. Give 
 
 - Try this approach with your own complex setup challenges
 - Experiment with different types of planning prompts
-- Share your planning successes with the [rook community](https://discord.gg/goose-oss)
+- Share your planning successes with the [rook community](https://discord.gg/rook-oss)
 - Explore how planning integrates with [Subagents](/docs/guides/subagents) for even more sophisticated workflows
 
 Remember, the goal is to get the right approach, in the right order, with the right safeguards. That's what makes the difference between a quick fix and a robust, maintainable solution.

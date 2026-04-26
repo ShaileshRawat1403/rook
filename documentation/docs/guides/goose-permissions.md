@@ -8,7 +8,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { PanelLeft, Tornado } from 'lucide-react';
 
-goose’s permissions determine how much autonomy it has when modifying files, using extensions, and performing automated actions. By selecting a permission mode, you have full control over how rook interacts with your development environment.
+rook’s permissions determine how much autonomy it has when modifying files, using extensions, and performing automated actions. By selecting a permission mode, you have full control over how rook interacts with your development environment.
 
 <details>
   <summary>Permission Modes Video Walkthrough</summary>
@@ -78,7 +78,7 @@ Here's how to configure:
         2. Select `rook settings` from the menu and press Enter.
 
         ```sh
-        ┌ goose-configure
+        ┌ rook-configure
         │
         ◆ What would you like to configure?
         | ○ Configure Providers
@@ -94,7 +94,7 @@ Here's how to configure:
         3. Choose `rook mode` from the menu and press Enter.
 
         ```sh
-        ┌   goose-configure
+        ┌   rook-configure
         │
         ◇  What would you like to configure?
         │  rook settings 
@@ -116,7 +116,7 @@ Here's how to configure:
         4.  Choose the rook mode you would like to configure.
 
         ```sh
-        ┌   goose-configure
+        ┌   rook-configure
         │
         ◇  What would you like to configure?
         │  rook settings
@@ -148,11 +148,11 @@ Here's how to configure:
 
 ## CLI Provider Permission Integration
 
-When using [CLI providers](/docs/guides/cli-providers) like Claude Code, rook integrates with the provider's native permission system. In approve mode, permission requests from Claude Code are routed through goose's confirmation interface, giving you a unified experience.
+When using [CLI providers](/docs/guides/cli-providers) like Claude Code, rook integrates with the provider's native permission system. In approve mode, permission requests from Claude Code are routed through rook's confirmation interface, giving you a unified experience.
 
 For example, with Claude Code in approve mode:
 - Claude Code detects sensitive operations (file writes, shell commands, tool calls)
-- The permission prompt appears in goose's interface (CLI or Desktop)
+- The permission prompt appears in rook's interface (CLI or Desktop)
 - Your allow/deny decision is sent back to Claude Code
 - Claude Code proceeds or adapts based on your response
 

@@ -25,14 +25,14 @@ By the end of the session, you'll have a working prototype and a clear understan
 
 ## Setup
 
-1. [Install goose](/docs/getting-started/installation)
-2. Within goose, choose your working directory. It's recommended to work in a newly created directory.
-3. Add the following to [.goosehints](/docs/guides/context-engineering/using-goosehints/#local-hints-file)
+1. [Install rook](/docs/getting-started/installation)
+2. Within rook, choose your working directory. It's recommended to work in a newly created directory.
+3. Add the following to [.rookhints](/docs/guides/context-engineering/using-rookhints/#local-hints-file)
 ```plaintext
 Create apps in html, javascript, and css when possible.
 NEVER run blocking server commands (node server.js, npm start, etc.) - provide commands for user to run separately.
 ```
-4. (Optional) Install the [rook docs extension](/docs/mcp/goose-docs-mcp) in case you need to ask rook about itself
+4. (Optional) Install the [rook docs extension](/docs/mcp/rook-docs-mcp) in case you need to ask rook about itself
 
 ## Tasks
 
@@ -136,7 +136,7 @@ Have the Architect plan the technical setup. They should:
 Spin up two developer subagents in parallel to build the core app. One will handle the Express server and backend logic, the other will build the UI and wire up the form. rook should execute both agents at the same time, not one after the other.
 
 - Use the file structure and API contract from the Architect
-- Backend writes the API logic using Headless goose
+- Backend writes the API logic using Headless rook
 - Frontend builds a responsive UI that hits the API
 - Make sure agents avoid writing to the same files
 
@@ -154,7 +154,7 @@ Spin up two developer subagents in parallel to build the core app. One will hand
   🛠️ **Backend Developer** should:
   - Implement `server.js` with Express
   - Add POST `/api/briefing` endpoint accepting `{ "topic": "string" }`
-  - Use **Headless goose** to generate the summary:
+  - Use **Headless rook** to generate the summary:
     - `rook run -t "YOUR_PROMPT_HERE" --quiet --no-session --max-turns 1`
   - Use `child_process.spawn()` instead of `exec()`
   - Clean response: remove ANSI codes, markdown blocks, and extract JSON
@@ -252,7 +252,7 @@ npm install
 ```
 
 ### Step 2: Start the Server
-**Important**: Run this in a **separate terminal window** (not in goose):
+**Important**: Run this in a **separate terminal window** (not in rook):
 ```bash
 npm start
 ```
@@ -285,7 +285,7 @@ You should see:
 
 :::tip Keep the Server Running
 - **Don't close the terminal** where the server is running
-- **Don't run the server in goose** - it will get stuck
+- **Don't run the server in rook** - it will get stuck
 - If you need to stop it: Press `Ctrl+C` in the server terminal
 - If you need rook to fix or add something, let it know! Once it's done, restart the server
 :::

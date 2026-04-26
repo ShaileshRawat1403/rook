@@ -3,7 +3,7 @@ use rmcp::{
     object,
 };
 
-const ACP_AWARE_META_KEY: &str = "_goose/acp-aware";
+const ACP_AWARE_META_KEY: &str = "_rook/acp-aware";
 
 pub trait AcpAwareToolMeta {
     fn with_acp_aware_meta(self) -> Self;

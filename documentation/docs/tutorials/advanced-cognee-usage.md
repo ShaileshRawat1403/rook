@@ -1,14 +1,14 @@
 ---
-title: Advanced Cognee Usage with goose
+title: Advanced Cognee Usage with rook
 description: Advanced patterns for using Cognee knowledge graph with rook for enhanced memory and automation
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Advanced Cognee Usage with goose
+# Advanced Cognee Usage with rook
 
-This tutorial covers advanced usage patterns for the Cognee extension with goose, including automated memory management, knowledge graph optimization, and various integration strategies.
+This tutorial covers advanced usage patterns for the Cognee extension with rook, including automated memory management, knowledge graph optimization, and various integration strategies.
 
 ## Overview
 
@@ -47,7 +47,7 @@ Understanding Cognee's search types is crucial for effective usage:
 
 Use instruction files for consistent behavior across sessions. This method uses fewer tokens but has slower startup.
 
-Create `~/.config/goose/cognee-instructions.md`:
+Create `~/.config/rook/cognee-instructions.md`:
 
 ````markdown
 You are an LLM agent with access to a Cognee knowledge graph for memory.
@@ -90,15 +90,15 @@ You are an LLM agent with access to a Cognee knowledge graph for memory.
 
 Start rook with instructions:
 ```bash
-rook run -i ~/.config/goose/cognee-instructions.md -s
+rook run -i ~/.config/rook/cognee-instructions.md -s
 ```
 
 </TabItem>
 <TabItem value="method2" label="Method 2">
 
-### goosehints File
+### rookhints File
 
-For faster startup with higher token usage, add to your `.goosehints` file:
+For faster startup with higher token usage, add to your `.rookhints` file:
 
 ```text
 COGNEE_MEMORY_SYSTEM:
@@ -129,7 +129,7 @@ Combine with the [Memory MCP extension](../mcp/memory-mcp.md) for hybrid approac
 
 1. Store Cognee usage patterns as memories
 2. Use Memory MCP to trigger Cognee searches
-3. Lower token usage than goosehints
+3. Lower token usage than rookhints
 4. More reliable than pure instruction files
 
 ## Advanced Workflows
@@ -142,8 +142,8 @@ For software development projects:
 # Start rook with Cognee
 rook session
 
-# In goose, analyze your codebase
-> goose, please codify this repository and then help me understand the architecture
+# In rook, analyze your codebase
+> rook, please codify this repository and then help me understand the architecture
 ```
 
 rook will:
@@ -157,7 +157,7 @@ For research and documentation:
 
 ```bash
 # Cognify research documents
-> goose, please cognify the contents of these research papers: paper1.pdf, paper2.pdf, paper3.pdf
+> rook, please cognify the contents of these research papers: paper1.pdf, paper2.pdf, paper3.pdf
 
 # Later, query relationships
 > What are the connections between the methodologies in these papers?
@@ -215,10 +215,10 @@ Monitor and manage your knowledge graph:
 
 ```bash
 # Check status
-> goose, what's the status of the cognify pipeline?
+> rook, what's the status of the cognify pipeline?
 
 # Selective pruning (if needed)
-> goose, can you help me identify outdated information in the knowledge graph?
+> rook, can you help me identify outdated information in the knowledge graph?
 ```
 
 ## Troubleshooting
@@ -228,7 +228,7 @@ Monitor and manage your knowledge graph:
 1. **Slow startup**: Use Method 2 (separate server) configuration
 2. **Memory not persisting**: Check file permissions and paths
 3. **Search returning empty results**: Ensure data was properly cognified
-4. **High token usage**: Use instruction files instead of goosehints
+4. **High token usage**: Use instruction files instead of rookhints
 
 ### Debug Commands
 
@@ -241,7 +241,7 @@ curl http://localhost:8000/health
 
 # Verify knowledge graph status
 # In rook session:
-> goose, run cognify_status and codify_status
+> rook, run cognify_status and codify_status
 ```
 
 ## Best Practices
@@ -251,10 +251,10 @@ curl http://localhost:8000/health
 1. **Use nodesets** for organizing different types of information:
    ```bash
    # Developer rules
-   > goose, add these coding standards to the 'developer_rules' nodeset
+   > rook, add these coding standards to the 'developer_rules' nodeset
    
    # Project-specific info  
-   > goose, cognify this project documentation with nodeset 'project_alpha'
+   > rook, cognify this project documentation with nodeset 'project_alpha'
    ```
 
 2. **Regular maintenance**:
@@ -274,7 +274,7 @@ curl http://localhost:8000/health
 
 ```bash
 # Setup
-> goose, codify this repository and remember that I prefer: functional programming patterns, comprehensive tests, and clear documentation
+> rook, codify this repository and remember that I prefer: functional programming patterns, comprehensive tests, and clear documentation
 
 # Usage
 > Review this pull request and check it against my coding preferences
@@ -284,7 +284,7 @@ curl http://localhost:8000/health
 
 ```bash
 # Before meeting
-> goose, cognify the agenda and participant backgrounds from these documents
+> rook, cognify the agenda and participant backgrounds from these documents
 
 # During/after meeting
 > Based on the knowledge graph, what are the key action items and how do they relate to our previous discussions?
@@ -294,7 +294,7 @@ curl http://localhost:8000/health
 
 ```bash
 # Literature review
-> goose, cognify these 10 research papers and create a knowledge graph of the relationships between their methodologies
+> rook, cognify these 10 research papers and create a knowledge graph of the relationships between their methodologies
 
 # Synthesis
 > What are the emerging patterns in the research and what gaps exist?

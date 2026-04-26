@@ -7,13 +7,13 @@ description: Efficiently find and reference files in rook Desktop and follow bes
 
 As an autonomous agent, rook is designed to carry out tasks following specified instructions. This often involves working with local files - both finding the right files to work with and modifying them safely.
 
-This guide covers how to efficiently access and reference files in goose. It also includes essential best practices for safe file operations, such as monitoring changes and reverting them when necessary, to maintain the integrity of your codebase.
+This guide covers how to efficiently access and reference files in rook. It also includes essential best practices for safe file operations, such as monitoring changes and reverting them when necessary, to maintain the integrity of your codebase.
 
 ## File Access
 
 ### Quick File Search in rook Desktop
 
-rook Desktop includes a fuzzy file search feature that makes it easy to reference files from within the chat interface without manually navigating through file system dialogs. This feature helps you quickly find and include files in your messages to goose.
+rook Desktop includes a fuzzy file search feature that makes it easy to reference files from within the chat interface without manually navigating through file system dialogs. This feature helps you quickly find and include files in your messages to rook.
 
 1. Type `@` in the chat input to open the file search box
 2. Continue typing to filter files using case-insensitive, fuzzy matching (e.g., `@readme`, `@config.js`, `@src/main`)
@@ -22,7 +22,7 @@ rook Desktop includes a fuzzy file search feature that makes it easy to referenc
    - Use arrow keys (↑/↓) to move through the search results
    - Click or press `Enter` to insert the selected file path into your message
    
-3. That's it! When you're ready, send your message to goose
+3. That's it! When you're ready, send your message to rook
 
 :::info
 To close the search box without selecting a file, press `Esc` or click in the chat input.
@@ -45,11 +45,11 @@ Always use a version control system like Git to track changes to your codebase. 
 
 ### Validation and Testing
 
-Implement validation and testing steps before and after rook modifies any files. Run your unit tests to verify changes made by goose. Use a staging environment to ensure changes integrate well with the entire system.
+Implement validation and testing steps before and after rook modifies any files. Run your unit tests to verify changes made by rook. Use a staging environment to ensure changes integrate well with the entire system.
 
 ### Change Review
 
-Manually review or use automated code reviews to ensure the quality of generated code or changes. Integrate tools such as diff tools to visualize changes made by goose. Implement a review process with team members or CI/CD pipelines.
+Manually review or use automated code reviews to ensure the quality of generated code or changes. Integrate tools such as diff tools to visualize changes made by rook. Implement a review process with team members or CI/CD pipelines.
 
 ### Codebase Organization
 

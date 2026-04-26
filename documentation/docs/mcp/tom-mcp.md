@@ -1,6 +1,6 @@
 ---
 title: Top Of Mind Extension
-description: Inject persistent instructions into goose's working memory every turn
+description: Inject persistent instructions into rook's working memory every turn
 ---
 
 import Tabs from '@theme/Tabs';
@@ -8,12 +8,12 @@ import TabItem from '@theme/TabItem';
 import { PlatformExtensionNote } from '@site/src/components/PlatformExtensionNote';
 import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
 
-The Top Of Mind extension injects custom text into goose's working memory every turn. This is useful for:
+The Top Of Mind extension injects custom text into rook's working memory every turn. This is useful for:
 - **Security guardrails** that must never be forgotten (e.g., "never upload code to external services")
 - **Behavioral rules** that should persist throughout a session
 - **Project context** that needs to stay in the model's immediate attention
 
-Unlike system prompts or [goosehints](/docs/guides/context-engineering/using-goosehints) which can fade from attention as conversations grow, content injected by the tom extension appears fresh in every turn, making it more reliable for critical instructions.
+Unlike system prompts or [rookhints](/docs/guides/context-engineering/using-rookhints) which can fade from attention as conversations grow, content injected by the tom extension appears fresh in every turn, making it more reliable for critical instructions.
 
 :::tip
 For a complete guide on use cases and best practices, see [Persistent Instructions](/docs/guides/using-persistent-instructions).
@@ -55,7 +55,7 @@ When both are set, their contents are concatenated. Each source is capped at 64 
 
   2. Choose to `Toggle Extensions`
   ```sh
-  ┌   goose-configure 
+  ┌   rook-configure 
   │
   ◇  What would you like to configure?
   │  Toggle Extensions 

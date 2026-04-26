@@ -4,14 +4,14 @@ title: Using rook in ACP Clients
 sidebar_label: rook in ACP Clients
 ---
 
-Client applications that support the [Agent Client Protocol (ACP)](https://agentclientprotocol.com/) can connect natively to goose. This integration allows you to seamlessly interact with rook directly from the client.
+Client applications that support the [Agent Client Protocol (ACP)](https://agentclientprotocol.com/) can connect natively to rook. This integration allows you to seamlessly interact with rook directly from the client.
 
 :::warning Experimental Feature
-ACP is an emerging specification that enables clients to communicate with AI agents like goose. This feature has limited adoption and may evolve as the protocol develops.
+ACP is an emerging specification that enables clients to communicate with AI agents like rook. This feature has limited adoption and may evolve as the protocol develops.
 :::
 
 ## How It Works
-After you configure rook as an agent in the ACP client, you gain access to goose's core agent functionality, including its extensions and tools. rook also automatically loads any [configured MCP servers](#using-mcp-servers-from-acp-clients) from your ACP client alongside its own extensions, making their tools available without additional configuration.
+After you configure rook as an agent in the ACP client, you gain access to rook's core agent functionality, including its extensions and tools. rook also automatically loads any [configured MCP servers](#using-mcp-servers-from-acp-clients) from your ACP client alongside its own extensions, making their tools available without additional configuration.
 
 The client manages the rook lifecycle automatically, including:
 
@@ -23,11 +23,11 @@ The client manages the rook lifecycle automatically, including:
 - **Terminal**: The client runs commands in its own terminal, so output appears alongside the conversation
 
 :::info Session Persistence
-ACP sessions are saved to goose's session history where you can access and manage them using goose. Access to session history in ACP clients might vary.
+ACP sessions are saved to rook's session history where you can access and manage them using rook. Access to session history in ACP clients might vary.
 :::
 
 :::tip Reference Implementation
-The [rook for VS Code](/docs/experimental/vs-code-extension) extension uses ACP to communicate with goose. See the [vscode-goose](https://github.com/aaif-goose/vscode-goose) repository for implementation details.
+The [rook for VS Code](/docs/experimental/vs-code-extension) extension uses ACP to communicate with rook. See the [vscode-rook](https://github.com/aaif-rook/vscode-rook) repository for implementation details.
 :::
 
 ## Setup in ACP Clients
@@ -66,8 +66,8 @@ Add rook to your Zed settings:
 ```json
 {
   "agent_servers": {
-    "goose": {
-      "command": "goose",
+    "rook": {
+      "command": "rook",
       "args": ["acp"],
       "env": {}
     }
@@ -82,7 +82,7 @@ You should now be able to interact with rook directly in Zed. Your ACP sessions 
 
 1. **Open the Agent Panel**: Click the sparkles agent icon in Zed's status bar
 2. **Create New Thread**: Click the `+` button to show thread options
-3. **Select goose**: Choose `New goose` to start a new conversation with goose
+3. **Select rook**: Choose `New rook` to start a new conversation with rook
 4. **Start Chatting**: Interact with rook directly from the agent panel
 
 #### Advanced Configuration
@@ -98,13 +98,13 @@ The following Zed settings example configures two rook agent instances. This is 
 ```json
 {
   "agent_servers": {
-    "goose": {
-      "command": "goose",
+    "rook": {
+      "command": "rook",
       "args": ["acp"],
       "env": {}
     },
     "rook (GPT-4o)": {
-      "command": "goose",
+      "command": "rook",
       "args": ["acp"],
       "env": {
         "GOOSE_PROVIDER": "openai",
@@ -118,7 +118,7 @@ The following Zed settings example configures two rook agent instances. This is 
 
 ## Using MCP Servers from ACP Clients
 
-MCP servers configured in the ACP client's `context_servers` are automatically available to goose. This allows you to use those MCP servers when using both native client features and the rook agent integration.
+MCP servers configured in the ACP client's `context_servers` are automatically available to rook. This allows you to use those MCP servers when using both native client features and the rook agent integration.
 
 **Example (Zed):**
 
@@ -135,8 +135,8 @@ MCP servers configured in the ACP client's `context_servers` are automatically a
     }
   },
   "agent_servers": {
-    "goose": {
-      "command": "goose",
+    "rook": {
+      "command": "rook",
       "args": ["acp"],
       "env": {}
     }
@@ -148,7 +148,7 @@ MCP servers configured in the ACP client's `context_servers` are automatically a
 To find out what tools are available, just ask rook while it's running in the client.
 
 :::info
-All MCP servers in `context_servers` are automatically available to goose, provided that they use stdio (command-based) or HTTP transports. rook doesn't support servers that use the deprecated SSE transport.
+All MCP servers in `context_servers` are automatically available to rook, provided that they use stdio (command-based) or HTTP transports. rook doesn't support servers that use the deprecated SSE transport.
 
 If a server in `context_servers` has the same name as a rook extension, rook uses its own [configuration](/docs/guides/config-files).
 :::
@@ -159,7 +159,7 @@ For terminal-based workflows, rook provides a TUI (Terminal User Interface) clie
 ### Features
 
 - **Full terminal-based chat interface** - Interactive conversation UI rendered directly in your terminal
-- **Real-time streaming responses** - See goose's responses as they're generated
+- **Real-time streaming responses** - See rook's responses as they're generated
 - **Tool call visualization** - View tool executions with status indicators, inputs, and outputs
 - **Permission dialogs** - Approve or reject tool permissions inline
 - **Keyboard navigation** - Navigate conversation history and scroll through responses
@@ -177,7 +177,7 @@ npm install
 
 **Option 1: Auto-launch server (recommended)**
 
-The TUI will automatically start the goose-acp-server if you have it installed:
+The TUI will automatically start the rook-acp-server if you have it installed:
 
 ```bash
 npm start
@@ -191,7 +191,7 @@ For servers that support the draft standard ACP over Streamable HTTP https://git
 npm start -- --server http://HOST:PORT
 
 # example server
-cargo run -p goose-acp --bin goose-acp-server
+cargo run -p rook-acp --bin rook-acp-server
 ```
 
 ### Single Prompt Mode
@@ -235,7 +235,7 @@ import chooseYourIde from '@site/blog/2025-10-24-intro-to-agent-client-protocol-
   items={[
     {
       type: 'video',
-      title: 'Intro to Agent Client Protocol (ACP) | Vibe Code with goose',
+      title: 'Intro to Agent Client Protocol (ACP) | Vibe Code with rook',
       description: 'Watch how ACP lets you seamlessly integrate rook into your code editor to streamline fragmented workflows.',
       thumbnailUrl: 'https://img.youtube.com/vi/Hvu5KDTb6JE/maxresdefault.jpg',
       linkUrl: 'https://www.youtube.com/watch?v=Hvu5KDTb6JE',

@@ -108,18 +108,18 @@ No dead ends. No 404s. Just tidy documentation.
 Most AI posts show off what's possible. I'm focused on what was promised.
 The whole point was to offload the tedious stuff so we could focus on the work that actually matters, and that's exactly what I'm using AI for.
 
-What everyday tasks are you delegating to AI agents? Let us know in [Discord](https://discord.gg/goose-oss).
+What everyday tasks are you delegating to AI agents? Let us know in [Discord](https://discord.gg/rook-oss).
 
 
 <head>
   <meta property="og:title" content="5 Boring Tasks I Gave to My AI Agent Today (That Saved Me Hours)" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/06/27/everyday-usecases-ai" />
+  <meta property="og:url" content="https://rook-docs.ai/blog/2025/06/27/everyday-usecases-ai" />
   <meta property="og:description" content="Forget the flashy demos. Here's everyday use cases for AI." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/everyday-usage-of-ai-69f4444328b28bdc945e5ff9fc92034d.png" />
+  <meta property="og:image" content="https://rook-docs.ai/assets/images/everyday-usage-of-ai-69f4444328b28bdc945e5ff9fc92034d.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="rook-docs.ai" />
   <meta name="twitter:title" content="5 Boring Tasks I Gave to My AI Agent Today (That Saved Me Hours)" />
   <meta name="twitter:description" content="Forget the flashy demos. Here's everyday use cases for AI." />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/everyday-usage-of-ai-69f4444328b28bdc945e5ff9fc92034d.png" />
+  <meta name="twitter:image" content="https://rook-docs.ai/assets/images/everyday-usage-of-ai-69f4444328b28bdc945e5ff9fc92034d.png" />
 </head>

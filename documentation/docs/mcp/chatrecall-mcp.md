@@ -32,7 +32,7 @@ rook automatically uses Chat Recall when you reference past work or ask question
 
   2. Choose to `Toggle Extensions`
   ```sh
-  ┌   goose-configure 
+  ┌   rook-configure 
   │
   ◇  What would you like to configure?
   │  Toggle Extensions 
@@ -48,7 +48,7 @@ rook automatically uses Chat Recall when you reference past work or ask question
 
 ## Example Usage
 
-Chat Recall can search across all sessions using keywords. Results are grouped by session and ordered by recency, and can be filtered by date. Alternatively, you can provide [session IDs](/docs/guides/goose-cli-commands#session-list-options) to load summaries of specific sessions.
+Chat Recall can search across all sessions using keywords. Results are grouped by session and ordered by recency, and can be filtered by date. Alternatively, you can provide [session IDs](/docs/guides/rook-cli-commands#session-list-options) to load summaries of specific sessions.
 
 Let's ask rook to find recent conversations about a topic:
 

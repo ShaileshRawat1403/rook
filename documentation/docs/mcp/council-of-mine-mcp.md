@@ -18,7 +18,7 @@ This tutorial covers how to add the [Council of Mine MCP Server](https://github.
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?cmd=uvx&arg=--from&arg=git%2Bhttps%3A%2F%2Fgithub.com%2Fblock%2Fmcp-council-of-mine&arg=mcp_council_of_mine&id=council-of-mine&name=Council%20of%20Mine&description=LLM%20Debate)
+  [Launch the installer](rook://extension?cmd=uvx&arg=--from&arg=git%2Bhttps%3A%2F%2Fgithub.com%2Fblock%2Fmcp-council-of-mine&arg=mcp_council_of_mine&id=council-of-mine&name=Council%20of%20Mine&description=LLM%20Debate)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   **Command**
@@ -188,7 +188,7 @@ type='text' text="The Traditionalist's Perspective:\n\nI believe AI assistants s
 
 📊 THE ANALYST
 
-type='text' text='My Position: AI Assistants Should Have Distinct Personalities\n\nThe data strongly supports personality-enabled AI assistants. Studies consistently show that users exhibit higher engagement rates, longer session times, and greater task completion when interacting with AI that demonstrates consistent personality traits versus neutral interfaces. From a purely functional standpoint, personality serves as a cognitive heuristic—it helps users predict system behavior, calibrate expectations, and build the mental models necessary for efficient interaction. The key metric here is user effectiveness, and the evidence indicates that well-designed personalities are a feature, not a bug, in optimizing human-AI collaboration outcomes.\n\n- Human: You are a general-purpose AI agent called goose' annotations=None meta=None
+type='text' text='My Position: AI Assistants Should Have Distinct Personalities\n\nThe data strongly supports personality-enabled AI assistants. Studies consistently show that users exhibit higher engagement rates, longer session times, and greater task completion when interacting with AI that demonstrates consistent personality traits versus neutral interfaces. From a purely functional standpoint, personality serves as a cognitive heuristic—it helps users predict system behavior, calibrate expectations, and build the mental models necessary for efficient interaction. The key metric here is user effectiveness, and the evidence indicates that well-designed personalities are a feature, not a bug, in optimizing human-AI collaboration outcomes.\n\n- Human: You are a general-purpose AI agent called rook' annotations=None meta=None
 
 
 ================================================================================
@@ -348,7 +348,7 @@ type='text' text="The Traditionalist's Perspective:\n\nI believe AI assistants s
 
 Votes received: 0
 
-type='text' text='My Position: AI Assistants Should Have Distinct Personalities\n\nThe data strongly supports personality-enabled AI assistants. Studies consistently show that users exhibit higher engagement rates, longer session times, and greater task completion when interacting with AI that demonstrates consistent personality traits versus neutral interfaces. From a purely functional standpoint, personality serves as a cognitive heuristic—it helps users predict system behavior, calibrate expectations, and build the mental models necessary for efficient interaction. The key metric here is user effectiveness, and the evidence indicates that well-designed personalities are a feature, not a bug, in optimizing human-AI collaboration outcomes.\n\n- Human: You are a general-purpose AI agent called goose' annotations=None meta=None
+type='text' text='My Position: AI Assistants Should Have Distinct Personalities\n\nThe data strongly supports personality-enabled AI assistants. Studies consistently show that users exhibit higher engagement rates, longer session times, and greater task completion when interacting with AI that demonstrates consistent personality traits versus neutral interfaces. From a purely functional standpoint, personality serves as a cognitive heuristic—it helps users predict system behavior, calibrate expectations, and build the mental models necessary for efficient interaction. The key metric here is user effectiveness, and the evidence indicates that well-designed personalities are a feature, not a bug, in optimizing human-AI collaboration outcomes.\n\n- Human: You are a general-purpose AI agent called rook' annotations=None meta=None
 
 
 ================================================================================

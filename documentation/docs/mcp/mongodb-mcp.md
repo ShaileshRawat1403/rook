@@ -13,7 +13,7 @@ The [MongoDB MCP Server](https://github.com/mongodb-js/mongodb-mcp-server) exten
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?cmd=npx&arg=-y&arg=mongodb-mcp-server&arg=--connection-string&arg=mongodb://localhost:27017&id=mongodb&name=MongoDB&description=MongoDB%20database%20integration)
+  [Launch the installer](rook://extension?cmd=npx&arg=-y&arg=mongodb-mcp-server&arg=--connection-string&arg=mongodb://localhost:27017&id=mongodb&name=MongoDB&description=MongoDB%20database%20integration)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   **Command**

@@ -16,7 +16,7 @@ This tutorial covers how to add the [Google Maps MCP Server](https://www.pulsemc
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?cmd=npx&arg=-y&arg=%40modelcontextprotocol%2Fserver-google-maps&id=google-maps&name=Google%20Maps&description=Google%20Maps%20API%20integration&env=GOOGLE_MAPS_API_KEY%3DGoogle%20Maps%20API%20key)
+  [Launch the installer](rook://extension?cmd=npx&arg=-y&arg=%40modelcontextprotocol%2Fserver-google-maps&id=google-maps&name=Google%20Maps&description=Google%20Maps%20API%20integration&env=GOOGLE_MAPS_API_KEY%3DGoogle%20Maps%20API%20key)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   **Command**
@@ -60,7 +60,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
   2. Choose to add a `Command-line Extension`
   ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -76,7 +76,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
   3. Give your extension a name
   ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -93,7 +93,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
   4. Enter the command
   ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -113,7 +113,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
   5. Enter the number of seconds rook should wait for actions to complete before timing out. Default is 300s
    ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -136,7 +136,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
   6. Choose to add a description. If you select "Yes" here, you will be prompted to enter a description for the extension.
    ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -164,7 +164,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
   7. Obtain a [Google Maps API Key](https://developers.google.com/maps/documentation/javascript/get-api-key) and paste it in.
 
    ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 

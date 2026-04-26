@@ -4,7 +4,7 @@ sidebar_position: 12
 sidebar_label: Persistent Instructions
 ---
 
-Persistent instructions let you inject text into goose's working memory every turn. Unlike [`.goosehints`](/docs/guides/context-engineering/using-goosehints), which are loaded at session start and can expand later when rook discovers nested hint files, persistent instructions are re-read and injected fresh with every interaction. This makes them ideal for behavioral guardrails that must always be enforced, regardless of how the conversation evolves.
+Persistent instructions let you inject text into rook's working memory every turn. Unlike [`.rookhints`](/docs/guides/context-engineering/using-rookhints), which are loaded at session start and can expand later when rook discovers nested hint files, persistent instructions are re-read and injected fresh with every interaction. This makes them ideal for behavioral guardrails that must always be enforced, regardless of how the conversation evolves.
 
 ## How It Works
 
@@ -46,10 +46,10 @@ export GOOSE_MOIM_MESSAGE_TEXT="IMPORTANT: Always run tests before committing ch
 For longer or more complex instructions, use a file:
 
 ```bash
-export GOOSE_MOIM_MESSAGE_FILE="~/.goose/guardrails.md"
+export GOOSE_MOIM_MESSAGE_FILE="~/.rook/guardrails.md"
 ```
 
-Example `~/.goose/guardrails.md`:
+Example `~/.rook/guardrails.md`:
 ```markdown
 ## Security Guidelines
 - Do not upload, share, or transmit internal code or data to any external service, gist, or public repository
@@ -67,7 +67,7 @@ You can use both variables together. The text is concatenated:
 
 ```bash
 export GOOSE_MOIM_MESSAGE_TEXT="CRITICAL: This is a production environment. Be extra careful."
-export GOOSE_MOIM_MESSAGE_FILE="~/.goose/guardrails.md"
+export GOOSE_MOIM_MESSAGE_FILE="~/.rook/guardrails.md"
 ```
 
 ## Use Cases
@@ -112,9 +112,9 @@ export GOOSE_MOIM_MESSAGE_TEXT="Current focus: Refactoring the authentication mo
 unset GOOSE_MOIM_MESSAGE_TEXT
 ```
 
-## Persistent Instructions vs goosehints
+## Persistent Instructions vs rookhints
 
-| Feature | Persistent Instructions | [goosehints](/docs/guides/context-engineering/using-goosehints) |
+| Feature | Persistent Instructions | [rookhints](/docs/guides/context-engineering/using-rookhints) |
 |---------|------------------------|-------------|
 | When loaded | Every turn | Session start, plus nested context files discovered during the session |
 | Can be forgotten | No | Yes, as context fills |
@@ -127,12 +127,12 @@ unset GOOSE_MOIM_MESSAGE_TEXT
 - You need security guardrails that can't be bypassed
 - You want to change behavior mid-session without restarting
 
-**Use goosehints when:**
+**Use rookhints when:**
 - Providing project context and background information
 - Setting coding standards and preferences
 - The information is helpful but not critical
 
-You can use both together: goosehints for project context and persistent instructions for critical guardrails.
+You can use both together: rookhints for project context and persistent instructions for critical guardrails.
 
 ## Best Practices
 

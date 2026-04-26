@@ -8,7 +8,7 @@ authors:
 ---
 
 :::danger Outdated
-Lead/Worker mode has been removed from goose. It has been replaced by [Planning Mode](/docs/guides/creating-plans), which uses a dedicated planner model with the `/plan` command. See the [multi-model guide](/docs/guides/multi-model/) for current workflows.
+Lead/Worker mode has been removed from rook. It has been replaced by [Planning Mode](/docs/guides/creating-plans), which uses a dedicated planner model with the `/plan` command. See the [multi-model guide](/docs/guides/multi-model/) for current workflows.
 :::
 
 ![blog cover](multi-model-ai-agent.png)
@@ -88,18 +88,18 @@ If you're curious how it all works under the hood, see the [planning guide](/doc
 
 ---
 
-If you're experimenting with multi-model setups, [share what's working and what isn't](https://discord.gg/goose-oss).
+If you're experimenting with multi-model setups, [share what's working and what isn't](https://discord.gg/rook-oss).
 
 
 <head>
   <meta property="og:title" content="Treating LLMs Like Tools in a Toolbox: A Multi-Model Approach to Smarter AI Agents" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/06/16/multi-model-in-goose" />
+  <meta property="og:url" content="https://rook-docs.ai/blog/2025/06/16/multi-model-in-rook" />
   <meta property="og:description" content="How Goose uses multiple LLMs within a single task, optimizing for speed, cost, and reliability in AI agent workflows" />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/multi-model-ai-agent-d408feaeba3e13cafdbfe9377980bc3d.png" />
+  <meta property="og:image" content="https://rook-docs.ai/assets/images/multi-model-ai-agent-d408feaeba3e13cafdbfe9377980bc3d.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="rook-docs.ai" />
   <meta name="twitter:title" content="Treating LLMs Like Tools in a Toolbox: A Multi-Model Approach to Smarter AI Agents" />
   <meta name="twitter:description" content="How Goose uses multiple LLMs within a single task, optimizing for speed, cost, and reliability in AI agent workflows" />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/multi-model-ai-agent-d408feaeba3e13cafdbfe9377980bc3d.png" />
+  <meta name="twitter:image" content="https://rook-docs.ai/assets/images/multi-model-ai-agent-d408feaeba3e13cafdbfe9377980bc3d.png" />
 </head>

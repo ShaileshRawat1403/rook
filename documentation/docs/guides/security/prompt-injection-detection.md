@@ -9,7 +9,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { PanelLeft, Settings } from 'lucide-react';
 
-Prompt injection happens when malicious instructions are hidden inside executable content. In the world of AI, prompt injection can be used to nudge AI agents (like goose) to run unsafe commands that compromise your environment or data.
+Prompt injection happens when malicious instructions are hidden inside executable content. In the world of AI, prompt injection can be used to nudge AI agents (like rook) to run unsafe commands that compromise your environment or data.
 
 You can help protect your rook workflows by enabling prompt injection detection. This feature uses pattern matching to detect common attack techniques, including:
 - Attempts to delete system files or directories
@@ -27,7 +27,7 @@ These checks provide a safeguard, not a guarantee. They detect known patterns bu
 
 When enabled, rook uses a multi-layered approach to detect threats before they run:
 
-1. **Tool call is intercepted and analyzed** - When rook prepares to execute a tool, the security system extracts the tool parameter text and checks it against [threat patterns](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/security/patterns.rs). If ML-based detection is enabled, it also uses machine learning to analyze the semantic content of the tool call and recent conversation messages to better understand context and reduce false positives.
+1. **Tool call is intercepted and analyzed** - When rook prepares to execute a tool, the security system extracts the tool parameter text and checks it against [threat patterns](https://github.com/aaif-rook/rook/blob/main/crates/rook/src/security/patterns.rs). If ML-based detection is enabled, it also uses machine learning to analyze the semantic content of the tool call and recent conversation messages to better understand context and reduce false positives.
 2. **Risk is assessed** - Detected threats are assigned confidence scores
 3. **Execution pauses** - Threats that exceed your configured threshold need your decision
 4. **Security alert appears** - The alert displays the confidence level, a description of the finding, and a unique finding ID. For example:
@@ -128,5 +128,5 @@ If you want to run your own classification endpoint, see the [Classification API
 
 ## See Also
 
-- [rook Permission Modes](/docs/guides/goose-permissions) - Control goose's autonomy level
+- [rook Permission Modes](/docs/guides/rook-permissions) - Control rook's autonomy level
 - [Managing Tool Permissions](/docs/guides/managing-tools/tool-permissions) - Fine-grained tool control

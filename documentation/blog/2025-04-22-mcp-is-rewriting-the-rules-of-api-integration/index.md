@@ -39,7 +39,7 @@ This dual integration of AI agents and MCP can have a significant positive impac
 
 * **Developer Productivity:** By automating many integration tasks and reducing the need for extensive manual coding, AI agents free up our time to focus on core application logic and innovation. (And testing. And security. And documentation. And...)
 * **Customer Satisfaction:** Intelligent integrations can lead to more personalized and responsive user experiences. Agents can facilitate real-time data analysis and context-aware interactions, making our applications smarter and more user-friendly.
-* **Scalability:** As your application grows, the complexity of managing multiple APIs can become overwhelming. [Using multiple AI agents](/blog/2025/02/21/gooseteam-mcp/) can help manage this complexity by dynamically adapting to changes in the underlying services and workflows.
+* **Scalability:** As your application grows, the complexity of managing multiple APIs can become overwhelming. [Using multiple AI agents](/blog/2025/02/21/rookteam-mcp/) can help manage this complexity by dynamically adapting to changes in the underlying services and workflows.
 
 ### Business Impact: Driving Efficiency and Cost Savings
 
@@ -153,12 +153,12 @@ A: Your approach on this may vary depending on whether you're building your own 
 <head>
   <meta property="og:title" content="MCP Is Rewriting the Rules of API Integration" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/04/22/mcp-is-rewriting-the-rules-of-api-integration" />
+  <meta property="og:url" content="https://rook-docs.ai/blog/2025/04/22/mcp-is-rewriting-the-rules-of-api-integration" />
   <meta property="og:description" content="A developer's guide to modernizing API infrastructure with AI agents and Model Context Protocol. Learn about the benefits, integration strategies, and how to address security considerations." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/cover-1e2153c66f3f0c92da7bbaafd240a9b4.png" />
+  <meta property="og:image" content="https://rook-docs.ai/assets/images/cover-1e2153c66f3f0c92da7bbaafd240a9b4.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="rook-docs.ai" />
   <meta name="twitter:title" content="MCP Is Rewriting the Rules of API Integration" />
   <meta name="twitter:description" content="A developer's guide to modernizing API infrastructure with AI agents and Model Context Protocol. Learn about the benefits, integration strategies, and how to address security considerations." />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/cover-1e2153c66f3f0c92da7bbaafd240a9b4.png" />
+  <meta name="twitter:image" content="https://rook-docs.ai/assets/images/cover-1e2153c66f3f0c92da7bbaafd240a9b4.png" />
 </head>

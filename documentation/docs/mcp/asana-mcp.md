@@ -17,7 +17,7 @@ This tutorial covers how to add the [Asana MCP Server](https://github.com/roychr
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?cmd=npx&arg=-y&arg=%40roychri%2Fmcp-server-asana&id=asana&name=Asana&description=enable%20task%20automation%2C%20project%20tracking%2C%20and%20team%20collaboration&env=ASANA_ACCESS_TOKEN%3DAsana%20Access%20Token)
+  [Launch the installer](rook://extension?cmd=npx&arg=-y&arg=%40roychri%2Fmcp-server-asana&id=asana&name=Asana&description=enable%20task%20automation%2C%20project%20tracking%2C%20and%20team%20collaboration&env=ASANA_ACCESS_TOKEN%3DAsana%20Access%20Token)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   **Command**
@@ -78,7 +78,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
 ### rook Prompt
 
-> _goose, I have one hour. Look through uncompleted tasks assigned to me in Asana and show me ones that you estimate will take an hour or less. Order them by deadline._
+> _rook, I have one hour. Look through uncompleted tasks assigned to me in Asana and show me ones that you estimate will take an hour or less. Order them by deadline._
 
 
 ### rook Output

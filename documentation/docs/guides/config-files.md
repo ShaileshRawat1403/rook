@@ -8,8 +8,8 @@ sidebar_label: Configuration Files
 
 rook uses YAML [configuration files](#configuration-files) to manage settings and extensions. The primary config file is located at:
 
-* macOS/Linux: `~/.config/goose/config.yaml`
-* Windows: `%APPDATA%\Block\goose\config\config.yaml`
+* macOS/Linux: `~/.config/rook/config.yaml`
+* Windows: `%APPDATA%\Block\rook\config\config.yaml`
 
 The configuration files allow you to set default behaviors, configure language models, set tool permissions, and manage extensions. While many settings can also be set using [environment variables](/docs/guides/environment-variables), the config files provide a persistent way to maintain your preferences.
 
@@ -35,7 +35,7 @@ The following settings can be configured at the root level of your config.yaml f
 | `GOOSE_MODEL` | Default model to use | Model name (e.g., "claude-3.5-sonnet", "gpt-4") | None | Yes |
 | `GOOSE_TEMPERATURE` | Model response randomness | Float between 0.0 and 1.0 | Model-specific | No |
 | `GOOSE_MAX_TOKENS` | Maximum number of tokens for each model response (truncates longer responses) | Positive integer | Model-specific | No |
-| `GOOSE_MODE` | [Tool execution behavior](/docs/guides/goose-permissions) | "auto", "approve", "chat", "smart_approve" | "auto" | No |
+| `GOOSE_MODE` | [Tool execution behavior](/docs/guides/rook-permissions) | "auto", "approve", "chat", "smart_approve" | "auto" | No |
 | `GOOSE_MAX_TURNS` | [Maximum number of turns](/docs/guides/sessions/smart-context-management#maximum-turns) allowed without user input | Integer (e.g., 10, 50, 100) | 1000 | No |
 | `GOOSE_PLANNER_PROVIDER` | Provider for [planning mode](/docs/guides/creating-plans) | Same as `GOOSE_PROVIDER` options | Falls back to `GOOSE_PROVIDER` | No |
 | `GOOSE_PLANNER_MODEL` | Model for planning mode | Model name | Falls back to `GOOSE_MODEL` | No |
@@ -43,7 +43,7 @@ The following settings can be configured at the root level of your config.yaml f
 | `GOOSE_TOOLSHIM_OLLAMA_MODEL` | Model for tool interpretation | Model name (e.g., "llama3.2") | System default | No |
 | `GOOSE_INPUT_LIMIT` | Override input token limit for Ollama (maps to `num_ctx`) | Positive integer | Model default | No |
 | `GOOSE_CLI_MIN_PRIORITY` | Tool output verbosity | Float between 0.0 and 1.0 | 0.0 | No |
-| `GOOSE_CLI_THEME` | [Theme](/docs/guides/goose-cli-commands#themes) for CLI response  markdown | "light", "dark", "ansi" | "dark" | No |
+| `GOOSE_CLI_THEME` | [Theme](/docs/guides/rook-cli-commands#themes) for CLI response  markdown | "light", "dark", "ansi" | "dark" | No |
 | `GOOSE_CLI_LIGHT_THEME` | Custom syntax highlighting theme for light mode | [bat theme name](https://github.com/sharkdp/bat#adding-new-themes) | "GitHub" | No |
 | `GOOSE_CLI_DARK_THEME` | Custom syntax highlighting theme for dark mode | [bat theme name](https://github.com/sharkdp/bat#adding-new-themes) | "zenburn" | No |
 | `GOOSE_CLI_SHOW_COST` | Show estimated cost for token use in the CLI | true/false | false | No |
@@ -79,7 +79,7 @@ GOOSE_TOOLSHIM: true
 GOOSE_CLI_MIN_PRIORITY: 0.2
 
 # Recipe Configuration
-GOOSE_RECIPE_GITHUB_REPO: "aaif-goose/goose-recipes"
+GOOSE_RECIPE_GITHUB_REPO: "aaif-rook/rook-recipes"
 
 # Search Path Configuration
 GOOSE_SEARCH_PATHS:
@@ -114,7 +114,7 @@ Extensions are configured under the `extensions` key. Each extension can have th
 ```yaml
 extensions:
   extension_name:
-    bundled: true/false       # Whether it's included with goose
+    bundled: true/false       # Whether it's included with rook
     display_name: "Name"      # Human-readable name (optional)
     enabled: true/false       # Whether the extension is active
     name: "extension_name"    # Internal name
@@ -132,7 +132,7 @@ extensions:
 
 ### Tool Filtering
 
-Use the `available_tools` field to limit which tools are loaded from an extension. List the tool names you want — only those will be available to goose. Leave it empty (the default) to load all tools. This can help reduce token overhead in sessions where you only need a subset of an extension's capabilities.
+Use the `available_tools` field to limit which tools are loaded from an extension. List the tool names you want — only those will be available to rook. Leave it empty (the default) to load all tools. This can help reduce token overhead in sessions where you only need a subset of an extension's capabilities.
 
 ## Search Path Configuration
 
@@ -169,7 +169,7 @@ slash_commands:
   - command: "run-tests"
     recipe_path: "/path/to/recipe.yaml"
   - command: "daily-standup"
-    recipe_path: "/Users/me/.local/share/goose/recipes/standup.yaml"
+    recipe_path: "/Users/me/.local/share/rook/recipes/standup.yaml"
 ```
 
 ## Configuration Priority

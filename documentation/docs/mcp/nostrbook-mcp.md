@@ -15,7 +15,7 @@ This tutorial covers how to add the [Nostrbook MCP Server](https://gitlab.com/so
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-    [Launch the installer](goose://extension?cmd=npx&arg=-y&arg=%40nostrbook%2Fmcp&id=nostrbook&name=Nostrbook&description=A%20comprehensive%20registry%20of%20Nostr%20documentation%20with%20structured%20knowledge)
+    [Launch the installer](rook://extension?cmd=npx&arg=-y&arg=%40nostrbook%2Fmcp&id=nostrbook&name=Nostrbook&description=A%20comprehensive%20registry%20of%20Nostr%20documentation%20with%20structured%20knowledge)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
     **Command**
@@ -56,7 +56,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
 ### rook Prompt
 
-> _goose, what is the NIP-61 and how can I implement it?._
+> _rook, what is the NIP-61 and how can I implement it?._
 
 
 ### rook Output

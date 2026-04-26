@@ -41,7 +41,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
   2. Choose to add a `Command-line Extension`
   ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension 
@@ -57,7 +57,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
   3. Give your extension a name
   ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension 
@@ -74,7 +74,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
   4. Enter the command
   ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension 
@@ -94,7 +94,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
   5. Enter the timeout value (default 300s is recommended)
     ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension 
@@ -120,7 +120,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
   
   </TabItem>
   <TabItem value="ui" label="rook Desktop">
-  1. [Launch the installer](goose://extension?cmd=npx&arg=-y&arg=vscode-mcp-server&id=vscode-mcp&name=VS%20Code%20MCP&description=VS%20Code%20integration%20and%20file%20operations)
+  1. [Launch the installer](rook://extension?cmd=npx&arg=-y&arg=vscode-mcp-server&id=vscode-mcp&name=VS%20Code%20MCP&description=VS%20Code%20integration%20and%20file%20operations)
   2. Press `Yes` to confirm the installation
   3. Click `Save Configuration`
   4. Click `Exit` from the upper left corner

@@ -14,7 +14,7 @@ This tutorial covers how to add the Browserbase MCP Server as a rook extension f
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?cmd=npx&arg=@browserbasehq/mcp&id=browserbase&name=Browserbase&description=Automate%20web%20browsing%20and%20data%20extraction&env=BROWSERBASE_PROJECT_ID%3DBrowserbase%20Project%20ID&env=BROWSERBASE_API_KEY%3DBrowserbase%20API%20Key)
+  [Launch the installer](rook://extension?cmd=npx&arg=@browserbasehq/mcp&id=browserbase&name=Browserbase&description=Automate%20web%20browsing%20and%20data%20extraction&env=BROWSERBASE_PROJECT_ID%3DBrowserbase%20Project%20ID&env=BROWSERBASE_API_KEY%3DBrowserbase%20API%20Key)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   **Command**

@@ -17,8 +17,8 @@ Custom apps are single-file HTML applications with JavaScript, CSS, and HTML (no
 
 You can create, modify, and delete apps through chat without needing to edit files directly. Behind the scenes, the Apps extension stores each app as an HTML file in:
 
-- **macOS/Linux:** `~/.local/share/goose/apps/`
-- **Windows:** `%APPDATA%\Block\goose\data\apps\`
+- **macOS/Linux:** `~/.local/share/rook/apps/`
+- **Windows:** `%APPDATA%\Block\rook\data\apps\`
 
 ## Configuration
 
@@ -40,7 +40,7 @@ You can create, modify, and delete apps through chat without needing to edit fil
 
   2. Choose to `Toggle Extensions`
   ```sh
-  ┌   goose-configure 
+  ┌   rook-configure 
   │
   ◇  What would you like to configure?
   │  Toggle Extensions 

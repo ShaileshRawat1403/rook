@@ -1,9 +1,9 @@
 ---
 title: Error Handling
 ---
-# Error Handling in goose
+# Error Handling in rook
 
-Error handling is a key performance-driving part of goose. There are many ways that the non-determinism
+Error handling is a key performance-driving part of rook. There are many ways that the non-determinism
 in the LLM can introduce an error that it can in turn recover from. In a typical rook session, it's expected for there
 to be several agent errors that the model can see directly and correct, perhaps entirely behind the scenes.
 

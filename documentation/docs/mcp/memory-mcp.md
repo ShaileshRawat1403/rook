@@ -33,7 +33,7 @@ This tutorial covers enabling and using the Memory MCP Server, which is a built-
 
   2. Choose to `Toggle Extensions`
   ```sh
-  ┌   goose-configure 
+  ┌   rook-configure 
   │
   ◇  What would you like to configure?
   │  Toggle Extensions 
@@ -54,8 +54,8 @@ Memories are stored as files on disk in one of two locations:
 
 | Scope | Path | When to use |
 |-------|------|-------------|
-| Local (project) | `.goose/memory/` in your working directory | Project-specific preferences and configs |
-| Global (user) | `~/.config/goose/memory/` | Preferences that apply across all projects |
+| Local (project) | `.rook/memory/` in your working directory | Project-specific preferences and configs |
+| Global (user) | `~/.config/rook/memory/` | Preferences that apply across all projects |
 
 rook loads all saved memories at the start of a session and includes them in every prompt sent to the LLM.
 
@@ -69,14 +69,14 @@ rook loads all saved memories at the start of a session and includes them in eve
 | `remove_specific_memory(category, memory_content, is_global)` | Remove a single memory by matching its content within a category |
 
 ## Why Use Memory?  
-With the Memory extension, you’re not just storing static notes, you’re teaching rook how to assist you better. Imagine telling goose:  
+With the Memory extension, you’re not just storing static notes, you’re teaching rook how to assist you better. Imagine telling rook:  
 
 > _learn everything about MCP servers and save it to memory._
 
 Later, you can ask:
 > _utilizing our MCP server knowledge help me build an MCP server._ 
 
-rook will recall everything you’ve saved as long as you instruct it to remember. This makes it easier to have consistent results when working with goose.
+rook will recall everything you’ve saved as long as you instruct it to remember. This makes it easier to have consistent results when working with rook.
 
 For large or detailed instructions, store them in files and instruct rook to reference those files:
 
@@ -125,7 +125,7 @@ If you frequently work with API standards or other structured knowledge, rook ma
 ### Step 1: Teach rook Your API Standards
     #### rook Prompt #1
     ```
-    goose, learn our API development standards:
+    rook, learn our API development standards:
 
     - All endpoints must use TypeScript interfaces
     - Error responses follow RFC 7807 Problem Details spec

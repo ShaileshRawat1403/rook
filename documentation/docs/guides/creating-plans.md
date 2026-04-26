@@ -19,7 +19,7 @@ A good plan keeps everyone on track and helps measure progress. That's why the r
 The rook Desktop doesn't have a `plan` keyword. If you want rook Desktop to create a plan for you, you need to use a prompt like:
 
 ```
-"Hey goose, can you create a plan to convert my CLI project into a locally hosted web page that gives me input fields for each CLI command I can run? Please don't start the actual work"
+"Hey rook, can you create a plan to convert my CLI project into a locally hosted web page that gives me input fields for each CLI command I can run? Please don't start the actual work"
 ```
 Unless you ask rook to "create a plan", it might just start into the project work. 
 :::
@@ -65,9 +65,9 @@ rook Version:
   Version:          1.0.18
 
 rook Locations:
-  Config file:      /Users/alincoln/.config/goose/config.yaml
-  Sessions dir:     /Users/alincoln/.local/share/goose/sessions
-  Logs dir:         /Users/alincoln/.local/state/goose/logs
+  Config file:      /Users/alincoln/.config/rook/config.yaml
+  Sessions dir:     /Users/alincoln/.local/share/rook/sessions
+  Logs dir:         /Users/alincoln/.local/state/rook/logs
 
 rook Configuration:
   GOOSE_PROVIDER: anthropic
@@ -145,7 +145,7 @@ Given that no extensions are currently available for more specific tools or data
 * Search for available extensions using the <function=platform__search_available_extensions>{}</function>
 
 ```
-The home construction plan remains high-level because goose's current models specialize in technology and software development rather than construction. This is why projects like our first example—building a web application—receive more detailed planning and specific guidance.
+The home construction plan remains high-level because rook's current models specialize in technology and software development rather than construction. This is why projects like our first example—building a web application—receive more detailed planning and specific guidance.
 
 ### Create a separate plan for plan sub-steps
 Let's return to the home construction example. While the plan includes hiring an architect, this high-level step needs more detail – such as what type of architect to hire and how to navigate the selection process.
@@ -153,7 +153,7 @@ Let's return to the home construction example. While the plan includes hiring an
 ```
 - **Architectural Design**: Hire an architect to design the house, ensuring it meets your space requirements and is energy efficient. Consider factors like natural lighting, insulation, and window placement.
 ```
-If you exit plan mode while reviewing your construction plan, you can always resume it to continue working with goose. 
+If you exit plan mode while reviewing your construction plan, you can always resume it to continue working with rook. 
 
 ```
 ( O)> /plan hire an architect
@@ -216,7 +216,7 @@ When answering multiple questions, number your responses to match each question.
 
 In complex projects like converting a CLI to a website, rook may ask multiple rounds of clarifying questions. Each round typically stems from new information in your previous answers or when additional details are needed about specific aspects of your project.
 
-If you've answered _all_ of goose's questions and it has no more questions, rook will generate the plan. Other times, you might think rook will never run out of questions. If you want your plan and don't want to answer more questions, you can simply ask for a "generic" plan:
+If you've answered _all_ of rook's questions and it has no more questions, rook will generate the plan. Other times, you might think rook will never run out of questions. If you want your plan and don't want to answer more questions, you can simply ask for a "generic" plan:
 
 ```bash
 I still need some critical information to create a comprehensive plan:

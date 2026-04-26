@@ -46,7 +46,7 @@ Code Mode only supports text content from tool results. Images, binary data, and
 ## Additional Resources
 
 import ContentCardCarousel from '@site/src/components/ContentCardCarousel';
-import gooseCodeMode from '@site/blog/2025-12-15-code-mode-mcp/header-image.jpg';
+import rookCodeMode from '@site/blog/2025-12-15-code-mode-mcp/header-image.jpg';
 import notMcpReplacement from '@site/blog/2025-12-21-code-mode-doesnt-replace-mcp/header-image.png';
 
 <ContentCardCarousel
@@ -55,7 +55,7 @@ import notMcpReplacement from '@site/blog/2025-12-21-code-mode-doesnt-replace-mc
       type: 'blog',
       title: 'Code Mode for MCP',
       description: 'Learn about the code execution approach to MCP tool calling.',
-      thumbnailUrl: gooseCodeMode,
+      thumbnailUrl: rookCodeMode,
       linkUrl: '/blog/2025/12/15/code-mode-mcp',
       date: '2025-12-15',
       duration: '5 min read'

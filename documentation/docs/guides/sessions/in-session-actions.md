@@ -49,12 +49,12 @@ Editing in place is useful when:
         1. Hover over any of your previous messages
         2. Click the <Edit2 className="inline" size={16} /> `Edit` button that appears
         3. Make your changes in the inline editor
-        4. Click `Edit in Place` to save your changes and reprompt goose
+        4. Click `Edit in Place` to save your changes and reprompt rook
 
         rook removes all conversation history after the edited message and responds contextually from that point.
 
         :::warning Deleted Context
-        With Edit in Place, subsequent conversation history is permanently deleted from the session and removed from goose's context. Use this option only if you don't need rook to remember the context that follows the edited message.
+        With Edit in Place, subsequent conversation history is permanently deleted from the session and removed from rook's context. Use this option only if you don't need rook to remember the context that follows the edited message.
         :::
 
     </TabItem>
@@ -69,7 +69,7 @@ Fork Session creates a new session with your edited message while preserving the
 
 Forking sessions is useful to:
 - Compare different approaches to the same problem side-by-side
-- Test how different prompts affect goose's responses
+- Test how different prompts affect rook's responses
 
 <Tabs groupId="interface">
     <TabItem value="ui" label="rook Desktop" default>
@@ -92,7 +92,7 @@ Forking sessions is useful to:
 
 ### Editing Scenario Tips
 
-- **Iterative Prompt Refinement**: Start with a basic prompt, then edit and refine based on goose's response. This often works better than trying to craft the perfect prompt from the start.
+- **Iterative Prompt Refinement**: Start with a basic prompt, then edit and refine based on rook's response. This often works better than trying to craft the perfect prompt from the start.
 - **When to Edit vs. Interrupt**: Editing earlier messages when a conversation has gone off track can be more effective than trying to correct course using new messages or [interruptions](#interrupt-task). By editing messages, you rewrite history. With interruptions, you only affect the conversation from the current message onwards.
 - **Preserving Progress**: Use Fork Session when you've made good progress but want to try a different approach. This way you can always return to the original if the new direction doesn't work out.
 
@@ -253,7 +253,7 @@ Speak to rook directly instead of typing your prompts.
         
         The first time you use voice dictation, rook will request access to your microphone. While recording, you'll see `Listening` and `Transcribing` status indicators. rook transcribes your speech during natural pauses and adds the text to the chat box. 
 
-        **If you don't see the microphone**, check the [models you have configured](/docs/getting-started/providers.md). For example, using OpenAI as the voice dictation provider requires that you have an OpenAI model configured in goose, even if using another LLM provider for chat.
+        **If you don't see the microphone**, check the [models you have configured](/docs/getting-started/providers.md). For example, using OpenAI as the voice dictation provider requires that you have an OpenAI model configured in rook, even if using another LLM provider for chat.
 
        #### Important Notes
         * You can record up to 50MB of audio
@@ -301,7 +301,7 @@ Provide rook with context from your codebase, documents, and other files to get 
 
         3. **Manual Path**: Type or paste the file path directly into the chat input
 
-        4. **Quick File Search**: Use the [`@` shortcut key](/docs/guides/file-management#quick-file-search-in-goose-desktop) to quickly find and include files
+        4. **Quick File Search**: Use the [`@` shortcut key](/docs/guides/file-management#quick-file-search-in-rook-desktop) to quickly find and include files
     </TabItem>
     <TabItem value="cli" label="rook CLI">
         You can reference files by their paths directly in your messages. Since you're already in a terminal, you can use standard shell commands to help with file paths:
@@ -321,7 +321,7 @@ Provide rook with context from your codebase, documents, and other files to get 
 
 ## Mid-Session Changes
 
-You can change some settings during a session and they will take effect immediately, rather than requiring you to start a new session. This gives you more control over context and capabilities while you're interacting with goose.
+You can change some settings during a session and they will take effect immediately, rather than requiring you to start a new session. This gives you more control over context and capabilities while you're interacting with rook.
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
@@ -333,7 +333,7 @@ You can change some settings during a session and they will take effect immediat
   | **Working Directory** | <FolderDot className="inline" size={16} /> directory switcher | New sessions (after restart) |
   | [**Enabled Extensions**](/docs/getting-started/using-extensions#change-extensions-mid-session) | <Puzzle className="inline" size={16} /> icon | Current session only |
   | [**Model**](/docs/getting-started/providers#configure-provider-and-model) | <Bot className="inline" size={16} /> model switcher | New sessions |
-  | [**rook Mode**](/docs/guides/goose-permissions#configuring-goose-mode) | <Tornado className="inline" size={16} /> mode switcher | New sessions |
+  | [**rook Mode**](/docs/guides/rook-permissions#configuring-rook-mode) | <Tornado className="inline" size={16} /> mode switcher | New sessions |
 
   </TabItem>
   <TabItem value="cli" label="rook CLI">
@@ -343,10 +343,10 @@ You can change some settings during a session and they will take effect immediat
   | Setting | Slash Command | Persistence* |
   |---------|--------------|-------------|
   | [**Enabled Extensions**](/docs/getting-started/using-extensions#change-extensions-mid-session) | `/extension` or `/builtin` | Current session only |
-  | [**rook Mode**](/docs/guides/goose-permissions#configuring-goose-mode) | `/mode [options]` | New sessions |
+  | [**rook Mode**](/docs/guides/rook-permissions#configuring-rook-mode) | `/mode [options]` | New sessions |
 
   :::info
-  The CLI supports [additional slash commands](/docs/guides/goose-cli-commands#slash-commands) but doesn't support mid-session changes to the working directory or model.
+  The CLI supports [additional slash commands](/docs/guides/rook-cli-commands#slash-commands) but doesn't support mid-session changes to the working directory or model.
   :::
 
   </TabItem>

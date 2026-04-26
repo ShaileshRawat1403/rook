@@ -10,14 +10,14 @@ When working with the rook CLI, you can pass files and instructions to the `rook
 
 The `rook run` command starts a new session, begins executing using any arguments provided and exits the session automatically once the task is complete. 
 
-There are multiple ways to run tasks with goose; check out the [list of options](/docs/guides/goose-cli-commands.md#run-options).
+There are multiple ways to run tasks with rook; check out the [list of options](/docs/guides/rook-cli-commands.md#run-options).
 
 ### Text in the command
 ```bash
 rook run -t "your instructions here"
 ```
 
-Using the `-t` flag, one is able to pass a text instruction directly to the command. This is great for quick, one-off commands where you do not need an interactive session with goose. The instructions will be executed, and the session will end. An example usage could be using in a CI/CD pipeline or running alongside other scripts.
+Using the `-t` flag, one is able to pass a text instruction directly to the command. This is great for quick, one-off commands where you do not need an interactive session with rook. The instructions will be executed, and the session will end. An example usage could be using in a CI/CD pipeline or running alongside other scripts.
 
 ### Using an instruction file
 If you have a complex set of instructions or a workflow that you want to automate, you can store them in a file and pass it to the `rook run` command:
@@ -50,7 +50,7 @@ Save findings in 'security_audit.md' with severity levels highlighted.
 ```
 
 ### With stdin
-You can also pass instructions to rook using standard input via `-i -`. This is useful when you want to pipe commands from another tool or script into goose.
+You can also pass instructions to rook using standard input via `-i -`. This is useful when you want to pipe commands from another tool or script into rook.
 
 #### Simple echo pipe
 

@@ -6,7 +6,7 @@ authors:
 ---
 
 
-![mcp ui](mcpui-goose.png)
+![mcp ui](mcpui-rook.png)
 
 The days of endless text walls in AI agent conversations are numbered. What if instead of reading through paragraphs of product descriptions, you could browse a beautiful, interactive catalog? What if booking a flight seat could be as simple as clicking on your preferred spot on a visual seat map? This isn't science fiction. It's happening right now with MCP-UI.
 
@@ -133,17 +133,17 @@ The future of interacting with AI relies on smarter interfaces. And with MCP-UI,
 
 <iframe src="https://www.youtube.com/embed/GS-kmreZDgU" title="MCP-UI: The Future of Agentic Interfaces" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="aspect-ratio"></iframe>
 
-*Join the conversation on [Discord](https://discord.gg/goose-oss) and follow our progress as we continue pushing the boundaries of what's possible with AI agents.*
+*Join the conversation on [Discord](https://discord.gg/rook-oss) and follow our progress as we continue pushing the boundaries of what's possible with AI agents.*
 
 <head>
   <meta property="og:title" content="MCP-UI: The Future of Agentic Interfaces" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/08/25/mcp-ui-future-agentic-interfaces" />
+  <meta property="og:url" content="https://rook-docs.ai/blog/2025/08/25/mcp-ui-future-agentic-interfaces" />
   <meta property="og:description" content="Discover how MCP-UI is revolutionizing AI agent interactions by bringing rich, interactive web components directly into agent conversations, making AI more accessible and intuitive for everyone." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/mcpui-goose-44f248ede0eb5d2e0bddccf76e98b07e.png" />
+  <meta property="og:image" content="https://rook-docs.ai/assets/images/mcpui-rook-44f248ede0eb5d2e0bddccf76e98b07e.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="rook-docs.ai" />
   <meta name="twitter:title" content="MCP-UI: The Future of Agentic Interfaces" />
   <meta name="twitter:description" content="Discover how MCP-UI is revolutionizing AI agent interactions by bringing rich, interactive web components directly into agent conversations, making AI more accessible and intuitive for everyone." />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/mcpui-goose-44f248ede0eb5d2e0bddccf76e98b07e.png" />
+  <meta name="twitter:image" content="https://rook-docs.ai/assets/images/mcpui-rook-44f248ede0eb5d2e0bddccf76e98b07e.png" />
 </head>

@@ -17,7 +17,7 @@ This tutorial covers how to add the [Repomix MCP Server](https://github.com/yama
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?cmd=npx&arg=-y&arg=repomix&arg=--mcp&id=repomix&name=Repomix&description=Pack%20repositories%20into%20AI-friendly%20formats%20for%20goose)
+  [Launch the installer](rook://extension?cmd=npx&arg=-y&arg=repomix&arg=--mcp&id=repomix&name=Repomix&description=Pack%20repositories%20into%20AI-friendly%20formats%20for%20rook)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   **Command**
@@ -39,7 +39,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
   <GooseDesktopInstaller
     extensionId="repomix"
     extensionName="Repomix"
-    description="Pack repositories into AI-friendly formats for goose"
+    description="Pack repositories into AI-friendly formats for rook"
     command="npx"
     args={["-y", "repomix", "--mcp"]}
   />
@@ -47,7 +47,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
   <TabItem value="cli" label="rook CLI">
     <CLIExtensionInstructions
       name="Repomix"
-      description="Pack repositories into AI-friendly formats for goose"
+      description="Pack repositories into AI-friendly formats for rook"
       command="npx -y repomix --mcp"
     />
   </TabItem>

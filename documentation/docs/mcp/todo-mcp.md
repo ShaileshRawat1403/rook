@@ -38,7 +38,7 @@ This tutorial will cover enabling and using the Todo extension.
 
   2. Choose to `Toggle Extensions`
   ```sh
-  ┌   goose-configure 
+  ┌   rook-configure 
   │
   ◇  What would you like to configure?
   │  Toggle Extensions 

@@ -12,7 +12,7 @@ These variables control the [language models](/docs/getting-started/providers) a
 
 ### Basic Provider Configuration
 
-These are the minimum required variables to get started with goose.
+These are the minimum required variables to get started with rook.
 
 | Variable | Purpose | Values | Default |
 |----------|---------|---------|---------|
@@ -164,7 +164,7 @@ To see Claude's thinking output in the **CLI**, you also need to set `GOOSE_CLI_
 
 ### Planning Mode Configuration
 
-These variables control goose's [planning functionality](/docs/guides/creating-plans).
+These variables control rook's [planning functionality](/docs/guides/creating-plans).
 
 | Variable | Purpose | Values | Default |
 |----------|---------|---------|---------|
@@ -230,20 +230,20 @@ These variables control how rook manages conversation sessions and context.
 | `GOOSE_MAX_TURNS` | [Maximum number of turns](/docs/guides/sessions/smart-context-management#maximum-turns) allowed without user input | Integer (e.g., 10, 50, 100) | 1000 |
 | `GOOSE_SUBAGENT_MAX_TURNS` | Sets the maximum turns allowed for a [subagent](/docs/guides/subagents) to complete before timeout. Can be overridden by [`settings.max_turns`](/docs/guides/recipes/recipe-reference#settings) in recipes or subagent tool calls. | Integer (e.g., 25) | 25 |
 | `GOOSE_MAX_BACKGROUND_TASKS` | Sets the maximum number of concurrent background [subagent](/docs/guides/subagents) tasks rook can run at once | Integer (e.g., 1, 5, 10) | 5 |
-| `CONTEXT_FILE_NAMES` | Specifies custom filenames for [hint/context files](/docs/guides/context-engineering/using-goosehints#custom-context-files) | JSON array of strings (e.g., `["CLAUDE.md", ".goosehints"]`) | `[".goosehints"]` |
+| `CONTEXT_FILE_NAMES` | Specifies custom filenames for [hint/context files](/docs/guides/context-engineering/using-rookhints#custom-context-files) | JSON array of strings (e.g., `["CLAUDE.md", ".rookhints"]`) | `[".rookhints"]` |
 | `GOOSE_DISABLE_SESSION_NAMING` | Disables automatic AI-generated session naming; avoids the background model call and keeps the default "CLI Session" (rook CLI) or "New Chat" (rook Desktop) | "1", "true" (case-insensitive) to enable | false |
-| `GOOSE_PROMPT_EDITOR` | [External editor](/docs/guides/goose-cli-commands#external-editor-mode) to use for composing prompts instead of CLI input | Editor command (e.g., "vim", "code --wait") | Unset (uses CLI input) |
-| `GOOSE_CLI_THEME` | [Theme](/docs/guides/goose-cli-commands#themes) for CLI response  markdown | "light", "dark", "ansi" | "dark" |
+| `GOOSE_PROMPT_EDITOR` | [External editor](/docs/guides/rook-cli-commands#external-editor-mode) to use for composing prompts instead of CLI input | Editor command (e.g., "vim", "code --wait") | Unset (uses CLI input) |
+| `GOOSE_CLI_THEME` | [Theme](/docs/guides/rook-cli-commands#themes) for CLI response  markdown | "light", "dark", "ansi" | "dark" |
 | `GOOSE_CLI_LIGHT_THEME` | Custom [bat theme](https://github.com/sharkdp/bat#adding-new-themes) for syntax highlighting when using light mode | bat theme name (e.g., "Solarized (light)", "OneHalfLight") | "GitHub" |
 | `GOOSE_CLI_DARK_THEME` | Custom [bat theme](https://github.com/sharkdp/bat#adding-new-themes) for syntax highlighting when using dark mode | bat theme name (e.g., "Dracula", "Nord") | "zenburn" |
-| `GOOSE_CLI_NEWLINE_KEY` | Customize the keyboard shortcut for [inserting newlines in CLI input](/docs/guides/goose-cli-commands#keyboard-shortcuts) | Single character (e.g., "n", "m") | "j" (Ctrl+J) |
+| `GOOSE_CLI_NEWLINE_KEY` | Customize the keyboard shortcut for [inserting newlines in CLI input](/docs/guides/rook-cli-commands#keyboard-shortcuts) | Single character (e.g., "n", "m") | "j" (Ctrl+J) |
 | `GOOSE_CLI_SHOW_THINKING` | Shows model reasoning/thinking output in CLI responses. Some models (e.g., DeepSeek-R1, Kimi, Gemini) expose their internal reasoning process — this variable makes it visible in the CLI. | Set to any value to enable | Disabled |
 | `GOOSE_RANDOM_THINKING_MESSAGES` | Controls whether to show amusing random messages during processing | "true", "false" | "true" |
 | `GOOSE_CLI_SHOW_COST` | Toggles display of model cost estimates in CLI output | "1", "true" (case-insensitive) to enable | false |
 | `GOOSE_AUTO_COMPACT_THRESHOLD` | Set the percentage threshold at which rook [automatically summarizes your session](/docs/guides/sessions/smart-context-management#automatic-compaction). | Float between 0.0 and 1.0 (disabled at 0.0) | 0.8 |
 | `GOOSE_TOOL_CALL_CUTOFF` | Number of tool calls to keep in full detail before summarizing older tool outputs to help maintain efficient context usage  | Integer (e.g., 5, 10, 20) | 10 |
-| `GOOSE_MOIM_MESSAGE_TEXT` | Injects persistent text into goose's [working memory](/docs/guides/using-persistent-instructions) every turn. Useful for behavioral guardrails or persistent reminders. | Any text string | Not set |
-| `GOOSE_MOIM_MESSAGE_FILE` | Path to a file whose contents are injected into goose's [working memory](/docs/guides/using-persistent-instructions) every turn. Supports `~/`. Max 64 KB per file. | File path | Not set |
+| `GOOSE_MOIM_MESSAGE_TEXT` | Injects persistent text into rook's [working memory](/docs/guides/using-persistent-instructions) every turn. Useful for behavioral guardrails or persistent reminders. | Any text string | Not set |
+| `GOOSE_MOIM_MESSAGE_FILE` | Path to a file whose contents are injected into rook's [working memory](/docs/guides/using-persistent-instructions) every turn. Supports `~/`. Max 64 KB per file. | File path | Not set |
 
 **Examples**
 
@@ -268,7 +268,7 @@ export GOOSE_MAX_TURNS=100
 export GOOSE_SUBAGENT_MAX_TURNS=50
 
 # Use multiple context files
-export CONTEXT_FILE_NAMES='["CLAUDE.md", ".goosehints", ".cursorrules", "project_rules.txt"]'
+export CONTEXT_FILE_NAMES='["CLAUDE.md", ".rookhints", ".cursorrules", "project_rules.txt"]'
 
 # Disable automatic AI-generated session naming (useful for CI/headless runs)
 export GOOSE_DISABLE_SESSION_NAMING=true
@@ -301,16 +301,16 @@ export GOOSE_AUTO_COMPACT_THRESHOLD=0.6
 # Keep more tool calls in full detail (useful for debugging or verbose workflows)
 export GOOSE_TOOL_CALL_CUTOFF=20
 
-# Inject a persistent reminder into goose's working memory every turn
+# Inject a persistent reminder into rook's working memory every turn
 export GOOSE_MOIM_MESSAGE_TEXT="IMPORTANT: Always run tests before committing changes."
 
 # Load persistent instructions from a file (supports ~/)
-export GOOSE_MOIM_MESSAGE_FILE="~/.goose/guardrails.md"
+export GOOSE_MOIM_MESSAGE_FILE="~/.rook/guardrails.md"
 ```
 
 ### Model Context Limit Overrides
 
-These variables allow you to override the default context window size (token limit) for your models. This is particularly useful when using [LiteLLM proxies](https://docs.litellm.ai/docs/providers/litellm_proxy) or custom models that don't match goose's predefined model patterns.
+These variables allow you to override the default context window size (token limit) for your models. This is particularly useful when using [LiteLLM proxies](https://docs.litellm.ai/docs/providers/litellm_proxy) or custom models that don't match rook's predefined model patterns.
 
 | Variable | Purpose | Values | Default |
 |----------|---------|---------|---------|
@@ -334,7 +334,7 @@ For more details and examples, see [Model Context Limit Overrides](/docs/guides/
 
 ## Tool Configuration
 
-These variables control how rook handles [tool execution](/docs/guides/goose-permissions) and [tool management](/docs/guides/managing-tools/).
+These variables control how rook handles [tool execution](/docs/guides/rook-permissions) and [tool management](/docs/guides/managing-tools/).
 
 | Variable | Purpose | Values | Default |
 |----------|---------|---------|---------|
@@ -343,7 +343,7 @@ These variables control how rook handles [tool execution](/docs/guides/goose-per
 | `GOOSE_TOOLSHIM_OLLAMA_MODEL` | Specifies the model for [tool call interpretation](/docs/experimental/ollama) | Model name (e.g. llama3.2, qwen2.5) | System default |
 | `GOOSE_CLI_MIN_PRIORITY` | Controls verbosity of [tool output](/docs/guides/managing-tools/adjust-tool-output) | Float between 0.0 and 1.0 | 0.0 |
 | `GOOSE_CLI_TOOL_PARAMS_TRUNCATION_MAX_LENGTH` | Maximum length for tool parameter values before truncation in CLI output (not in debug mode) | Integer | 40 |
-| `GOOSE_DEBUG` | Enables debug mode to show full tool parameters without truncation. Can also be toggled during a session using the `/r` [slash command](/docs/guides/goose-cli-commands#slash-commands) | "1", "true" (case-insensitive) to enable | false |
+| `GOOSE_DEBUG` | Enables debug mode to show full tool parameters without truncation. Can also be toggled during a session using the `/r` [slash command](/docs/guides/rook-cli-commands#slash-commands) | "1", "true" (case-insensitive) to enable | false |
 | `GOOSE_SEARCH_PATHS` | Prepends additional directories to PATH for extension commands | JSON array of paths (for example, `["/usr/local/bin", "~/custom/bin"]`) | System PATH only |
 | `GOOSE_SHELL` | Overrides the shell used for Developer extension shell commands | Shell executable path or name (for example, `/bin/zsh`, `pwsh`, `C:\cygwin64\bin\bash.exe`) | Unix: `/bin/bash` if present, otherwise `$SHELL`, otherwise `sh`. Windows: `cmd` |
 
@@ -439,8 +439,8 @@ export GOOSE_TELEMETRY_ENABLED=true   # Enable telemetry
 :::tip
 When the keyring is disabled (or cannot be accessed and rook [falls back to file-based storage](/docs/troubleshooting/known-issues#keyring-cannot-be-accessed-automatic-fallback)), secrets are stored here:
 
-* macOS/Linux: `~/.config/goose/secrets.yaml`
-* Windows: `%APPDATA%\Block\goose\config\secrets.yaml`
+* macOS/Linux: `~/.config/rook/secrets.yaml`
+* Windows: `%APPDATA%\Block\rook\config\secrets.yaml`
 :::
 
 ### macOS Sandbox for rook Desktop
@@ -453,7 +453,7 @@ Optional [macOS sandbox](/docs/guides/sandbox) for rook Desktop that restricts f
 
 ## Network Configuration
 
-These variables configure network proxy settings for goose.
+These variables configure network proxy settings for rook.
 
 ### HTTP Proxy
 
@@ -481,7 +481,7 @@ Alternatively, proxy settings can be configured through your operating system's 
 
 ## Observability
 
-Beyond goose's built-in [logging system](/docs/guides/logs), you can export telemetry to external observability platforms for advanced monitoring, performance analysis, and production insights.
+Beyond rook's built-in [logging system](/docs/guides/logs), you can export telemetry to external observability platforms for advanced monitoring, performance analysis, and production insights.
 
 ### Observability Configuration
 
@@ -546,7 +546,7 @@ These variables control recipe discovery and management.
 | Variable | Purpose | Values | Default |
 |----------|---------|---------|---------|
 | `GOOSE_RECIPE_PATH` | Additional directories to search for recipes | Colon-separated paths on Unix, semicolon-separated on Windows | None |
-| `GOOSE_RECIPE_GITHUB_REPO` | GitHub repository to search for recipes | Format: "owner/repo" (e.g., "aaif-goose/goose-recipes") | None |
+| `GOOSE_RECIPE_GITHUB_REPO` | GitHub repository to search for recipes | Format: "owner/repo" (e.g., "aaif-rook/rook-recipes") | None |
 | `GOOSE_RECIPE_RETRY_TIMEOUT_SECONDS` | Global timeout for recipe success check commands | Integer (seconds) | Recipe-specific default |
 | `GOOSE_RECIPE_ON_FAILURE_TIMEOUT_SECONDS` | Global timeout for recipe on_failure commands | Integer (seconds) | Recipe-specific default |
 
@@ -557,7 +557,7 @@ These variables control recipe discovery and management.
 export GOOSE_RECIPE_PATH="/path/to/my/recipes:/path/to/team/recipes"
 
 # Configure GitHub recipe repository
-export GOOSE_RECIPE_GITHUB_REPO="myorg/goose-recipes"
+export GOOSE_RECIPE_GITHUB_REPO="myorg/rook-recipes"
 
 # Set global recipe timeouts
 export GOOSE_RECIPE_RETRY_TIMEOUT_SECONDS=300
@@ -573,9 +573,9 @@ These variables are primarily used for development, testing, and debugging rook 
 | `GOOSE_PATH_ROOT` | Override the root directory for all rook data, config, and state files | Absolute path to directory | Platform-specific defaults |
 
 **Default locations:**
-- macOS: `~/Library/Application Support/Block/goose/`
-- Linux: `~/.local/share/goose/`
-- Windows: `%APPDATA%\Block\goose\`
+- macOS: `~/Library/Application Support/Block/rook/`
+- Linux: `~/.local/share/rook/`
+- Windows: `%APPDATA%\Block\rook\`
 
 When set, rook creates `config/`, `data/`, and `state/` subdirectories under the specified path. Useful for isolating test environments, running multiple configurations, or CI/CD pipelines.
 
@@ -583,26 +583,26 @@ When set, rook creates `config/`, `data/`, and `state/` subdirectories under the
 
 ```bash
 # Temporary test environment
-export GOOSE_PATH_ROOT="/tmp/goose-test"
+export GOOSE_PATH_ROOT="/tmp/rook-test"
 
 # Isolated environment for a single command
-GOOSE_PATH_ROOT="/tmp/goose-isolated" rook run --recipe my-recipe.yaml
+GOOSE_PATH_ROOT="/tmp/rook-isolated" rook run --recipe my-recipe.yaml
 
 # CI/CD usage
 GOOSE_PATH_ROOT="$(mktemp -d)" rook run --recipe integration-test.yaml
 
 # Use with developer tools
-GOOSE_PATH_ROOT="/tmp/goose-test" ./scripts/goose-db-helper.sh status
+GOOSE_PATH_ROOT="/tmp/rook-test" ./scripts/rook-db-helper.sh status
 ```
 
-## Variables Controlled by goose
+## Variables Controlled by rook
 
 These variables are automatically set by rook during command execution.
 
 | Variable | Purpose | Values | Default |
 |----------|---------|---------|---------|
-| `GOOSE_TERMINAL` | Indicates that a command is being executed by goose, enables [customizing shell behavior](#customizing-shell-behavior) | "1" when set | Unset |
-| `AGENT` | Generic agent identifier for cross-tool compatibility, enables tools and scripts to detect when they're being run by rook | "goose" when set | Unset |
+| `GOOSE_TERMINAL` | Indicates that a command is being executed by rook, enables [customizing shell behavior](#customizing-shell-behavior) | "1" when set | Unset |
+| `AGENT` | Generic agent identifier for cross-tool compatibility, enables tools and scripts to detect when they're being run by rook | "rook" when set | Unset |
 | `AGENT_SESSION_ID` | The current session ID for [session-isolated workflows](#using-session-ids-in-workflows), automatically available to STDIO extensions and the Developer extension shell commands | Session ID string (e.g., `20260217_5`) | Unset (only set in extension/shell contexts) |
 
 ### Customizing Shell Behavior
@@ -622,7 +622,7 @@ rook provides the `GOOSE_TERMINAL` and `AGENT` variables you can use to detect w
 
 1. When rook runs commands:
    - `GOOSE_TERMINAL` is automatically set to "1"
-   - `AGENT` is automatically set to "goose"
+   - `AGENT` is automatically set to "rook"
 2. Your shell configuration can detect this and change behavior while keeping your normal terminal usage unchanged
 
 **Examples:**
@@ -630,11 +630,11 @@ rook provides the `GOOSE_TERMINAL` and `AGENT` variables you can use to detect w
 ```bash
 # In ~/.zshenv (for zsh users) or ~/.bashrc (for bash users)
 
-# Block git commit when run by goose
+# Block git commit when run by rook
 if [[ -n "$GOOSE_TERMINAL" ]]; then
   git() {
     if [[ "$1" == "commit" ]]; then
-      echo "❌ BLOCKED: git commit is not allowed when run by goose"
+      echo "❌ BLOCKED: git commit is not allowed when run by rook"
       return 1
     fi
     command git "$@"
@@ -654,8 +654,8 @@ fi
 if [[ -n "$AGENT" ]]; then
   echo "Running under AI agent: $AGENT"
   # Apply agent-specific behavior if needed
-  if [[ "$AGENT" == "goose" ]]; then
-    echo "Detected rook - applying goose-specific settings"
+  if [[ "$AGENT" == "rook" ]]; then
+    echo "Detected rook - applying rook-specific settings"
   fi
 fi
 ```

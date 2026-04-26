@@ -46,7 +46,7 @@ Restart your terminal or source the config, and that's it!
 
 ## Usage
 
-Just type `@goose` (or `@g` for short) followed by your question:
+Just type `@rook` (or `@g` for short) followed by your question:
 
 ```bash
 npm install express
@@ -97,7 +97,7 @@ Invoke-Expression (rook term init powershell --name my-project)
 </TabItem>
 </Tabs>
 
-Named sessions persist in goose's database, so they're available anytime, even after restarting your computer. Reopen later and run the same command to continue:
+Named sessions persist in rook's database, so they're available anytime, even after restarting your computer. Reopen later and run the same command to continue:
 
 ```bash
 # Start debugging
@@ -143,8 +143,8 @@ end
 
 ```powershell
 function prompt {
-    $gooseInfo = & rook term info
-    "$gooseInfo $(Get-Location) PS> "
+    $rookInfo = & rook term info
+    "$rookInfo $(Get-Location) PS> "
 }
 ```
 
@@ -158,7 +158,7 @@ Your terminal prompt now shows the context usage and model name (shortened for r
 ```
 ## Shell Completion for rook Commands
 
-`@goose` provides context-aware assistance based on your command history. To enable tab completion of rook CLI commands (like `rook session`, `rook run`, etc.), see the [shell completion documentation](/docs/guides/goose-cli-commands#completion).
+`@rook` provides context-aware assistance based on your command history. To enable tab completion of rook CLI commands (like `rook session`, `rook run`, etc.), see the [shell completion documentation](/docs/guides/rook-cli-commands#completion).
 
 ## Troubleshooting
 
@@ -173,7 +173,7 @@ echo $AGENT_SESSION_ID
 To share context across terminal windows, use a [named session](#named-sessions) instead.
 
 **Session getting too full** (prompt shows `●●●●●`):
-If goose's responses are getting slow or hitting context limits, start a fresh rook session in the terminal. The new rook session sees your command history, but not the conversation history from the previous session. 
+If rook's responses are getting slow or hitting context limits, start a fresh rook session in the terminal. The new rook session sees your command history, but not the conversation history from the previous session. 
 ```bash
 # Start a new rook session in the same shell
 eval "$(rook term init zsh)"

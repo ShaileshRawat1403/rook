@@ -15,7 +15,7 @@ This tutorial covers how to add the [Beads MCP Server](https://github.com/stevey
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?cmd=uvx&arg=beads-mcp&id=beads&name=Beads&description=Git-backed%20issue%20tracker%20for%20AI%20agent%20task%20management)
+  [Launch the installer](rook://extension?cmd=uvx&arg=beads-mcp&id=beads&name=Beads&description=Git-backed%20issue%20tracker%20for%20AI%20agent%20task%20management)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   **Command**

@@ -44,11 +44,11 @@ Starting from Goose v1.3.0, you can add MCP-UI as an extension.
 
 :::tip Add MCP-UI to Goose
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-  [Launch the installer](goose://extension?type=streamable_http&url=https%3A%2F%2Fmcp-aharvard.netlify.app%2Fmcp&id=mcpuidemo&name=MCP-UI%20Demo&description=Demo%20MCP-UI-enabled%20extension)
+  <TabItem value="ui" label="rook Desktop" default>
+  [Launch the installer](rook://extension?type=streamable_http&url=https%3A%2F%2Fmcp-aharvard.netlify.app%2Fmcp&id=mcpuidemo&name=MCP-UI%20Demo&description=Demo%20MCP-UI-enabled%20extension)
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
-  Use `goose configure` to add a `Remote Extension (Streaming HTTP)` extension type with:
+  <TabItem value="cli" label="rook CLI">
+  Use `rook configure` to add a `Remote Extension (Streaming HTTP)` extension type with:
 
   **Endpoint URL**
   ```
@@ -92,12 +92,12 @@ MCP-UI will continue to evolve, and may pick up more declarative ways for MCP-UI
 <head>
   <meta property="og:title" content="MCP UI: Bringing the Browser into the Agent" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/08/11/mcp-ui-post-browser-world" />
+  <meta property="og:url" content="https://rook-docs.ai/blog/2025/08/11/mcp-ui-post-browser-world" />
   <meta property="og:description" content="A first look at a UI for agents built on the proposed MCP-UI extension" />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/mcp-ui-shot-1b80ebfab25d885a8ead1ca24bb6cf13.png" />
+  <meta property="og:image" content="https://rook-docs.ai/assets/images/mcp-ui-shot-1b80ebfab25d885a8ead1ca24bb6cf13.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="rook-docs.ai" />
   <meta name="twitter:title" content="MCP UI: Bringing the Browser into the Agent" />
   <meta name="twitter:description" content="A first look at a UI for agents built on the proposed MCP-UI extension" />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/mcp-ui-shot-1b80ebfab25d885a8ead1ca24bb6cf13.png" />
+  <meta name="twitter:image" content="https://rook-docs.ai/assets/images/mcp-ui-shot-1b80ebfab25d885a8ead1ca24bb6cf13.png" />
 </head>

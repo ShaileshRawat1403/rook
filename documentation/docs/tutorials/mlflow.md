@@ -10,7 +10,7 @@ This tutorial covers how to integrate rook with MLflow to trace your rook sessio
 
 [MLflow](https://mlflow.org/) is an [open-source](https://github.com/mlflow/mlflow) platform for managing the end-to-end machine learning and AI lifecycle. MLflow Tracing provides detailed observability into AI agent execution, capturing LLM calls, tool usage, and agent decisions with a rich visualization UI.
 
-## Why MLflow for goose
+## Why MLflow for rook
 
 - **Detailed trace visualization**: Inspect every LLM call, tool execution, and agent decision in a hierarchical trace view.
 - **Token usage tracking**: Monitor input/output token counts and costs across sessions.
@@ -46,7 +46,7 @@ The `x-mlflow-experiment-id` header specifies which MLflow experiment to log tra
 
 ```bash
 pip install mlflow
-mlflow experiments create --experiment-name "goose-traces"
+mlflow experiments create --experiment-name "rook-traces"
 # Use the returned experiment ID in the header
 ```
 
@@ -68,10 +68,10 @@ rook session
 
 Open the MLflow UI at `http://localhost:5000` and navigate to the **Traces** tab to see detailed traces of your rook session, including LLM calls, tool executions, and token usage.
 
-![rook trace in MLflow](../assets/guides/mlflow-goose-tracing.png)
+![rook trace in MLflow](../assets/guides/mlflow-rook-tracing.png)
 
 ## Learn more
 
 - [MLflow Tracing documentation](https://mlflow.org/docs/latest/genai/tracing/)
 - [MLflow OpenTelemetry integration](https://mlflow.org/docs/latest/genai/tracing/app-instrumentation/opentelemetry.html)
-- [MLflow rook integration guide](https://mlflow.org/docs/latest/genai/tracing/integrations/listing/goose.html)
+- [MLflow rook integration guide](https://mlflow.org/docs/latest/genai/tracing/integrations/listing/rook.html)

@@ -1,7 +1,7 @@
 ---
 sidebar_position: 25
-title: Updating goose
-sidebar_label: Updating goose
+title: Updating rook
+sidebar_label: Updating rook
 ---
 
 import Tabs from '@theme/Tabs';
@@ -35,7 +35,7 @@ The rook CLI and desktop apps are under active and continuous development. To ge
         rook update
         ```
 
-        Additional [options](/docs/guides/goose-cli-commands#update-options):
+        Additional [options](/docs/guides/rook-cli-commands#update-options):
         
         ```sh
         # Update to latest canary (development) version
@@ -48,7 +48,7 @@ The rook CLI and desktop apps are under active and continuous development. To ge
         Or you can run the [installation](/docs/getting-started/installation) script again:
 
         ```sh
-        curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | CONFIGURE=false bash
+        curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh | CONFIGURE=false bash
         ```
 
         To check your current rook version, use the following command:
@@ -82,7 +82,7 @@ The rook CLI and desktop apps are under active and continuous development. To ge
         rook update
         ```
 
-        Additional [options](/docs/guides/goose-cli-commands#update-options):
+        Additional [options](/docs/guides/rook-cli-commands#update-options):
         
         ```sh
         # Update to latest canary (development) version
@@ -95,7 +95,7 @@ The rook CLI and desktop apps are under active and continuous development. To ge
         Or you can run the [installation](/docs/getting-started/installation) script again:
 
         ```sh
-        curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | CONFIGURE=false bash
+        curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh | CONFIGURE=false bash
         ```
 
         To check your current rook version, use the following command:
@@ -126,7 +126,7 @@ The rook CLI and desktop apps are under active and continuous development. To ge
         rook update
         ```
 
-        Additional [options](/docs/guides/goose-cli-commands#update-options):
+        Additional [options](/docs/guides/rook-cli-commands#update-options):
         
         ```sh
         # Update to latest canary (development) version
@@ -139,7 +139,7 @@ The rook CLI and desktop apps are under active and continuous development. To ge
         Or you can run the [installation](/docs/getting-started/installation) script again in **Git Bash**, **MSYS2**, or **PowerShell** to update the rook CLI natively on Windows:
 
         ```bash
-        curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | CONFIGURE=false bash
+        curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh | CONFIGURE=false bash
         ```
         
         To check your current rook version, use the following command:
@@ -154,7 +154,7 @@ The rook CLI and desktop apps are under active and continuous development. To ge
         To update your WSL installation, use `rook update` or run the installation script again via WSL:
 
         ```sh
-        curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | CONFIGURE=false bash
+        curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh | CONFIGURE=false bash
         ```
 
        </details>

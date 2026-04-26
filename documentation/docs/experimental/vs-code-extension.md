@@ -4,15 +4,15 @@ sidebar_label: VS Code Extension
 sidebar_position: 4
 ---
 
-import IconRook from "@site/src/components/icons/goose";
+import IconRook from "@site/src/components/icons/rook";
 
-The [rook for VS Code extension](https://marketplace.visualstudio.com/items?itemName=block.vscode-goose) lets you interact with rook directly within VS Code.
+The [rook for VS Code extension](https://marketplace.visualstudio.com/items?itemName=block.vscode-rook) lets you interact with rook directly within VS Code.
 
 :::warning Experimental Feature
 rook for VS Code is in active development. Behavior and configuration may change in future releases.
 :::
 
-The extension uses the [Agent Client Protocol (ACP)](/docs/guides/acp-clients) to communicate with goose.
+The extension uses the [Agent Client Protocol (ACP)](/docs/guides/acp-clients) to communicate with rook.
 
 ## Install the Extension
 
@@ -21,23 +21,23 @@ The extension uses the [Agent Client Protocol (ACP)](/docs/guides/acp-clients) t
 - [rook CLI](/docs/getting-started/installation)
 :::
 
-1. Go to [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=block.vscode-goose)
+1. Go to [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=block.vscode-rook)
 2. Click `Install`
 3. On the popup window, click `Open Visual Studio Code`
 4. In Visual Studio Code, click `Install`
-5. Click the <IconRook className="inline" size={16} /> icon in the Activity Bar to open the side panel and start chatting with goose
+5. Click the <IconRook className="inline" size={16} /> icon in the Activity Bar to open the side panel and start chatting with rook
 
-## Share Context with goose
+## Share Context with rook
 
-There are two ways to provide context to goose.
+There are two ways to provide context to rook.
 
 ### Send Selected Code
 
 1. Select the code you want to discuss in your editor
-2. Send the selection to goose:
+2. Send the selection to rook:
    - macOS: `Cmd+Shift+G`
    - Windows/Linux: `Ctrl+Shift+G`
-   - Right-click and choose `Send to goose`
+   - Right-click and choose `Send to rook`
 
 The selected code will appear as a context chip above the chat input.
 
@@ -55,7 +55,7 @@ The attached file will appear as a context chip above the chat input.
 The rook for VS Code extension connects directly to your editor, letting you manage files, projects, and workflows with AI. It includes the following features:
 
 - Interactive chat UI with streaming responses
-- Access to goose's AI capabilities and enabled extensions
+- Access to rook's AI capabilities and enabled extensions
 - Session management with history replay
 - Context sharing and visual context chips in the chat UI
 - Clipboard tools to copy code snippets/responses for easy sharing
@@ -63,7 +63,7 @@ The rook for VS Code extension connects directly to your editor, letting you man
 ### rook Prompt
 
 ```
-Update the contributing guide at /goose/CONTRIBUTING.md with instructions on how to start docusaurus dev server
+Update the contributing guide at /rook/CONTRIBUTING.md with instructions on how to start docusaurus dev server
 ```
 
 ### rook Output

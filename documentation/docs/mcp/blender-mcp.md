@@ -16,7 +16,7 @@ This tutorial covers how to add the [Blender MCP Server](https://github.com/ahuj
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?cmd=uvx&arg=blender-mcp&id=blender&name=Blender&description=Blender%203D%20scene%20creation%20integration)
+  [Launch the installer](rook://extension?cmd=uvx&arg=blender-mcp&id=blender&name=Blender&description=Blender%203D%20scene%20creation%20integration)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   **Command**

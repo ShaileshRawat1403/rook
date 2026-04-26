@@ -78,8 +78,8 @@ You can turn your current rook session into a reusable recipe that includes the 
    activities:                    # Example prompts to display in the Desktop app
    - $activities
    settings:                      # Additional settings
-     goose_provider: $provider    # Provider to use for this recipe
-     goose_model: $model          # Specific model to use for this recipe
+     rook_provider: $provider    # Provider to use for this recipe
+     rook_model: $model          # Specific model to use for this recipe
      temperature: $temperature    # Model temperature setting for this recipe (0.0 to 1.0)
    retry:                         # Automated retry logic with success validation
      max_retries: $max_retries    # Maximum number of retry attempts
@@ -126,8 +126,8 @@ You can turn your current rook session into a reusable recipe that includes the 
    - "Check test coverage against {{ test_coverage }}% requirement"
    - "Verify {{ style_guide }} compliance"
    settings:                     
-     goose_provider: "anthropic"   
-     goose_model: "claude-3-7-sonnet-latest"          
+     rook_provider: "anthropic"   
+     rook_model: "claude-3-7-sonnet-latest"          
      temperature: 0.7 
    parameters:
    - key: project_name
@@ -162,7 +162,7 @@ You can turn your current rook session into a reusable recipe that includes the 
 
 
   <TabItem value="generator" label="Recipe Generator">
-    Use the online [Recipe Generator](https://goose-docs.ai/recipe-generator) tool to create a recipe. First choose your preferred format:
+    Use the online [Recipe Generator](https://rook-docs.ai/recipe-generator) tool to create a recipe. First choose your preferred format:
 
     - **URL Format**: Generates a shareable link that opens a session in rook Desktop
     - **YAML Format**: Generates YAML content that you can save to file and then run in rook CLI
@@ -283,7 +283,7 @@ You can customize how rook generates recipes by editing the `recipe.md` [prompt 
        You'll see the following prompts:
 
        ```sh
-       ┌  goose-configure 
+       ┌  rook-configure 
        │
        ◆  What would you like to configure?
        │  ○ Configure Providers 
@@ -306,7 +306,7 @@ You can customize how rook generates recipes by editing the `recipe.md` [prompt 
        │  ● rook recipe github repo (rook will pull recipes from this repo if not found locally.)
        // highlight-end
        └  
-       ┌  goose-configure 
+       ┌  rook-configure 
        │
        ◇  What would you like to configure?
        │  rook settings 
@@ -314,9 +314,9 @@ You can customize how rook generates recipes by editing the `recipe.md` [prompt 
        ◇  What setting would you like to configure?
        │  rook recipe github repo 
        │
-       ◆  Enter your rook recipe GitHub repo (owner/repo): eg: my_org/goose-recipes
+       ◆  Enter your rook recipe GitHub repo (owner/repo): eg: my_org/rook-recipes
        // highlight-start
-       │  squareup/goose-recipes (default)
+       │  squareup/rook-recipes (default)
        // highlight-end
        └  
        ```
@@ -326,7 +326,7 @@ You can customize how rook generates recipes by editing the `recipe.md` [prompt 
      <TabItem value="config" label="Using config file">
 
        Add to your config file:
-       ```yaml title="~/.config/goose/config.yaml"
+       ```yaml title="~/.config/rook/config.yaml"
        GOOSE_RECIPE_GITHUB_REPO: "owner/repo"
        ```
 
@@ -338,7 +338,7 @@ You can customize how rook generates recipes by editing the `recipe.md` [prompt 
    <Tabs groupId="interface">
      <TabItem value="local" label="Local Recipe" default>
 
-       **Basic Usage** - Run once and exit (see [run options](/docs/guides/goose-cli-commands#run-options) and [recipe commands](/docs/guides/goose-cli-commands#recipe) for more):
+       **Basic Usage** - Run once and exit (see [run options](/docs/guides/rook-cli-commands#run-options) and [recipe commands](/docs/guides/rook-cli-commands#recipe) for more):
        ```sh
        # Using recipe file in current directory or [`GOOSE_RECIPE_PATH`](/docs/guides/environment-variables#recipe-configuration) directories
        rook run --recipe recipe.yaml
@@ -347,7 +347,7 @@ You can customize how rook generates recipes by editing the `recipe.md` [prompt 
        rook run --recipe ./recipes/my-recipe.yaml
        ```
 
-       **Preview Recipe** - Use the [`explain`](/docs/guides/goose-cli-commands#run-options) command to view details before running:
+       **Preview Recipe** - Use the [`explain`](/docs/guides/rook-cli-commands#run-options) command to view details before running:
  
        **Interactive Mode** - Start an interactive session:
        ```sh
@@ -362,7 +362,7 @@ You can customize how rook generates recipes by editing the `recipe.md` [prompt 
        │ PEP8
        ```
 
-       **With Parameters** - Supply parameter values when running recipes. See the [`run` command documentation](/docs/guides/goose-cli-commands#run-options) for detailed examples and options.
+       **With Parameters** - Supply parameter values when running recipes. See the [`run` command documentation](/docs/guides/rook-cli-commands#run-options) for detailed examples and options.
 
        Basic example:
        ```sh
@@ -377,7 +377,7 @@ You can customize how rook generates recipes by editing the `recipe.md` [prompt 
 
        Once you've configured your GitHub repository, you can run recipes by name:
 
-       **Basic Usage** - Run recipes from your configured repo using the recipe name that matches its directory (see [run options](/docs/guides/goose-cli-commands#run-options) and [recipe commands](/docs/guides/goose-cli-commands#recipe) for more):
+       **Basic Usage** - Run recipes from your configured repo using the recipe name that matches its directory (see [run options](/docs/guides/rook-cli-commands#run-options) and [recipe commands](/docs/guides/rook-cli-commands#recipe) for more):
 
        ```sh
        rook run --recipe recipe-name
@@ -397,7 +397,7 @@ You can customize how rook generates recipes by editing the `recipe.md` [prompt 
        rook run --recipe code-review
        ```
 
-      **Preview Recipe** - Use the [`explain`](/docs/guides/goose-cli-commands#run-options) command to view details before running:
+      **Preview Recipe** - Use the [`explain`](/docs/guides/rook-cli-commands#run-options) command to view details before running:
 
        **Interactive Mode** - With parameter prompts:
        ```sh
@@ -412,7 +412,7 @@ You can customize how rook generates recipes by editing the `recipe.md` [prompt 
        │ Python
        ```
 
-       **With Parameters** - Supply parameter values when running recipes. See the [`run` command documentation](/docs/guides/goose-cli-commands#run-options) for detailed examples and options.
+       **With Parameters** - Supply parameter values when running recipes. See the [`run` command documentation](/docs/guides/rook-cli-commands#run-options) for detailed examples and options.
 
      </TabItem>
    </Tabs>
@@ -444,7 +444,7 @@ You can customize how rook generates recipes by editing the `recipe.md` [prompt 
    ```
 
    :::info
-   If you want to validate a recipe you just created, you need to [exit the session](/docs/guides/sessions/session-management#exit-session) before running the [`validate` subcommand](/docs/guides/goose-cli-commands#recipe).
+   If you want to validate a recipe you just created, you need to [exit the session](/docs/guides/sessions/session-management#exit-session) before running the [`validate` subcommand](/docs/guides/rook-cli-commands#recipe).
    :::
 
    Recipe validation can be useful for:
@@ -510,7 +510,7 @@ You can share a recipe with Desktop or CLI users by sending the recipe file dire
 
   Exporting or copying recipe content is only available through the Desktop, but you can copy local recipe files directly.
 
-  CLI users can run a shared recipe file using `rook run --recipe <FILE>` or open it directly in rook Desktop with `rook recipe open <FILE>`. See the [CLI Commands guide](/docs/guides/goose-cli-commands#recipe) for details.
+  CLI users can run a shared recipe file using `rook run --recipe <FILE>` or open it directly in rook Desktop with `rook recipe open <FILE>`. See the [CLI Commands guide](/docs/guides/rook-cli-commands#recipe) for details.
 
   </TabItem>
 </Tabs>
@@ -522,7 +522,7 @@ Automate rook recipes by running them on a schedule. When creating a schedule, y
 - **Name**: A descriptive name for the schedule
 - **Source**: The recipe to run
 - **Execution mode**: Whether the recipe runs in the background (no window, results saved) or foreground (opens window if rook Desktop is running, otherwise runs in background)
-- **Frequency and time**: When to run the recipe (e.g. every 20 minutes, weekly at 10 AM on Friday). Your selection is converted into a [cron expression](https://en.wikipedia.org/wiki/Cron#Cron_expression) used by goose.
+- **Frequency and time**: When to run the recipe (e.g. every 20 minutes, weekly at 10 AM on Friday). Your selection is converted into a [cron expression](https://en.wikipedia.org/wiki/Cron#Cron_expression) used by rook.
 
 **Schedule from Recipe Library:**
 
@@ -561,7 +561,7 @@ At the bottom of the `Schedule Details` page you can view the list of sessions c
   ```
   You can use either a 5, 6, or 7-digit cron expression for full scheduling precision, following the format "seconds minutes hours day-of-month month day-of-week year".
 
-  See the [`schedule` command documentation](/docs/guides/goose-cli-commands.md#schedule) for detailed examples and options.
+  See the [`schedule` command documentation](/docs/guides/rook-cli-commands.md#schedule) for detailed examples and options.
 </TabItem>
 </Tabs>
 

@@ -23,8 +23,8 @@ Before saving recipes, it's important to understand where they can be stored and
 
 | Type | Location | Availability | Best For |
 |------|----------|-------------|----------|
-| **Global** | `~/.config/goose/recipes/` | All projects and sessions | Personal workflows, general-purpose recipes |
-| **Local** | `YOUR_WORKING_DIRECTORY/.goose/recipes/` | Only when working in that project | Project-specific workflows, team recipes |
+| **Global** | `~/.config/rook/recipes/` | All projects and sessions | Personal workflows, general-purpose recipes |
+| **Local** | `YOUR_WORKING_DIRECTORY/.rook/recipes/` | Only when working in that project | Project-specific workflows, team recipes |
 
 **Choose Global Storage When:**
 - You want the recipe available across all projects
@@ -65,7 +65,7 @@ When you modify and save a recipe with a new name, a new recipe and new link are
 
     * Your working directory by default: `./recipe.yaml`
     * Any path you specify: `/recipe /path/to/my-recipe.yaml`  
-    * Local project recipes: `/recipe .goose/recipes/my-recipe.yaml`
+    * Local project recipes: `/recipe .rook/recipes/my-recipe.yaml`
 
     :::note
     The CLI saves recipes as `.yaml` files. While the CLI can run recipes in `.json` format, it does not provide an option to save recipes as JSON.
@@ -141,8 +141,8 @@ rook searches for recipes in the following locations (in order):
 
 1. **Current directory**: `.` (looks for `*.yaml` and `*.json` files)
 2. **Custom paths**: Directories specified in [`GOOSE_RECIPE_PATH`](/docs/guides/environment-variables#recipe-configuration) environment variable
-3. **Global recipe library**: `~/.config/goose/recipes/` (or equivalent on your OS)
-4. **Local project recipes**: `./.goose/recipes/`
+3. **Global recipe library**: `~/.config/rook/recipes/` (or equivalent on your OS)
+4. **Local project recipes**: `./.rook/recipes/`
 5. **GitHub repository**: If [`GOOSE_RECIPE_GITHUB_REPO`](/docs/guides/environment-variables#recipe-configuration) environment variable is configured
 
 **Example Output**
@@ -151,30 +151,30 @@ rook searches for recipes in the following locations (in order):
 ```bash
 $ rook recipe list
 Available recipes:
-goose-self-test - A comprehensive meta-testing recipe - local: ./goose-self-test.yaml
-hello-world - A sample recipe demonstrating basic usage - local: ~/.config/goose/recipes/hello-world.yaml
-job-finder - Find software engineering positions - local: ~/.config/goose/recipes/job-finder.yaml
+rook-self-test - A comprehensive meta-testing recipe - local: ./rook-self-test.yaml
+hello-world - A sample recipe demonstrating basic usage - local: ~/.config/rook/recipes/hello-world.yaml
+job-finder - Find software engineering positions - local: ~/.config/rook/recipes/job-finder.yaml
 ```
 
 *Verbose mode:*
 ```bash
 $ rook recipe list --verbose
 Available recipes:
-  goose-self-test - A comprehensive meta-testing recipe - local: ./goose-self-test.yaml
+  rook-self-test - A comprehensive meta-testing recipe - local: ./rook-self-test.yaml
     Title: rook Self-Testing Integration Suite
-    Path: ./goose-self-test.yaml
-  hello-world - A sample recipe demonstrating basic usage - local: ~/.config/goose/recipes/hello-world.yaml
+    Path: ./rook-self-test.yaml
+  hello-world - A sample recipe demonstrating basic usage - local: ~/.config/rook/recipes/hello-world.yaml
     Title: Hello World Recipe
-    Path: /Users/username/.config/goose/recipes/hello-world.yaml
+    Path: /Users/username/.config/rook/recipes/hello-world.yaml
 ```
 
 *JSON format for automation:*
 ```json
 [
   {
-    "name": "goose-self-test",
+    "name": "rook-self-test",
     "source": "Local",
-    "path": "./goose-self-test.yaml",
+    "path": "./rook-self-test.yaml",
     "title": "rook Self-Testing Integration Suite",
     "description": "A comprehensive meta-testing recipe"
   },
@@ -198,7 +198,7 @@ rook recipe list
 
 Configure GitHub recipe repository:
 ```bash
-export GOOSE_RECIPE_GITHUB_REPO="myorg/goose-recipes"
+export GOOSE_RECIPE_GITHUB_REPO="myorg/rook-recipes"
 rook recipe list
 ```
 
@@ -210,10 +210,10 @@ If you need to browse recipe directories manually:
 
 ```bash
 # List recipes in default global location
-ls ~/.config/goose/recipes/
+ls ~/.config/rook/recipes/
 
 # List recipes in current project
-ls .goose/recipes/
+ls .rook/recipes/
 
 # Search for all recipe files
 find . -name "*.yaml" -path "*/recipes/*" -o -name "*.json" -path "*/recipes/*"
@@ -241,7 +241,7 @@ The `rook recipe list` command is the recommended way to find recipes as it auto
   </TabItem>
   <TabItem value="cli" label="rook CLI">
 
-Once you've located your recipe file, [run the recipe](/docs/guides/recipes/session-recipes#run-a-recipe) or [open it in rook Desktop](/docs/guides/goose-cli-commands#recipe).
+Once you've located your recipe file, [run the recipe](/docs/guides/recipes/session-recipes#run-a-recipe) or [open it in rook Desktop](/docs/guides/rook-cli-commands#recipe).
 
 :::tip Format Compatibility
 The CLI can run recipes saved from rook Desktop without any conversion. Both CLI-created and Desktop-saved recipes work with all recipe commands.

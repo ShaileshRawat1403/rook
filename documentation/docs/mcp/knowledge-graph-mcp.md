@@ -17,7 +17,7 @@ This tutorial covers how to add the [Knowledge Graph Memory MCP Server](https://
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?cmd=npx&arg=-y&arg=%40modelcontextprotocol%2Fserver-memory&id=knowledge_graph_memory&name=Knowledge%20Graph%20Memory&description=Graph-based%20memory%20system%20for%20persistent%20knowledge%20storage)
+  [Launch the installer](rook://extension?cmd=npx&arg=-y&arg=%40modelcontextprotocol%2Fserver-memory&id=knowledge_graph_memory&name=Knowledge%20Graph%20Memory&description=Graph-based%20memory%20system%20for%20persistent%20knowledge%20storage)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   **Command**
@@ -62,7 +62,7 @@ This means rook doesn't just spot issues - it understands how vulnerabilities co
 ### Step 1: Teach rook About Security Patterns
     #### rook Prompt #1
     ```
-    goose, learn these security vulnerability patterns and their relationships:
+    rook, learn these security vulnerability patterns and their relationships:
 
     1. SQL Injection relates to:
 

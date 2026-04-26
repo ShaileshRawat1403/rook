@@ -24,7 +24,7 @@ To respect your privacy, rook collects only anonymous usage metrics when you opt
 Collected usage data doesn't include your conversations, code, tool arguments, error messages, or any personal data.
 
 :::info Provider Data Handling
-Depending on the [LLMs](/docs/getting-started/providers) you use with goose, your conversations, prompts, and information accessed by rook might be sent to the provider and subject to their data retention and privacy policies.
+Depending on the [LLMs](/docs/getting-started/providers) you use with rook, your conversations, prompts, and information accessed by rook might be sent to the provider and subject to their data retention and privacy policies.
 :::
 
 ## Change Your Preference
@@ -46,7 +46,7 @@ To change your usage data collection preference:
     4. Your current telemetry status is shown. Select `Yes` to enable anonymous usage data collection or `No` to disable it.
     
     ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  rook settings 
@@ -56,11 +56,11 @@ To change your usage data collection preference:
     │
     ●  Current telemetry status: Disabled
     │  
-    ◇  Share anonymous usage data to help improve goose?
+    ◇  Share anonymous usage data to help improve rook?
     │  Yes 
     │
-    └  Telemetry enabled - thank you for helping improve goose!
-    └  Configuration saved successfully to /Users/julesv/.config/goose/config.yaml
+    └  Telemetry enabled - thank you for helping improve rook!
+    └  Configuration saved successfully to /Users/julesv/.config/rook/config.yaml
     ```
   </TabItem>
 </Tabs>

@@ -6,7 +6,7 @@ source "$LIB_DIR/test_providers_lib.sh"
 echo "Mode: normal (direct tool calls)"
 echo ""
 
-GOOSE_BIN=$(build_goose)
+GOOSE_BIN=$(build_rook)
 BUILTINS="developer"
 
 mkdir -p target

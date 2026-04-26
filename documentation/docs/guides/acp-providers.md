@@ -79,7 +79,7 @@ Wraps `pi-acp`, an ACP adapter for Pi. Uses your existing Pi installation.
 
    Run `amp` and follow the authentication prompts.
 
-4. **Configure goose**
+4. **Configure rook**
 
    Set the provider environment variable:
    ```bash
@@ -100,7 +100,7 @@ Wraps `pi-acp`, an ACP adapter for Pi. Uses your existing Pi installation.
 
    Ensure your Claude CLI is authenticated and working
 
-3. **Configure goose**
+3. **Configure rook**
 
    Set the provider environment variable:
    ```bash
@@ -110,7 +110,7 @@ Wraps `pi-acp`, an ACP adapter for Pi. Uses your existing Pi installation.
    Or configure through the rook CLI using `rook configure`:
 
    ```bash
-   ┌   goose-configure
+   ┌   rook-configure
    │
    ◇  What would you like to configure?
    │  Configure Providers
@@ -136,7 +136,7 @@ Wraps `pi-acp`, an ACP adapter for Pi. Uses your existing Pi installation.
 
    Run `codex` and follow the authentication prompts. You can use your ChatGPT account or API key.
 
-3. **Configure goose**
+3. **Configure rook**
 
    Set the provider environment variable:
    ```bash
@@ -146,7 +146,7 @@ Wraps `pi-acp`, an ACP adapter for Pi. Uses your existing Pi installation.
    Or configure through the rook CLI using `rook configure`:
 
    ```bash
-   ┌   goose-configure
+   ┌   rook-configure
    │
    ◇  What would you like to configure?
    │  Configure Providers
@@ -170,7 +170,7 @@ Wraps `pi-acp`, an ACP adapter for Pi. Uses your existing Pi installation.
 
    Run `pi` and follow the authentication prompts.
 
-3. **Configure goose**
+3. **Configure rook**
 
    Set the provider environment variable:
    ```bash

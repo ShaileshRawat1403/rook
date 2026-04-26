@@ -24,11 +24,11 @@ rook is designed to be forked and customized. You can create your own "distro" o
 
 The full guide lives in the repo root since you'll need to work at the code level to build a custom distribution:
 
-👉 **[CUSTOM_DISTROS.md](https://github.com/aaif-goose/goose/blob/main/CUSTOM_DISTROS.md)**
+👉 **[CUSTOM_DISTROS.md](https://github.com/aaif-rook/rook/blob/main/CUSTOM_DISTROS.md)**
 
 It covers:
 
-- **Architecture overview** — how goose's layers (UI → server → core) fit together
+- **Architecture overview** — how rook's layers (UI → server → core) fit together
 - **Configuration-only customization** — environment variables, `config.yaml`, `init-config.yaml`
 - **Extension bundling** — adding MCP servers as built-in extensions or via recipes
 - **Custom branding** — replacing icons, app names, system prompts
@@ -53,4 +53,4 @@ GOOSE_PROVIDER: ollama
 GOOSE_MODEL: qwen3-coder:latest
 ```
 
-See the [full guide](https://github.com/aaif-goose/goose/blob/main/CUSTOM_DISTROS.md) for more scenarios including corporate API key distribution, audience-specific builds, and custom UIs.
+See the [full guide](https://github.com/aaif-rook/rook/blob/main/CUSTOM_DISTROS.md) for more scenarios including corporate API key distribution, audience-specific builds, and custom UIs.

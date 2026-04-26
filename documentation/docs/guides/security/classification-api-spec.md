@@ -73,7 +73,7 @@ Analyzes text for prompt injection and returns classification results.
 - `"SAFE"` or `"LABEL_0"`: Indicates safe/benign text
 - Implementations SHOULD return results sorted by score (highest first)
 
-**goose's Usage:**
+**rook's Usage:**
 - rook looks for the label with the highest score
 - If the top label is `"INJECTION"` (or `"LABEL_1"`), the score is used as the injection confidence
 - If the top label is `"SAFE"` (or `"LABEL_0"`), rook uses `1.0 - score` as the injection confidence

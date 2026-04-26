@@ -67,13 +67,13 @@ cf services
 Create a service key to generate API credentials:
 
 ```sh
-cf create-service-key my-qwen-coder my-goose-key --wait
+cf create-service-key my-qwen-coder my-rook-key --wait
 ```
 
 Then retrieve the credentials:
 
 ```sh
-cf service-key my-qwen-coder my-goose-key
+cf service-key my-qwen-coder my-rook-key
 ```
 
 ### Single-Model Plan Output
@@ -130,7 +130,7 @@ Single-model plans include a top-level `credentials.api_base` field that has an 
 Using the wrong value would produce a double-path URL like `.../openai/openai/v1/chat/completions`.
 :::
 
-## Step 5: Configure goose
+## Step 5: Configure rook
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
@@ -161,14 +161,14 @@ Using the wrong value would produce a double-path URL like `.../openai/openai/v1
 
   ### Option 2: Using environment variables
 
-  Set the following environment variables before launching goose:
+  Set the following environment variables before launching rook:
 
   ```sh
   export TANZU_AI_ENDPOINT="https://genai-proxy.sys.example.com/tanzu-my-model-abc1234"
   export TANZU_AI_API_KEY="eyJhbGciOi..."
   ```
 
-  Then start goose:
+  Then start rook:
 
   ```sh
   rook session
@@ -240,6 +240,6 @@ Ensure the model name matches exactly (including the prefix, e.g., `Qwen/Qwen3-C
 To remove a service instance and its keys:
 
 ```sh
-cf delete-service-key my-qwen-coder my-goose-key -f
+cf delete-service-key my-qwen-coder my-rook-key -f
 cf delete-service my-qwen-coder -f
 ```

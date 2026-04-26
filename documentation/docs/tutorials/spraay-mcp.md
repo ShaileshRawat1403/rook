@@ -72,7 +72,7 @@ rook configure
 Choose **Add Extension** → **Command-line Extension** and configure:
 
 ```
-┌   goose-configure
+┌   rook-configure
 │
 │   ◇  What would you like to call this extension?
 │   spraay

@@ -34,7 +34,7 @@ This helps manage context window usage more efficiently when multiple extensions
 
   2. Choose to `Toggle Extensions`
   ```sh
-  ┌   goose-configure 
+  ┌   rook-configure 
   │
   ◇  What would you like to configure?
   │  Toggle Extensions 

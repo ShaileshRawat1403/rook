@@ -56,7 +56,7 @@ prompt: |
 
 In this example, rook recognizes that "three biggest cities" requires running the weather subrecipe multiple times for different cities, so it executes them in parallel.
 
-If you wanted to run them sequentially, you can just tell goose:
+If you wanted to run them sequentially, you can just tell rook:
 
 ```yaml
 prompt: |

@@ -2,23 +2,23 @@
 title: Quick rook Tips
 sidebar_position: 30
 sidebar_label: Quick Tips
-description: Best practices for working with goose
+description: Best practices for working with rook
 ---
 
 ### rook works on your behalf
 rook is an AI agent, which means you can prompt rook to perform tasks for you like opening applications, running shell commands, automating workflows, writing code, browsing the web, and more.
 
 ### Prompt rook using natural language
-You don't need fancy language or special syntax to prompt goose. Talk with rook like you would talk to a friend. You can even use slang or say please and thank you; rook will understand.
+You don't need fancy language or special syntax to prompt rook. Talk with rook like you would talk to a friend. You can even use slang or say please and thank you; rook will understand.
 
-### Extend goose's capabilities to any application
-goose's capabilities are extensible. As an [MCP](https://modelcontextprotocol.io/) client, rook can connect to your apps and services through [extensions](/extensions), allowing it to work across your entire workflow.
+### Extend rook's capabilities to any application
+rook's capabilities are extensible. As an [MCP](https://modelcontextprotocol.io/) client, rook can connect to your apps and services through [extensions](/extensions), allowing it to work across your entire workflow.
 
 ### Choose how much control rook has
-You can customize how much [supervision](/docs/guides/goose-permissions) rook needs. Choose between full autonomy, requiring approval before actions, or simply chatting without any actions.
+You can customize how much [supervision](/docs/guides/rook-permissions) rook needs. Choose between full autonomy, requiring approval before actions, or simply chatting without any actions.
 
 ### Choose the right LLM
-Your experience with rook is shaped by your [choice of LLM](/blog/2025/03/31/goose-benchmark), as it handles all the planning while rook manages the execution. When choosing an LLM, consider its tool support, specific capabilities, and associated costs.
+Your experience with rook is shaped by your [choice of LLM](/blog/2025/03/31/rook-benchmark), as it handles all the planning while rook manages the execution. When choosing an LLM, consider its tool support, specific capabilities, and associated costs.
 
 ### Keep sessions short
 LLMs have context windows, which are limits on how much conversation history they can retain. Once exceeded, they may forget earlier parts of the conversation. Monitor your token usage and [start new sessions](/docs/guides/sessions/session-management) as needed.
@@ -34,10 +34,10 @@ Consider enabling [Code Mode](/docs/guides/managing-tools/code-mode), an alterna
 :::
 
 ### Teach rook your preferences
-Help rook remember how you like to work by using [`.goosehints` or other context files](/docs/guides/context-engineering/using-goosehints) or [skills](/docs/guides/context-engineering/using-skills) for permanent project preferences and the [Memory extension](/docs/mcp/memory-mcp) for things you want rook to dynamically recall later. Both can help save valuable context window space while keeping your preferences available.
+Help rook remember how you like to work by using [`.rookhints` or other context files](/docs/guides/context-engineering/using-rookhints) or [skills](/docs/guides/context-engineering/using-skills) for permanent project preferences and the [Memory extension](/docs/mcp/memory-mcp) for things you want rook to dynamically recall later. Both can help save valuable context window space while keeping your preferences available.
 
 ### Protect sensitive files
-rook is often eager to make changes. You can stop it from changing specific files by creating a [.gooseignore](/docs/guides/using-gooseignore) file. In this file, you can list all the file paths you want it to avoid.
+rook is often eager to make changes. You can stop it from changing specific files by creating a [.rookignore](/docs/guides/using-rookignore) file. In this file, you can list all the file paths you want it to avoid.
 
 ### Version Control
 Commit your code changes early and often. This allows you to rollback any unexpected changes.
@@ -55,7 +55,7 @@ You don’t need to get it right the first time. Iterating on prompts and tools 
 rook Desktop lets you [customize the sidebar](/docs/guides/desktop-navigation) to match how you like to work. Adjust its position, appearance, and which items are visible.
 
 ### Keep rook updated
-Regularly [update](/docs/guides/updating-goose) rook to benefit from the latest features, bug fixes, and performance improvements.
+Regularly [update](/docs/guides/updating-rook) rook to benefit from the latest features, bug fixes, and performance improvements.
 
 ### Use a Dedicated Planner Model
 Use [planning mode](/docs/guides/creating-plans) with a dedicated planner model for complex reasoning, while keeping a faster default model for everyday execution.

@@ -16,7 +16,7 @@ This tutorial covers how to add the [GitHub MCP Server](https://github.com/githu
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-   [Launch the installer](goose://extension?type=streamable_http&url=https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F&id=github&name=GitHub&description=GitHub%20repository%20management%20and%20operations&header=Authorization%3DBearer%20YOUR_GITHUB_PERSONAL_ACCESS_TOKEN)
+   [Launch the installer](rook://extension?type=streamable_http&url=https%3A%2F%2Fapi.githubcopilot.com%2Fmcp%2F&id=github&name=GitHub&description=GitHub%20repository%20management%20and%20operations&header=Authorization%3DBearer%20YOUR_GITHUB_PERSONAL_ACCESS_TOKEN)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   Add a `Remote Extension (Streaming HTTP)` extension type with:
@@ -76,13 +76,13 @@ These steps configure the Remote MCP Server. For other deployment options, see t
 ## Example Usage
 
 When creating my [GitHub Personal Access Token](https://github.com/settings/personal-access-tokens), I gave it the following access:
-* Repository: [goose-demo](https://github.com/angiejones/goose-demo)
+* Repository: [rook-demo](https://github.com/angiejones/rook-demo)
 * Read access to metadata
 * Read and Write access to code, commit status, issues, and pull requests
 
 ### rook Prompt
 ```
-create a new branch called hello-world in my angiejones/goose-demo repository. Update the README.md file to say "this was written by goose" and commit it. Open a pull request with your changes.
+create a new branch called hello-world in my angiejones/rook-demo repository. Update the README.md file to say "this was written by rook" and commit it. Open a pull request with your changes.
 ```
 
 ### rook Output
@@ -101,17 +101,17 @@ Let me execute these steps:
 ─── create_branch | github ──────────────────────────
 branch: hello-world
 owner: angiejones
-repo: goose-demo
+repo: rook-demo
 
 2. Now, updating the README.md file in the new branch:
 
 ─── create_or_update_file | github ──────────────────────────
 branch: hello-world
-content: this was written by goose
+content: this was written by rook
 message: Update README.md with rook message
 owner: angiejones
 path: README.md
-repo: goose-demo
+repo: rook-demo
 
 
 
@@ -122,17 +122,17 @@ base: main
 body: ...
 head: hello-world
 owner: angiejones
-repo: goose-demo
+repo: rook-demo
 title: Update README.md
 
 
 
 Great! I've completed all the requested tasks:
 1. Created a new branch called "hello-world"
-2. Updated the README.md file with the text "this was written by goose"
+2. Updated the README.md file with the text "this was written by rook"
 3. Created a pull request to merge these changes into the main branch
 
-You can view the pull request at: https://github.com/angiejones/goose-demo/pull/1
+You can view the pull request at: https://github.com/angiejones/rook-demo/pull/1
 
 The pull request is now ready for your review. Would you like me to do anything else with it?
 ```

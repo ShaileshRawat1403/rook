@@ -7,7 +7,7 @@ This tutorial covers how to add the [I Ching MCP Server](https://github.com/thre
 
 :::tip Quick Install
 1. Install: `cargo install i-ching`
-2. Configure: [Add I Ching Extension](goose://extension?cmd=i-ching-mcp-server&id=i-ching&name=I%20Ching&description=I%20Ching%20divination%20readings)
+2. Configure: [Add I Ching Extension](rook://extension?cmd=i-ching-mcp-server&id=i-ching&name=I%20Ching&description=I%20Ching%20divination%20readings)
 :::
 
 ## Installation
@@ -30,7 +30,7 @@ Once Rust is ready, install the I Ching crate from crates.io:
 cargo install i-ching
 ```
 
-Then click the link above to configure it in goose.
+Then click the link above to configure it in rook.
 
 ## Example Usage
 

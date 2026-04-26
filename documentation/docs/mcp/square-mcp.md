@@ -22,7 +22,7 @@ import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructi
 </details>
 
 
-This tutorial will get you started with the [Square MCP server](https://developer.squareup.com/docs/mcp) to enable interactive and automated work for your Square seller account. The Square MCP server is an open source project that allows you to interact with the Square API using goose.
+This tutorial will get you started with the [Square MCP server](https://developer.squareup.com/docs/mcp) to enable interactive and automated work for your Square seller account. The Square MCP server is an open source project that allows you to interact with the Square API using rook.
 
 Square offers two versions of the MCP server:
 
@@ -40,7 +40,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
   :::tip Quick Install
   <Tabs groupId="interface">
     <TabItem value="ui" label="rook Desktop" default>
-    [Launch the installer](https://mcp.squareup.com/goose)
+    [Launch the installer](https://mcp.squareup.com/rook)
     </TabItem>
     <TabItem value="cli" label="rook CLI">
     **Command**
@@ -53,11 +53,11 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
   <Tabs groupId="interface">
     <TabItem value="ui" label="rook Desktop" default>
-     1. [Launch the installer](https://mcp.squareup.com/goose)
+     1. [Launch the installer](https://mcp.squareup.com/rook)
      2. Click `OK` to confirm the installation
      3. rook should open a browser tab to an OAuth permissions page. Double-check which permissions you want to allow, and click `Grant Access`.
      4. It will ask you to login or reauthenticate to Square, and may ask you to confirm the permissions you want to allow.
-     5. In goose, navigate to the chat
+     5. In rook, navigate to the chat
 
     </TabItem>
     <TabItem value="cli" label="rook CLI">
@@ -78,7 +78,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
   :::tip Quick Install
   <Tabs groupId="interface">
     <TabItem value="ui" label="rook Desktop" default>
-    [Launch the installer](goose://extension?cmd=npx&arg=square-mcp-server&arg=start&id=mcp_square_api&name=Square%20MCP%20Server&description=Square%20API%20MCP%20Server&env=ACCESS_TOKEN%3DYour%20Access%20Token&env=SANDBOX%3Dtrue)
+    [Launch the installer](rook://extension?cmd=npx&arg=square-mcp-server&arg=start&id=mcp_square_api&name=Square%20MCP%20Server&description=Square%20API%20MCP%20Server&env=ACCESS_TOKEN%3DYour%20Access%20Token&env=SANDBOX%3Dtrue)
 
     </TabItem>
     <TabItem value="cli" label="rook CLI">

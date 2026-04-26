@@ -32,7 +32,7 @@ When the app starts with sandboxing enabled, it will:
 
 1. Generate a seatbelt sandbox profile
 2. Start a local HTTP CONNECT proxy on localhost
-3. Launch the `goosed` backend for rook Desktop inside `sandbox-exec`, forcing all traffic through the proxy
+3. Launch the `rookd` backend for rook Desktop inside `sandbox-exec`, forcing all traffic through the proxy
 
 The sandbox remains active until you quit rook Desktop. To disable it, quit the app and relaunch normally (or set `GOOSE_SANDBOX=false` when opening from the terminal).
 
@@ -50,12 +50,12 @@ All configuration is via environment variables. Defaults are designed to be secu
 
 ### File System
 
-The [seatbelt sandbox profile](https://github.com/aaif-goose/goose/blob/main/ui/desktop/src/sandbox/index.ts) blocks write operations to these sensitive files:
+The [seatbelt sandbox profile](https://github.com/aaif-rook/rook/blob/main/ui/desktop/src/sandbox/index.ts) blocks write operations to these sensitive files:
 
 - `~/.ssh/` - Prevent SSH key tampering
 - `~/.bashrc`, `~/.zshrc`, `~/.bash_profile`, `~/.zprofile` - Prevent shell config injection
-- `~/.config/goose/sandbox/` - Protect sandbox config from the sandboxed process
-- `~/.config/goose/config.yaml` - Protect rook config
+- `~/.config/rook/sandbox/` - Protect sandbox config from the sandboxed process
+- `~/.config/rook/config.yaml` - Protect rook config
 
 
 #### Environment Variables
@@ -70,7 +70,7 @@ The [seatbelt sandbox profile](https://github.com/aaif-goose/goose/blob/main/ui/
 
 The seatbelt sandbox denies all direct network access, forcing traffic through the proxy. The only allowed connections are:
 
-- **Localhost** — Allows the `goosed` process to reach the egress proxy and its own server port
+- **Localhost** — Allows the `rookd` process to reach the egress proxy and its own server port
 - **Unix sockets** — For local inter-process communication (IPC)
 - **mDNSResponder** — For DNS resolution
 
@@ -122,7 +122,7 @@ For optional LaunchDarkly-based egress control, see [LaunchDarkly](#launchdarkly
 
 #### Managing the Domain Blocklist
 
-The file `~/.config/goose/sandbox/blocked.txt` controls which domains are blocked by the proxy. It's created automatically on first run from a bundled template.
+The file `~/.config/rook/sandbox/blocked.txt` controls which domains are blocked by the proxy. It's created automatically on first run from a bundled template.
 
 ```
 # One domain per line. Subdomains are blocked automatically.
@@ -212,7 +212,7 @@ export GOOSE_SANDBOX_LD_FAILOVER=blocklist  # fall back to local blocklist if LD
   You're not on macOS, or `/usr/bin/sandbox-exec` is missing. The sandbox only works on macOS.
 
 - **Extensions or tools can't reach the network**  
-  Check if the destination domain is in `~/.config/goose/sandbox/blocked.txt`, or if you need to enable `GOOSE_SANDBOX_ALLOW_IP=true` for IP-based endpoints.
+  Check if the destination domain is in `~/.config/rook/sandbox/blocked.txt`, or if you need to enable `GOOSE_SANDBOX_ALLOW_IP=true` for IP-based endpoints.
 
 - **git clone over SSH fails**  
   The target host may not be in the default Git hosts allowlist. Add it with `GOOSE_SANDBOX_GIT_HOSTS=your-host.com` or set `GOOSE_SANDBOX_SSH_ALL_HOSTS=true`.

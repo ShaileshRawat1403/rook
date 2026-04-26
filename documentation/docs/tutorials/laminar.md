@@ -10,7 +10,7 @@ This tutorial covers how to integrate rook with Laminar to trace your rook sessi
 
 [Laminar](https://laminar.sh/) is an open-source observability platform purpose-built for AI agents. It traces LLM calls, tool execution, and custom functions so you can debug, evaluate, and improve agent behavior.
 
-## Why Laminar for goose
+## Why Laminar for rook
 
 - High-signal traces for LLM calls, tools, and sub-agents.
 - Replay any span in the Playground to compare prompts and models.

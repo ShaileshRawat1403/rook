@@ -10,7 +10,7 @@
 **macOS:**
 ```bash
 # If built from source:
-export GOOSE_CLI=~/claude/goose-fork/target/release/goose
+export GOOSE_CLI=~/claude/rook-fork/target/release/rook
 
 # Verify:
 $GOOSE_CLI --version
@@ -19,10 +19,10 @@ $GOOSE_CLI --version
 **Linux:**
 ```bash
 # If installed via .deb:
-export GOOSE_CLI=/usr/bin/goose
+export GOOSE_CLI=/usr/bin/rook
 
 # If built from source:
-export GOOSE_CLI=~/goose-fork/target/release/goose
+export GOOSE_CLI=~/rook-fork/target/release/rook
 
 # Verify:
 $GOOSE_CLI --version
@@ -124,11 +124,11 @@ rook session
 4. Select the single model
 5. Start a new session, verify it works
 
-**Expected:** Both plans work without needing to restart goose.
+**Expected:** Both plans work without needing to restart rook.
 
 ## Quick Curl Verification
 
-Before testing with goose, you can verify endpoints directly:
+Before testing with rook, you can verify endpoints directly:
 
 ```bash
 # Test models endpoint

@@ -22,13 +22,13 @@ In this tutorial, we'll use Ralph Loop to build a simple Electron-based browser 
 Copy and paste this in your terminal to download the Ralph Loop recipes:
 
 ```bash
-mkdir -p ~/.config/goose/recipes
+mkdir -p ~/.config/rook/recipes
 
-curl -sL https://raw.githubusercontent.com/aaif-goose/goose/main/documentation/src/pages/recipes/data/recipes/ralph-loop.sh -o ~/.config/goose/recipes/ralph-loop.sh
-curl -sL https://raw.githubusercontent.com/aaif-goose/goose/main/documentation/src/pages/recipes/data/recipes/ralph-work.yaml -o ~/.config/goose/recipes/ralph-work.yaml
-curl -sL https://raw.githubusercontent.com/aaif-goose/goose/main/documentation/src/pages/recipes/data/recipes/ralph-review.yaml -o ~/.config/goose/recipes/ralph-review.yaml
+curl -sL https://raw.githubusercontent.com/aaif-rook/rook/main/documentation/src/pages/recipes/data/recipes/ralph-loop.sh -o ~/.config/rook/recipes/ralph-loop.sh
+curl -sL https://raw.githubusercontent.com/aaif-rook/rook/main/documentation/src/pages/recipes/data/recipes/ralph-work.yaml -o ~/.config/rook/recipes/ralph-work.yaml
+curl -sL https://raw.githubusercontent.com/aaif-rook/rook/main/documentation/src/pages/recipes/data/recipes/ralph-review.yaml -o ~/.config/rook/recipes/ralph-review.yaml
 
-chmod +x ~/.config/goose/recipes/ralph-loop.sh
+chmod +x ~/.config/rook/recipes/ralph-loop.sh
 ```
 
 </details>
@@ -42,14 +42,14 @@ Ralph Loop runs your agent multiple times in a loop (up to 10 iterations by defa
 To start the process, run the script from your terminal and provide your prompt in quotes. This command triggers the first iteration of the worker and reviewer cycle:
 
 ```bash
-~/.config/goose/recipes/ralph-loop.sh "Create a simple browser using Electron and React"
+~/.config/rook/recipes/ralph-loop.sh "Create a simple browser using Electron and React"
 ```
 
 :::tip For Complex Tasks
 You can pass a file path instead of a string. This works well for PRDs, detailed specs, or any multi-step task that benefits from iterative development:
 
 ```bash
-~/.config/goose/recipes/ralph-loop.sh ./prd.md
+~/.config/rook/recipes/ralph-loop.sh ./prd.md
 ```
 :::
 
@@ -86,7 +86,7 @@ RALPH_WORKER_MODEL="gpt-4o" \
 RALPH_WORKER_PROVIDER="openai" \
 RALPH_REVIEWER_MODEL="claude-sonnet-4-20250514" \
 RALPH_REVIEWER_PROVIDER="anthropic" \
-~/.config/goose/recipes/ralph-loop.sh "Create a simple browser using Electron and React"
+~/.config/rook/recipes/ralph-loop.sh "Create a simple browser using Electron and React"
 ```
 :::
 
@@ -152,7 +152,7 @@ Iteration 2:
 
 ### State Files
 
-Ralph Loop uses files in `.goose/ralph/` to persist state between iterations. This is how the worker knows what to do and the reviewer knows what was done, even though each iteration starts with fresh context.
+Ralph Loop uses files in `.rook/ralph/` to persist state between iterations. This is how the worker knows what to do and the reviewer knows what was done, even though each iteration starts with fresh context.
 
 | File | Purpose |
 |------|---------|
@@ -189,13 +189,13 @@ The Ralph Loop uses three files: a bash script that orchestrates the work/review
 #   RALPH_REVIEWER_MODEL  - Model for review phase (prompts if not set)
 #   RALPH_REVIEWER_PROVIDER - Provider for review phase (prompts if not set)
 #   RALPH_MAX_ITERATIONS  - Max iterations (default: 10)
-#   RALPH_RECIPE_DIR      - Recipe directory (default: ~/.config/goose/recipes)
+#   RALPH_RECIPE_DIR      - Recipe directory (default: ~/.config/rook/recipes)
 #
 
 set -e
 
 INPUT="$1"
-RECIPE_DIR="${RALPH_RECIPE_DIR:-$HOME/.config/goose/recipes}"
+RECIPE_DIR="${RALPH_RECIPE_DIR:-$HOME/.config/rook/recipes}"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -306,7 +306,7 @@ while true; do
     fi
 done
 
-STATE_DIR=".goose/ralph"
+STATE_DIR=".rook/ralph"
 mkdir -p "$STATE_DIR"
 
 if [ -f "$INPUT" ]; then
@@ -409,16 +409,16 @@ instructions: |
   
   Your work persists through FILES ONLY. You will NOT remember previous iterations.
   
-  STATE FILES (in .goose/ralph/):
+  STATE FILES (in .rook/ralph/):
   - task.md = The task you need to accomplish (READ THIS FIRST)
   - iteration.txt = Current iteration number
   - review-feedback.txt = Feedback from last review (if any)
   - work-complete.txt = Create when task is DONE (reviewer will verify)
   
   FIRST: Check your state
-  1. cat .goose/ralph/task.md (YOUR TASK)
-  2. cat .goose/ralph/iteration.txt 2>/dev/null || echo "1"
-  3. cat .goose/ralph/review-feedback.txt 2>/dev/null
+  1. cat .rook/ralph/task.md (YOUR TASK)
+  2. cat .rook/ralph/iteration.txt 2>/dev/null || echo "1"
+  3. cat .rook/ralph/review-feedback.txt 2>/dev/null
   4. ls -la to see existing work
   
   THEN: Make progress
@@ -428,21 +428,21 @@ instructions: |
   - Run tests/verification if applicable
   
   FINALLY: Signal status
-  - If task is complete: echo "done" > .goose/ralph/work-complete.txt
-  - Always write a summary: echo "what I did" > .goose/ralph/work-summary.txt
+  - If task is complete: echo "done" > .rook/ralph/work-complete.txt
+  - Always write a summary: echo "what I did" > .rook/ralph/work-summary.txt
 
 prompt: |
   ## Ralph Work Phase
   
-  Read your task from: .goose/ralph/task.md
+  Read your task from: .rook/ralph/task.md
   
-  1. Read the task: `cat .goose/ralph/task.md`
-  2. Check iteration: `cat .goose/ralph/iteration.txt 2>/dev/null || echo "1"`
-  3. Check for review feedback: `cat .goose/ralph/review-feedback.txt 2>/dev/null`
+  1. Read the task: `cat .rook/ralph/task.md`
+  2. Check iteration: `cat .rook/ralph/iteration.txt 2>/dev/null || echo "1"`
+  3. Check for review feedback: `cat .rook/ralph/review-feedback.txt 2>/dev/null`
   4. List existing files: `ls -la`
   5. Do the work (address feedback if any, otherwise make progress)
-  6. Write summary: `echo "summary" > .goose/ralph/work-summary.txt`
-  7. If complete: `echo "done" > .goose/ralph/work-complete.txt`
+  6. Write summary: `echo "summary" > .rook/ralph/work-summary.txt`
+  7. If complete: `echo "done" > .rook/ralph/work-complete.txt`
 
 extensions:
   - type: builtin
@@ -467,7 +467,7 @@ instructions: |
   
   You are a DIFFERENT MODEL than the worker. Your fresh perspective catches mistakes.
   
-  STATE FILES (in .goose/ralph/):
+  STATE FILES (in .rook/ralph/):
   - task.md = The original task (READ THIS FIRST)
   - work-summary.txt = What the worker claims to have done
   - work-complete.txt = Exists if worker claims task is complete
@@ -485,25 +485,25 @@ instructions: |
   - DO reject if tests fail
   
   OUTPUT:
-  If approved: echo "SHIP" > .goose/ralph/review-result.txt
+  If approved: echo "SHIP" > .rook/ralph/review-result.txt
   If needs work: 
-    echo "REVISE" > .goose/ralph/review-result.txt
-    echo "specific feedback" > .goose/ralph/review-feedback.txt
+    echo "REVISE" > .rook/ralph/review-result.txt
+    echo "specific feedback" > .rook/ralph/review-feedback.txt
 
 prompt: |
   ## Ralph Review Phase
   
-  1. Read the task: `cat .goose/ralph/task.md`
-  2. Read work summary: `cat .goose/ralph/work-summary.txt`
-  3. Check if complete: `cat .goose/ralph/work-complete.txt 2>/dev/null`
+  1. Read the task: `cat .rook/ralph/task.md`
+  2. Read work summary: `cat .rook/ralph/work-summary.txt`
+  3. Check if complete: `cat .rook/ralph/work-complete.txt 2>/dev/null`
   4. Examine the actual files created/modified
   5. Run verification (tests, build, etc.)
   6. Decide: SHIP or REVISE
   
-  If SHIP: `echo "SHIP" > .goose/ralph/review-result.txt`
+  If SHIP: `echo "SHIP" > .rook/ralph/review-result.txt`
   If REVISE: 
-    `echo "REVISE" > .goose/ralph/review-result.txt`
-    `echo "specific feedback" > .goose/ralph/review-feedback.txt`
+    `echo "REVISE" > .rook/ralph/review-result.txt`
+    `echo "specific feedback" > .rook/ralph/review-feedback.txt`
 
 extensions:
   - type: builtin
@@ -534,6 +534,6 @@ It's overkill for:
 If you want to start a completely new task, or if a previous run got stuck and you want to start over, you can clear the state directory:
 
 ```bash
-rm -rf .goose/ralph
+rm -rf .rook/ralph
 ```
 

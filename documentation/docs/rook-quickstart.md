@@ -46,7 +46,7 @@ Let's begin 🚀
         Run the following command to install rook:
 
         ```sh
-        curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | bash
+        curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh | bash
         ```
       </TabItem>
     </Tabs>
@@ -71,7 +71,7 @@ Let's begin 🚀
         Run the following command to install the rook CLI on Linux:
 
         ```sh
-        curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | bash
+        curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh | bash
         ```   
       </TabItem>
     </Tabs>
@@ -93,7 +93,7 @@ Let's begin 🚀
         Run the following command in **Git Bash**, **MSYS2**, or **PowerShell** to install the rook CLI natively on Windows:
 
         ```bash
-        curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | bash
+        curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh | bash
         ```
         
         Learn about prerequisites in the [installation guide](/docs/getting-started/installation).
@@ -224,7 +224,7 @@ Sessions are single, continuous conversations between you and rook. Let's start 
         Type your questions, tasks, or instructions directly into the input field, and rook will immediately get to work.
     </TabItem>
     <TabItem value="cli" label="rook CLI">
-        1. Make an empty directory (e.g. `goose-demo`) and navigate to that directory from the terminal.
+        1. Make an empty directory (e.g. `rook-demo`) and navigate to that directory from the terminal.
         2. To start a new session, run:
         ```sh
         rook session
@@ -304,5 +304,5 @@ Congrats, you've successfully used rook to develop a web app! 🎉
 Here are some ideas for next steps:
 * Continue your session with rook and improve your game (styling, functionality, etc).
 * Browse other available [extensions](/extensions) and install more to enhance rook's functionality even further.
-* Provide rook with a [set of hints](/docs/guides/context-engineering/using-goosehints) to use within your sessions.
+* Provide rook with a [set of hints](/docs/guides/context-engineering/using-rookhints) to use within your sessions.
 * See how you can set up [access controls](/docs/mcp/developer-mcp#configuring-access-controls) if you don't want rook to work autonomously.

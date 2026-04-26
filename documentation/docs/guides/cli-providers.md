@@ -2,7 +2,7 @@
 sidebar_position: 45
 title: CLI Providers
 sidebar_label: CLI Providers
-description: Use Claude Code, Codex, Cursor Agent, or Gemini CLI subscriptions in goose
+description: Use Claude Code, Codex, Cursor Agent, or Gemini CLI subscriptions in rook
 ---
 
 # CLI Providers
@@ -11,7 +11,7 @@ description: Use Claude Code, Codex, Cursor Agent, or Gemini CLI subscriptions i
 The Claude Code (`claude-code`), Codex (`codex`), and Gemini CLI (`gemini-cli`) providers are deprecated. Use the [ACP providers](/docs/guides/acp-providers) (`claude-acp`, `codex-acp`) instead, which support rook extensions via MCP and use the standardized Agent Client Protocol. For Gemini, use the `Gemini` (`gemini_oauth`) provider which authenticates via OAuth. CLI providers are kept for backward compatibility only.
 :::
 
-rook can make use of pass-through providers that integrate with existing CLI tools from Anthropic, OpenAI, Cursor, and Google. These providers allow you to use your existing Claude Code, Codex, Cursor Agent, and Google Gemini CLI subscriptions through goose's interface, adding session management, persistence, and workflow integration capabilities to these tools.
+rook can make use of pass-through providers that integrate with existing CLI tools from Anthropic, OpenAI, Cursor, and Google. These providers allow you to use your existing Claude Code, Codex, Cursor Agent, and Google Gemini CLI subscriptions through rook's interface, adding session management, persistence, and workflow integration capabilities to these tools.
 
 :::warning Limitations
 These providers don’t fully support all rook features, may have platform or capability limitations, and can sometimes require advanced debugging if issues arise. They’re included here purely as a convenience.
@@ -41,10 +41,10 @@ CLI providers are useful if you:
 
 #### Interface Consistency
 - **Unified commands**: Use the same `rook session` interface across all providers
-- **Consistent configuration**: Manage all providers through goose's configuration system
+- **Consistent configuration**: Manage all providers through rook's configuration system
 
 :::warning Extensions
-CLI providers do **not** give you access to goose's extension ecosystem (MCP servers, third-party integrations, etc.). They use their own built-in tools to prevent conflicts. If you need goose's extensions, use standard [API providers](/docs/getting-started/providers#available-providers) instead.
+CLI providers do **not** give you access to rook's extension ecosystem (MCP servers, third-party integrations, etc.). They use their own built-in tools to prevent conflicts. If you need rook's extensions, use standard [API providers](/docs/getting-started/providers#available-providers) instead.
 :::
 
 
@@ -119,7 +119,7 @@ The Gemini CLI provider integrates with Google's [Gemini CLI tool](https://ai.go
    
    Ensure your Claude CLI is authenticated and working
 
-3. **Configure goose**
+3. **Configure rook**
    
    Set the provider environment variable:
    ```bash
@@ -129,7 +129,7 @@ The Gemini CLI provider integrates with Google's [Gemini CLI tool](https://ai.go
    Or configure through the rook CLI using `rook configure`:
 
    ```bash
-   ┌   goose-configure 
+   ┌   rook-configure 
    │
    ◇  What would you like to configure?
    │  Configure Providers 
@@ -157,7 +157,7 @@ The Gemini CLI provider integrates with Google's [Gemini CLI tool](https://ai.go
 
    Run `codex` and follow the authentication prompts. You can use your ChatGPT account or API key.
 
-3. **Configure goose**
+3. **Configure rook**
 
    Set the provider environment variable:
    ```bash
@@ -167,7 +167,7 @@ The Gemini CLI provider integrates with Google's [Gemini CLI tool](https://ai.go
    Or configure through the rook CLI using `rook configure`:
 
    ```bash
-   ┌   goose-configure
+   ┌   rook-configure
    │
    ◇  What would you like to configure?
    │  Configure Providers
@@ -191,7 +191,7 @@ The Gemini CLI provider integrates with Google's [Gemini CLI tool](https://ai.go
 
    Ensure your Cursor Agent is authenticated and working
 
-3. **Configure goose**
+3. **Configure rook**
 
    Set the provider environment variable:
 
@@ -202,7 +202,7 @@ The Gemini CLI provider integrates with Google's [Gemini CLI tool](https://ai.go
    Or configure through the rook CLI using `rook configure`:
 
    ```bash
-   ┌   goose-configure
+   ┌   rook-configure
    │
    ◇  What would you like to configure?
    │  Configure Providers
@@ -226,7 +226,7 @@ The Gemini CLI provider integrates with Google's [Gemini CLI tool](https://ai.go
    
    Ensure your Gemini CLI is authenticated and working.
 
-3. **Configure goose**
+3. **Configure rook**
    
    Set the provider environment variable:
    ```bash
@@ -236,7 +236,7 @@ The Gemini CLI provider integrates with Google's [Gemini CLI tool](https://ai.go
    Or configure through the rook CLI using `rook configure`:
 
    ```bash
-   ┌   goose-configure 
+   ┌   rook-configure 
    │
    ◇  What would you like to configure?
    │  Configure Providers 
@@ -302,9 +302,9 @@ The following models are recognized and passed to the Claude CLI via the `--mode
 | `chat` | (none) | Default Claude Code behavior |
 
 :::tip Approve Mode Integration
-When using `approve` or `smart_approve` mode with Claude Code, rook routes Claude Code's permission prompts through goose's confirmation interface. This means:
+When using `approve` or `smart_approve` mode with Claude Code, rook routes Claude Code's permission prompts through rook's confirmation interface. This means:
 
-- **Sensitive operations** (file writes, shell commands, etc.) trigger approval prompts in goose
+- **Sensitive operations** (file writes, shell commands, etc.) trigger approval prompts in rook
 - **You review and approve/deny** directly in the rook CLI or Desktop interface
 - **Denied operations** are communicated back to Claude Code, which adapts accordingly
 
@@ -367,7 +367,7 @@ These are the default models supported by Codex CLI v0.77.0. To access older or 
 
 ### System Prompt Filtering
 
-The CLI providers automatically filter out goose's extension information from system prompts since these CLI tools have their own tool ecosystems. This prevents conflicts and ensures clean interaction with the underlying CLI tools.
+The CLI providers automatically filter out rook's extension information from system prompts since these CLI tools have their own tool ecosystems. This prevents conflicts and ensures clean interaction with the underlying CLI tools.
 
 ### Message Translation
 
@@ -395,4 +395,4 @@ CLI providers depend on external tools, so ensure:
 
 ---
 
-CLI providers offer a way to use existing AI tool subscriptions through goose's interface, adding session management and workflow integration capabilities. They're particularly valuable for users with existing CLI subscriptions who want unified session management and recipe integration.
+CLI providers offer a way to use existing AI tool subscriptions through rook's interface, adding session management and workflow integration capabilities. They're particularly valuable for users with existing CLI subscriptions who want unified session management and recipe integration.

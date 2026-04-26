@@ -19,7 +19,7 @@ The MCP Server requires a Dev or Full seat on Professional, Organization, or Ent
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-    [Launch the installer](goose://extension?type=streamable_http&url=http%3A%2F%2F127.0.0.1%3A3845%2Fmcp&id=figma&name=Figma&description=Convert%20Figma%20designs%20into%20code%20and%20extract%20design%20context)
+    [Launch the installer](rook://extension?type=streamable_http&url=http%3A%2F%2F127.0.0.1%3A3845%2Fmcp&id=figma&name=Figma&description=Convert%20Figma%20designs%20into%20code%20and%20extract%20design%20context)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
     Use `rook configure` to add a `Remote Extension (Streaming HTTP)` extension type with:
@@ -49,7 +49,7 @@ The Dev Mode MCP Server must be enabled in the [Figma desktop app](https://www.f
    2. In the right panel, toggle `Enable MCP server`
    :::
 
-2. Add the Figma extension to goose:
+2. Add the Figma extension to rook:
    <Tabs groupId="interface">
      <TabItem value="ui" label="rook Desktop" default>
        <GooseDesktopInstaller
@@ -126,7 +126,7 @@ function Component1() {
         data-node-id="351:3"
       >
         <p className="block mb-0">ask</p>
-        <p className="block">goose</p>
+        <p className="block">rook</p>
       </div>
       <div
         className="absolute aspect-[92/90] bg-center bg-cover bg-no-repeat left-0 right-[52.82%] rounded-lg top-0"
@@ -151,14 +151,14 @@ export default function Component2() {
 
 - **Tailwind CSS Styling**: Uses Tailwind classes for responsive design and styling
 - **Image Asset**: The rook logo is loaded from a localhost server as a background image  
-- **Typography**: Uses Inter Black font for the "ask goose" text
+- **Typography**: Uses Inter Black font for the "ask rook" text
 - **Layout**: Positioned absolutely with precise inset values to match the Figma design
 - **Responsive**: Uses relative positioning and percentage-based insets for scalability
 
 #### Component Structure:
 - **Background**: Light gray rounded container (#d9d9d9)
 - **Logo**: rook silhouette image positioned on the left side
-- **Text**: "ask goose" text positioned on the right in dark gray (#333b43)
+- **Text**: "ask rook" text positioned on the right in dark gray (#333b43)
 
 The component maintains the exact visual hierarchy and styling from your Figma design while being fully responsive and ready to integrate into a React application with Tailwind CSS.
 

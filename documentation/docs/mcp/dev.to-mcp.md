@@ -17,7 +17,7 @@ This tutorial covers how to add the [Dev.to MCP Server](https://github.com/nicky
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?type=streamable_http&url=http%3A%2F%2Flocalhost%3A3000%2Fmcp&id=dev-to&name=Dev.to&description=Access%20Dev.to%20articles%20and%20content)
+  [Launch the installer](rook://extension?type=streamable_http&url=http%3A%2F%2Flocalhost%3A3000%2Fmcp&id=dev-to&name=Dev.to&description=Access%20Dev.to%20articles%20and%20content)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   Use `rook configure` to add a `Remote Extension (Streaming HTTP)` extension type with:
@@ -84,7 +84,7 @@ In this example, rook uses the `Dev.to MCP` extension to fetch the 5 most recent
 
 ### rook Prompt
 ```
-Hey goose, fetch the 5 most recent JavaScript articles from Dev.to
+Hey rook, fetch the 5 most recent JavaScript articles from Dev.to
 Create a simple HTML landing page that:
 
 1. Lists each article title as a clickable link

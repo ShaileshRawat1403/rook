@@ -25,10 +25,10 @@ You can run rook directly within GitHub Actions. Follow these steps to set up yo
 <details>
    <summary>Copy the GitHub Workflow</summary>
    
-   ```yaml title="goose.yml"
+   ```yaml title="rook.yml"
 
 
-name: goose
+name: rook
 
 on:
    pull_request:
@@ -45,7 +45,7 @@ env:
    GH_TOKEN: ${{ github.token }}
 
 jobs:
-   goose-comment:
+   rook-comment:
       name: rook Comment
       runs-on: ubuntu-latest
       steps:
@@ -68,20 +68,20 @@ jobs:
          - name: Install rook CLI
            run: |
               mkdir -p /home/runner/.local/bin
-              curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh \
+              curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh \
                 | ROOK_VERSION=REPLACE_WITH_VERSION CONFIGURE=false GOOSE_BIN_DIR=/home/runner/.local/bin bash
               echo "/home/runner/.local/bin" >> $GITHUB_PATH
 
-         - name: Configure goose
+         - name: Configure rook
            run: |
-              mkdir -p ~/.config/goose
-              cat <<EOF > ~/.config/goose/config.yaml
+              mkdir -p ~/.config/rook
+              cat <<EOF > ~/.config/rook/config.yaml
               GOOSE_PROVIDER: REPLACE_WITH_PROVIDER
               GOOSE_MODEL: REPLACE_WITH_MODEL
               keyring: false
               EOF
 
-         - name: Create instructions for goose
+         - name: Create instructions for rook
            run: |
               cat <<EOF > instructions.txt
               Create a summary of the changes provided. Don't provide any session or logging details.
@@ -102,7 +102,7 @@ jobs:
               # Remove ANSI color codes
               sed -E 's/\x1B\[[0-9;]*[mK]//g' | \
               # Remove session/logging lines
-              grep -v "logging to /home/runner/.config/goose/sessions/" | \
+              grep -v "logging to /home/runner/.config/rook/sessions/" | \
               grep -v "^starting session" | \
               grep -v "^Closing session" | \
               # Trim trailing whitespace
@@ -121,7 +121,7 @@ jobs:
 
 ### 1. Create the Workflow File
 
-Create a new file in your repository at `.github/workflows/goose.yml`. This will contain your GitHub Actions workflow.
+Create a new file in your repository at `.github/workflows/rook.yml`. This will contain your GitHub Actions workflow.
 
 ### 2. Define the Workflow Triggers and Permissions
 
@@ -132,7 +132,7 @@ Configure the action such that it:
 - Configures environment variables for your chosen LLM provider
 
 ```yaml
-name: goose
+name: rook
 
 on:
     pull_request:
@@ -149,7 +149,7 @@ env:
 ```
 
 
-### 3. Install and Configure goose
+### 3. Install and Configure rook
 
 To install and set up rook in your workflow, add the following steps:
 
@@ -158,14 +158,14 @@ steps:
     - name: Install rook CLI
       run: |
           mkdir -p /home/runner/.local/bin
-          curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh \
+          curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh \
             | ROOK_VERSION=REPLACE_WITH_VERSION CONFIGURE=false GOOSE_BIN_DIR=/home/runner/.local/bin bash
           echo "/home/runner/.local/bin" >> $GITHUB_PATH
 
-    - name: Configure goose
+    - name: Configure rook
       run: |
-          mkdir -p ~/.config/goose
-          cat <<EOF > ~/.config/goose/config.yaml
+          mkdir -p ~/.config/rook
+          cat <<EOF > ~/.config/rook/config.yaml
           GOOSE_PROVIDER: REPLACE_WITH_PROVIDER
           GOOSE_MODEL: REPLACE_WITH_MODEL
           keyring: false
@@ -187,10 +187,10 @@ Replace `REPLACE_WITH_VERSION`, `REPLACE_WITH_PROVIDER`, and `REPLACE_WITH_MODEL
 
 ### 4. Gather PR Changes and Prepare Instructions
 
-This step extracts pull request details and formats them into structured instructions for goose.
+This step extracts pull request details and formats them into structured instructions for rook.
 
 ```yaml
-    - name: Create instructions for goose
+    - name: Create instructions for rook
       run: |
           cat <<EOF > instructions.txt
           Create a summary of the changes provided. Don't provide any session or logging details.
@@ -214,7 +214,7 @@ Now, run rook with the formatted instructions and clean the output by removing A
             # Remove ANSI color codes
             sed -E 's/\x1B\[[0-9;]*[mK]//g' | \
             # Remove session/logging lines
-            grep -v "logging to /home/runner/.config/goose/sessions/" | \
+            grep -v "logging to /home/runner/.config/rook/sessions/" | \
             grep -v "^starting session" | \
             grep -v "^Closing session" | \
             # Trim trailing whitespace

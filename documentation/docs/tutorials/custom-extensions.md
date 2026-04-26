@@ -7,17 +7,17 @@ import { PanelLeft } from 'lucide-react';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Building Custom Extensions with goose
+# Building Custom Extensions with rook
 
 
 rook allows you to extend its functionality by creating your own custom extensions, which are built as MCP servers. These extensions are compatible with rook because it adheres to the [Model Context Protocol (MCP)][mcp-docs]. MCP is an open protocol that standardizes how applications provide context to LLMs. It enables a consistent way to connect LLMs to various data sources and tools, making it ideal for extending functionality in a structured and interoperable way. 
 
-In this guide, we build an MCP server using the [Python SDK for MCP][mcp-python]. We’ll demonstrate how to create an MCP server that reads Wikipedia articles and converts them to Markdown, integrate it as an extension in goose. You can follow a similar process to develop your own custom extensions for goose.
+In this guide, we build an MCP server using the [Python SDK for MCP][mcp-python]. We’ll demonstrate how to create an MCP server that reads Wikipedia articles and converts them to Markdown, integrate it as an extension in rook. You can follow a similar process to develop your own custom extensions for rook.
 
 You can check out other example servers in the [MCP servers repository][mcp-servers]. MCP SDKs are also available for other common languages, such as [TypeScript][mcp-typescript] and [Kotlin][mcp-kotlin].
 
 :::info
-rook supports Tools, Resources, and Prompts from the [Model Context Protocol](https://modelcontextprotocol.io/). See [`mcp_client.rs`](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/agents/mcp_client.rs) for the supported protocol version and client capabilities.
+rook supports Tools, Resources, and Prompts from the [Model Context Protocol](https://modelcontextprotocol.io/). See [`mcp_client.rs`](https://github.com/aaif-rook/rook/blob/main/crates/rook/src/agents/mcp_client.rs) for the supported protocol version and client capabilities.
 :::
 
 ---
@@ -280,9 +280,9 @@ MCP Inspector requires Node.js and npm installed on your computer.
 
 ---
 
-## Step 5: Integrate with goose
+## Step 5: Integrate with rook
 
-To add your MCP server as an extension in goose:
+To add your MCP server as an extension in rook:
 
 1. Build the extension binary:
 
@@ -305,7 +305,7 @@ To add your MCP server as an extension in goose:
    ```
 
 :::tip Rebuild binary after changes
-To see any changes you make to your MCP server code after integrating with goose, re-run `uv pip install .` and then restart rook Desktop.
+To see any changes you make to your MCP server code after integrating with rook, re-run `uv pip install .` and then restart rook Desktop.
 :::
 
 For the purposes of this guide, we'll run the local version. Alternatively, you can publish your package to PyPI. Once published, the server can be run directly using `uvx`. For example:
@@ -316,9 +316,9 @@ uvx mcp-wiki
 
 ---
 
-## Step 6: Use Your Extension in goose
+## Step 6: Use Your Extension in rook
 
-Once integrated, you can start using your extension in goose. Open the rook chat interface and call your tool as needed.
+Once integrated, you can start using your extension in rook. Open the rook chat interface and call your tool as needed.
 
 You can verify that rook has picked up the tools from your custom extension by asking it "what tools do you have?"
 
@@ -328,7 +328,7 @@ Then, you can try asking questions that require using the extension you added.
 
 ![rook Chat - Use custom extension](../assets/guides/custom-extension-chat.png)
 
-🎉 **Congratulations!** You’ve successfully built and integrated a custom MCP server with goose.
+🎉 **Congratulations!** You’ve successfully built and integrated a custom MCP server with rook.
 
 ---
 
@@ -338,7 +338,7 @@ rook supports advanced MCP features that can enhance your extensions.
 
 ### MCP Sampling: AI-Powered Tools
 
-**[MCP Sampling](/docs/guides/mcp-sampling)** allows your MCP servers to request AI completions from goose's LLM, transforming simple tools into intelligent agents.
+**[MCP Sampling](/docs/guides/mcp-sampling)** allows your MCP servers to request AI completions from rook's LLM, transforming simple tools into intelligent agents.
 
 **Key Benefits:**
 - Your MCP server doesn't need its own OpenAI/Anthropic API key
@@ -348,7 +348,7 @@ rook supports advanced MCP features that can enhance your extensions.
 
 **Getting Started:**
 - Use the `sampling/createMessage` method in your MCP server to request AI assistance
-- [goose's implementation](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/agents/mcp_client.rs) currently supports text and image content types
+- [rook's implementation](https://github.com/aaif-rook/rook/blob/main/crates/rook/src/agents/mcp_client.rs) currently supports text and image content types
 - rook automatically advertises sampling capability to all MCP servers
 
 **Use Cases:** Document summarization, smart search filtering, code analysis, data insights

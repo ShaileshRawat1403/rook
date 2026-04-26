@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 import { AppWindow, PanelLeft, FolderDot, Paperclip, Copy, Edit2, Trash2, Download, Upload, ChefHat } from 'lucide-react';
 
 
-A session is a single, continuous interaction between you and goose, providing a space to ask questions and prompt action. This guide covers how to manage the session lifecycle.
+A session is a single, continuous interaction between you and rook, providing a space to ask questions and prompt action. This guide covers how to manage the session lifecycle.
 
 ## Start Session 
 
@@ -18,7 +18,7 @@ In your first session, rook prompts you to [set up an LLM (Large Language Model)
 
 <Tabs groupId="interface">
     <TabItem value="ui" label="rook Desktop" default>
-        When you open goose, you'll see the session interface ready for use. Just type&mdash;[or speak](/docs/guides/sessions/in-session-actions#voice-dictation "Learn how to enable voice dictation")&mdash;your questions, requests, or instructions directly into the input field, and rook will immediately get to work.
+        When you open rook, you'll see the session interface ready for use. Just type&mdash;[or speak](/docs/guides/sessions/in-session-actions#voice-dictation "Learn how to enable voice dictation")&mdash;your questions, requests, or instructions directly into the input field, and rook will immediately get to work.
 
         To start a new chat session:
 
@@ -60,7 +60,7 @@ In your first session, rook prompts you to [set up an LLM (Large Language Model)
         2. Click `Settings`
         3. Click the `Keyboard` tab
         
-        Changes to global shortcuts (Focus Window, Quick Launcher) take effect immediately. Changes to application shortcuts (New Chat, Settings, etc.) require restarting goose.
+        Changes to global shortcuts (Focus Window, Quick Launcher) take effect immediately. Changes to application shortcuts (New Chat, Settings, etc.) require restarting rook.
         
         #### Quick Launcher
         Start a new session by typing your prompt into a popup:
@@ -71,7 +71,7 @@ In your first session, rook prompts you to [set up an LLM (Large Language Model)
 
     </TabItem>
     <TabItem value="cli" label="rook CLI">
-        From your terminal, navigate to the directory from which you'd like to start, and run the [session](/docs/guides/goose-cli-commands#session-options) command:
+        From your terminal, navigate to the directory from which you'd like to start, and run the [session](/docs/guides/rook-cli-commands#session-options) command:
         ```sh
         rook session 
         ```
@@ -121,7 +121,7 @@ In your first session, rook prompts you to [set up an LLM (Large Language Model)
         20260213_9 - react-migration - 2026-02-13 16:20:37 UTC
         ```
 
-        In the output above, `20260213_9` is the session ID. Session IDs use the format `YYYYMMDD_<COUNT>`. Many [rook CLI commands](/docs/guides/goose-cli-commands) let you identify a session by name (`--name` / `-n`) as an alternative to `--session-id`.
+        In the output above, `20260213_9` is the session ID. Session IDs use the format `YYYYMMDD_<COUNT>`. Many [rook CLI commands](/docs/guides/rook-cli-commands) let you identify a session by name (`--name` / `-n`) as an alternative to `--session-id`.
     </TabItem>
 </Tabs>
 
@@ -138,7 +138,7 @@ Note that sessions are automatically saved when you exit.
     <TabItem value="cli" label="rook CLI">
         To exit a session, type `exit`. Alternatively, you exit the session by holding down `Ctrl+C`.
 
-        Your session will be stored in goose's [local SQLite database](/docs/guides/logs#session-records).
+        Your session will be stored in rook's [local SQLite database](/docs/guides/logs#session-records).
     </TabItem>
 </Tabs>
 
@@ -235,26 +235,26 @@ Search allows you to find specific content within sessions or find specific sess
 
     #### Search Session Data Directly
     
-    The [`session list`](/docs/guides/goose-cli-commands#session-list-options) subcommand with supported options can be useful for some search operations.
+    The [`session list`](/docs/guides/rook-cli-commands#session-list-options) subcommand with supported options can be useful for some search operations.
 
     You can also query the SQLite database directly:
 
     ```bash
     # Search session descriptions
-    sqlite3 ~/.local/share/goose/sessions/sessions.db \
+    sqlite3 ~/.local/share/rook/sessions/sessions.db \
       "SELECT id, description FROM sessions WHERE description LIKE '%your search term%';"
 
     # Search by working directory
-    sqlite3 ~/.local/share/goose/sessions/sessions.db \
+    sqlite3 ~/.local/share/rook/sessions/sessions.db \
       "SELECT id, description, working_dir FROM sessions WHERE working_dir LIKE '%project-name%';"
 
     # List recent sessions
-    sqlite3 ~/.local/share/goose/sessions/sessions.db \
+    sqlite3 ~/.local/share/rook/sessions/sessions.db \
       "SELECT id, description, created_at FROM sessions ORDER BY created_at DESC LIMIT 10;"
     ```
 
     :::info Session Storage Migration
-    Starting with version 1.10.0, rook uses a SQLite database (`sessions.db`) instead of individual `.jsonl` files. Legacy `.jsonl` files remain on disk but are no longer managed by goose.
+    Starting with version 1.10.0, rook uses a SQLite database (`sessions.db`) instead of individual `.jsonl` files. Legacy `.jsonl` files remain on disk but are no longer managed by rook.
     :::
 
   </TabItem>
@@ -332,7 +332,7 @@ While you can resume sessions, we recommend creating new sessions for new tasks 
         Project-based sessions are only available through the CLI.
     </TabItem>
     <TabItem value="cli" label="rook CLI">
-        You can use the [`project`](/docs/guides/goose-cli-commands#project) and [`projects`](/docs/guides/goose-cli-commands#projects) commands to start or resume sessions from a project, which is a tracked working directory with session metadata. For a complete guide to using Projects, see [Managing Projects Guide](/docs/guides/managing-projects).
+        You can use the [`project`](/docs/guides/rook-cli-commands#project) and [`projects`](/docs/guides/rook-cli-commands#projects) commands to start or resume sessions from a project, which is a tracked working directory with session metadata. For a complete guide to using Projects, see [Managing Projects Guide](/docs/guides/managing-projects).
     </TabItem>
 </Tabs>
 
@@ -413,7 +413,7 @@ Create a complete copy of any session to reuse configurations, experiment with v
         The session will be immediately removed from your session history and the underlying session record will be deleted from local storage.
     </TabItem>
     <TabItem value="cli" label="rook CLI">
-        You can remove sessions using CLI commands. For detailed instructions on session removal, see the [CLI Commands documentation](/docs/guides/goose-cli-commands#session-remove-options).
+        You can remove sessions using CLI commands. For detailed instructions on session removal, see the [CLI Commands documentation](/docs/guides/rook-cli-commands#session-remove-options).
     </TabItem>
 </Tabs>
 
@@ -426,7 +426,7 @@ Create a complete copy of any session to reuse configurations, experiment with v
         1. Click the <PanelLeft className="inline" size={16} /> button in the top-left to open the sidebar
         2. Click `View All` at the bottom of the `Chat` section
         3. Click the <Upload className="inline" size={16} /> `Import Session` button in the top-right corner
-        4. Select a `.json` session file that was previously exported from goose
+        4. Select a `.json` session file that was previously exported from rook
         5. The session will be imported with a new session ID
         6. A success notification will confirm the import
 
@@ -453,7 +453,7 @@ Create a complete copy of any session to reuse configurations, experiment with v
     <TabItem value="cli" label="rook CLI">
         Export sessions for backup, sharing, migration, or documentation purposes. You can export as JSON files to preserve complete session data including conversation history, metadata, and settings, or as Markdown files to get a formatted, readable version of the conversation.
 
-        From your terminal, run the [`session export`](/docs/guides/goose-cli-commands#session-export-options) subcommand:
+        From your terminal, run the [`session export`](/docs/guides/rook-cli-commands#session-export-options) subcommand:
         
         ```bash
         rook session export

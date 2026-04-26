@@ -18,7 +18,7 @@ This tutorial covers how to add the [gotoHuman MCP Server](https://github.com/go
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?cmd=npx&arg=-y&arg=%40gotohuman%2Fmcp-server&id=gotoHuman&name=gotoHuman&description=gotoHuman%20MCP%20server%20for%20human-in-the-loop%20approvals&env=GOTOHUMAN_API_KEY%3DgotoHuman%20API%20Key)
+  [Launch the installer](rook://extension?cmd=npx&arg=-y&arg=%40gotohuman%2Fmcp-server&id=gotoHuman&name=gotoHuman&description=gotoHuman%20MCP%20server%20for%20human-in-the-loop%20approvals&env=GOTOHUMAN_API_KEY%3DgotoHuman%20API%20Key)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   **Command**
@@ -98,8 +98,8 @@ In this example, rook sends a LinkedIn post draft to gotoHuman for approval usin
 Send this blog draft about rook to gotoHuman for review using my `n8n news to post` form. 
 
 Include today’s date as the timestamp, these links: 
-[rook Docs: https://goose-docs.ai/, gotoHuman: https://gotohuman.com/], 
-summarize it as ‘Introducing goose’s integration with gotoHuman for human approvals,’ 
+[rook Docs: https://rook-docs.ai/, gotoHuman: https://gotohuman.com/], 
+summarize it as ‘Introducing rook’s integration with gotoHuman for human approvals,’ 
 and here’s the draft:
 
 rook is an open-source AI agent that runs locally on your machine, right in your terminal or IDE. 
@@ -134,17 +134,17 @@ Review Request Details
 Submitted Content
 
 - Timestamp: 2025-09-23
-- Summary: Introducing goose's integration with gotoHuman for human approvals
+- Summary: Introducing rook's integration with gotoHuman for human approvals
 - Links:
     - rook Docs
     - gotoHuman
-- Draft: Your complete blog post about goose's integration with gotoHuman
+- Draft: Your complete blog post about rook's integration with gotoHuman
 
 The review request has been created and is now ready for human approval. You can access it through the review link provided above. Once the review is completed, you'll be able to proceed with publishing or making any requested changes to the blog post.
 :::
 
 ## Review in gotoHuman
 
-Now if you open the **Review Link** from goose’s output, you’ll see the request waiting in your gotoHuman dashboard:  
+Now if you open the **Review Link** from rook’s output, you’ll see the request waiting in your gotoHuman dashboard:  
 
 ![](/img/gotohuman.png)

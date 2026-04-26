@@ -180,7 +180,7 @@ pub struct RemoveSecretRequest {
     pub key: String,
 }
 
-/// List providers available through goose, including the config-default sentinel.
+/// List providers available through rook, including the config-default sentinel.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcRequest)]
 #[request(method = "_rook/providers/list", response = ListProvidersResponse)]
 pub struct ListProvidersRequest {}
@@ -222,7 +222,7 @@ pub struct ExportSessionRequest {
     pub session_id: String,
 }
 
-/// Export session response — raw JSON of the goose session with `conversation`.
+/// Export session response — raw JSON of the rook session with `conversation`.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcResponse)]
 pub struct ExportSessionResponse {
     pub data: String,

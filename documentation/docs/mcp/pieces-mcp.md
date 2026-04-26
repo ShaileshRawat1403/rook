@@ -11,7 +11,7 @@ import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructi
 
 <YouTubeShortEmbed videoUrl="https://www.youtube.com/embed/V8zp9m9__t4" />
 
-This tutorial covers how to add the [Pieces for Developers MCP Server](https://docs.pieces.app/products/mcp/get-started?utm_source=goose&utm_medium=collab&utm_campaign=mcp) as a rook extension to enable interaction with your Pieces Long-Term Memory.
+This tutorial covers how to add the [Pieces for Developers MCP Server](https://docs.pieces.app/products/mcp/get-started?utm_source=rook&utm_medium=collab&utm_campaign=mcp) as a rook extension to enable interaction with your Pieces Long-Term Memory.
 
 ## Configuration
 
@@ -54,7 +54,7 @@ I need a status update for what I was using yesterday. Create a report with 5 bu
 ```
 Here's a report summarizing your key activities from yesterday, based on the most important interactions and applications you were using:
 
-1. Code Development with goose:
+1. Code Development with rook:
 
     Activity: You worked on integrating MCP servers into the rook CLI, making enhancements to handle extensions via schema URLs.
     Description: This task involved modifying code and testing new integrations to support advanced functionalities. It also included interactions with the rook community on Discord for feedback and troubleshooting.
@@ -84,5 +84,5 @@ These activities demonstrate a productive day with a focus on development, colla
 
 
 :::tip
-For more examples of prompts you can use with the Pieces for Developers MCP Server, see the [Pieces MCP prompting guide](https://docs.pieces.app/products/mcp/prompting?utm_source=goose&utm_medium=collab&utm_campaign=mcp).
+For more examples of prompts you can use with the Pieces for Developers MCP Server, see the [Pieces MCP prompting guide](https://docs.pieces.app/products/mcp/prompting?utm_source=rook&utm_medium=collab&utm_campaign=mcp).
 :::

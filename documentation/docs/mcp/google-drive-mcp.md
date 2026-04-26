@@ -18,7 +18,7 @@ This tutorial covers how to add the [Google Drive MCP Server](https://www.pulsem
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?cmd=npx&arg=-y&arg=%40modelcontextprotocol%2Fserver-gdrive&id=google-drive&name=Google%20Drive&description=Google%20Drive%20integration&env=GDRIVE_CREDENTIALS_PATH%3DPath%20to%20Google%20Drive%20credentials&env=GDRIVE_OAUTH_PATH%3DPath%20to%20OAuth%20token)
+  [Launch the installer](rook://extension?cmd=npx&arg=-y&arg=%40modelcontextprotocol%2Fserver-gdrive&id=google-drive&name=Google%20Drive&description=Google%20Drive%20integration&env=GDRIVE_CREDENTIALS_PATH%3DPath%20to%20Google%20Drive%20credentials&env=GDRIVE_OAUTH_PATH%3DPath%20to%20OAuth%20token)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   **Command**
@@ -123,7 +123,7 @@ You'll need to re-authenticate once a day when using the Google Drive extension.
 
   2. Choose to add a `Command-line Extension`
   ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -139,7 +139,7 @@ You'll need to re-authenticate once a day when using the Google Drive extension.
 
   3. Give your extension a name
   ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -156,7 +156,7 @@ You'll need to re-authenticate once a day when using the Google Drive extension.
 
   4. Enter the command
   ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -176,7 +176,7 @@ You'll need to re-authenticate once a day when using the Google Drive extension.
 
   5. Enter the number of seconds rook should wait for actions to complete before timing out. Default is 300s
    ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -199,7 +199,7 @@ You'll need to re-authenticate once a day when using the Google Drive extension.
 
   6. Choose to add a description. If you select "Yes" here, you will be prompted to enter a description for the extension.
    ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -226,7 +226,7 @@ You'll need to re-authenticate once a day when using the Google Drive extension.
   7. Add your environment variables 
 
    ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 

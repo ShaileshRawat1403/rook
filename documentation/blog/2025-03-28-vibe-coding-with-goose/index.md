@@ -72,24 +72,24 @@ To try the Speech MCP server yourself:
    apt-get install portaudio  # or dnf install portaudio
    ```
 
-2. Install the extension directly using the one-click [deep link install](goose://extension?cmd=uvx&&arg=-p&arg=3.10.14&arg=speech-mcp@latest&id=speech_mcp&name=Speech%20Interface&description=Voice%20interaction%20with%20audio%20visualization%20for%20Goose) in Goose
+2. Install the extension directly using the one-click [deep link install](rook://extension?cmd=uvx&&arg=-p&arg=3.10.14&arg=speech-mcp@latest&id=speech_mcp&name=Speech%20Interface&description=Voice%20interaction%20with%20audio%20visualization%20for%20Goose) in Goose
 
 
 ## Join the Development
 
-The Speech MCP server is [open-source](https://github.com/Kvadratni/speech-mcp) and welcomes contributions. You can also connect with Max on [Discord](https://discord.gg/goose-oss) for questions and collaboration.
+The Speech MCP server is [open-source](https://github.com/Kvadratni/speech-mcp) and welcomes contributions. You can also connect with Max on [Discord](https://discord.gg/rook-oss) for questions and collaboration.
 
 Voice interactions with AI agents like Goose with the power and tools to act on instructions provides a different kind of vibe that makes the future feel closer than ever. Whether you're interested in vibe coding, accessibility improvements, or just want to feel a bit more like Tony Stark while getting Goose to pull a J.A.R.V.I.S, the Speech MCP server offers a glimpse into the future of human-AI collaboration - and it's available today.
 
 <head>
   <meta property="og:title" content="Vibe Coding with Goose and the Speech MCP" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/03/28/vibe-coding-with-goose" />
+  <meta property="og:url" content="https://rook-docs.ai/blog/2025/03/28/vibe-coding-with-rook" />
   <meta property="og:description" content="Explore the new Speech MCP server that enables voice-controlled coding and natural conversation with your AI agent." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/vibe-coding-b2efeed37ea43f4773da5f1ff96f4184.png" />
+  <meta property="og:image" content="https://rook-docs.ai/assets/images/vibe-coding-b2efeed37ea43f4773da5f1ff96f4184.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="rook-docs.ai" />
   <meta name="twitter:title" content="Vibe Coding with Goose and the Speech MCP" />
   <meta name="twitter:description" content="Explore the new Speech MCP server that enables voice-controlled coding and natural conversation with your AI agent." />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/vibe-coding-b2efeed37ea43f4773da5f1ff96f4184.png" />
+  <meta name="twitter:image" content="https://rook-docs.ai/assets/images/vibe-coding-b2efeed37ea43f4773da5f1ff96f4184.png" />
 </head>

@@ -39,7 +39,7 @@ export GOOSE_AUTO_COMPACT_THRESHOLD=0.6
 When you reach the auto-compaction threshold:
   1. rook will automatically start compacting the conversation to make room.
   2. Once complete, you'll see a confirmation message that the conversation was compacted and summarized.
-  3. Continue the session. Your previous conversation remains visible, but only the compacted conversion is included in the active context for goose.
+  3. Continue the session. Your previous conversation remains visible, but only the compacted conversion is included in the active context for rook.
 
 :::tip Customize Compaction
 You can customize how rook summarizes conversations during compaction by editing the `compaction.md` [prompt template](/docs/guides/prompt-templates).
@@ -58,7 +58,7 @@ You can also trigger compaction manually before reaching context or token limits
   1. Point to the token usage indicator dot next to the model name at the bottom of the app
   2. Click <ScrollText className="inline" size={16} /> `Compact now` in the context window that appears
   3. Once complete, you'll see a confirmation message that the conversation was compacted and summarized.
-  4. Continue the session. Your previous conversation remains visible, but only the compacted conversion is included in the active context for goose.
+  4. Continue the session. Your previous conversation remains visible, but only the compacted conversion is included in the active context for rook.
 
   :::info 
   You must send at least one message in the chat before the `Compact now` button is enabled. 
@@ -187,7 +187,7 @@ This setting is stored as the `GOOSE_MAX_TURNS` environment variable in your [co
 
       2. Select `rook settings`:
       ```sh
-      ┌   goose-configure
+      ┌   rook-configure
       │
       ◆  What would you like to configure?
       │  ○ Configure Providers
@@ -202,7 +202,7 @@ This setting is stored as the `GOOSE_MAX_TURNS` environment variable in your [co
 
       3. Select `Max Turns`:
       ```sh
-      ┌   goose-configure
+      ┌   rook-configure
       │
       ◇  What would you like to configure?
       │  rook settings
@@ -223,7 +223,7 @@ This setting is stored as the `GOOSE_MAX_TURNS` environment variable in your [co
 
       4. Enter the maximum number of turns:
       ```sh
-      ┌   goose-configure 
+      ┌   rook-configure 
       │
       ◇  What would you like to configure?
       │  rook settings 
@@ -240,7 +240,7 @@ This setting is stored as the `GOOSE_MAX_TURNS` environment variable in your [co
       ```
 
       :::tip
-      In addition to the persistent `Max Turns` setting, you can provide a runtime override for a specific session or task via the `rook session --max-turns` and `rook run --max-turns` [CLI commands](/docs/guides/goose-cli-commands).
+      In addition to the persistent `Max Turns` setting, you can provide a runtime override for a specific session or task via the `rook session --max-turns` and `rook run --max-turns` [CLI commands](/docs/guides/rook-cli-commands).
       :::
 
     </TabItem>
@@ -301,7 +301,7 @@ This setting only affects the displayed token usage and progress indicators. Act
 
 This feature is particularly useful with:
 
-- **LiteLLM Proxy Models**: When using LiteLLM with custom model names that don't match goose's patterns
+- **LiteLLM Proxy Models**: When using LiteLLM with custom model names that don't match rook's patterns
 - **Enterprise Deployments**: Custom model deployments with non-standard naming  
 - **Fine-tuned Models**: Custom models with different context limits than their base versions
 - **Development/Testing**: Temporarily adjusting context limits for testing purposes

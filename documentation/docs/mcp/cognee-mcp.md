@@ -70,11 +70,11 @@ See the [Cognee MCP documentation](https://docs.cognee.ai/how-to-guides/deployme
 
 ## Example Usage
 
-Cognee provides knowledge graph memory capabilities for goose, allowing it to remember and connect information across conversations and documents.
+Cognee provides knowledge graph memory capabilities for rook, allowing it to remember and connect information across conversations and documents.
 
 ### rook Prompt
 
-> _goose, please cognify this information: "I prefer Python for data analysis and use pandas extensively. My current project involves analyzing customer behavior data." Then search for information about my programming preferences._
+> _rook, please cognify this information: "I prefer Python for data analysis and use pandas extensively. My current project involves analyzing customer behavior data." Then search for information about my programming preferences._
 
 ### rook Output
 

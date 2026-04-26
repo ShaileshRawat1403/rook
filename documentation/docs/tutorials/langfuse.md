@@ -36,5 +36,5 @@ With rook running and the environment variables set, Langfuse will start capturi
 
 _[Example trace (public) in Langfuse](https://cloud.langfuse.com/project/cloramnkj0002jz088vzn1ja4/traces/cea4ed38-0c44-4b0a-8c20-4b0b6b9e8d73?timestamp=2025-01-31T15%3A52%3A30.362Z&observation=7c8e5807-3c29-4c28-9c6f-7d7427be401f)_
 
-![rook trace in Langfuse](https://langfuse.com//images/docs/goose-integration/goose-example-trace.png)
+![rook trace in Langfuse](https://langfuse.com//images/docs/rook-integration/rook-example-trace.png)
 

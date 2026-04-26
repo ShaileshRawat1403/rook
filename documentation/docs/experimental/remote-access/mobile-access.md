@@ -27,7 +27,7 @@ Mobile access connects your iOS device to rook Desktop through a secure tunnel. 
 ## Setup
 
 ### Install the App
-1. Install the **rook AI** app on your iOS mobile device from the [App Store](https://apps.apple.com/app/goose-ai/id6752889295)
+1. Install the **rook AI** app on your iOS mobile device from the [App Store](https://apps.apple.com/app/rook-ai/id6752889295)
 
 :::tip App Store QR Code
 Follow the steps below to open the `Remote Access` section, then click "scan QR code" in the info box for quick access to the App Store.
@@ -55,7 +55,7 @@ You can now access rook Desktop from your mobile device.
 
 ## What You Can Do
 
-The mobile app gives you full access to goose:
+The mobile app gives you full access to rook:
 - Start new conversations or continue existing sessions
 - Use all your rook extensions and configurations
 - Work from anywhere while your computer handles the processing
@@ -63,16 +63,16 @@ The mobile app gives you full access to goose:
 ## Additional Resources
 
 import ContentCardCarousel from '@site/src/components/ContentCardCarousel';
-import mobileShots from '@site/blog/2025-12-19-goose-mobile-terminal/mobile_shots.png';
+import mobileShots from '@site/blog/2025-12-19-rook-mobile-terminal/mobile_shots.png';
 
 <ContentCardCarousel
   items={[
     {
       type: 'blog',
       title: 'rook Mobile Access and Native Terminal Support',
-      description: 'Learn about two new ways to use goose: iOS app for mobile access and native terminal support with seamless session continuity.',
+      description: 'Learn about two new ways to use rook: iOS app for mobile access and native terminal support with seamless session continuity.',
       thumbnailUrl: mobileShots,
-      linkUrl: '/blog/2025/12/19/goose-mobile-terminal',
+      linkUrl: '/blog/2025/12/19/rook-mobile-terminal',
       date: '2025-12-19',
       duration: '4 min read'
     }

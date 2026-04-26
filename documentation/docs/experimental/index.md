@@ -53,12 +53,12 @@ The list of experimental features may change as rook development progresses. Som
     <Card 
       title="AI, But Make It Local With rook and Ollama"
       description="Learn how to integrate rook with Ollama for a fully local AI experience, including structured outputs and tool calling capabilities."
-      link="/blog/2025/03/14/goose-ollama"
+      link="/blog/2025/03/14/rook-ollama"
     />
     <Card 
       title="Community-Inspired Benchmarking: The rook Vibe Check"
       description="See how open source AI models measure up in our first rook agent benchmark tests, including toolshim performance analysis."
-      link="/blog/2025/03/31/goose-benchmark"
+      link="/blog/2025/03/31/rook-benchmark"
     />
   </div>
 </div>
@@ -69,12 +69,12 @@ The list of experimental features may change as rook development progresses. Som
     <Card 
       title="GitHub Issues"
       description="Report bugs, request features, or contribute to the development of experimental features."
-      link="https://github.com/aaif-goose/goose/issues"
+      link="https://github.com/aaif-rook/rook/issues"
     />
     <Card 
       title="Discord Community"
       description="Join our community to discuss experimental features, share feedback, and connect with other users."
-      link="https://discord.gg/goose-oss"
+      link="https://discord.gg/rook-oss"
     />
   </div>
 </div>

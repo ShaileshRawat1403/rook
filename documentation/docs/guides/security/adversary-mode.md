@@ -20,7 +20,7 @@ The adversary uses the same model and provider rook is already configured with. 
 
 ## Enabling Adversary Mode
 
-Create a file at `~/.config/goose/adversary.md` with your rules:
+Create a file at `~/.config/rook/adversary.md` with your rules:
 
 ```markdown
 BLOCK if the tool call:
@@ -85,4 +85,4 @@ Some tool names you might want to add:
 ## See Also
 
 - [Prompt Injection Detection](/docs/guides/security/prompt-injection-detection) — pattern-based detection (complementary, always-on when enabled)
-- [rook Permission Modes](/docs/guides/goose-permissions) — control goose's autonomy level
+- [rook Permission Modes](/docs/guides/rook-permissions) — control rook's autonomy level

@@ -12,7 +12,7 @@ import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructi
 <YouTubeShortEmbed videoUrl="https://www.youtube.com/embed/_WMm4kDYMog" />
 
 :::warning Known Limitation
-The Fetch extension [does not work](https://github.com/aaif-goose/goose/issues/1184) with Google models (e.g. gemini-2.0-flash) because this extension uses `format: uri` in its JSON schema which Google doesn't support.
+The Fetch extension [does not work](https://github.com/aaif-rook/rook/issues/1184) with Google models (e.g. gemini-2.0-flash) because this extension uses `format: uri` in its JSON schema which Google doesn't support.
 :::
 
 This tutorial covers how to add the [Fetch MCP Server](https://github.com/modelcontextprotocol/servers/tree/main/src/fetch) as a rook extension to retrieve and process content from the web.
@@ -20,7 +20,7 @@ This tutorial covers how to add the [Fetch MCP Server](https://github.com/modelc
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?cmd=uvx&arg=mcp-server-fetch&id=fetch&name=Fetch&description=Web%20content%20fetching%20and%20processing%20capabilities)
+  [Launch the installer](rook://extension?cmd=uvx&arg=mcp-server-fetch&id=fetch&name=Fetch&description=Web%20content%20fetching%20and%20processing%20capabilities)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   **Command**

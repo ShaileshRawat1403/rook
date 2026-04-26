@@ -73,7 +73,7 @@ In this example, I'll use rook to perform a comprehensive security audit across 
 
 ### rook Prompt
     ```
-    Hey goose, I need to perform a security audit and implement fixes across multiple projects:
+    Hey rook, I need to perform a security audit and implement fixes across multiple projects:
 
         1. Please analyze these codebases for security issues:
             - /Users/ebonyl/e-commerce-dashboard

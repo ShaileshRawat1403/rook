@@ -1,15 +1,15 @@
 ---
-title: "What's in my .goosehints file (and why it probably shouldn't be)"
-description: A deep dive into .goosehints vs Memory Extension, and how to optimize your Goose configuration for better performance
+title: "What's in my .rookhints file (and why it probably shouldn't be)"
+description: A deep dive into .rookhints vs Memory Extension, and how to optimize your Goose configuration for better performance
 authors:
     - ian
 ---
 
 ![blog cover](blog-banner.png)
 
-# What's in my .goosehints file (and why it probably shouldn't be)
+# What's in my .rookhints file (and why it probably shouldn't be)
 
-As Goose users, we have two main ways to provide persistent context to our AI assistant: the `.goosehints` file and the [Memory Extension](/docs/mcp/memory-mcp) MCP server. Today, I'll share what's in my `.goosehints` file, why some of it should probably move to the Memory Extension, and how you can make that choice.
+As Goose users, we have two main ways to provide persistent context to our AI assistant: the `.rookhints` file and the [Memory Extension](/docs/mcp/memory-mcp) MCP server. Today, I'll share what's in my `.rookhints` file, why some of it should probably move to the Memory Extension, and how you can make that choice.
 
 <!-- truncate -->
 
@@ -21,44 +21,44 @@ That stored knowledge – your preferences, quirks, and routine – makes the wh
 
 This is exactly the challenge we face with AI assistants. By default, they start each conversation (aka, "context window") fresh – no memory of your coding standards, documentation preferences, or how you like your pull requests structured. The same way you'd get tired of reciting your detailed coffee order every morning, it's inefficient to repeatedly explain to your AI assistant that you prefer Python's Black formatter, want detailed commit messages, and or how you want to construct a briefing going to everyone in the company.
 
-This is where persistent context comes in. Through tools like `.goosehints` and the [Memory Extension](/docs/mcp/memory-mcp) MCP server, we can give our AI assistants the equivalent of a barista's "regular customer" knowledge. But just as you wouldn't want your barista memorizing your entire life story just to make your coffee, we need to be thoughtful about what context we make persistent. The key is finding the right balance between having enough context to work efficiently and not overwhelming our systems with unnecessary information.
+This is where persistent context comes in. Through tools like `.rookhints` and the [Memory Extension](/docs/mcp/memory-mcp) MCP server, we can give our AI assistants the equivalent of a barista's "regular customer" knowledge. But just as you wouldn't want your barista memorizing your entire life story just to make your coffee, we need to be thoughtful about what context we make persistent. The key is finding the right balance between having enough context to work efficiently and not overwhelming our systems with unnecessary information.
 
 Let's explore how to strike that balance.
 
-### What is .goosehints?
+### What is .rookhints?
 
-`.goosehints` is a configuration file that lives in your Goose directory (usually `~/.config/goose/`). It can contain any information that you want Goose to process every time you interact with Goose, providing a foundation for how it interacts with you.
+`.rookhints` is a configuration file that lives in your Goose directory (usually `~/.config/rook/`). It can contain any information that you want Goose to process every time you interact with Goose, providing a foundation for how it interacts with you.
 
-You can read more about `.goosehints` in the [Goose documentation](/docs/guides/context-engineering/using-goosehints).
+You can read more about `.rookhints` in the [Goose documentation](/docs/guides/context-engineering/using-rookhints).
 
 ### What is the Memory Extension?
 
-The [Memory Extension](/docs/mcp/memory-mcp) is a dynamic storage system using the Model Context Protocol that allows you to store and retrieve context on-demand using tags or keywords. It lives in your `~/.goose/memory` directory (local) or `~/.config/goose/memory` (global).
+The [Memory Extension](/docs/mcp/memory-mcp) is a dynamic storage system using the Model Context Protocol that allows you to store and retrieve context on-demand using tags or keywords. It lives in your `~/.rook/memory` directory (local) or `~/.config/rook/memory` (global).
 
-Unlike `.goosehints`, which is static and loaded entirely with every request, Memory Extension can be updated and accessed as needed, allowing for more flexible and user-specific configurations.
+Unlike `.rookhints`, which is static and loaded entirely with every request, Memory Extension can be updated and accessed as needed, allowing for more flexible and user-specific configurations.
 
-## How are .goosehints and Memory Extension used in Goose?
+## How are .rookhints and Memory Extension used in Goose?
 
 At a very high level, when you have a conversation with Goose, it processes your request in two main steps:
 
-Goose interprets your request to detect tags or keywords needed for possible Memory Extension lookups. Then it loads your entire `.goosehints` file, and sends that, along with all Memory Extension entries to the LLM to generate a response.
+Goose interprets your request to detect tags or keywords needed for possible Memory Extension lookups. Then it loads your entire `.rookhints` file, and sends that, along with all Memory Extension entries to the LLM to generate a response.
 
-Why send both? Because the LLM interaction is stateless, and needs the full context of both the goosehints and Memory Extension to generate an appropriate response. The `.goosehints` file provides static, project-wide context, while the Memory Extension provides dynamic, user-specific context.
+Why send both? Because the LLM interaction is stateless, and needs the full context of both the rookhints and Memory Extension to generate an appropriate response. The `.rookhints` file provides static, project-wide context, while the Memory Extension provides dynamic, user-specific context.
 
 
-## The Implications of .goosehints vs Memory Extension
+## The Implications of .rookhints vs Memory Extension
 
-Since the entire `.goosehints` file and all of the memories get sent with every request, why have two different ways to provide rules and context?
+Since the entire `.rookhints` file and all of the memories get sent with every request, why have two different ways to provide rules and context?
 
 The key difference lies in **scope** and **flexibility**:
 
-- **.goosehints**: This file is your project's static context. It's great for defining overarching rules, standards, and documentation that apply to all interactions with Goose. However, because it's static, any changes require editing the file and reloading it. You CAN create a global `.goosehints` file that applies to all projects, but you can also create a project-specific `.goosehints` file that only applies to a specific project. This is useful for defining project-wide coding standards, documentation preferences, or other static rules that you want to apply consistently across all interactions.
+- **.rookhints**: This file is your project's static context. It's great for defining overarching rules, standards, and documentation that apply to all interactions with Goose. However, because it's static, any changes require editing the file and reloading it. You CAN create a global `.rookhints` file that applies to all projects, but you can also create a project-specific `.rookhints` file that only applies to a specific project. This is useful for defining project-wide coding standards, documentation preferences, or other static rules that you want to apply consistently across all interactions.
 
-- **Memory Extension**: This is your dynamic context. It allows you to store and retrieve information on-the-fly, making it perfect for user-specific preferences, temporary context, or information that changes frequently. You can update memories without modifying the `.goosehints` file, providing greater flexibility. The memories are generally tied to the specific user, though they could be shared if your team chooses to do so (but this isn't the norm).
+- **Memory Extension**: This is your dynamic context. It allows you to store and retrieve information on-the-fly, making it perfect for user-specific preferences, temporary context, or information that changes frequently. You can update memories without modifying the `.rookhints` file, providing greater flexibility. The memories are generally tied to the specific user, though they could be shared if your team chooses to do so (but this isn't the norm).
 
-## Where I went wrong with my .goosehints
+## Where I went wrong with my .rookhints
 
-When I first started using Goose, I treated `.goosehints` like a catch-all for everything I wanted Goose to remember, because I didn't know about the Memory Extension. My `.goosehints` file included:
+When I first started using Goose, I treated `.rookhints` like a catch-all for everything I wanted Goose to remember, because I didn't know about the Memory Extension. My `.rookhints` file included:
 - rules on writing outlines for blog posts
 - how I like Python code written and formatted
 - notes about frontend development
@@ -66,7 +66,7 @@ When I first started using Goose, I treated `.goosehints` like a catch-all for e
 
 The file was enormous and hard to update.
 
-### So what "belongs" in .goosehints?
+### So what "belongs" in .rookhints?
 
 Here's something I end nearly every AI prompt with:
 
@@ -76,7 +76,7 @@ I also like to end many of my prompts asking if Goose has any clarifying questio
 
 > Based on the information I've provided, ask me any clarifying questions **before** doing any work, or tell me that you're ready to proceed.
 
-Since these are things that I definitely want to add to every request I make to Goose, I've simplified my .goosehints file to include only these types of rules and standards.
+Since these are things that I definitely want to add to every request I make to Goose, I've simplified my .rookhints file to include only these types of rules and standards.
 
 ## Everything else got moved into the Memory Extension
 
@@ -117,20 +117,20 @@ The first line starts with a hash `#` and a space-separated list of keywords and
 
 ## To hint, or not to hint?
 
-Since both the `.goosehints` file and the Memory Extension files are sent with every request, whether to use one or the other really comes down to how you want to manage your context. Since you can create a project-specific `.goosehints` file, you can use it to define project-wide rules and standards that you want to apply consistently across all interactions with Goose. This is useful for defining project-wide coding standards, documentation preferences, or other static rules that you want to apply consistently across all interactions. Meanwhile you can maintain a personal set of standards for writing and coding in your Memory Extension that you can update and change as needed without affecting the project-wide rules.
+Since both the `.rookhints` file and the Memory Extension files are sent with every request, whether to use one or the other really comes down to how you want to manage your context. Since you can create a project-specific `.rookhints` file, you can use it to define project-wide rules and standards that you want to apply consistently across all interactions with Goose. This is useful for defining project-wide coding standards, documentation preferences, or other static rules that you want to apply consistently across all interactions. Meanwhile you can maintain a personal set of standards for writing and coding in your Memory Extension that you can update and change as needed without affecting the project-wide rules.
 
-Share your own `.goosehints` optimization stories in the [Goose community on Discord](http://discord.gg/goose-oss)!
+Share your own `.rookhints` optimization stories in the [Goose community on Discord](http://discord.gg/rook-oss)!
 
 <head>
-  <meta property="og:title" content="What's in my .goosehints file (and why it probably shouldn't be)" />
+  <meta property="og:title" content="What's in my .rookhints file (and why it probably shouldn't be)" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/06/05/whats-in-my-goosehints-file" />
-  <meta property="og:description" content="Learn how to optimize your Goose configuration by understanding when to use .goosehints vs Memory Extension for better performance and maintainability." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/blog-banner-7f0e5ed1cf875e64e3ebb3250932baaf.png" />
+  <meta property="og:url" content="https://rook-docs.ai/blog/2025/06/05/whats-in-my-rookhints-file" />
+  <meta property="og:description" content="Learn how to optimize your Goose configuration by understanding when to use .rookhints vs Memory Extension for better performance and maintainability." />
+  <meta property="og:image" content="https://rook-docs.ai/assets/images/blog-banner-7f0e5ed1cf875e64e3ebb3250932baaf.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
-  <meta name="twitter:title" content="What's in my .goosehints file (and why it probably shouldn't be)" />
-  <meta name="twitter:description" content="Learn how to optimize your Goose configuration by understanding when to use .goosehints vs Memory Extension for better performance and maintainability." />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/blog-banner-7f0e5ed1cf875e64e3ebb3250932baaf.png" />
-  <meta name="keywords" content="Goose; .goosehints; Memory Extension MCP; AI configuration; performance optimization; developer productivity; context management; AI assistant; token costs; LLM efficiency" />
+  <meta property="twitter:domain" content="rook-docs.ai" />
+  <meta name="twitter:title" content="What's in my .rookhints file (and why it probably shouldn't be)" />
+  <meta name="twitter:description" content="Learn how to optimize your Goose configuration by understanding when to use .rookhints vs Memory Extension for better performance and maintainability." />
+  <meta name="twitter:image" content="https://rook-docs.ai/assets/images/blog-banner-7f0e5ed1cf875e64e3ebb3250932baaf.png" />
+  <meta name="keywords" content="Goose; .rookhints; Memory Extension MCP; AI configuration; performance optimization; developer productivity; context management; AI assistant; token costs; LLM efficiency" />
 </head>

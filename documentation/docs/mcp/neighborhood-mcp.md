@@ -13,14 +13,14 @@ import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructi
 
 Order food from nearby restaurants — right from your rook chat. Sellers are currently US-based.
 
-In this tutorial, you'll learn how to set up the Neighborhood extension and use it to discover nearby restaurants, browse menus, build a cart, and check out — all through natural conversation with goose.
+In this tutorial, you'll learn how to set up the Neighborhood extension and use it to discover nearby restaurants, browse menus, build a cart, and check out — all through natural conversation with rook.
 
 ## Quick Install
 
 :::tip
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Install Neighborhood extension](goose://extension?type=streamable_http&url=https%3A%2F%2Fconnect.squareup.com%2Fv2%2Fmcp%2Fneighborhood&id=neighborhood&name=Neighborhood&description=Discover%20nearby%20restaurants%2C%20browse%20menus%2C%20and%20place%20takeout%20orders%20through%20natural%20conversation.)
+  [Install Neighborhood extension](rook://extension?type=streamable_http&url=https%3A%2F%2Fconnect.squareup.com%2Fv2%2Fmcp%2Fneighborhood&id=neighborhood&name=Neighborhood&description=Discover%20nearby%20restaurants%2C%20browse%20menus%2C%20and%20place%20takeout%20orders%20through%20natural%20conversation.)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   Use `rook configure` to add a `Remote Extension (Streamable HTTP)` with:
@@ -105,7 +105,7 @@ Would you like me to pull up the menu for any of these restaurants?
 
 rook uses the Neighborhood extension's interactive UI to display restaurant cards right in the chat — each showing the name, category, and address with a **View menu** button.
 
-[![Nearby restaurants displayed as interactive cards in goose](/img/neighborhood-restaurants-1.png)](/img/neighborhood-restaurants-1.png)
+[![Nearby restaurants displayed as interactive cards in rook](/img/neighborhood-restaurants-1.png)](/img/neighborhood-restaurants-1.png)
 
 rook doesn't just list restaurants — it tailors its recommendations to your situation. Since you mentioned playing tennis later, rook suggests meals that are energizing but not too heavy, and even includes a pro tip on pre-match eating timing.
 
@@ -122,7 +122,7 @@ Ask rook to open a specific restaurant's menu. The interactive MCP app renders a
 I'd like to view the Ba'al Falafel menu.
 ```
 
-[![Ba'al Falafel menu displayed with category tabs, photos, prices, and descriptions in goose](/img/neighborhood-menu.png)](/img/neighborhood-menu.png)
+[![Ba'al Falafel menu displayed with category tabs, photos, prices, and descriptions in rook](/img/neighborhood-menu.png)](/img/neighborhood-menu.png)
 
 Browse through all the available dishes — Sandwiches, Salads, Combo platters, Soups, Pastries, Sides, Drinks, and more. Ask rook to add anything that catches your eye to your cart.
 

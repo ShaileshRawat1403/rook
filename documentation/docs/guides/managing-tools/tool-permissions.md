@@ -28,7 +28,7 @@ rook performs best with fewer than 25 total tools enabled across all extensions.
 
 ## Permission Levels
 
-Tool permissions work alongside [rook permission modes](/docs/guides/goose-permissions). The mode sets the default behavior, while tool permissions let you override the behavior of specific tools.
+Tool permissions work alongside [rook permission modes](/docs/guides/rook-permissions). The mode sets the default behavior, while tool permissions let you override the behavior of specific tools.
 
 Each tool can be set to one of three permission levels:
 
@@ -73,7 +73,7 @@ Each tool can be set to one of three permission levels:
 
     2. Select `rook settings` from the menu
     ```sh
-    ┌ goose-configure
+    ┌ rook-configure
     │
     ◆ What would you like to configure?
     | ○ Configure Providers
@@ -88,7 +88,7 @@ Each tool can be set to one of three permission levels:
 
     3. Choose `Tool Permission`
     ```sh
-    ┌   goose-configure
+    ┌   rook-configure
     │
     ◇  What would you like to configure?
     │  rook settings
@@ -104,7 +104,7 @@ Each tool can be set to one of three permission levels:
 
     4. Select an extension and configure permissions for its tools:
     ```sh
-    ┌   goose-configure
+    ┌   rook-configure
     │
     ◇  What setting would you like to configure?
     │  Tool Permission 

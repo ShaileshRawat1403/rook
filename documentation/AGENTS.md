@@ -2,9 +2,9 @@
 
 ## Brand Guidelines
 
-**IMPORTANT**: The product name "goose" should ALWAYS be written in lowercase "g" in all documentation, blog posts, and any content within this documentation directory.
+**IMPORTANT**: The product name "rook" should ALWAYS be written in lowercase "g" in all documentation, blog posts, and any content within this documentation directory.
 
-- ✅ Correct: "goose", "using goose", "goose provides"
+- ✅ Correct: "rook", "using rook", "rook provides"
 - ❌ Incorrect: "Goose", "using Goose", "Goose provides"
 
 This is a brand guideline that must be strictly followed.
@@ -18,4 +18,4 @@ This rule applies to:
 - Configuration files with user-facing text
 - Any other documentation content
 
-When editing or creating content in this documentation directory, always ensure "goose" uses a lowercase "g".
+When editing or creating content in this documentation directory, always ensure "rook" uses a lowercase "g".

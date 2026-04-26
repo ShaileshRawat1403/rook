@@ -1,6 +1,6 @@
 ---
 title: Auto Visualiser Extension
-description: Add automatic data visualization to goose
+description: Add automatic data visualization to rook
 ---
 
 import Tabs from '@theme/Tabs';
@@ -34,7 +34,7 @@ This guide will cover enabling and using the Auto Visualiser MCP Server.
 
   2. Choose to `Toggle Extensions`
   ```sh
-  ┌   goose-configure 
+  ┌   rook-configure 
   │
   ◇  What would you like you configure?
   │  Toggle Extensions 

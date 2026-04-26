@@ -29,7 +29,7 @@ import { PanelLeft } from 'lucide-react';
           2. Run the executable file to launch the rook Desktop application.
 
           :::tip Updating rook
-          It's best to periodically [update rook](/docs/guides/updating-goose).
+          It's best to periodically [update rook](/docs/guides/updating-rook).
           :::
         </div>
         <h3>Option 2: Install via Homebrew</h3>
@@ -55,14 +55,14 @@ import { PanelLeft } from 'lucide-react';
         Run the following command to install the latest version of rook on macOS:
 
         ```sh
-        curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | bash
+        curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh | bash
         ```
         This script will fetch the latest version of rook and set it up on your system.
 
         If you'd like to install without interactive configuration, disable `CONFIGURE`:
 
         ```sh
-        curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | CONFIGURE=false bash
+        curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh | CONFIGURE=false bash
         ```
 
         :::tip Updating rook
@@ -99,7 +99,7 @@ import { PanelLeft } from 'lucide-react';
           4. Launch rook from the app menu
 
           :::tip Updating rook
-          It's best to periodically [update rook](/docs/guides/updating-goose).
+          It's best to periodically [update rook](/docs/guides/updating-rook).
           :::
         </div>
       </TabItem>
@@ -107,14 +107,14 @@ import { PanelLeft } from 'lucide-react';
         Run the following command to install the rook CLI on Linux:
 
         ```sh
-        curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | bash
+        curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh | bash
         ```
         This script will fetch the latest version of rook and set it up on your system.
 
         If you'd like to install without interactive configuration, disable `CONFIGURE`:
 
         ```sh
-        curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | CONFIGURE=false bash
+        curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh | CONFIGURE=false bash
         ```
 
         :::tip Updating rook
@@ -142,7 +142,7 @@ import { PanelLeft } from 'lucide-react';
           2. Run the executable file to launch the rook Desktop application.
 
           :::tip Updating rook
-          It's best to periodically [update rook](/docs/guides/updating-goose).
+          It's best to periodically [update rook](/docs/guides/updating-rook).
           :::
         </div>
       </TabItem>
@@ -155,20 +155,20 @@ import { PanelLeft } from 'lucide-react';
         Run the installation command in your chosen environment:
 
         ```bash
-        curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | bash
+        curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh | bash
         ```
 
         To install without interactive configuration, disable `CONFIGURE`:
 
         ```bash
-        curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | CONFIGURE=false bash
+        curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh | CONFIGURE=false bash
         ```
 
         **PowerShell Installation:**
         Download the PowerShell installation script to your current directory.
 
         ```powershell
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aaif-goose/goose/main/download_cli.ps1" -OutFile "download_cli.ps1";
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aaif-rook/rook/main/download_cli.ps1" -OutFile "download_cli.ps1";
         ```
         Then run the script to install rook:
         ```powershell
@@ -198,7 +198,7 @@ import { PanelLeft } from 'lucide-react';
           ```
         </details>
 
-        After updating your PATH, you can run `goose` commands from any directory.
+        After updating your PATH, you can run `rook` commands from any directory.
         :::
 
         <details>
@@ -220,7 +220,7 @@ import { PanelLeft } from 'lucide-react';
 
           3. Run the rook installation script:
           ```bash
-          curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | bash
+          curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh | bash
           ```
           :::tip
             If you encounter any issues on download, you might need to install `bzip2` to extract the downloaded file:
@@ -233,7 +233,7 @@ import { PanelLeft } from 'lucide-react';
           If you'd like to install without interactive configuration, disable `CONFIGURE`:
 
           ```sh
-          curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | CONFIGURE=false bash
+          curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh | CONFIGURE=false bash
           ```
 
           If needed, add rook to your path:
@@ -415,9 +415,9 @@ If you're packaging rook for a Linux distribution or creating a custom build, yo
 just generate-manpages
 ```
 
-This creates ROFF-formatted manpages in `target/man/` (e.g., `goose.1`, `goose-session.1`) that can be installed to `/usr/share/man/man1/` to provide offline documentation via the `man` command.
+This creates ROFF-formatted manpages in `target/man/` (e.g., `rook.1`, `rook-session.1`) that can be installed to `/usr/share/man/man1/` to provide offline documentation via the `man` command.
 
-Manpage generation requires the rook source repository and is intended for distribution packagers preparing packages for Fedora, Debian, and other Linux distributions. See the [generate_manpages.rs source](https://github.com/aaif-goose/goose/blob/main/crates/goose-cli/src/bin/generate_manpages.rs) for implementation details.
+Manpage generation requires the rook source repository and is intended for distribution packagers preparing packages for Fedora, Debian, and other Linux distributions. See the [generate_manpages.rs source](https://github.com/aaif-rook/rook/blob/main/crates/rook-cli/src/bin/generate_manpages.rs) for implementation details.
 
 ## Additional Resources
 
@@ -425,6 +425,6 @@ You can also configure Extensions to extend rook's functionality, including addi
 
 [using-extensions]: /docs/getting-started/using-extensions
 [providers]: /docs/getting-started/providers
-[handling-rate-limits]: /docs/guides/handling-llm-rate-limits-with-goose
+[handling-rate-limits]: /docs/guides/handling-llm-rate-limits-with-rook
 [mcp]: https://www.anthropic.com/news/model-context-protocol
 [config-files]: /docs/guides/config-files.md

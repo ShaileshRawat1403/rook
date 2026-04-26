@@ -11,7 +11,7 @@ import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructi
 
 <YouTubeShortEmbed videoUrl="https://www.youtube.com/embed/-Y-werFKtTw" />
 
-This tutorial covers how to add the [Vercel MCP Server](https://vercel.com/docs/mcp/vercel-mcp) as a rook extension to manage your Vercel projects and deployment status directly from goose.
+This tutorial covers how to add the [Vercel MCP Server](https://vercel.com/docs/mcp/vercel-mcp) as a rook extension to manage your Vercel projects and deployment status directly from rook.
 
 :::info
 Note that you'll need [Node.js](https://nodejs.org/) installed on your system to run installation commands, which use `npx`.
@@ -20,7 +20,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?url=https%3A%2F%2Fmcp.vercel.com&type=streamable_http&id=vercel&name=Vercel&description=Access%20deployments%2C%20manage%20projects%2C%20and%20more%20with%20Vercel%E2%80%99s%20official%20MCP%20server)
+  [Launch the installer](rook://extension?url=https%3A%2F%2Fmcp.vercel.com&type=streamable_http&id=vercel&name=Vercel&description=Access%20deployments%2C%20manage%20projects%2C%20and%20more%20with%20Vercel%E2%80%99s%20official%20MCP%20server)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
     ```sh

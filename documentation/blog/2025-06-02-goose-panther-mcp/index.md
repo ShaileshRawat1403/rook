@@ -6,7 +6,7 @@ authors:
   - glenn
 ---
 
-![blog cover](goose-panther-header.png)
+![blog cover](rook-panther-header.png)
 
 Detection engineering stands at the forefront of cybersecurity, yet it’s often a tangled web of complexity. Traditional detection writing involves painstaking manual processes encompassing log format and schema comprehension, intricate query creation, threat modeling, and iterative manual detection testing and refinement, leading to time expenditure and reliance on specialized expertise. This can lead to gaps in threat coverage and an overwhelming number of alerts. At Block, we face the relentless challenge of evolving threats and intricate system complexities. To stay ahead, we've embraced AI-driven solutions, notably Goose, Block’s open-source AI agent, and Panther MCP, to allow the broader organization to contribute high-quality rules that are contextual to their area of expertise. This post delves into how we're transforming complicated detection workflows into streamlined, AI-powered, accessible processes for all stakeholders.
 
@@ -55,9 +55,9 @@ Panther MCP functions as a Goose extension, seamlessly embedding its capabilitie
 2. **API Connectivity:** The extension establishes a connection to Panther's backend API, enabling seamless context retrieval.  
 3. **Available Tools:** Panther MCP provides Goose with a range of tools designed for efficient detection creation, intuitive data interaction, and streamlined alert management.
 
-### Leveraging Enhanced Context with `.goosehints`
+### Leveraging Enhanced Context with `.rookhints`
 
-The integration between Panther MCP and Goose is enhanced through the use of the [.goosehints](/docs/guides/context-engineering/using-goosehints/) file—a Goose feature that supplies additional context like rule examples and best practices. This enriched context enables Goose to generate more accurate and efficient detections, aligned with Block’s standards and requirements. 
+The integration between Panther MCP and Goose is enhanced through the use of the [.rookhints](/docs/guides/context-engineering/using-rookhints/) file—a Goose feature that supplies additional context like rule examples and best practices. This enriched context enables Goose to generate more accurate and efficient detections, aligned with Block’s standards and requirements. 
 
 Let's illustrate this with an example: creating a rule to detect users adding themselves to privileged Okta groups, a common privilege escalation technique.
 
@@ -91,7 +91,7 @@ To ensure the generated logic is accurate and operates on valid data, Goose inte
 
 The interaction with Panther MCP at this stage involves API calls to retrieve schema information and execute analytical queries, enabling Goose to ground its reasoning in actual log data.
 
-![Goose interacts with Panther MCP](goose-panther-mcp-interaction.png)
+![Goose interacts with Panther MCP](rook-panther-mcp-interaction.png)
 
 Goose doesn't operate in isolation; it accesses a repository of existing Panther detection rules to identify similar logic or reusable components. This promotes consistency across the detection landscape, encourages the reuse of well-tested helper functions (like `okta_alert_context`), and ensures adherence to established rule standards within our security ecosystem. Learning from existing detections is a core component of Goose’s intelligence, allowing it to build upon prior knowledge and avoid reinventing the wheel.
 
@@ -200,9 +200,9 @@ Enabled: true
 DedupPeriodMinutes: 60
 LogTypes:
   - Okta.SystemLog
-RuleID: "goose.Okta.Self.Privileged.Group.Add"
+RuleID: "rook.Okta.Self.Privileged.Group.Add"
 Threshold: 1
-Filename: goose_okta_self_privileged_group_add.py
+Filename: rook_okta_self_privileged_group_add.py
 Reference: >
   https://developer.okta.com/docs/reference/api/system-log/
   https://attack.mitre.org/techniques/T1078/004/
@@ -220,7 +220,7 @@ Reports:
 Severity: High
 Tags:
   - author:tomasz
-  - coauthor:goose
+  - coauthor:rook
 Tests:
   - Name: User adds themselves to privileged group
     ExpectedResult: true
@@ -431,12 +431,12 @@ Block is dedicated to improving its security defenses and supporting its team by
 <head>
   <meta property="og:title" content="Democratizing Detection Engineering at Block: Taking Flight with Goose and Panther MCP" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/06/02/goose-panther-mcp" />
+  <meta property="og:url" content="https://rook-docs.ai/blog/2025/06/02/rook-panther-mcp" />
   <meta property="og:description" content="A comprehensive overview of how Block leverages Goose and Panther MCP to democratize and accelerate security detection engineering." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/goose-panther-header-25b5891acdd70e6a7bbe6b84e34f08f0.png" />
+  <meta property="og:image" content="https://rook-docs.ai/assets/images/rook-panther-header-25b5891acdd70e6a7bbe6b84e34f08f0.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="rook-docs.ai" />
   <meta name="twitter:title" content="Democratizing Detection Engineering at Block: Taking Flight with Goose and Panther MCP" />
   <meta name="twitter:description" content="A comprehensive overview of how Block leverages Goose and Panther MCP to democratize and accelerate security detection engineering." />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/goose-panther-header-25b5891acdd70e6a7bbe6b84e34f08f0.png" />
+  <meta name="twitter:image" content="https://rook-docs.ai/assets/images/rook-panther-header-25b5891acdd70e6a7bbe6b84e34f08f0.png" />
 </head>

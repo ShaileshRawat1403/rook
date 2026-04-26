@@ -4,18 +4,18 @@ sidebar_label: Known Issues
 description: Comprehensive troubleshooting guide for common rook problems with step-by-step solutions.
 ---
 
-goose, like any system, may run into occasional issues. This guide provides solutions for common problems.
+rook, like any system, may run into occasional issues. This guide provides solutions for common problems.
 
 :::tip Need help with an issue not listed here?
-Our [Discord community](https://discord.gg/goose-oss) is here to help! For the fastest support, consider generating a [diagnostic report](/docs/troubleshooting/diagnostics-and-reporting) - it helps us understand your setup quickly.
+Our [Discord community](https://discord.gg/rook-oss) is here to help! For the fastest support, consider generating a [diagnostic report](/docs/troubleshooting/diagnostics-and-reporting) - it helps us understand your setup quickly.
 :::
 
 ### rook Edits Files
-rook can and will edit files as part of its workflow. To avoid losing personal changes, use version control to stage your personal edits. Leave rook edits unstaged until reviewed. Consider separate commits for goose's edits so you can easily revert them if needed.
+rook can and will edit files as part of its workflow. To avoid losing personal changes, use version control to stage your personal edits. Leave rook edits unstaged until reviewed. Consider separate commits for rook's edits so you can easily revert them if needed.
 
 ---
 
-### Interrupting goose
+### Interrupting rook
 If rook is heading in the wrong direction or gets stuck, you can [interrupt it](/docs/guides/sessions/in-session-actions#interrupt-task) to correct its actions or provide additional information.
 
 ---
@@ -46,13 +46,13 @@ You can prevent these issues by customizing your shell to handle these commands 
 
 ### Context Length Exceeded Error
 
-This error occurs when the input provided to rook exceeds the maximum token limit of the LLM being used. To resolve this, try breaking down your input into smaller parts. You can also use [`.goosehints`][goosehints] as a way to provide rook with detailed context and use [message queues](/docs/guides/sessions/in-session-actions#queue-messages) in rook Desktop.
+This error occurs when the input provided to rook exceeds the maximum token limit of the LLM being used. To resolve this, try breaking down your input into smaller parts. You can also use [`.rookhints`][rookhints] as a way to provide rook with detailed context and use [message queues](/docs/guides/sessions/in-session-actions#queue-messages) in rook Desktop.
 
 ---
 
 ### Using Ollama Provider
 
-Ollama provides local LLMs, which means you must first [download Ollama and run a model](/docs/getting-started/providers#local-llms) before attempting to use this provider with goose. If you do not have the model downloaded, you'll run into the following error:
+Ollama provides local LLMs, which means you must first [download Ollama and run a model](/docs/getting-started/providers#local-llms) before attempting to use this provider with rook. If you do not have the model downloaded, you'll run into the following error:
 
 > ExecutionError("error sending request for url (http://localhost:11434/v1/chat/completions)")
 
@@ -84,11 +84,11 @@ Users may run into an error like the one below when there are issues with their 
 
 ```sh
 Traceback (most recent call last):
-  File "/Users/admin/.local/pipx/venvs/goose-ai/lib/python3.13/site-packages/exchange/providers/utils.py",
+  File "/Users/admin/.local/pipx/venvs/rook-ai/lib/python3.13/site-packages/exchange/providers/utils.py",
 line 30, in raise_for_status
     response.raise_for_status()
     ~~~~~~~~~~~~~~~~~~~~~~~~~^^
-  File "/Users/admin/.local/pipx/venvs/goose-ai/lib/python3.13/site-packages/httpx/_models.py",
+  File "/Users/admin/.local/pipx/venvs/rook-ai/lib/python3.13/site-packages/httpx/_models.py",
 line 829, in raise_for_status
     raise HTTPStatusError(message, request=request, response=self)
 httpx.HTTPStatusError: Client error '404 Not Found' for url
@@ -152,9 +152,9 @@ You may need to uninstall rook or clear existing data before re-installing. rook
 
 **Data Locations**
 
-- **Logs and Config**: `~/.config/goose`
+- **Logs and Config**: `~/.config/rook`
 - **Application Data**: `~/Library/Application Support/Goose`
-- **Secrets**: macOS Keychain (credential named "goose").
+- **Secrets**: macOS Keychain (credential named "rook").
 
 #### Removal Steps
 
@@ -162,21 +162,21 @@ You may need to uninstall rook or clear existing data before re-installing. rook
 
   - Consider confirming you've stopped them all via Activity Monitor
 
-2. Open Keychain Access and delete the credential called "goose", which contains all secrets stored by goose
+2. Open Keychain Access and delete the credential called "rook", which contains all secrets stored by rook
 3. Remove data directories:
 
 ```
-rm -rf ~/.config/goose
-rm -rf ~/Library/Application\ Support/goose
+rm -rf ~/.config/rook
+rm -rf ~/Library/Application\ Support/rook
 ```
-4. Delete the "goose" app from your Applications folder (if using rook Desktop).
+4. Delete the "rook" app from your Applications folder (if using rook Desktop).
 
 #### Linux
 **Data Locations**
 
-- **Data/Sessions**: `~/.local/share/goose/`
-- **Logs**: `~/.local/state/goose/`
-- **Config**: `~/.config/goose/`
+- **Data/Sessions**: `~/.local/share/rook/`
+- **Logs**: `~/.local/state/rook/`
+- **Config**: `~/.config/rook/`
 - **Secrets**: System keyring (if available)
 
 #### Removal Steps
@@ -186,15 +186,15 @@ rm -rf ~/Library/Application\ Support/goose
 - Remove data directories:
 
 ```
-rm -rf ~/.local/share/goose/
-rm -rf ~/.local/state/goose/
-rm -rf ~/.config/goose/
+rm -rf ~/.local/share/rook/
+rm -rf ~/.local/state/rook/
+rm -rf ~/.config/rook/
 ```
 #### Windows
 
 **Data Locations**
-- **Configuration and Data**: `%APPDATA%\Block\goose\`
-- **Local Application Data**: `%LOCALAPPDATA%\Block\goose\`
+- **Configuration and Data**: `%APPDATA%\Block\rook\`
+- **Local Application Data**: `%LOCALAPPDATA%\Block\rook\`
 - **Secrets**: Windows Credential Manager
 
 #### Removal Steps
@@ -203,15 +203,15 @@ rm -rf ~/.config/goose/
 
   - Check Task Manager to confirm all instances are closed
 
-2. Open Windows Credential Manager and delete credentials related to "goose"
+2. Open Windows Credential Manager and delete credentials related to "rook"
 3. Remove data directories:
 ```
-rmdir /s /q "%APPDATA%\Block\goose"
-rmdir /s /q "%LOCALAPPDATA%\Block\goose"
+rmdir /s /q "%APPDATA%\Block\rook"
+rmdir /s /q "%LOCALAPPDATA%\Block\rook"
 ```
 4. Uninstall the rook Desktop app from Settings > Apps (if applicable)
 
-> After this cleanup, if you are looking to try out a fresh install of goose, you can now start from the usual install instructions.
+> After this cleanup, if you are looking to try out a fresh install of rook, you can now start from the usual install instructions.
 ---
 
 ### Keychain/Keyring Errors
@@ -237,10 +237,10 @@ If you still receive keyring errors, use one of the following options:
   ```bash
   $ rook configure
 
-  Welcome to goose! Let's get you set up with a provider.
+  Welcome to rook! Let's get you set up with a provider.
     you can rerun this command later to update your configuration
 
-  ┌   goose-configure
+  ┌   rook-configure
   │
   ◇  Which model provider should we use?
   │  Google Gemini
@@ -264,8 +264,8 @@ If you still receive keyring errors, use one of the following options:
 
 When the keyring is disabled (or cannot be accessed and rook falls back to file-based secret storage), secrets are stored here:
 
-- macOS/Linux: `~/.config/goose/secrets.yaml`
-- Windows: `%APPDATA%\Block\goose\config\secrets.yaml`
+- macOS/Linux: `~/.config/rook/secrets.yaml`
+- Windows: `%APPDATA%\Block\rook\config\secrets.yaml`
 
 See [Configuration Files](/docs/guides/config-files) for details.
 
@@ -331,7 +331,7 @@ This issue typically occurs when Node.js is installed in a non-standard location
    ```
    (Replace `D:\Program Files\nodejs` with your actual Node.js installation path)
 
-3. **Restart goose** and try activating the extension again.
+3. **Restart rook** and try activating the extension again.
 
 This creates a symbolic link that allows rook to find Node.js in the expected location while keeping your actual installation intact.
 
@@ -348,7 +348,7 @@ Blocked malicious package: package-name@1.0.0 (npm). OSV MAL advisories: MAL-202
 Steps to resolve:
 1. **Find an alternative**: Look for similar extensions in the [extensions directory][extensions-directory] or [PulseMCP](https://www.pulsemcp.com/servers)
 2. **Optional verification**: Verify the source of the blocked extension or the package name/publisher
-3. **Report false positives**: If you believe this is an error, please [open an issue](https://github.com/aaif-goose/goose/issues)
+3. **Report false positives**: If you believe this is an error, please [open an issue](https://github.com/aaif-rook/rook/issues)
 
 This security check only applies to locally-executed external extensions that use PyPI (`uvx`) or NPM (`npx`). The check uses real-time data from the OSV database; if the security service is unavailable, extensions will still install normally.
 
@@ -407,7 +407,7 @@ Running rook with sudo may create files owned by root, which could lead to furth
 
 ### Connection Error with Ollama Provider on WSL
 
-If you encounter an error like this when setting up Ollama as the provider in goose:
+If you encounter an error like this when setting up Ollama as the provider in rook:
     ```
     Execution error: error sending request for url (http://localhost:11434/v1/chat/completions)
     ```
@@ -452,7 +452,7 @@ rook supports HTTP/HTTPS proxy configuration through standard environment variab
    - **macOS**: System Settings → Network → [select connection] → Details → Proxies
    - **Windows**: Settings → Network & Internet → Proxy
 
-3. **Restart goose** after configuring proxy settings
+3. **Restart rook** after configuring proxy settings
 
 If you continue to experience connection issues, verify:
 - Your proxy URL and port are correct
@@ -499,7 +499,7 @@ rook Desktop uses **"shims"** (packaged versions of `npx` and `uvx`) that automa
    ```yaml
    extensions:
      example:
-       cmd: runuv  # This bypasses goose's shims
+       cmd: runuv  # This bypasses rook's shims
        args: [mcp-server-example]
    ```
 
@@ -518,9 +518,9 @@ If you can share a [diagnostic report](/docs/troubleshooting/diagnostics-and-rep
 
 
 
-[handling-rate-limits]: /docs/guides/handling-llm-rate-limits-with-goose
+[handling-rate-limits]: /docs/guides/handling-llm-rate-limits-with-rook
 [installation]: /docs/getting-started/installation
-[discord]: https://discord.gg/goose-oss
-[goosehints]: /docs/guides/context-engineering/using-goosehints
+[discord]: https://discord.gg/rook-oss
+[rookhints]: /docs/guides/context-engineering/using-rookhints
 [configure-llm-provider]: /docs/getting-started/providers
 [extensions-directory]: /extensions

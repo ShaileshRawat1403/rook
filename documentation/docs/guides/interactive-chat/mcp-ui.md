@@ -16,7 +16,7 @@ import { PanelLeft } from 'lucide-react';
 Extensions built with MCP Apps or MCP-UI allow rook Desktop to provide interactive and engaging user experiences. Instead of reading text responses and typing prompts, you can interact with a graphical and clickable UI.
 
 :::info MCP Apps is the official specification
-[MCP Apps](/docs/tutorials/building-mcp-apps) is now the official MCP specification for interactive UIs. MCP-UI extensions still work in goose, but MCP Apps is the recommended path for new extensions.
+[MCP Apps](/docs/tutorials/building-mcp-apps) is now the official MCP specification for interactive UIs. MCP-UI extensions still work in rook, but MCP Apps is the recommended path for new extensions.
 :::
 
 :::warning Experimental Features
@@ -29,7 +29,7 @@ MCP Apps bring interactive interfaces to rook through the official [MCP Apps spe
 
 ### Launching Apps in Standalone Windows
 
-Some MCP Apps can be launched in their own windows, allowing you to jump straight to the interface without sending messages to goose.
+Some MCP Apps can be launched in their own windows, allowing you to jump straight to the interface without sending messages to rook.
 
 1. Click the <PanelLeft className="inline" size={16} /> button in the top-left to open the sidebar
 2. Click `Apps` in the sidebar
@@ -73,11 +73,11 @@ If needed, you can just ask rook whether the UI can be loaded in the chat window
 
 ## MCP-UI
 
-MCP-UI is an earlier specification for interactive UIs that renders content embedded in your chat. While MCP Apps is now the recommended approach, MCP-UI extensions continue to work in goose.
+MCP-UI is an earlier specification for interactive UIs that renders content embedded in your chat. While MCP Apps is now the recommended approach, MCP-UI extensions continue to work in rook.
 
 ### Try It Out
 
-See how interactive responses work in goose. For this exercise, we'll add an extension that connects to [MCP-UI Demos](https://mcp-aharvard.netlify.app/) provided by Andrew Harvard.
+See how interactive responses work in rook. For this exercise, we'll add an extension that connects to [MCP-UI Demos](https://mcp-aharvard.netlify.app/) provided by Andrew Harvard.
 
   <Tabs groupId="interface">
     <TabItem value="ui" label="rook Desktop" default>

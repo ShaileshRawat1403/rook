@@ -31,11 +31,11 @@ impl SubprocessExt for std::process::Command {
 
 /// Resolve the user's full PATH by running a login shell.
 ///
-/// When goosed is launched from a desktop app (e.g. Electron), it may inherit
+/// When rookd is launched from a desktop app (e.g. Electron), it may inherit
 /// a minimal PATH like `/usr/bin:/bin`. This function spawns a login shell to
 /// source the user's profile and recover the full PATH.
 ///
-/// Ported from `crates/goose/src/agents/platform_extensions/developer/shell.rs`
+/// Ported from `crates/rook/src/agents/platform_extensions/developer/shell.rs`
 /// where it was introduced in #5774 for the developer extension. This makes the
 /// same fix available to all MCP extensions in rook-mcp.
 #[cfg(not(windows))]

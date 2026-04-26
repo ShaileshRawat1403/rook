@@ -37,7 +37,7 @@ Enable the [Summon extension](/docs/mcp/summon-mcp) to allow rook to load and us
 
   2. Choose to `Toggle Extensions`
   ```sh
-  ┌   goose-configure 
+  ┌   rook-configure 
   │
   ◇  What would you like to configure?
   │  Toggle Extensions 

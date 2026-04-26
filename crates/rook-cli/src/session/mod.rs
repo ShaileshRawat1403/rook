@@ -967,7 +967,7 @@ impl CliSession {
                 if should_act {
                     output::render_act_on_plan();
                     self.run_mode = RunMode::Normal;
-                    // set goose mode: auto if that isn't already the case
+                    // set rook mode: auto if that isn't already the case
                     let config = Config::global();
                     let curr_rook_mode = config.get_rook_mode().unwrap_or_default();
                     if curr_rook_mode != RookMode::Auto {
@@ -985,7 +985,7 @@ impl CliSession {
                         .await?;
                     output::hide_thinking();
 
-                    // Reset run & goose mode
+                    // Reset run & rook mode
                     if curr_rook_mode != RookMode::Auto {
                         config.set_rook_mode(curr_rook_mode)?;
                     }

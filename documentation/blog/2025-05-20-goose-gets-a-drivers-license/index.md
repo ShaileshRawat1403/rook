@@ -6,7 +6,7 @@ authors:
 ---
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
 
-![blog cover](goose-rover-blog.png)
+![blog cover](rook-rover-blog.png)
 
 ## I taught Goose how to drive (a rover)
 
@@ -133,7 +133,7 @@ Finally, the rover includes an ultrasonic distance sensor, which look like "eyes
 
 ## Goose changes for the video
 
-I grew up with Pinky and the Brain, and I wanted to have some fun with the mbot2 extension. I decided to add a few "Evil AI" commands to Goose to make it seem like it was trying to "take over the world." I added the following instructions to my [.goosehints](/docs/guides/context-engineering/using-goosehints/) file to include fun instructions for the mbot2 extension:
+I grew up with Pinky and the Brain, and I wanted to have some fun with the mbot2 extension. I decided to add a few "Evil AI" commands to Goose to make it seem like it was trying to "take over the world." I added the following instructions to my [.rookhints](/docs/guides/context-engineering/using-rookhints/) file to include fun instructions for the mbot2 extension:
 ```
 If I ask you "what do you want to do tonight, Goose?" I want you to reply with "The same thing we do every night, Ian. TRY TO TAKE OVER THE WORLD!!!!" and tell my mbot2 rover to blink its lights red, then start exploring.
 ```
@@ -144,17 +144,17 @@ For the video recording, I used a voice modifier to narrate Goose's response in 
 
 We want to extend a huge thank you to [deemkeen](https://x.com/deemkeen) for their open-source work which inspired this project, and to the Makeblock team for creating such a fun rover to work with.
 
-We're always excited to see what the community is up to. If you're working on your own Goose-powered experiment, come share it with us on [Discord](https://discord.gg/goose-oss)!
+We're always excited to see what the community is up to. If you're working on your own Goose-powered experiment, come share it with us on [Discord](https://discord.gg/rook-oss)!
 
 <head>
   <meta property="og:title" content="Goose Gets a Driver's License!" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/05/06/goose-gets-a-drivers-license" />
+  <meta property="og:url" content="https://rook-docs.ai/blog/2025/05/06/rook-gets-a-drivers-license" />
   <meta property="og:description" content="Control a MakeBlock mbot2 rover through MQTT and MCP as a Goose Extension" />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/goose-rover-blog-3f3cbe549ebbfb0f951ff61a86788475.png" />
+  <meta property="og:image" content="https://rook-docs.ai/assets/images/rook-rover-blog-3f3cbe549ebbfb0f951ff61a86788475.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="rook-docs.ai" />
   <meta name="twitter:title" content="Goose Gets a Driver's License!" />
   <meta name="twitter:description" content="Control a MakeBlock mbot2 rover through MQTT and MCP as a Goose Extension" />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/goose-rover-blog-3f3cbe549ebbfb0f951ff61a86788475.png" />
+  <meta name="twitter:image" content="https://rook-docs.ai/assets/images/rook-rover-blog-3f3cbe549ebbfb0f951ff61a86788475.png" />
 </head>

@@ -4,7 +4,7 @@ description: Add Speech MCP Server as a rook Extension
 unlisted: true
 ---
 
-Unlist per https://github.com/aaif-goose/goose/issues/5431
+Unlist per https://github.com/aaif-rook/rook/issues/5431
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -23,7 +23,7 @@ This tutorial covers how to add the [Speech MCP Server](https://github.com/Kvadr
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?cmd=uvx&arg=-p&arg=3.10.14&arg=speech-mcp@latest&id=speech_mcp&name=Speech%20Interface&description=Voice%20interaction%20with%20audio%20visualization%20for%20goose)
+  [Launch the installer](rook://extension?cmd=uvx&arg=-p&arg=3.10.14&arg=speech-mcp@latest&id=speech_mcp&name=Speech%20Interface&description=Voice%20interaction%20with%20audio%20visualization%20for%20rook)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   **Command**
@@ -47,7 +47,7 @@ Before adding this extension, make sure [PortAudio](https://github.com/GoogleClo
   <GooseDesktopInstaller
     extensionId="speech_mcp"
     extensionName="Speech Interface"
-    description="Voice interaction with audio visualization for goose"
+    description="Voice interaction with audio visualization for rook"
     command="uvx"
     args={["-p", "3.10.14", "speech-mcp@latest"]}
   />
@@ -60,7 +60,7 @@ Before adding this extension, make sure [PortAudio](https://github.com/GoogleClo
 
   2. Choose to add a `Command-line Extension`
   ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -76,7 +76,7 @@ Before adding this extension, make sure [PortAudio](https://github.com/GoogleClo
 
   3. Give your extension a name
   ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -93,7 +93,7 @@ Before adding this extension, make sure [PortAudio](https://github.com/GoogleClo
 
   4. Enter the command
   ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -113,7 +113,7 @@ Before adding this extension, make sure [PortAudio](https://github.com/GoogleClo
 
   5. Enter the number of seconds rook should wait for actions to complete before timing out. Default is 300s
    ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -136,7 +136,7 @@ Before adding this extension, make sure [PortAudio](https://github.com/GoogleClo
 
   6. Choose to add a description. If you select "Yes" here, you will be prompted to enter a description for the extension.
    ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -162,7 +162,7 @@ Before adding this extension, make sure [PortAudio](https://github.com/GoogleClo
 
   7. Choose No when asked to add environment variables
    ```sh
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -195,7 +195,7 @@ Before adding this extension, make sure [PortAudio](https://github.com/GoogleClo
 
 
 ## Example Usage
-In this example, you'll see how to use rook with the Speech MCP Server Extension to turn voice commands into code. By speaking directly to goose, you can launch the speech interface, give a spoken prompt, and have rook generate and open a webpage based on your request.
+In this example, you'll see how to use rook with the Speech MCP Server Extension to turn voice commands into code. By speaking directly to rook, you can launch the speech interface, give a spoken prompt, and have rook generate and open a webpage based on your request.
 
 This allows you to build with rook hands-free, making development more accessible and interactive.
 
@@ -216,11 +216,11 @@ This allows you to build with rook hands-free, making development more accessibl
 ### rook Prompt
 Here are some things you can say to activate the speech interface:
 
-- “goose, I don’t feel like typing today.”
+- “rook, I don’t feel like typing today.”
 - “Let’s talk using voice.”
 - “Can we have a voice conversation?”
 - “I’d like to speak instead of typing.”
-- “goose, launch the speech UI.”
+- “rook, launch the speech UI.”
 
 ```
 rook I don't feel like talking today
@@ -234,13 +234,13 @@ I understand! In that case, I can help you use voice commands instead. I'll laun
 
 ### rook Speech 🎙️
 
-**goose:** 
+**rook:** 
 >_I've launched the speech interface. You can now speak your requests instead of typing. Just speak after you hear my voice and see the microphone activate. What would you like help with?_
 
 
 **Max:** 
 
->_goose, lets create a simple page with the word 'vibes' on it and maybe change colors and make it move around the page and then open this page in the browser once you're done_
+>_rook, lets create a simple page with the word 'vibes' on it and maybe change colors and make it move around the page and then open this page in the browser once you're done_
 
 
 <div style={{ width: "100%", height: 0, position: "relative", paddingBottom: "56.25%" }}>

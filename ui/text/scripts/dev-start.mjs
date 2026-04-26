@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-// Development entrypoint: ensures a goose binary is available, then launches
-// the TUI via tsx. Skips the cargo build if GOOSE_BINARY is already set.
+// Development entrypoint: ensures a rook binary is available, then launches
+// the TUI via tsx. Skips the cargo build if ROOK_BINARY is already set.
 
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
@@ -11,12 +11,12 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = join(__dirname, "..", "..", "..");
 
-if (!process.env.GOOSE_BINARY) {
-  const binName = process.platform === "win32" ? "goose.exe" : "goose";
+if (!process.env.ROOK_BINARY) {
+  const binName = process.platform === "win32" ? "rook.exe" : "rook";
   const binaryPath = join(repoRoot, "target", "debug", binName);
 
-  console.log("Building goose (debug)…");
-  execFileSync("cargo", ["build", "-p", "goose-cli"], {
+  console.log("Building rook (debug)…
+  execFileSync("cargo", ["build", "-p", "rook-cli"], {
     cwd: repoRoot,
     stdio: "inherit",
   });
@@ -26,7 +26,7 @@ if (!process.env.GOOSE_BINARY) {
     process.exit(1);
   }
 
-  process.env.GOOSE_BINARY = binaryPath;
+  process.env.ROOK_BINARY = binaryPath;
 }
 
 execFileSync("tsx", [join(__dirname, "..", "src", "tui.tsx"), ...process.argv.slice(2)], {

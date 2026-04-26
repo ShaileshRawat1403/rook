@@ -1,7 +1,7 @@
 ---
 title: Managing Sessions
 hide_title: true
-description: Manage your session lifecycle and ongoing interactions with goose
+description: Manage your session lifecycle and ongoing interactions with rook
 ---
 
 import Card from '@site/src/components/Card';
@@ -11,7 +11,7 @@ import TabItem from '@theme/TabItem';
 
 <h1 className={styles.pageTitle}>Managing Sessions</h1>
 <p className={styles.pageDescription}>
-  Sessions are your continuous interactions with goose. Each session maintains context and conversation history, enabling rook to understand your ongoing work and provide relevant assistance.
+  Sessions are your continuous interactions with rook. Each session maintains context and conversation history, enabling rook to understand your ongoing work and provide relevant assistance.
 </p>
 
 <div className={styles.categorySection}>
@@ -38,9 +38,9 @@ import TabItem from '@theme/TabItem';
   <h2 className={styles.categoryTitle}>📝 Featured Blog Posts</h2>
   <div className={styles.cardGrid}>
     <Card
-      title="6 Essential Tips for Working with goose"
+      title="6 Essential Tips for Working with rook"
       description="Learn how focused sessions, step-by-step guidance, and refining your prompts can lead to more productive sessions."
-      link="/blog/2025/03/06/goose-tips"
+      link="/blog/2025/03/06/rook-tips"
     />
     <Card
       title="AI Prompting 101: How to Get the Best Responses from Your AI Agent"

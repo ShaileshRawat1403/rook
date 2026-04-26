@@ -13,7 +13,7 @@ This tutorial covers how to add the [Supabase MCP Server](https://github.com/sup
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?type=streamable_http&url=https%3A%2F%2Fmcp.supabase.com%2Fmcp&id=supabase&name=Supabase&description=Connect%20your%20Supabase%20projects%20to%20AI%20assistants.%20Manage%20tables%2C%20query%20data%2C%20deploy%20Edge%20Functions%2C%20and%20interact%20with%20your%20Supabase%20backend%20directly%20from%20your%20MCP%20client.)
+  [Launch the installer](rook://extension?type=streamable_http&url=https%3A%2F%2Fmcp.supabase.com%2Fmcp&id=supabase&name=Supabase&description=Connect%20your%20Supabase%20projects%20to%20AI%20assistants.%20Manage%20tables%2C%20query%20data%2C%20deploy%20Edge%20Functions%2C%20and%20interact%20with%20your%20Supabase%20backend%20directly%20from%20your%20MCP%20client.)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   Use `rook configure` to add a `Remote Extension (Streaming HTTP)` extension type with:
@@ -61,7 +61,7 @@ The Supabase MCP Server is hosted by Supabase and provides OAuth-based authentic
 
 #### OAuth Flow
 
-When you first connect to the Supabase MCP Server through goose, an OAuth window will open in your browser. Follow the prompts to authorize access to your Supabase projects.
+When you first connect to the Supabase MCP Server through rook, an OAuth window will open in your browser. Follow the prompts to authorize access to your Supabase projects.
 
 :::note Security Note
 The Supabase MCP Server grants access to your database and project management capabilities. Always review LLM-requested actions before execution and ensure you're working in the appropriate environment (development, staging, production).
@@ -163,7 +163,7 @@ Would you like to query data from any of these tables?
 
 ### Example 3: Deploy an Edge Function
 
-Deploy and manage Supabase Edge Functions directly through goose.
+Deploy and manage Supabase Edge Functions directly through rook.
 
 #### rook Prompt
 

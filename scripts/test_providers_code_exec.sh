@@ -9,7 +9,7 @@ echo ""
 
 # --- Setup ---
 
-GOOSE_BIN=$(build_goose)
+GOOSE_BIN=$(build_rook)
 BUILTINS="memory,code_execution"
 
 # --- Test case ---
@@ -20,7 +20,7 @@ run_test() {
 
   local prompt="Store a memory with category 'test' and data 'hello world', then retrieve all memories from category 'test'."
 
-  # Run goose
+  # Run rook
   (
     export GOOSE_PROVIDER="$provider"
     export GOOSE_MODEL="$model"

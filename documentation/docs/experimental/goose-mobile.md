@@ -27,17 +27,17 @@ rook Mobile requires deep access to your device. Use at your own risk — best o
 
 ## Installation
 - **Pre-built APK:** Install quickly via [Firebase distribution link](https://appdistribution.firebase.google.com/pub/i/3f111ea732d5f7f6).
-- **Build from Source:** Developer instructions are in the [rook Mobile repository](https://github.com/aaif-goose/goose-mobile).
+- **Build from Source:** Developer instructions are in the [rook Mobile repository](https://github.com/aaif-rook/rook-mobile).
 
 
 ## Extending rook Mobile
 rook Mobile supports the **mobile MCP** system, which lets it use tools from other apps without leaving context — e.g., fetching weather data via a weather extension.  
 
-Sample code and setup instructions are in the repository [README](https://github.com/aaif-goose/goose-mobile).
+Sample code and setup instructions are in the repository [README](https://github.com/aaif-rook/rook-mobile).
 
 ## Contribute
-We welcome contributions! See the [Contributing Guide](https://github.com/aaif-goose/goose-mobile/blob/main/CONTRIBUTING.md) for details.
+We welcome contributions! See the [Contributing Guide](https://github.com/aaif-rook/rook-mobile/blob/main/CONTRIBUTING.md) for details.
 
 ---
 
-For more scenarios, instructions, and development setup, visit the [rook Mobile repository](https://github.com/aaif-goose/goose-mobile).
+For more scenarios, instructions, and development setup, visit the [rook Mobile repository](https://github.com/aaif-rook/rook-mobile).

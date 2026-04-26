@@ -67,21 +67,21 @@ While Goose is adept at helping you manage your context window, you can proactiv
 
 When your conversation gets too long, you can summarize the key points and start a new session. Copy important decisions, code snippets, or project requirements into the fresh session. This way, you keep the essential context without carrying over the full conversation history.
 
-**2. `.goosehints`**
+**2. `.rookhints`**
 
-Use [.goosehints](/docs/guides/context-engineering/using-goosehints/) files to avoid repeating the same instructions. Instead of typing out your project context, coding standards, and preferences in every conversation, define them once in a .goosehints file. This prevents wasting tokens on repetitive explanations and helps Goose understand your requirements more quickly.
+Use [.rookhints](/docs/guides/context-engineering/using-rookhints/) files to avoid repeating the same instructions. Instead of typing out your project context, coding standards, and preferences in every conversation, define them once in a .rookhints file. This prevents wasting tokens on repetitive explanations and helps Goose understand your requirements more quickly.
 
 **3. Memory extension**
 
-The [Memory extension](https://goose-docs.ai/docs/mcp/memory-mcp) stores important information across sessions. Instead of re-explaining your project background, past decisions, or important context every time you start a new conversation, you can reference stored information. This keeps your prompts focused on the current task rather than repeating historical context.
+The [Memory extension](https://rook-docs.ai/docs/mcp/memory-mcp) stores important information across sessions. Instead of re-explaining your project background, past decisions, or important context every time you start a new conversation, you can reference stored information. This keeps your prompts focused on the current task rather than repeating historical context.
 
 **4. Recipes**
 
-[Recipes](https://goose-docs.ai/docs/guides/recipes/) package complete task setups into reusable configurations, eliminating the need to provide lengthy instructions repeatedly. Instead of consuming tokens explaining complex workflows in every session, recipes contain all necessary instructions, extensions, and parameters upfront. This is particularly valuable for repetitive tasks where you'd otherwise spend significant tokens on setup and explanation. And if your recipe starts to feel overly lengthy, you can break the tasks up into [subrecipes](https://goose-docs.ai/docs/guides/recipes/subrecipes).
+[Recipes](https://rook-docs.ai/docs/guides/recipes/) package complete task setups into reusable configurations, eliminating the need to provide lengthy instructions repeatedly. Instead of consuming tokens explaining complex workflows in every session, recipes contain all necessary instructions, extensions, and parameters upfront. This is particularly valuable for repetitive tasks where you'd otherwise spend significant tokens on setup and explanation. And if your recipe starts to feel overly lengthy, you can break the tasks up into [subrecipes](https://rook-docs.ai/docs/guides/recipes/subrecipes).
 
 **5. Subagents**
 
-[Subagents](https://goose-docs.ai/docs/guides/subagents) handle specific tasks in their own isolated sessions. This prevents your main conversation from getting cluttered with implementation details and tool outputs. You delegate work to subagents and only see the final results, keeping your primary context window clean and focused.
+[Subagents](https://rook-docs.ai/docs/guides/subagents) handle specific tasks in their own isolated sessions. This prevents your main conversation from getting cluttered with implementation details and tool outputs. You delegate work to subagents and only see the final results, keeping your primary context window clean and focused.
 
 **6. Short sessions**
 
@@ -99,12 +99,12 @@ The next time your AI agent seems to 'forget' something important or goes off tr
 <head>
   <meta property="og:title" content="The AI Skeptic’s Guide to Context Windows" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/08/18/understanding-context-windows" />
+  <meta property="og:url" content="https://rook-docs.ai/blog/2025/08/18/understanding-context-windows" />
   <meta property="og:description" content="Why do AI agents forget? Learn how context windows, tokens, and Goose help you manage memory and long conversations." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/contextwindow-fa46f7a54cfb23a538d62f0e4502e19e.png" />
+  <meta property="og:image" content="https://rook-docs.ai/assets/images/contextwindow-fa46f7a54cfb23a538d62f0e4502e19e.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="rook-docs.ai" />
   <meta name="twitter:title" content="The AI Skeptic’s Guide to Context Windows" />
   <meta name="twitter:description" content="Why do AI agents forget? Learn how context windows, tokens, and Goose help you manage memory and long conversations." />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/contextwindow-fa46f7a54cfb23a538d62f0e4502e19e.png" />
+  <meta name="twitter:image" content="https://rook-docs.ai/assets/images/contextwindow-fa46f7a54cfb23a538d62f0e4502e19e.png" />
 </head>

@@ -18,7 +18,7 @@ This tutorial covers how to add the [Reddit MCP Server](https://github.com/adhik
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?cmd=uvx&arg=--from&arg=git%2Bhttps%3A%2F%2Fgithub.com%2Fadhikasp%2Fmcp-reddit.git&arg=mcp-reddit&id=reddit&name=Reddit&description=Fetch%20and%20analyze%20Reddit%20content)
+  [Launch the installer](rook://extension?cmd=uvx&arg=--from&arg=git%2Bhttps%3A%2F%2Fgithub.com%2Fadhikasp%2Fmcp-reddit.git&arg=mcp-reddit&id=reddit&name=Reddit&description=Fetch%20and%20analyze%20Reddit%20content)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   **Command**

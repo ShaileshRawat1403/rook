@@ -23,11 +23,11 @@ When rook connects to an MCP extension, it advertises roots support during MCP i
 
 An extension that supports roots can then:
 
-- Request the current root list from goose
+- Request the current root list from rook
 - Treat that root as the active workspace boundary
 - React if the root changes during the session
 
-In goose, the root list currently contains one entry:
+In rook, the root list currently contains one entry:
 
 - Your current session working directory
 
@@ -35,7 +35,7 @@ If you change the session working directory, rook updates the root and notifies 
 
 ## Using MCP Roots
 
-There is no separate "Roots" settings screen in goose. MCP Roots follows the working directory you are already using for the session.
+There is no separate "Roots" settings screen in rook. MCP Roots follows the working directory you are already using for the session.
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
@@ -55,7 +55,7 @@ There is no separate "Roots" settings screen in goose. MCP Roots follows the wor
   </TabItem>
   <TabItem value="cli" label="rook CLI">
 
-  In rook CLI, the session root follows the directory where you launch goose.
+  In rook CLI, the session root follows the directory where you launch rook.
 
   - Start rook from the project folder you want to work in
   - When resuming a session, rook may prompt you to switch back to that session's original working directory
@@ -86,6 +86,6 @@ If you want an extension to work in a different location, change the session wor
 
 ## For Extension Developers
 
-If you're building an MCP extension for goose, support for roots allows your extension to discover the active workspace directory in a standard way instead of relying on custom configuration.
+If you're building an MCP extension for rook, support for roots allows your extension to discover the active workspace directory in a standard way instead of relying on custom configuration.
 
 For protocol details, see the [MCP Roots specification](https://modelcontextprotocol.io/specification/2025-06-18/client/roots).

@@ -1,7 +1,7 @@
 ---
 title: Diagnostics and Reporting
 sidebar_label: Diagnostics and Reporting
-description: Use built-in diagnostics, report bugs, and request new features with goose's integrated support tools.
+description: Use built-in diagnostics, report bugs, and request new features with rook's integrated support tools.
 ---
 
 import Tabs from '@theme/Tabs';
@@ -35,7 +35,7 @@ The diagnostics feature creates a comprehensive troubleshooting bundle that incl
     :::
   </TabItem>
   <TabItem value="cli" label="rook CLI">
-    Use the session diagnostics command to generate a troubleshooting bundle. For complete details and all available options, see the [CLI Commands guide](/docs/guides/goose-cli-commands#session-diagnostics-options).
+    Use the session diagnostics command to generate a troubleshooting bundle. For complete details and all available options, see the [CLI Commands guide](/docs/guides/rook-cli-commands#session-diagnostics-options).
 
     ```sh
     # Generate diagnostics for a specific session
@@ -70,8 +70,8 @@ The diagnostics ZIP file contains several folders:
 ```
 diagnostics_abc123def.zip
 ├── logs/
-│   ├── goose-2024-01-15.jsonl
-│   ├── goose-2024-01-14.jsonl
+│   ├── rook-2024-01-15.jsonl
+│   ├── rook-2024-01-14.jsonl
 │   └── ...
 ├── session.json          # Your session messages
 ├── config.yaml          # Configuration files (if they exist)
@@ -111,14 +111,14 @@ The bug report feature opens a structured GitHub issue template to help you prov
     For CLI users, navigate directly to the GitHub repository:
 
     ```
-    https://github.com/aaif-goose/goose/issues/new?template=bug_report.md
+    https://github.com/aaif-rook/rook/issues/new?template=bug_report.md
     ```
   </TabItem>
 </Tabs>
 
 ## Feature Requests
 
-The feature request system helps you suggest improvements and new functionality for goose.
+The feature request system helps you suggest improvements and new functionality for rook.
 
 ### Submitting Feature Requests
 
@@ -135,16 +135,16 @@ The feature request system helps you suggest improvements and new functionality 
     Navigate directly to the GitHub repository:
 
     ```
-    https://github.com/aaif-goose/goose/issues/new?template=feature_request.md
+    https://github.com/aaif-rook/rook/issues/new?template=feature_request.md
     ```
   </TabItem>
 </Tabs>
 
-## Error Recovery with "Ask goose"
+## Error Recovery with "Ask rook"
 
-When certain types of error occur in rook Desktop (such as failures to activate extensions), you'll see an `Ask goose` button in the error notification. This feature lets you quickly troubleshoot the issue with goose's help:
+When certain types of error occur in rook Desktop (such as failures to activate extensions), you'll see an `Ask rook` button in the error notification. This feature lets you quickly troubleshoot the issue with rook's help:
 
-1. When the error occurs, an `Ask goose` button appears in the error notification
+1. When the error occurs, an `Ask rook` button appears in the error notification
 2. Click the button to send the error details to rook in a chat prompt
 3. rook provides diagnostic suggestions and potential solutions
 

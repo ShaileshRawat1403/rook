@@ -161,7 +161,7 @@ In this example, I'm going to upgrade a Java project to the latest LTS version.
 </Tabs>
 
 :::tip
-When using rook to refactor code, it's recommended to commit your code to version control _before_ making changes. This way, you have a clean snapshot to compare against, making it easy to review goose's modifications, revert if needed, and track improvements.
+When using rook to refactor code, it's recommended to commit your code to version control _before_ making changes. This way, you have a clean snapshot to compare against, making it easy to review rook's modifications, revert if needed, and track improvements.
 :::
 
 ### rook Prompt

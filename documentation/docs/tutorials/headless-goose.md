@@ -7,11 +7,11 @@ description: rook Headless Mode
 
 *Run AI-powered engineering workflows in CI/CD pipelines, servers, and batch processing scenarios*
 
-The ability to automate complex engineering tasks without human intervention has been huge, but let's take it to the next level with AI. goose's "headless" mode enables developers to harness the full power of AI automation in server environments, CI/CD pipelines, and batch processing scenarios where interactive sessions simply aren't feasible.
+The ability to automate complex engineering tasks without human intervention has been huge, but let's take it to the next level with AI. rook's "headless" mode enables developers to harness the full power of AI automation in server environments, CI/CD pipelines, and batch processing scenarios where interactive sessions simply aren't feasible.
 
 ## What is Headless Mode?
 
-Headless mode is goose's non-interactive execution environment, designed for automated scenarios where human intervention isn't available (or wanted).
+Headless mode is rook's non-interactive execution environment, designed for automated scenarios where human intervention isn't available (or wanted).
 
 Unlike the interactive desktop app or CLI sessions, headless mode processes instructions and exits automatically, making it perfect for integration into existing development workflows.
 
@@ -143,7 +143,7 @@ Use `--no-session` for one-off tasks to avoid cluttering your session history, b
 
 ## Recipe Execution in Headless Mode
 
-[Recipes](/docs/guides/recipes/) are goose's powerful way to define reusable, parameterized workflows. In headless mode, recipes become even more valuable as they enable sophisticated automation scenarios.
+[Recipes](/docs/guides/recipes/) are rook's powerful way to define reusable, parameterized workflows. In headless mode, recipes become even more valuable as they enable sophisticated automation scenarios.
 
 ### Recipe Requirements for Headless Mode
 
@@ -312,15 +312,15 @@ export GOOSE_ALLOWLIST=https://company.com/allowed-extensions.json
 
 ## The Future of Automated Development
 
-goose's headless mode represents more than just a feature -- it's a shift toward truly automated development workflows powered by AI. We can remove human intervention in routine tasks so teams can focus on high-value work while AI handles the repetitive, time-consuming operations that slow us down.
+rook's headless mode represents more than just a feature -- it's a shift toward truly automated development workflows powered by AI. We can remove human intervention in routine tasks so teams can focus on high-value work while AI handles the repetitive, time-consuming operations that slow us down.
 
-Whether you're looking to streamline your CI/CD pipelines, automate server maintenance, or handle bulk operations across multiple repositories, goose's headless mode provides the foundation for building sophisticated, reliable automation workflows.
+Whether you're looking to streamline your CI/CD pipelines, automate server maintenance, or handle bulk operations across multiple repositories, rook's headless mode provides the foundation for building sophisticated, reliable automation workflows.
 
 **Start your automation journey today:**
 
-1. **Install goose** and configure your environment variables
+1. **Install rook** and configure your environment variables
 2. **Create your first recipe** with clear prompts and detailed instructions  
 3. **Test in a safe environment** before deploying to production
 4. **Integrate with your existing workflows** and watch your productivity soar
 
-Connect with us on our [Discord community](https://discord.gg/goose-oss) to share your headless mode success stories, ask questions, and collaborate with other developers who want to push the boundaries of AI automation.
+Connect with us on our [Discord community](https://discord.gg/rook-oss) to share your headless mode success stories, ask questions, and collaborate with other developers who want to push the boundaries of AI automation.

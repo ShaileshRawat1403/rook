@@ -35,12 +35,12 @@ Assign a custom command to a recipe.
 
   Configure slash commands in your [configuration file](/docs/guides/config-files). List the command (without the leading `/`) along with the path to the recipe file on your computer:
 
-```yaml title="~/.config/goose/config.yaml"
+```yaml title="~/.config/rook/config.yaml"
 slash_commands:
   - command: "run-tests"
     recipe_path: "/path/to/recipe.yaml"
   - command: "daily-report"
-    recipe_path: "/Users/me/.local/share/goose/recipes/report.yaml"
+    recipe_path: "/Users/me/.local/share/rook/recipes/report.yaml"
 ```
 
    </TabItem>
@@ -85,7 +85,7 @@ When you run a recipe using a slash command, the recipe's instructions and promp
 - Slash commands accept only one [parameter](/docs/guides/recipes/recipe-reference#parameters). Any additional parameters in the recipe must have default values.
 - Command names are case-insensitive (`/Bug` and `/bug` are treated as the same command).
 - Command names must be unique and contain no spaces.
-- You cannot use names that conflict with [built-in CLI slash commands](/docs/guides/goose-cli-commands#slash-commands) like `/recipe`, `/compact`, or `/help`.
+- You cannot use names that conflict with [built-in CLI slash commands](/docs/guides/rook-cli-commands#slash-commands) like `/recipe`, `/compact`, or `/help`.
 - If the recipe file is missing or invalid, the command will be treated as regular text sent to the model.
 
 ## Additional Resources

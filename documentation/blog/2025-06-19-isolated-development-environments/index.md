@@ -54,9 +54,9 @@ curl -fsSL https://raw.githubusercontent.com/dagger/container-use/main/install.s
 
 Click this link to automatically add the extension:
 
-**[🚀 Add Container Use to Goose](goose://extension?cmd=cu&arg=stdio&id=container-use&name=container%20use&description=use%20containers%20with%20dagger%20and%20git%20for%20isolated%20environments)**
+**[🚀 Add Container Use to Goose](rook://extension?cmd=cu&arg=stdio&id=container-use&name=container%20use&description=use%20containers%20with%20dagger%20and%20git%20for%20isolated%20environments)**
 
-Or manually add to `~/.config/goose/config.yaml`:
+Or manually add to `~/.config/rook/config.yaml`:
 
 ```yaml
 extensions:
@@ -102,7 +102,7 @@ extensions:
 
 ---
 
-*Questions? Join our [GitHub discussions](https://github.com/aaif-goose/goose) or [Discord](https://discord.gg/goose-oss). Learn more about Dagger at [dagger.io](https://dagger.io/).*
+*Questions? Join our [GitHub discussions](https://github.com/aaif-rook/rook) or [Discord](https://discord.gg/rook-oss). Learn more about Dagger at [dagger.io](https://dagger.io/).*
 
 {/* Video Player */}
 <div style={{ width: '100%', maxWidth: '800px', margin: '0 auto' }}>
@@ -121,12 +121,12 @@ extensions:
 <head>
   <meta property="og:title" content="Isolated Dev Environments in Goose with container-use" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/06/19/isolated-development-environments" />
+  <meta property="og:url" content="https://rook-docs.ai/blog/2025/06/19/isolated-development-environments" />
   <meta property="og:description" content="Never worry about breaking your development setup again with containerized, git-branch-isolated development environments powered by container-use" />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/sandbox-0b0f5e6f871cbf48ea1a0be243440aa1.png" />
+  <meta property="og:image" content="https://rook-docs.ai/assets/images/sandbox-0b0f5e6f871cbf48ea1a0be243440aa1.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="rook-docs.ai" />
   <meta name="twitter:title" content="Isolated Dev Environments in Goose with container-use" />
   <meta name="twitter:description" content="Never worry about breaking your development setup again with containerized, git-branch-isolated development environments powered by container-use" />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/sandbox-0b0f5e6f871cbf48ea1a0be243440aa1.png" />
+  <meta name="twitter:image" content="https://rook-docs.ai/assets/images/sandbox-0b0f5e6f871cbf48ea1a0be243440aa1.png" />
 </head>

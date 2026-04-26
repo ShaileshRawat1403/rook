@@ -35,7 +35,7 @@ fi
 echo "Downloading $DOWNLOAD_URL"
 
 # Download artifact — try nightly.link first, fall back to gh CLI
-if ! curl -fSL --connect-timeout 10 -o "$TMPDIR/goose.zip" "$DOWNLOAD_URL" 2>/dev/null; then
+if ! curl -fSL --connect-timeout 10 -o "$TMPDIR/rook.zip" "$DOWNLOAD_URL" 2>/dev/null; then
     echo "nightly.link unavailable, falling back to GitHub API..."
     RUN_ID=$(echo "$DOWNLOAD_URL" | grep -oE 'actions/runs/[0-9]+' | cut -d/ -f3)
     ARTIFACT_NAME=$(echo "$DOWNLOAD_URL" | sed 's/\.zip$//' | xargs basename)
@@ -45,11 +45,11 @@ if ! curl -fSL --connect-timeout 10 -o "$TMPDIR/goose.zip" "$DOWNLOAD_URL" 2>/de
         echo "Could not find artifact '$ARTIFACT_NAME' for run $RUN_ID"
         exit 1
     fi
-    gh api "repos/$REPO/actions/artifacts/$ARTIFACT_ID/zip" > "$TMPDIR/goose.zip"
+    gh api "repos/$REPO/actions/artifacts/$ARTIFACT_ID/zip" > "$TMPDIR/rook.zip"
 fi
 echo "Done."
 
-unzip -o -q "$TMPDIR/goose.zip" -d "$TMPDIR/extracted"
+unzip -o -q "$TMPDIR/rook.zip" -d "$TMPDIR/extracted"
 
 INNER_ZIP=$(find "$TMPDIR/extracted" -name "*.zip" | head -1)
 if [[ -n "$INNER_ZIP" ]]; then

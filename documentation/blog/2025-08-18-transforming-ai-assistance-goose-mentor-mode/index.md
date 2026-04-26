@@ -5,7 +5,7 @@ authors:
   - jeuston
 ---
 
-![Goose Mentor Mode Header](goose-mentor-mode-header.png)
+![Goose Mentor Mode Header](rook-mentor-mode-header.png)
 
 Kim is fresh out of the academy and has spent only 18 months learning development. When I asked her how she felt about Goose she had mixed reactions. While she found it cool that it could do so much for her, she wasn’t actually sure of *what* it was doing for her half the time, and also *why*. When she asked Goose to fix a broken build, or chase a bug, It would complete the task and claim ‘Success\!’. Which is great, however she felt she wasn’t actually learning as much as when she was in the academy. Add on that sometimes she didn’t even know *what* to ask Goose to do sometimes.
 
@@ -146,17 +146,17 @@ Goose Mentor Mode represents more than just a new extension—it's a proof of co
 The early results suggest this approach resonates with developers who want to grow, not just get things done. As AI becomes more prevalent in software development, tools like Goose Mentor Mode point toward a future where AI enhances human capability rather than replacing human thinking.
 
 ---
-*Goose Mentor Mode is open source and available on [PyPI](https://pypi.org/project/goose-mentor-mode/). Join the conversation on [GitHub](https://github.com/joeeuston-dev/goose-mentor-mode) and help shape the future of educational AI assistance.*
+*Goose Mentor Mode is open source and available on [PyPI](https://pypi.org/project/rook-mentor-mode/). Join the conversation on [GitHub](https://github.com/joeeuston-dev/rook-mentor-mode) and help shape the future of educational AI assistance.*
 
 <head>
   <meta property="og:title" content="Transforming AI Assistance from Automation to Education: The Story Behind Goose Mentor Mode" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/08/14/transforming-ai-assistance-gooe-mentor-mode" />
+  <meta property="og:url" content="https://rook-docs.ai/blog/2025/08/14/transforming-ai-assistance-gooe-mentor-mode" />
   <meta property="og:description" content="How a Junior developer's AI Agent confusion, led to creating an educational MCP extension that transforms Goose from an automation tool into a learning mentor." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/goose-mentor-mode-header-77058a250a163440d791e057ef3196ea.png" />
+  <meta property="og:image" content="https://rook-docs.ai/assets/images/rook-mentor-mode-header-77058a250a163440d791e057ef3196ea.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="rook-docs.ai" />
   <meta name="twitter:title" content="Transforming AI Assistance from Automation to Education: The Story Behind Goose Mentor Mode" />
   <meta name="twitter:description" content="How a Junior developer's AI Agent confusion, led to creating an educational MCP extension that transforms Goose from an automation tool into a learning mentor." />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/goose-mentor-mode-header-77058a250a163440d791e057ef3196ea.png" />
+  <meta name="twitter:image" content="https://rook-docs.ai/assets/images/rook-mentor-mode-header-77058a250a163440d791e057ef3196ea.png" />
 </head>

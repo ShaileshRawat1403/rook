@@ -15,12 +15,12 @@ This tutorial covers how to add the [rook Docs MCP Server](https://github.com/id
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?cmd=npx&arg=mcp-remote&arg=https%3A%2F%2Fblock.gitmcp.io%2Fgoose%2F&id=goose-docs&name=goose%20Docs&description=gitmcp%20for%20goose%20documentation)
+  [Launch the installer](rook://extension?cmd=npx&arg=mcp-remote&arg=https%3A%2F%2Fblock.gitmcp.io%2Frook%2F&id=rook-docs&name=rook%20Docs&description=gitmcp%20for%20rook%20documentation)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   **Command**
   ```sh
-  npx mcp-remote https://block.gitmcp.io/goose/
+  npx mcp-remote https://block.gitmcp.io/rook/
   ```
   </TabItem>
 </Tabs>
@@ -31,12 +31,12 @@ This tutorial covers how to add the [rook Docs MCP Server](https://github.com/id
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
     <GooseDesktopInstaller
-      extensionId="goose-docs"
+      extensionId="rook-docs"
       extensionName="rook Docs"
       description="GitMCP for rook documentation"
       command="npx"
-      args={["mcp-remote", "https://block.gitmcp.io/goose/"]}
-      cliCommand="npx mcp-remote https://block.gitmcp.io/goose/"
+      args={["mcp-remote", "https://block.gitmcp.io/rook/"]}
+      cliCommand="npx mcp-remote https://block.gitmcp.io/rook/"
       timeout={300}
       note="Note that you'll need Node.js installed on your system to run this command, as it uses npx."
     />
@@ -45,7 +45,7 @@ This tutorial covers how to add the [rook Docs MCP Server](https://github.com/id
       <CLIExtensionInstructions
         name="rook Docs"
         description="GitMCP for rook documentation"
-        command="npx mcp-remote https://block.gitmcp.io/goose/"
+        command="npx mcp-remote https://block.gitmcp.io/rook/"
         timeout={300}
       />
   </TabItem>
@@ -61,7 +61,7 @@ Let's ask rook to create a recipe for us! It will use the rook Docs MCP Server t
 ### rook Prompt
 
 ```
-hey goose, I want to create a recipe for automated code review that my development team can use. Can you look at the rook documentation to understand the recipe format, then create a recipe that:
+hey rook, I want to create a recipe for automated code review that my development team can use. Can you look at the rook documentation to understand the recipe format, then create a recipe that:
 
 
 1. Reviews pull requests for:

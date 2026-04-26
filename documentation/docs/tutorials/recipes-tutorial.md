@@ -88,14 +88,14 @@ You can also specify which AI provider and model to use for a specific recipe:
 
 ```yaml
 settings:
-  goose_provider: "anthropic"
-  goose_model: "claude-sonnet-4-20250514"
+  rook_provider: "anthropic"
+  rook_model: "claude-sonnet-4-20250514"
   temperature: 0.8
 ```
 
 The available settings are:
-- `goose_provider`: The AI provider (e.g., "anthropic", "openai")
-- `goose_model`: The specific model name
+- `rook_provider`: The AI provider (e.g., "anthropic", "openai")
+- `rook_model`: The specific model name
 - `temperature`: Controls creativity/randomness (0.0-1.0, higher = more creative)
 
 These settings will override your default rook configuration when this recipe runs.

@@ -52,7 +52,7 @@ rook is compatible with a wide range of LLM providers, allowing you to choose an
 | [xAI](https://x.ai/)                                                        | Access to xAI's Grok models including grok-3, grok-3-mini, and grok-3-fast with 131,072 token context window.                                                                                                            | `XAI_API_KEY`, `XAI_HOST` (optional)                                                                                                                                                |
 
 :::tip Prompt Caching for Claude Models
-rook automatically enables Anthropic's [prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) when using Claude models via Anthropic, Amazon Bedrock, Databricks, OpenRouter, and LiteLLM providers. This adds `cache_control` markers to requests, which can reduce costs for longer conversations by caching frequently-used context. See the [provider implementations](https://github.com/aaif-goose/goose/tree/main/crates/goose/src/providers) for technical details.
+rook automatically enables Anthropic's [prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) when using Claude models via Anthropic, Amazon Bedrock, Databricks, OpenRouter, and LiteLLM providers. This adds `cache_control` markers to requests, which can reduce costs for longer conversations by caching frequently-used context. See the [provider implementations](https://github.com/aaif-rook/rook/tree/main/crates/rook/src/providers) for technical details.
 :::
 
 ### CLI Providers
@@ -82,7 +82,7 @@ To configure your chosen provider, see available options, or select a model, vis
   <TabItem value="ui" label="rook Desktop" default>
   **First-time users:**
   
-  On the welcome screen the first time you open goose, you have these options:
+  On the welcome screen the first time you open rook, you have these options:
   
   <OnboardingProviderSetup />
   
@@ -104,7 +104,7 @@ To configure your chosen provider, see available options, or select a model, vis
     We recommend new users start with Agent Router by Tetrate. Tetrate provides access to multiple AI models with built-in rate limiting and automatic failover. 
 
     :::info Free Credits Offer
-    You'll receive $10 in free credits the first time you automatically authenticate with Tetrate through goose. This offer is available to both new and existing Tetrate users.
+    You'll receive $10 in free credits the first time you automatically authenticate with Tetrate through rook. This offer is available to both new and existing Tetrate users.
     :::
     1. Choose `Agent Router by Tetrate`. 
     2. rook will open a browser window for you to authenticate with Tetrate, or create a new account if you don't have one already.
@@ -118,7 +118,7 @@ To configure your chosen provider, see available options, or select a model, vis
     </TabItem>
 
     <TabItem value="others" label="Other Providers">
-    1. If you have a specific provider you want to use with goose, and an API key from that provider, choose `Other Providers`. 
+    1. If you have a specific provider you want to use with rook, and an API key from that provider, choose `Other Providers`. 
     2. Find the provider of your choice and click its `Configure` button. If you don't see your provider in the list, click `Add Custom Provider` at the bottom of the window to [configure a custom provider](#configure-custom-provider). 
     3. Depending on your provider, you'll need to input your API Key, API Host, or other optional [parameters](#available-providers). Click the `Submit` button to authenticate and begin your first session.
 
@@ -165,7 +165,7 @@ To configure your chosen provider, see available options, or select a model, vis
     2. Select `Configure Providers` from the menu and press `Enter`.
 
        ```
-       ┌   goose-configure 
+       ┌   rook-configure 
        │
        ◆  What would you like to configure?
        // highlight-start
@@ -181,7 +181,7 @@ To configure your chosen provider, see available options, or select a model, vis
     3. Choose a model provider and press `Enter`. Use the arrow keys (↑/↓) to move through the options, or start typing to filter the list.
 
        ```
-       ┌   goose-configure 
+       ┌   rook-configure 
        │
        ◇  What would you like to configure?
        │  Configure Providers 
@@ -200,7 +200,7 @@ To configure your chosen provider, see available options, or select a model, vis
     4. Enter your API key (and any other configuration details) when prompted.
 
        ```
-       ┌   goose-configure 
+       ┌   rook-configure 
        │
        ◇  What would you like to configure?
        │  Configure Providers 
@@ -250,7 +250,7 @@ To configure your chosen provider, see available options, or select a model, vis
   :::
 
   :::tip
-  Set the model for an individual session using the [`run` command](/docs/guides/goose-cli-commands#run-options):
+  Set the model for an individual session using the [`run` command](/docs/guides/rook-cli-commands#run-options):
 
   ```bash
   rook run --model claude-sonnet-4-0 -t "initial prompt"
@@ -354,7 +354,7 @@ For enterprise deployments, you can pre-configure these values using environment
 
 ## Configure Custom Provider
 
-Create custom providers to connect to services that aren't [already supported](#available-providers) or customize how you connect to them. Custom providers appear in goose's provider list and can be selected like any other provider.
+Create custom providers to connect to services that aren't [already supported](#available-providers) or customize how you connect to them. Custom providers appear in rook's provider list and can be selected like any other provider.
 
 **Benefits:**
 - **Multiple endpoints**: Switch between different services (e.g., vLLM, corporate proxy, OpenAI)
@@ -402,7 +402,7 @@ Custom providers must use OpenAI, Anthropic, or Ollama compatible API formats. T
     2. Select `Custom Providers`. Use the arrow keys (↑/↓) to move through the options.
 
        ```sh
-       ┌   goose-configure 
+       ┌   rook-configure 
        │
        ◆  What would you like to configure?
        │  ○ Configure Providers
@@ -419,7 +419,7 @@ Custom providers must use OpenAI, Anthropic, or Ollama compatible API formats. T
     3. Select `Add A Custom Provider`
 
        ```sh
-       ┌   goose-configure 
+       ┌   rook-configure 
        │
        ◇  What would you like to configure?
        │  Custom Providers 
@@ -454,8 +454,8 @@ Custom providers must use OpenAI, Anthropic, or Ollama compatible API formats. T
   <TabItem value="config" label="Config File">
 
     First create a JSON file in the `custom_providers` directory:
-    - macOS/Linux: `~/.config/goose/custom_providers/`
-    - Windows: `%APPDATA%\Block\goose\config\custom_providers\`
+    - macOS/Linux: `~/.config/rook/custom_providers/`
+    - Windows: `%APPDATA%\Block\rook\config\custom_providers\`
 
     Example `custom_corp_api.json` configuration file:
     ```json
@@ -492,7 +492,7 @@ Custom providers must use OpenAI, Anthropic, or Ollama compatible API formats. T
     ```
 
     :::tip Keychain Key Storage
-    If you want to store the API key in the `goose` keychain, update the provider in rook Desktop and enter the key. This provides secure, persistent storage and allows rook to connect natively to the provider.
+    If you want to store the API key in the `rook` keychain, update the provider in rook Desktop and enter the key. This provides secure, persistent storage and allows rook to connect natively to the provider.
     :::
 
   </TabItem>
@@ -522,7 +522,7 @@ Custom providers must use OpenAI, Anthropic, or Ollama compatible API formats. T
     2. Select `Configure Providers` from the menu and press `Enter`.
 
        ```sh
-       ┌   goose-configure 
+       ┌   rook-configure 
        │
        ◆  What would you like to configure?
        // highlight-start
@@ -539,7 +539,7 @@ Custom providers must use OpenAI, Anthropic, or Ollama compatible API formats. T
     3. Select the custom provider you want to update and press `Enter`. Use the arrow keys (↑/↓) to move through the options, or start typing to filter the list.
 
        ```sh
-       ┌   goose-configure 
+       ┌   rook-configure 
        │
        ◇  What would you like to configure?
        │  Configure Providers 
@@ -564,8 +564,8 @@ Custom providers must use OpenAI, Anthropic, or Ollama compatible API formats. T
   <TabItem value="config" label="Config File">
 
     Open the custom provider configuration file in the `custom_providers` directory:
-    - macOS/Linux: `~/.config/goose/custom_providers/`
-    - Windows: `%APPDATA%\Block\goose\config\custom_providers\`
+    - macOS/Linux: `~/.config/rook/custom_providers/`
+    - Windows: `%APPDATA%\Block\rook\config\custom_providers\`
 
     Update the fields you want to change and save your changes.
   </TabItem>
@@ -597,7 +597,7 @@ Your changes are available in your next rook session.
     2. Select `Custom Providers`. Use the arrow keys (↑/↓) to move through the options.
 
        ```sh
-       ┌   goose-configure 
+       ┌   rook-configure 
        │
        ◆  What would you like to configure?
        │  ○ Configure Providers
@@ -614,7 +614,7 @@ Your changes are available in your next rook session.
     3. Select `Remove Custom Provider`.
 
        ```sh
-       ┌   goose-configure 
+       ┌   rook-configure 
        │
        ◇  What would you like to configure?
        │  Custom Providers 
@@ -639,8 +639,8 @@ Your changes are available in your next rook session.
     :::
 
     Delete the custom provider configuration file in the `custom_providers` directory:
-    - macOS/Linux: `~/.config/goose/custom_providers/`
-    - Windows: `%APPDATA%\Block\goose\config\custom_providers\`
+    - macOS/Linux: `~/.config/rook/custom_providers/`
+    - Windows: `%APPDATA%\Block\rook\config\custom_providers\`
 
   </TabItem>
 </Tabs>
@@ -657,7 +657,7 @@ These free options are a great way to get started with rook and explore its capa
 
 
 ### Groq
-Groq provides free access to open source (open weight) models with high-speed inference. To use Groq with goose, you need an API key from [Groq Console](https://console.groq.com/keys).
+Groq provides free access to open source (open weight) models with high-speed inference. To use Groq with rook, you need an API key from [Groq Console](https://console.groq.com/keys).
 
 Groq offers several open source models that support tool calling, including:
 - **moonshotai/kimi-k2-instruct-0905** - Mixture-of-Experts model with 1 trillion parameters, optimized for agentic intelligence and tool use
@@ -665,9 +665,9 @@ Groq offers several open source models that support tool calling, including:
 - **llama-3.3-70b-versatile** - Meta's Llama 3.3 model for versatile applications
 - **llama-3.1-8b-instant** - Meta's Llama 3.1 model for fast inference
 
-For the complete list of supported Groq models, see [groq.json](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/providers/declarative/groq.json).
+For the complete list of supported Groq models, see [groq.json](https://github.com/aaif-rook/rook/blob/main/crates/rook/src/providers/declarative/groq.json).
 
-To set up Groq with goose, follow these steps:
+To set up Groq with rook, follow these steps:
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
@@ -695,7 +695,7 @@ To set up Groq with goose, follow these steps:
 </Tabs>
 
 ### Novita AI
-[Novita AI](https://novita.ai/) provides access to 90+ open-source models via an OpenAI-compatible API with competitive pricing. To use Novita AI with goose, you need an API key from [Novita AI](https://novita.ai/settings#key-management).
+[Novita AI](https://novita.ai/) provides access to 90+ open-source models via an OpenAI-compatible API with competitive pricing. To use Novita AI with rook, you need an API key from [Novita AI](https://novita.ai/settings#key-management).
 
 Novita AI offers many models that support tool calling, including:
 - **moonshotai/kimi-k2.5** - Moonshot's latest model with 262K context window
@@ -704,9 +704,9 @@ Novita AI offers many models that support tool calling, including:
 - **deepseek/deepseek-v3.2** - DeepSeek V3.2 with 164K context
 - **google/gemma-4-31b-it** - Google Gemma 4 31B with 262K context
 
-For the complete list of supported Novita AI models, see [novita.json](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/providers/declarative/novita.json).
+For the complete list of supported Novita AI models, see [novita.json](https://github.com/aaif-rook/rook/blob/main/crates/rook/src/providers/declarative/novita.json).
 
-To set up Novita AI with goose, follow these steps:
+To set up Novita AI with rook, follow these steps:
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
@@ -734,9 +734,9 @@ To set up Novita AI with goose, follow these steps:
 </Tabs>
 
 ### Google Gemini
-Google Gemini provides a free tier. To start using the Gemini API with goose, you need an API Key from [Google AI studio](https://aistudio.google.com/app/apikey).
+Google Gemini provides a free tier. To start using the Gemini API with rook, you need an API Key from [Google AI studio](https://aistudio.google.com/app/apikey).
 
-To set up Google Gemini with goose, follow these steps:
+To set up Google Gemini with rook, follow these steps:
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
@@ -761,7 +761,7 @@ To set up Google Gemini with goose, follow these steps:
     5. Enter the Gemini model of your choice.
 
     ```
-    ┌   goose-configure
+    ┌   rook-configure
     │
     ◇ What would you like to configure?
     │ Configure Providers
@@ -785,7 +785,7 @@ To set up Google Gemini with goose, follow these steps:
 
 ### Local LLMs
 
-rook is a local AI agent, and by using a local LLM, you keep your data private, maintain full control over your environment, and can work entirely offline without relying on cloud access. However, please note that local LLMs require a bit more set up before you can use one of them with goose.
+rook is a local AI agent, and by using a local LLM, you keep your data private, maintain full control over your environment, and can work entirely offline without relying on cloud access. However, please note that local LLMs require a bit more set up before you can use one of them with rook.
 
 :::warning Limited Support for models without tool calling
 rook extensively uses tool calling, so models without it can only do chat completion. If using models without tool calling, all rook [extensions must be disabled](/docs/getting-started/using-extensions#enablingdisabling-extensions).
@@ -808,7 +808,7 @@ Here are some local providers we support:
           ramalama serve --runtime-args="--jinja" ollama://qwen2.5
           ```
 
-          3. In a separate terminal window, configure with goose:
+          3. In a separate terminal window, configure with rook:
 
           ```sh
           rook configure
@@ -817,7 +817,7 @@ Here are some local providers we support:
           4. Choose to `Configure Providers`
 
           ```
-          ┌   goose-configure
+          ┌   rook-configure
           │
           ◆  What would you like to configure?
           │  ● Configure Providers (Change provider or update credentials)
@@ -829,7 +829,7 @@ Here are some local providers we support:
           5. Choose `Ollama` as the model provider since Ramalama is API compatible and can use the rook Ollama provider
 
           ```
-          ┌   goose-configure
+          ┌   rook-configure
           │
           ◇  What would you like to configure?
           │  Configure Providers
@@ -852,7 +852,7 @@ Here are some local providers we support:
           :::
 
           ```
-          ┌   goose-configure
+          ┌   rook-configure
           │
           ◇  What would you like to configure?
           │  Configure Providers
@@ -869,7 +869,7 @@ Here are some local providers we support:
           7. Enter the model you have running
 
           ```
-          ┌   goose-configure
+          ┌   rook-configure
           │
           ◇  What would you like to configure?
           │  Configure Providers
@@ -889,12 +889,12 @@ Here are some local providers we support:
           ```
 
           :::tip Context Length
-          If you notice that rook is having trouble using extensions or is ignoring [.goosehints](/docs/guides/context-engineering/using-goosehints), it is likely that the model's default context length of 2048 tokens is too low. Use `ramalama serve` to set the `--ctx-size, -c` option to a [higher value](https://github.com/containers/ramalama/blob/main/docs/ramalama-serve.1.md#--ctx-size--c).
+          If you notice that rook is having trouble using extensions or is ignoring [.rookhints](/docs/guides/context-engineering/using-rookhints), it is likely that the model's default context length of 2048 tokens is too low. Use `ramalama serve` to set the `--ctx-size, -c` option to a [higher value](https://github.com/containers/ramalama/blob/main/docs/ramalama-serve.1.md#--ctx-size--c).
           :::
 
       </TabItem>
       <TabItem value="deepseek" label="DeepSeek-R1">
-        The native `DeepSeek-r1` model doesn't support tool calling, however, we have a [custom model](https://ollama.com/michaelneale/deepseek-r1-goose) you can use with goose. 
+        The native `DeepSeek-r1` model doesn't support tool calling, however, we have a [custom model](https://ollama.com/michaelneale/deepseek-r1-rook) you can use with rook. 
 
         :::warning
         Note that this is a 70B model size and requires a powerful device to run smoothly.
@@ -905,10 +905,10 @@ Here are some local providers we support:
         2. In a terminal window, run the following command to install the custom DeepSeek-r1 model:
 
         ```sh
-        ollama run michaelneale/deepseek-r1-goose
+        ollama run michaelneale/deepseek-r1-rook
         ```
 
-        3. In a separate terminal window, configure with goose:
+        3. In a separate terminal window, configure with rook:
 
         ```sh
         rook configure
@@ -917,7 +917,7 @@ Here are some local providers we support:
         4. Choose to `Configure Providers`
 
         ```
-        ┌   goose-configure 
+        ┌   rook-configure 
         │
         ◆  What would you like to configure?
         │  ● Configure Providers (Change provider or update credentials)
@@ -929,7 +929,7 @@ Here are some local providers we support:
         5. Choose `Ollama` as the model provider
 
         ```
-        ┌   goose-configure 
+        ┌   rook-configure 
         │
         ◇  What would you like to configure?
         │  Configure Providers 
@@ -948,7 +948,7 @@ Here are some local providers we support:
         6. Enter the host where your model is running
 
         ```
-        ┌   goose-configure 
+        ┌   rook-configure 
         │
         ◇  What would you like to configure?
         │  Configure Providers 
@@ -964,7 +964,7 @@ Here are some local providers we support:
         7. Enter the installed model from above
 
         ```
-        ┌   goose-configure 
+        ┌   rook-configure 
         │
         ◇  What would you like to configure?
         │  Configure Providers 
@@ -976,7 +976,7 @@ Here are some local providers we support:
         │  http://localhost:11434  
         │    
         ◇  Enter a model from that provider:
-        │  michaelneale/deepseek-r1-goose
+        │  michaelneale/deepseek-r1-rook
         │
         ◇  Welcome! You're all set to explore and utilize my capabilities. Let's get started on solving your problems together!
         │
@@ -993,7 +993,7 @@ Here are some local providers we support:
           ollama run qwen2.5
           ```
 
-        3. In a separate terminal window, configure with goose:
+        3. In a separate terminal window, configure with rook:
 
           ```sh
           rook configure
@@ -1002,7 +1002,7 @@ Here are some local providers we support:
         4. Choose to `Configure Providers`
 
         ```
-        ┌   goose-configure 
+        ┌   rook-configure 
         │
         ◆  What would you like to configure?
         │  ● Configure Providers (Change provider or update credentials)
@@ -1014,7 +1014,7 @@ Here are some local providers we support:
         5. Choose `Ollama` as the model provider
 
         ```
-        ┌   goose-configure 
+        ┌   rook-configure 
         │
         ◇  What would you like to configure?
         │  Configure Providers 
@@ -1040,7 +1040,7 @@ Here are some local providers we support:
         :::
 
         ```
-        ┌   goose-configure 
+        ┌   rook-configure 
         │
         ◇  What would you like to configure?
         │  Configure Providers 
@@ -1057,7 +1057,7 @@ Here are some local providers we support:
         7. Enter the model you have running
 
         ```
-        ┌   goose-configure 
+        ┌   rook-configure 
         │
         ◇  What would you like to configure?
         │  Configure Providers 
@@ -1077,7 +1077,7 @@ Here are some local providers we support:
         ```
 
         :::tip Context Length
-        If you notice that rook is having trouble using extensions or is ignoring [.goosehints](/docs/guides/context-engineering/using-goosehints), it is likely that the model's default context length of 4096 tokens is too low. Set the `OLLAMA_CONTEXT_LENGTH` environment variable to a [higher value](https://github.com/ollama/ollama/blob/main/docs/faq.mdx#how-can-i-specify-the-context-window-size).
+        If you notice that rook is having trouble using extensions or is ignoring [.rookhints](/docs/guides/context-engineering/using-rookhints), it is likely that the model's default context length of 4096 tokens is too low. Set the `OLLAMA_CONTEXT_LENGTH` environment variable to a [higher value](https://github.com/ollama/ollama/blob/main/docs/faq.mdx#how-can-i-specify-the-context-window-size).
         :::
         
       </TabItem>
@@ -1112,7 +1112,7 @@ Here are some local providers we support:
         4. Enter the model name that matches the model loaded in LM Studio.
 
         ```
-        ┌   goose-configure
+        ┌   rook-configure
         │
         ◇  What would you like to configure?
         │  Configure Providers
@@ -1152,7 +1152,7 @@ Here are some local providers we support:
     5. Choose to `Configure Providers`
 
     ```
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◆  What would you like to configure?
     │  ● Configure Providers (Change provider or update credentials)
@@ -1164,7 +1164,7 @@ Here are some local providers we support:
     6. Choose `OpenAI` as the model provider: 
 
     ```
-    ┌   goose-configure
+    ┌   rook-configure
     │
     ◇  What would you like to configure?
     │  Configure Providers
@@ -1180,7 +1180,7 @@ Here are some local providers we support:
     7. Configure Docker Model Runner endpoint as the `OPENAI_HOST`: 
 
     ```
-    ┌   goose-configure
+    ┌   rook-configure
     │
     ◇  What would you like to configure?
     │  Configure Providers
@@ -1206,7 +1206,7 @@ Here are some local providers we support:
 
     Docker model runner uses `/engines/llama.cpp/v1/chat/completions` for the base path.
 
-    9. Finally configure the model available in Docker Model Runner to be used by goose: `hf.co/unsloth/gemma-3n-e4b-it-gguf:q6_k`
+    9. Finally configure the model available in Docker Model Runner to be used by rook: `hf.co/unsloth/gemma-3n-e4b-it-gguf:q6_k`
 
     ```
     │
@@ -1229,7 +1229,7 @@ GitHub Copilot uses a device flow for authentication, so no API keys are require
 2. An eight-character code will be automatically copied to your clipboard
 3. A browser will open to GitHub's device activation page
 4. Paste the code to authorize the application
-5. When you return to goose, GitHub Copilot will be available as a provider in both CLI and Desktop.
+5. When you return to rook, GitHub Copilot will be available as a provider in both CLI and Desktop.
 
 ## Azure OpenAI Credential Chain
 
@@ -1324,7 +1324,7 @@ Reasoning output can be useful for understanding how the model arrived at its an
 
 ---
 
-If you have any questions or need help with a specific provider, feel free to reach out to us on [Discord](https://discord.gg/goose-oss) or on the [rook repo](https://github.com/aaif-goose/goose).
+If you have any questions or need help with a specific provider, feel free to reach out to us on [Discord](https://discord.gg/rook-oss) or on the [rook repo](https://github.com/aaif-rook/rook).
 
 
 [providers]: /docs/getting-started/providers

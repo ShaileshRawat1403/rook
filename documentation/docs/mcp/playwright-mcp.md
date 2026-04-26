@@ -16,7 +16,7 @@ This tutorial covers how to add the Playwright MCP Server as a rook extension, t
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?cmd=npx&arg=-y&arg=@playwright/mcp@latest&id=playwright&name=Playwright&description=Modern%20web%20testing%20and%20automation)
+  [Launch the installer](rook://extension?cmd=npx&arg=-y&arg=@playwright/mcp@latest&id=playwright&name=Playwright&description=Modern%20web%20testing%20and%20automation)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   **Command**

@@ -24,11 +24,11 @@ rook includes several built-in extensions you can start using out of the box:
 - [Developer](/docs/mcp/developer-mcp): Provides a set of general development tools that are useful for software development. The Developer extension is **enabled by default**.
 - [Computer Controller](/docs/mcp/computer-controller-mcp): Provides general computer control tools for webscraping, file caching, and automations.
 - [Memory](/docs/mcp/memory-mcp): Teaches rook to remember your preferences as you use it.
-- [Tutorial](/docs/mcp/tutorial-mcp): Provides interactive tutorials for learning about goose.
+- [Tutorial](/docs/mcp/tutorial-mcp): Provides interactive tutorials for learning about rook.
 - [Auto Visualiser](/docs/mcp/autovisualiser-mcp): Automatically generates graphical data visualizations in conversations.
 
 :::warning Access Control
-rook operates autonomously by default. Combined with the Developer extension's tools, this means rook can execute commands and modify files without your approval. If you want more control over this behavior, you can configure the [rook permission mode](/docs/guides/goose-permissions), [tool permissions](/docs/guides/managing-tools/tool-permissions), and [.gooseignore files](/docs/guides/using-gooseignore). See [Configuring Access Controls](/docs/mcp/developer-mcp#configuring-access-controls) for a brief overview.
+rook operates autonomously by default. Combined with the Developer extension's tools, this means rook can execute commands and modify files without your approval. If you want more control over this behavior, you can configure the [rook permission mode](/docs/guides/rook-permissions), [tool permissions](/docs/guides/managing-tools/tool-permissions), and [.rookignore files](/docs/guides/using-rookignore). See [Configuring Access Controls](/docs/mcp/developer-mcp#configuring-access-controls) for a brief overview.
 :::
 
 ### Built-in Platform Extensions
@@ -41,7 +41,7 @@ Platform extensions are built-in extensions that provide global features like co
 - [Extension Manager](/docs/mcp/extension-manager-mcp): Discover, enable, and disable extensions dynamically during sessions (enabled by default)
 - [Summon](/docs/mcp/summon-mcp): Load skills and recipes, and delegate tasks to subagents (enabled by default)
 - [Todo](/docs/mcp/todo-mcp): Manage task lists and track progress across sessions (enabled by default)
-- [Top of Mind](/docs/mcp/tom-mcp): Inject persistent instructions into goose's working memory every turn
+- [Top of Mind](/docs/mcp/tom-mcp): Inject persistent instructions into rook's working memory every turn
 
 ### Toggling Built-in Extensions
 
@@ -75,7 +75,7 @@ Platform extensions are built-in extensions that provide global features like co
     **Example: Adding Built-in Extension**
 
     ```
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension 
@@ -96,7 +96,7 @@ Platform extensions are built-in extensions that provide global features like co
 
 
 :::info
-goose's built-in extensions are MCP servers in their own right. If you'd like
+rook's built-in extensions are MCP servers in their own right. If you'd like
 to use the MCP servers included with rook with any other agent, you are free to do so.
 :::
 
@@ -155,7 +155,7 @@ See available servers in the **[MCP Server Directory](https://www.pulsemcp.com/s
   2. Select `Add Extension` from the menu.
 
   3. Choose the type of extension you'd like to add:
-      - `Built-In Extension`: Use an extension that comes pre-installed with goose.
+      - `Built-In Extension`: Use an extension that comes pre-installed with rook.
       - `Command-Line Extension`: Add a local command or script to run as an extension.
       - `Remote Extension (Streamable HTTP)`: Connect to a remote system via Streamable HTTP
 
@@ -166,7 +166,7 @@ See available servers in the **[MCP Server Directory](https://www.pulsemcp.com/s
 <Tabs groupId="extensions">
    <TabItem value="node" label="Node">
   ```
- ┌   goose-configure 
+ ┌   rook-configure 
  │
  ◇  What would you like to configure?
  │  Add Extension 
@@ -193,7 +193,7 @@ See available servers in the **[MCP Server Directory](https://www.pulsemcp.com/s
    <TabItem value="python" label="Python">
 
   ```
- ┌   goose-configure
+ ┌   rook-configure
  │
  ◇  What would you like to configure?
  │  Add Extension
@@ -222,7 +222,7 @@ See available servers in the **[MCP Server Directory](https://www.pulsemcp.com/s
 Note: Java and Kotlin extensions are only support on Linux and macOS
 
   ```
- ┌   goose-configure
+ ┌   rook-configure
  │
  ◇  What would you like to configure?
  │  Add Extension
@@ -263,16 +263,16 @@ Note: Java and Kotlin extensions are only support on Linux and macOS
 
 ### Deeplinks
 
-Extensions can be installed using goose's deep link protocol. The URL format varies based on the extension type:
+Extensions can be installed using rook's deep link protocol. The URL format varies based on the extension type:
 
 <Tabs groupId="interface">
   <TabItem value="stdio" label="StandardIO" default>
 ```
-goose://extension?cmd=<command>&arg=<argument>&id=<id>&name=<name>&description=<description>
+rook://extension?cmd=<command>&arg=<argument>&id=<id>&name=<name>&description=<description>
 ```
 
 Required parameters:
-- `cmd`: The base command to run, one of `jbang`, `npx`, `uvx`, `goosed`, or `docker`
+- `cmd`: The base command to run, one of `jbang`, `npx`, `uvx`, `rookd`, or `docker`
 - `arg`: (cmd only) Command arguments (can be repeated for multiple arguments: `&arg=...&arg=...`)
 - `timeout`: Maximum time (in seconds) to wait for extension responses
 - `id`: Unique identifier for the extension
@@ -282,14 +282,14 @@ Required parameters:
 A command like `npx -y @modelcontextprotocol/server-github` would be represented as:
 
 ```
-goose://extension?cmd=npx&arg=-y&arg=%40modelcontextprotocol/server-github&timeout=<timeout>&id=<id>&name=<name>&description=<description>
+rook://extension?cmd=npx&arg=-y&arg=%40modelcontextprotocol/server-github&timeout=<timeout>&id=<id>&name=<name>&description=<description>
 ```
 
 Note that each parameter to the `npx` command is passed as a separate `arg` parameter in the deeplink.
   </TabItem>
   <TabItem value="streamable_http" label="Streamable HTTP">
 ```
-goose://extension?url=<remote-streamable-http-url>&type=streamable_http&id=<id>&name=<n>&description=<description>
+rook://extension?url=<remote-streamable-http-url>&type=streamable_http&id=<id>&name=<n>&description=<description>
 ```
 
 Parameters:
@@ -303,7 +303,7 @@ Parameters:
 For example, a deeplink for a URL like `https://example.com/streamable` would look like this when URL-encoded:
 
 ```
-goose://extension?url=https%3A%2F%2Fexample.com%2Fstreamable&type=streamable_http&timeout=<timeout>&id=<id>&name=<n>&description=<description>
+rook://extension?url=https%3A%2F%2Fexample.com%2Fstreamable&type=streamable_http&timeout=<timeout>&id=<id>&name=<n>&description=<description>
 ```
 
   </TabItem>
@@ -315,7 +315,7 @@ All parameters in the deeplink must be URL-encoded. For example, spaces should b
 
 
 ### Config Entry
-For advanced users, you can also directly edit the config file (`~/.config/goose/config.yaml`) to add, remove, or update an extension:
+For advanced users, you can also directly edit the config file (`~/.config/rook/config.yaml`) to add, remove, or update an extension:
 
 ```yaml
 extensions:
@@ -349,7 +349,7 @@ Changes made to your default extensions apply to future sessions. Updates to the
 
   <TabItem value="cli" label="rook CLI">
 
-  1. Run the following command to open up goose's configurations:
+  1. Run the following command to open up rook's configurations:
       ```sh
       rook configure
       ```
@@ -360,7 +360,7 @@ Changes made to your default extensions apply to future sessions. Updates to the
   **Example:**
 
   ```
-  ┌   goose-configure 
+  ┌   rook-configure 
   │
   ◇  What would you like to configure?
   │  Toggle Extensions 
@@ -543,7 +543,7 @@ rook relies on extension properties to determine how to handle an extension. You
 
   <TabItem value="cli" label="Config file">
   
-  1. Navigate to the rook [configuration file](/docs/guides/config-files). For example, navigate to `~/.config/goose/config.yaml` on macOS.
+  1. Navigate to the rook [configuration file](/docs/guides/config-files). For example, navigate to `~/.config/rook/config.yaml` on macOS.
   2. Edit the extension properties as needed and save your changes.
 
   </TabItem>
@@ -568,7 +568,7 @@ You can remove installed extensions.
   To remove an extension, you must [disable](#enablingdisabling-extensions) it first.
   :::
 
-    1. Run the following command to open up goose's configurations:
+    1. Run the following command to open up rook's configurations:
     ```sh
     rook configure
     ```
@@ -576,7 +576,7 @@ You can remove installed extensions.
     3. Arrow down to the extension you want to remove.
     4. Press the `space bar` to select the extension. Solid means selected. 
     ```
-    ┌   goose-configure 
+    ┌   rook-configure 
     │
     ◇  What would you like to configure?
     │  Remove Extension 
@@ -670,7 +670,7 @@ rook session --with-streamable-http-extension "https://example.com/streamable"
 
 ### Extensions in Containers
 
-rook can use the `--container` flag to run extensions inside your Docker containers for devcontainer workflows. See [Running Extensions in Docker Containers](/docs/tutorials/goose-in-docker#running-extensions-in-docker-containers) for details.
+rook can use the `--container` flag to run extensions inside your Docker containers for devcontainer workflows. See [Running Extensions in Docker Containers](/docs/tutorials/rook-in-docker#running-extensions-in-docker-containers) for details.
 
 ## Developing Extensions
 

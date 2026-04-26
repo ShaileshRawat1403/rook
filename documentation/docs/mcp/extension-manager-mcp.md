@@ -32,7 +32,7 @@ Simply describe your task, and rook will handle the extension management automat
 
   2. Choose to `Toggle Extensions`
   ```sh
-  ┌   goose-configure 
+  ┌   rook-configure 
   │
   ◇  What would you like to configure?
   │  Toggle Extensions 
@@ -54,7 +54,7 @@ rook can work with many extensions, but having too many enabled at once can:
 - Slow down response times
 - Exceed recommended limits (5 extensions or 50 tools)
 
-The Extension Manager solves this by letting goose:
+The Extension Manager solves this by letting rook:
 - **Discover** what extensions are available
 - **Enable** extensions only when needed for specific tasks
 - **Disable** extensions when they're no longer required

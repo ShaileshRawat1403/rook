@@ -1,6 +1,6 @@
 ---
-title: Benchmarking with goose
-sidebar_label: Benchmark with goose
+title: Benchmarking with rook
+sidebar_label: Benchmark with rook
 ---
 
 The rook benchmarking system allows you to evaluate rook performance on complex tasks with one or more system
@@ -25,7 +25,7 @@ cat bench-config.json
   "models": [
     {
       "provider": "databricks",
-      "name": "goose",
+      "name": "rook",
       "parallel_safe": true
     }
   ],
@@ -55,7 +55,7 @@ The benchmark configuration is specified in a JSON file with the following struc
   "models": [
     {
       "provider": "databricks",
-      "name": "goose",
+      "name": "rook",
       "parallel_safe": true,
       "tool_shim": {
         "use_tool_shim": false,
@@ -193,7 +193,7 @@ RUST_LOG=debug rook bench bench-config.json
 
 ### Tool Shimming
 
-Tool shimming allows you to use a non-tool-capable models with goose, provided Ollama is installed on the
+Tool shimming allows you to use a non-tool-capable models with rook, provided Ollama is installed on the
 system.
 
 See this guide for important details on [tool shimming](/docs/experimental/ollama).

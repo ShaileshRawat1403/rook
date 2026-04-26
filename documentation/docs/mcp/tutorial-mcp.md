@@ -1,13 +1,13 @@
 ---
 title: Tutorial Extension
-description: Learn how to use goose's built-in Tutorial extension for guided learning
+description: Learn how to use rook's built-in Tutorial extension for guided learning
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
 
-The Tutorial extension is a built-in feature of rook that provides interactive, step-by-step guidance for learning various aspects of rook and its capabilities. It's designed to help users get comfortable with goose's features through hands-on practice.
+The Tutorial extension is a built-in feature of rook that provides interactive, step-by-step guidance for learning various aspects of rook and its capabilities. It's designed to help users get comfortable with rook's features through hands-on practice.
 
 The Tutorial extension serves as an interactive learning tool that:
 - Provides structured, step-by-step tutorials
@@ -33,7 +33,7 @@ The Tutorial extension serves as an interactive learning tool that:
 
   2. Choose to `Toggle Extensions`
   ```sh
-  ┌   goose-configure 
+  ┌   rook-configure 
   │
   ◇  What would you like to configure?
   │  Toggle Extensions 
@@ -53,7 +53,7 @@ The Tutorial extension serves as an interactive learning tool that:
 Currently, the following tutorials are available:
 
 - **build-mcp-extension**: Learn how to build an extension using the Model Context Protocol (MCP)
-- **first-game**: Create your first game with goose
+- **first-game**: Create your first game with rook
 
 More tutorials are being added regularly to cover additional features and use cases.
 
@@ -66,7 +66,7 @@ There are two main ways to interact with tutorials:
 1. **Ask rook directly**: You can simply ask about a topic you're interested in, and rook will suggest relevant tutorials.
 
 ```
-( O)> I'd like to learn how to build an extension for goose
+( O)> I'd like to learn how to build an extension for rook
 ```
 
 2. **Request a specific tutorial**: You can directly request a tutorial by name.
@@ -99,7 +99,7 @@ Here's an example of how to start learning about building extensions:
 
 ### rook Prompt
 ```
-I'd like to learn how to build an extension for goose
+I'd like to learn how to build an extension for rook
 ```
 
 ### rook Output
@@ -144,4 +144,4 @@ After completing tutorials, you can:
 ### Need Further Help? 
 If you have questions, run into issues, or just need to brainstorm ideas join the [Discord Community][discord]!
 
-[discord]: https://discord.gg/goose-oss
+[discord]: https://discord.gg/rook-oss

@@ -17,7 +17,7 @@ This tutorial covers how to add the [ElevenLabs MCP Server](https://github.com/e
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?cmd=uvx&arg=elevenlabs-mcp&id=elevenlabs&name=ElevenLabs&description=ElevenLabs%20voice%20synthesis%20server&env=ELEVENLABS_API_KEY)
+  [Launch the installer](rook://extension?cmd=uvx&arg=elevenlabs-mcp&id=elevenlabs&name=ElevenLabs&description=ElevenLabs%20voice%20synthesis%20server&env=ELEVENLABS_API_KEY)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   **Command**
@@ -79,7 +79,7 @@ By connecting to the ElevenLabs MCP server, rook can transform plain text into n
 
 ### rook Prompt
 
-> Hey goose, create a script for me for my youtube short video, I want there to be two different voices. The first voice should cut me off and be a human narrator style and then switch to a casual AI tone after I read the prompt. Here's an example of a YT short script I've done in the past: 
+> Hey rook, create a script for me for my youtube short video, I want there to be two different voices. The first voice should cut me off and be a human narrator style and then switch to a casual AI tone after I read the prompt. Here's an example of a YT short script I've done in the past: 
 
 Wait… Within Seconds, rook performed Security Audits Across Multiple Projects?! 🔥
 
@@ -88,15 +88,15 @@ Lets, plug & play to find out how
 Let’s provide rook with the command it needs to connect to the Filesystem MCP server extension…
 
 Now lets play 
-prompt:  "Hey goose, I need to perform a security audit across multiple projects. Let's check for…🔹 Hardcoded Credentials – API keys, passwords, and secrets left in the code.🔹 SQL Injection Risks – Unsafe queries that could expose data.🔹 Insecure Cryptographic Practices – Weak encryption methods that put data at risk.AND🔹 Exposed Config Files – Sensitive information that shouldn't be public.🔹 Outdated Dependencies – Security vulnerabilities in third-party libraries."
+prompt:  "Hey rook, I need to perform a security audit across multiple projects. Let's check for…🔹 Hardcoded Credentials – API keys, passwords, and secrets left in the code.🔹 SQL Injection Risks – Unsafe queries that could expose data.🔹 Insecure Cryptographic Practices – Weak encryption methods that put data at risk.AND🔹 Exposed Config Files – Sensitive information that shouldn't be public.🔹 Outdated Dependencies – Security vulnerabilities in third-party libraries."
 
-Go goose, go goose!
+Go rook, go rook!
 
 ✅ rook scanned the entire codebase across 3 different projects, identified security risks, generated a detailed report with fixes and provided me with step by step instructions on how I can test and verify these code fixes! 
 
 If that’s not amazing idk what is …
 
-🚀 to get started visit goose-docs.ai_
+🚀 to get started visit rook-docs.ai_
 
 
 ### rook Output

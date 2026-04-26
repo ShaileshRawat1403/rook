@@ -2,7 +2,7 @@
 sidebar_position: 2
 title: Recipe Reference Guide
 sidebar_label: Recipe Reference
-description: Complete technical reference for creating and customizing recipes in goose
+description: Complete technical reference for creating and customizing recipes in rook
 ---
 
 import Tabs from '@theme/Tabs';
@@ -42,7 +42,7 @@ Recipes follow this schema structure:
 |-------|------|----------|-------------|
 | `description` | String | ✅ | A detailed description of what the recipe does |
 | `instructions` | String | ✅*  | Template instructions that can include parameter substitutions |
-| `prompt` | String| ✅*   | A template prompt that can include parameter substitutions. Required in [headless](/docs/tutorials/headless-goose) (non-interactive) mode. |
+| `prompt` | String| ✅*   | A template prompt that can include parameter substitutions. Required in [headless](/docs/tutorials/headless-rook) (non-interactive) mode. |
 | `title` | String | ✅ | A short title describing the recipe |
 | [`activities`](#activities) | Array | - | List of example prompts that can include parameter substitutions. Activities appear as clickable bubbles in rook Desktop. |
 | [`extensions`](#extensions) | Array | - | List of extension configurations |
@@ -190,7 +190,7 @@ extensions:
       - mcp_codesearch@latest
     timeout: 300
     bundled: true
-    description: "Query https://codesearch.sqprod.co/ directly from goose"
+    description: "Query https://codesearch.sqprod.co/ directly from rook"
   
   - type: stdio
     name: presidio
@@ -235,7 +235,7 @@ extensions:
       "args": ["mcp_codesearch@latest"],
       "timeout": 300,
       "bundled": true,
-      "description": "Query https://codesearch.sqprod.co/ directly from goose"
+      "description": "Query https://codesearch.sqprod.co/ directly from rook"
     },
     {
       "type": "stdio",
@@ -513,8 +513,8 @@ The `settings` field allows you to configure the AI model and provider settings 
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `goose_provider` | String | - | The AI provider to use (e.g., "anthropic", "openai") |
-| `goose_model` | String | - | The specific model name to use |
+| `rook_provider` | String | - | The AI provider to use (e.g., "anthropic", "openai") |
+| `rook_model` | String | - | The specific model name to use |
 | `temperature` | Number | - | The temperature setting for the model (typically 0.0-1.0) |
 | `max_turns` | Number | - | Maximum number of turns for subagent tasks created by this recipe |
 
@@ -534,16 +534,16 @@ The `max_turns` setting controls how many iterations an agent can perform before
 
 ```yaml
 settings:
-  goose_provider: "anthropic"
-  goose_model: "claude-sonnet-4-20250514"
+  rook_provider: "anthropic"
+  rook_model: "claude-sonnet-4-20250514"
   temperature: 0.7
   max_turns: 50
 ```
 
 ```yaml
 settings:
-  goose_provider: "openai"
-  goose_model: "gpt-4o"
+  rook_provider: "openai"
+  rook_model: "gpt-4o"
   temperature: 0.3
 ```
 
@@ -767,7 +767,7 @@ Built-in template parameters are automatically supported and don't need to be de
 
 ## Validation Rules
 
-Validation rules from [`validate_recipe.rs`](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/recipe/validate_recipe.rs) are enforced when loading recipes and used by the [`rook recipe validate`](/docs/guides/goose-cli-commands#recipe) subcommand:
+Validation rules from [`validate_recipe.rs`](https://github.com/aaif-rook/rook/blob/main/crates/rook/src/recipe/validate_recipe.rs) are enforced when loading recipes and used by the [`rook recipe validate`](/docs/guides/rook-cli-commands#recipe) subcommand:
 
 ### Recipe-Level Validation
 
@@ -829,11 +829,11 @@ extensions:
       - mcp_codesearch@latest
     timeout: 300
     bundled: true
-    description: "Query codesearch directly from goose"
+    description: "Query codesearch directly from rook"
 
 settings:
-  goose_provider: "anthropic"
-  goose_model: "claude-sonnet-4-20250514"
+  rook_provider: "anthropic"
+  rook_model: "claude-sonnet-4-20250514"
   temperature: 0.7
   max_turns: 100
 
@@ -908,12 +908,12 @@ response:
       "args": ["mcp_codesearch@latest"],
       "timeout": 300,
       "bundled": true,
-      "description": "Query codesearch directly from goose"
+      "description": "Query codesearch directly from rook"
     }
   ],
   "settings": {
-    "goose_provider": "anthropic",
-    "goose_model": "claude-sonnet-4-20250514",
+    "rook_provider": "anthropic",
+    "rook_model": "claude-sonnet-4-20250514",
     "temperature": 0.7,
     "max_turns": 100
   },

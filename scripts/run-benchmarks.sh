@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# run-benchmarks.sh - Script to run goose benchmarks across multiple provider:model pairs
+# run-benchmarks.sh - Script to run rook benchmarks across multiple provider:model pairs
 
 set -e
 
@@ -101,20 +101,20 @@ fi
 echo "" >> "$SUMMARY_FILE"
 
 # Determine which binary to use
-GOOSE_CMD="goose"
+GOOSE_CMD="rook"
 if [ "$DEBUG_MODE" = true ]; then
-  if [ -f "./target/debug/goose" ]; then
-    GOOSE_CMD="./target/debug/goose"
+  if [ -f "./target/debug/rook" ]; then
+    GOOSE_CMD="./target/debug/rook"
     echo "Using debug binary: $GOOSE_CMD"
   else
-    echo "Warning: Debug binary not found at ./target/debug/goose. Falling back to system-installed goose."
+    echo "Warning: Debug binary not found at ./target/debug/rook. Falling back to system-installed rook."
   fi
 else
-  if [ -f "./target/release/goose" ]; then
-    GOOSE_CMD="./target/release/goose"
+  if [ -f "./target/release/rook" ]; then
+    GOOSE_CMD="./target/release/rook"
     echo "Using release binary: $GOOSE_CMD"
   else
-    echo "Warning: Release binary not found at ./target/release/goose. Falling back to system-installed goose."
+    echo "Warning: Release binary not found at ./target/release/rook. Falling back to system-installed rook."
   fi
 fi
 

@@ -44,7 +44,7 @@ npx skills add https://github.com/microsoft/playwright-cli --skill playwright-cl
 
 2. Enter `y` when asked to install the skills package
 
-3. Choose `goose` when asked which agent to install to
+3. Choose `rook` when asked which agent to install to
 
 4. Choose `Global` scope to be able to use the skill in any project, or `Local` to only have access within the current working directory
 
@@ -53,7 +53,7 @@ npx skills add https://github.com/microsoft/playwright-cli --skill playwright-cl
 6. You'll get a confirmation of the installation, choose `Yes` to proceed
 
 ### Enable Summon Extension
-In goose, enable the [Summon extension](/docs/mcp/summon-mcp) to load Agent Skills within sessions.
+In rook, enable the [Summon extension](/docs/mcp/summon-mcp) to load Agent Skills within sessions.
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
@@ -70,7 +70,7 @@ In goose, enable the [Summon extension](/docs/mcp/summon-mcp) to load Agent Skil
 
   2. Choose to `Toggle Extensions`
   ```sh
-  ┌   goose-configure 
+  ┌   rook-configure 
   │
   ◇  What would you like to configure?
   │  Toggle Extensions 
@@ -91,7 +91,7 @@ In goose, enable the [Summon extension](/docs/mcp/summon-mcp) to load Agent Skil
 Give rook a single prompt that describes what you want to test:
 
 ```
-Using the Playwright CLI skill, open goose-docs.ai, click on the Docs menu, click on Context Engineering, 
+Using the Playwright CLI skill, open rook-docs.ai, click on the Docs menu, click on Context Engineering, 
 then click on Using Skills and generate a test with video and traces
 ```
 
@@ -111,7 +111,7 @@ await page.getByRole('link', { name: 'Docs' }).click();
 
 ### What rook does
 
-1. Opens the browser: `playwright-cli open goose-docs.ai`
+1. Opens the browser: `playwright-cli open rook-docs.ai`
 2. Starts recording: `playwright-cli video-start` and `playwright-cli tracing-start`
 3. Takes snapshots to find elements: `playwright-cli snapshot`
 4. Performs clicks: `playwright-cli click <ref>`
@@ -134,8 +134,8 @@ The generated test might look like:
 import { test, expect } from '@playwright/test';
 
 test('navigate to Using Skills guide via docs menu', async ({ page }) => {
-  await page.goto('https://goose-docs.ai');
-  await expect(page).toHaveTitle(/goose/);
+  await page.goto('https://rook-docs.ai');
+  await expect(page).toHaveTitle(/rook/);
   
   // Click on Docs in the navigation
   await page.getByRole('link', { name: 'Docs' }).click();
@@ -158,7 +158,7 @@ rook can even run the test for you to make sure it works as expected. If Playwri
 
 ## Viewing the Video
 
-To see a video of what happened, prompt goose:
+To see a video of what happened, prompt rook:
 
 ```
 Show me the video
@@ -168,7 +168,7 @@ rook will use the CLI to open the recorded video, so you can see exactly what ha
 
 ## Viewing the Trace
 
-To debug or review what happened, prompt goose:
+To debug or review what happened, prompt rook:
 
 ```
 Open the trace
@@ -193,7 +193,7 @@ From here you can see live previews of every browser rook is controlling. Click 
 
 ## Full Capabilities
 
-Want to know what else the Playwright skill can do? Ask goose:
+Want to know what else the Playwright skill can do? Ask rook:
 
 ```
 What else can you do with the Playwright skill?
@@ -220,10 +220,10 @@ What else can you do with the Playwright skill?
 
 ## Conclusion
 
-Getting started with the Playwright CLI agent skill is easy and opens up powerful browser automation capabilities directly from natural language prompts. Whether you're generating tests, debugging with videos and traces, or automating complex interactions, the Playwright CLI agent skill provides a token-efficient way to leverage Playwright's full power with goose.
+Getting started with the Playwright CLI agent skill is easy and opens up powerful browser automation capabilities directly from natural language prompts. Whether you're generating tests, debugging with videos and traces, or automating complex interactions, the Playwright CLI agent skill provides a token-efficient way to leverage Playwright's full power with rook.
 
 ## Resources
 
 - [Summon Extension Documentation](/docs/mcp/summon-mcp)
-- [Using Skills Guide](/docs/guides/context-engineering/using-skills) - Learn how to create and use skills with goose
+- [Using Skills Guide](/docs/guides/context-engineering/using-skills) - Learn how to create and use skills with rook
 - [Playwright CLI GitHub](https://github.com/microsoft/playwright-cli)

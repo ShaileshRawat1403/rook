@@ -13,7 +13,7 @@ The Gateway feature is experimental and in active development. Behavior and conf
 
 ## How It Works
 
-The Gateway connects your Telegram account to rook through a secure pairing process. Once paired, you can send messages to a Telegram bot that forwards them to goose, and receive formatted responses back in Telegram.
+The Gateway connects your Telegram account to rook through a secure pairing process. Once paired, you can send messages to a Telegram bot that forwards them to rook, and receive formatted responses back in Telegram.
 
 **Key details:**
 - Uses a Telegram bot that you create and configure
@@ -97,10 +97,10 @@ From the Desktop app's Gateway settings, you can:
 - Make sure you're sending the code to the correct bot
 
 ### Messages not formatting correctly
-- The gateway converts goose's markdown to Telegram-compatible formatting
+- The gateway converts rook's markdown to Telegram-compatible formatting
 - Some complex formatting may be simplified for Telegram compatibility
 
 ## Additional Resources
 
 - [Telegram Bot API Documentation](https://core.telegram.org/bots)
-- [Gateway PR #7199](https://github.com/aaif-goose/goose/pull/7199)
+- [Gateway PR #7199](https://github.com/aaif-rook/rook/pull/7199)

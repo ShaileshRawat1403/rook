@@ -33,7 +33,7 @@ Skills can be stored globally or per-project:
 Place a `SKILL.md` file inside a named subdirectory. For example, a global skill called
 `code-review` goes in `~/.agents/skills/code-review/SKILL.md`.
 
-> **Backward compatibility:** rook also discovers skills from `.goose/skills/`,
+> **Backward compatibility:** rook also discovers skills from `.rook/skills/`,
 > `.claude/skills/`, `~/.claude/skills/`, and platform-specific config directories,
 > but `agents/skills/` is the recommended standard.
 
@@ -256,14 +256,14 @@ Always verify webhook signatures. See `src/webhooks/square.js` for our handler p
 </details>
 
 :::tip Other rook features that support reuse
-- [.goosehints](/docs/guides/context-engineering/using-goosehints): Best for general preferences, project context, and repeated instructions like "Always use TypeScript"
+- [.rookhints](/docs/guides/context-engineering/using-rookhints): Best for general preferences, project context, and repeated instructions like "Always use TypeScript"
 - [recipes](/docs/guides/recipes/session-recipes): Shareable configurations that package instructions, prompts, and settings together
 :::
 
 ## Best Practices
 
 - **Keep skills focused** — One skill per workflow or domain. If a skill is getting long, consider splitting it.
-- **Write for clarity** — Skills are instructions for goose. Use clear, direct language and numbered steps.
+- **Write for clarity** — Skills are instructions for rook. Use clear, direct language and numbered steps.
 - **Include verification steps** — Help rook confirm the workflow completed successfully.
 
 ## Additional Resources

@@ -16,13 +16,13 @@ This tutorial covers how to add [vmware-aiops](https://github.com/zw008/VMware-A
     Install vmware-aiops first:
     ```sh
     uv tool install vmware-aiops
-    vmware-aiops mcp-config install --agent goose
+    vmware-aiops mcp-config install --agent rook
     ```
   </TabItem>
   <TabItem value="cli" label="rook CLI">
     ```sh
     uv tool install vmware-aiops
-    vmware-aiops mcp-config install --agent goose
+    vmware-aiops mcp-config install --agent rook
     ```
   </TabItem>
 </Tabs>
@@ -59,7 +59,7 @@ chmod 600 ~/.vmware-aiops/.env
 vmware-aiops doctor
 ```
 
-**Step 3: Add to goose**
+**Step 3: Add to rook**
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>

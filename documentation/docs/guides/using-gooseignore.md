@@ -1,31 +1,31 @@
 ---
 title: Prevent rook from Accessing Files
-sidebar_label: Using gooseignore
+sidebar_label: Using rookignore
 sidebar_position: 80
 ---
 
 
-`.gooseignore` is a text file that defines patterns for files and directories that rook will not access. This means rook cannot read, modify, delete, or run shell commands on these files when using the Developer extension's tools.
+`.rookignore` is a text file that defines patterns for files and directories that rook will not access. This means rook cannot read, modify, delete, or run shell commands on these files when using the Developer extension's tools.
 
 :::info Developer extension only
-The .gooseignore feature currently only affects tools in the [Developer](/docs/mcp/developer-mcp) extension. Other extensions are not restricted by these rules.
+The .rookignore feature currently only affects tools in the [Developer](/docs/mcp/developer-mcp) extension. Other extensions are not restricted by these rules.
 :::
 
-This guide will show you how to use `.gooseignore` files to prevent rook from changing specific files and directories.
+This guide will show you how to use `.rookignore` files to prevent rook from changing specific files and directories.
 
-## Creating your `.gooseignore` file
+## Creating your `.rookignore` file
 
-rook supports two types of `.gooseignore` files:
-- **Global ignore file** - Create a `.gooseignore` file in `~/.config/goose`. These restrictions will apply to all your sessions with goose, regardless of directory.
-- **Local ignore file** - Create a `.gooseignore` file at the root of the directory you'd like it applied to. These restrictions will only apply when working in a specific directory.
+rook supports two types of `.rookignore` files:
+- **Global ignore file** - Create a `.rookignore` file in `~/.config/rook`. These restrictions will apply to all your sessions with rook, regardless of directory.
+- **Local ignore file** - Create a `.rookignore` file at the root of the directory you'd like it applied to. These restrictions will only apply when working in a specific directory.
 
 :::tip
-You can use both global and local `.gooseignore` files simultaneously. When both exist, rook will apply patterns from both files, with local patterns able to override global ones using negation.
+You can use both global and local `.rookignore` files simultaneously. When both exist, rook will apply patterns from both files, with local patterns able to override global ones using negation.
 :::
 
-## Example `.gooseignore` file
+## Example `.rookignore` file
 
-In your `.gooseignore` file, you can write patterns to match files you want rook to ignore. Here are some common patterns:
+In your `.rookignore` file, you can write patterns to match files you want rook to ignore. Here are some common patterns:
 
 ```plaintext
 # Ignore specific files by name
@@ -47,7 +47,7 @@ downloads/           # Ignore everything in the "downloads" directory
 
 Use the `!` prefix to exclude files from ignore rules. This allows you to ignore broad patterns while allowing specific exceptions.
 
-Within each `.gooseignore` file, patterns are processed in order from top to bottom, so later patterns can override earlier ones. Negation patterns also work across files - you can use negation in your local `.gooseignore` to allow access to files blocked by your global `.gooseignore`.
+Within each `.rookignore` file, patterns are processed in order from top to bottom, so later patterns can override earlier ones. Negation patterns also work across files - you can use negation in your local `.rookignore` to allow access to files blocked by your global `.rookignore`.
 
 ```plaintext
 # Ignore all environment files
@@ -75,38 +75,38 @@ Negation patterns must come after the patterns they're negating. The `!` pattern
 
 ## Ignore File Types and Priority
 
-rook respects ignore rules from global and local `.gooseignore` files, using a priority system where later patterns can override earlier ones.
+rook respects ignore rules from global and local `.rookignore` files, using a priority system where later patterns can override earlier ones.
 
 ### When You Have Ignore Files
 
-When `.gooseignore` files exist, patterns are applied in this order:
+When `.rookignore` files exist, patterns are applied in this order:
 
-1. **Global `.gooseignore`** (applied first)
-   - Located at `~/.config/goose/.gooseignore`
+1. **Global `.rookignore`** (applied first)
+   - Located at `~/.config/rook/.rookignore`
    - Affects all projects on your machine
 
-2. **Local `.gooseignore`** (applied second, can override global)
+2. **Local `.rookignore`** (applied second, can override global)
    - Located in the current working directory (the root of the directory you want these rules applied to)
    - Project-specific rules that can override global patterns
 
 ```
-~/.config/goose/
-└── .gooseignore      ← Global patterns applied first
+~/.config/rook/
+└── .rookignore      ← Global patterns applied first
 
 Project/
-├── .gooseignore      ← Local patterns applied second (can override global)
+├── .rookignore      ← Local patterns applied second (can override global)
 └── src/
 ```
 
-Because patterns are processed in order, you can use negation patterns in your local `.gooseignore` to allow access to files that were blocked by global patterns.
+Because patterns are processed in order, you can use negation patterns in your local `.rookignore` to allow access to files that were blocked by global patterns.
 
 **Example: Override global restrictions in a specific project**
 
 ```plaintext
-# In ~/.config/goose/.gooseignore (global)
+# In ~/.config/rook/.rookignore (global)
 **/.env*              # Block all .env files everywhere
 
-# In your-project/.gooseignore (local)
+# In your-project/.rookignore (local)
 !.env.example         # Allow .env.example in this project only
 ```
 
@@ -114,7 +114,7 @@ In this example, `.env` and `.env.local` remain blocked, but `.env.example` is a
 
 ### Default Patterns (No Ignore Files)
 
-If you haven't created any `.gooseignore` files (neither global nor local), rook automatically protects these sensitive files:
+If you haven't created any `.rookignore` files (neither global nor local), rook automatically protects these sensitive files:
 
 ```plaintext
 **/.env
@@ -123,15 +123,15 @@ If you haven't created any `.gooseignore` files (neither global nor local), rook
 ```
 
 :::info
-These default patterns are only active when **no** `.gooseignore` files exist. Once you create either a global or local `.gooseignore` file, you'll need to add these patterns yourself if you want to keep them.
+These default patterns are only active when **no** `.rookignore` files exist. Once you create either a global or local `.rookignore` file, you'll need to add these patterns yourself if you want to keep them.
 :::
 
 ## Common use cases
 
-Here are some typical scenarios where `.gooseignore` is helpful:
+Here are some typical scenarios where `.rookignore` is helpful:
 
 - **Generated Files**: Prevent rook from modifying auto-generated code or build outputs
 - **Third-Party Code**: Keep rook from changing external libraries or dependencies
 - **Important Configurations**: Protect critical configuration files from accidental modifications
 - **Version Control**: Prevent changes to version control files like `.git` directory
-- **Custom Restrictions**: Create `.gooseignore` files to define which files rook should not access 
+- **Custom Restrictions**: Create `.rookignore` files to define which files rook should not access 

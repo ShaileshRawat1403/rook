@@ -148,7 +148,7 @@ source ~/.bashrc
 <TabItem value="fish" label="Fish">
 
 ```bash
-rook completion fish > ~/.config/fish/completions/goose.fish
+rook completion fish > ~/.config/fish/completions/rook.fish
 ```
 
 Then restart your terminal or run `exec fish`.
@@ -180,7 +180,7 @@ After installing and reloading your shell, test completion by typing `rook ` and
 
 :::info Session Storage Migration
 Starting with version 1.10.0, rook uses a SQLite database (`sessions.db`) instead of individual `.jsonl` files.
-Your existing sessions are automatically imported to the database. Legacy `.jsonl` files remain on disk but are no longer managed by goose.
+Your existing sessions are automatically imported to the database. Legacy `.jsonl` files remain on disk but are no longer managed by rook.
 :::
 
 #### session [options]
@@ -193,7 +193,7 @@ Start or resume interactive chat sessions.
 - **`-r, --resume`**: Resume a previous session
 - **`--fork`**: Create a new duplicate session with copied history. Must be used with `--resume`. Provide `--name` or `--session-id` to fork a specific session. Otherwise, forks the most recent session.
 - **`--history`**: Show previous messages when resuming a session
-- **`--container <container_id>`**: Run extensions inside a [Docker container](/docs/tutorials/goose-in-docker#running-extensions-in-docker-containers).
+- **`--container <container_id>`**: Run extensions inside a [Docker container](/docs/tutorials/rook-in-docker#running-extensions-in-docker-containers).
 - **`--debug`**: Enable debug mode to output complete tool responses, detailed parameter values, and full file paths
 - **`--max-tool-repetitions <NUMBER>`**: Set the maximum number of times the same tool can be called consecutively with identical parameters. Helps prevent infinite loops.
 - **`--max-turns <NUMBER>`**: Set the maximum number of turns allowed without user input (default: 1000)
@@ -393,7 +393,7 @@ Execute commands from an instruction file or stdin. Check out the [full guide](/
 - **`-n, --name <name>`**: Name for this run session (e.g. `daily-tasks`)
 - **`-r, --resume`**: Resume from a previous run
 - **`--path <PATH>`**: Path for this run session (e.g. `./playground.jsonl`). Used for legacy file-based session storage.
-- **`--container <container_id>`**: Run extensions [inside a Docker container](/docs/tutorials/goose-in-docker#running-extensions-in-docker-containers).
+- **`--container <container_id>`**: Run extensions [inside a Docker container](/docs/tutorials/rook-in-docker#running-extensions-in-docker-containers).
 - **`--no-session`**: Run rook commands without creating or storing a session file
 
 **Extension Options:**
@@ -506,7 +506,7 @@ rook recipe help
 Automate recipes by running them on a [schedule](/docs/guides/recipes/session-recipes.md#schedule-recipe).
 
 **Commands:**
-- `add <OPTIONS>`: Create a new scheduled job. Copies the current version of the recipe to `~/.local/share/goose/scheduled_recipes`
+- `add <OPTIONS>`: Create a new scheduled job. Copies the current version of the recipe to `~/.local/share/rook/scheduled_recipes`
 - `list`: View all scheduled jobs
 - `remove`: Delete a scheduled job
 - `sessions`: List sessions created by a scheduled recipe
@@ -717,7 +717,7 @@ For composing longer prompts or working with complex code snippets, you can conf
 **How it works:**
 1. rook opens your configured editor with a template file
 2. Type your prompt after the `# Your prompt:` heading (conversation history is shown below for context)
-3. Save the file and close/exit the editor to send your prompt to goose
+3. Save the file and close/exit the editor to send your prompt to rook
 4. rook processes your prompt and reopens the editor with the response added to the conversation history
 5. Repeat steps 2-4 for each message in the conversation
 
@@ -743,7 +743,7 @@ You can use any editor that accepts a file path argument, such as vim, nano, ema
 
   Persists across all sessions unless overridden by the environment variable.
   
-  1. Navigate to the rook [configuration file](/docs/guides/config-files). For example, navigate to `~/.config/goose/config.yaml` on macOS.
+  1. Navigate to the rook [configuration file](/docs/guides/config-files). For example, navigate to `~/.config/rook/config.yaml` on macOS.
   2. Add `GOOSE_PROMPT_EDITOR` and set it to your preferred editor:
   
   ```yaml

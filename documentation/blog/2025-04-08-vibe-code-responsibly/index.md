@@ -38,15 +38,15 @@ This creative freedom comes with significant risks. Many developers have encount
 
 ## A Better Way to Vibe Code with Goose
 
-[Goose](https://goose-docs.ai) is an open source AI agent local to your machine with built-in features for safe vibe coding.  
+[Goose](https://rook-docs.ai) is an open source AI agent local to your machine with built-in features for safe vibe coding.  
 
 :::note
 Most folks define "vibe coding" as purely chaotic development with no rules. I'm redefining it as flowing with AI while protecting your project, team, and future self.
 :::
 
-### 1. Use `.gooseignore` to Protect Sensitive Files
+### 1. Use `.rookignore` to Protect Sensitive Files
 
-Goose supports [`.gooseignore`](https://goose-docs.ai/docs/guides/using-gooseignore) files. The concept is similar to `.gitignore` files for your AI agent. It defines which files and folders Goose should *not* read, modify, or interact with.
+Goose supports [`.rookignore`](https://rook-docs.ai/docs/guides/using-rookignore) files. The concept is similar to `.gitignore` files for your AI agent. It defines which files and folders Goose should *not* read, modify, or interact with.
 
 Use this when you want to prevent:
 
@@ -59,13 +59,13 @@ Use this when you want to prevent:
 
 ### 2. Create a plan
 
-Goose's [`/plan`](https://goose-docs.ai/docs/guides/goose-cli-commands#examples) command helps you align with your agent before any code is touched, giving you a clear understanding of what it intends to do and how it will do it.
+Goose's [`/plan`](https://rook-docs.ai/docs/guides/rook-cli-commands#examples) command helps you align with your agent before any code is touched, giving you a clear understanding of what it intends to do and how it will do it.
 
 This is especially useful for tasks that span multiple files, involve side effects, or could impact critical areas of your codebase. No more guesswork—just a structured breakdown you can review and approve.
 
 ### 3. Choose the Right Mode for the Job
 
-While letting your AI agent take the lead is fun, not every moment calls for full autonomy. Sometimes, you need to pause, review, or plan before any code changes. Goose offers several [modes](https://goose-docs.ai/docs/guides/goose-permissions) that help you stay in control without breaking your momentum. Here's how to use them intentionally during your sessions:
+While letting your AI agent take the lead is fun, not every moment calls for full autonomy. Sometimes, you need to pause, review, or plan before any code changes. Goose offers several [modes](https://rook-docs.ai/docs/guides/rook-permissions) that help you stay in control without breaking your momentum. Here's how to use them intentionally during your sessions:
 
 * **Chat Mode**  
   Goose will only respond with text so that you can brainstorm together.
@@ -96,9 +96,9 @@ Ask Goose:
 
 By pushing your agent to explain itself, you'll build a better product and learn more along the way.
 
-### 6. Define .goosehints for Better Context
+### 6. Define .rookhints for Better Context
 
-The [.goosehints](/docs/guides/context-engineering/using-goosehints) file gives Goose additional context about your project's coding standards, architectural preferences, and security practices.  
+The [.rookhints](/docs/guides/context-engineering/using-rookhints) file gives Goose additional context about your project's coding standards, architectural preferences, and security practices.  
 
 Here are a few examples:
 
@@ -117,7 +117,7 @@ Before issues hit production, add [Goose to your CI/CD pipeline](/docs/tutorials
 
 Some MCP servers can introduce security risks, especially if compromised.
 
-Use the Goose [allowlist](https://github.com/aaif-goose/goose/blob/main/crates/goose-server/ALLOWLIST.md) feature to prevent Goose from calling unsafe or untrusted tools.
+Use the Goose [allowlist](https://github.com/aaif-rook/rook/blob/main/crates/rook-server/ALLOWLIST.md) feature to prevent Goose from calling unsafe or untrusted tools.
 
 Here's how the team at Block is thinking about [securing the MCP](/blog/2025/03/31/securing-mcp).
 
@@ -128,7 +128,7 @@ Not all LLMs are built the same. Goose plays best with:
 * Claude Sonnet 3.5  
 * GPT-4o  
 
-Lower-performing models might work, but they're more likely to hallucinate or misunderstand your goals. Read more about how [different LLM's perform with Goose](https://goose-docs.ai/blog/2025/03/31/goose-benchmark/).  
+Lower-performing models might work, but they're more likely to hallucinate or misunderstand your goals. Read more about how [different LLM's perform with Goose](https://rook-docs.ai/blog/2025/03/31/rook-benchmark/).  
 
 ## Watch Vibe Coding in Action  
 Here’s how folks vibe code with Goose:  
@@ -139,17 +139,17 @@ Here’s how folks vibe code with Goose:
 
 Vibe coding isn't inherently wrong. It's marks a new chapter in how we build, and it opens the door for everyone. But experienced developers have a responsibility to define what smart, safe vibe coding looks like. Goose gives us the tools to set that standard, so the whole community can code creatively without sacrificing quality.
 
-Download [Goose](https://goose-docs.ai/docs/getting-started/installation/), and start vibe coding with intention today!
+Download [Goose](https://rook-docs.ai/docs/getting-started/installation/), and start vibe coding with intention today!
 
 <head>
   <meta property="og:title" content="How to Vibe Code Responsibly (with Goose)" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/04/08/vibe-code-responsibly" />
+  <meta property="og:url" content="https://rook-docs.ai/blog/2025/04/08/vibe-code-responsibly" />
   <meta property="og:description" content="Vibe coding feels magical until it isn't. Learn how to flow with Goose while protecting your code, your team, and your future self." />
-  <meta property="og:image" content="http://goose-docs.ai/assets/images/responsible-vibe-code-a77f5e24a879edda943cc76f1fc0bd2a.png" />
+  <meta property="og:image" content="http://rook-docs.ai/assets/images/responsible-vibe-code-a77f5e24a879edda943cc76f1fc0bd2a.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="rook-docs.ai" />
   <meta name="twitter:title" content="How to Vibe Code Responsibly (with Goose)" />
   <meta name="twitter:description" content="Vibe coding feels magical until it isn't. Learn how to flow with Goose while protecting your code, your team, and your future self." />
-  <meta name="twitter:image" content="http://goose-docs.ai/assets/images/responsible-vibe-code-a77f5e24a879edda943cc76f1fc0bd2a.png" />
+  <meta name="twitter:image" content="http://rook-docs.ai/assets/images/responsible-vibe-code-a77f5e24a879edda943cc76f1fc0bd2a.png" />
 </head>

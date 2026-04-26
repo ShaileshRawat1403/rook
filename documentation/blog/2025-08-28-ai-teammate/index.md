@@ -5,7 +5,7 @@ authors:
     - angie
 ---
 
-![blog banner](goose-janitor.png)
+![blog banner](rook-janitor.png)
 
 Over the years, Block's iOS engineers have felt the pain of technical debt accumulating. Feature flags are a specific example of this. Even when successfully rolled out, they tend to linger in the codebase, each one a small weight slowing down development.
 
@@ -19,7 +19,7 @@ With the serendipitous launch of Goose recipes around the same time, the team wo
 
 ## Phase 1: Making Knowledge AI-Accessible
 
-Gemma's first move was to utilize an existing system of `.mdc`, `.goosehints` and other symlinked context documents to capture how to safely remove feature flags from the repository.
+Gemma's first move was to utilize an existing system of `.mdc`, `.rookhints` and other symlinked context documents to capture how to safely remove feature flags from the repository.
 
 She added documentation that allows AI agents to glean enough context to perform their removal work accurately.
 
@@ -43,8 +43,8 @@ But instead, she utilized Goose recipes to create **Goose Janitor**.
 Goose Janitor acts as new AI team member whose responsibility is to tidy up the code after we're done experimenting. It was heavily inspired by existing [Goose recipes](/recipes/detail/?id=clean-up-feature-flag) and internal discussions and experimentation occurring elsewhere in Block. Here's how it is run:
 
 ```bash
-goose run \
---recipe .goose/recipes/goose-janitor-flag-removal.yaml \
+rook run \
+--recipe .rook/recipes/rook-janitor-flag-removal.yaml \
 --params feature_flag_key=log-observer-is-enabled \
 --params variant_to_remain=true \
 --params create_pr=false
@@ -96,12 +96,12 @@ Want to tweak the base recipe for your own needs? Check out [Clean up feature fl
 <head>
   <meta property="og:title" content="When AI Becomes Your New Team Member: The Story of Goose Janitor" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/08/28/ai-teammate" />
+  <meta property="og:url" content="https://rook-docs.ai/blog/2025/08/28/ai-teammate" />
   <meta property="og:description" content="How an engineering team is trialling autonomous AI-powered technical debt cleanup" />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/goose-janitor-129889884d9265d001fe12cbfde03d57.png" />
+  <meta property="og:image" content="https://rook-docs.ai/assets/images/rook-janitor-129889884d9265d001fe12cbfde03d57.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="rook-docs.ai" />
   <meta name="twitter:title" content="When AI Becomes Your New Team Member: The Story of Goose Janitor" />
   <meta name="twitter:description" content="How an engineering team is trialling autonomous AI-powered technical debt cleanup" />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/goose-janitor-129889884d9265d001fe12cbfde03d57.png" />
+  <meta name="twitter:image" content="https://rook-docs.ai/assets/images/rook-janitor-129889884d9265d001fe12cbfde03d57.png" />
 </head>

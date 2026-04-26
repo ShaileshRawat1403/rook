@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Extensions Design
 
-This document describes the design and implementation of the [Extensions framework](/docs/getting-started/using-extensions) in goose, which enables AI agents to interact with different extensions through a unified tool-based interface.
+This document describes the design and implementation of the [Extensions framework](/docs/getting-started/using-extensions) in rook, which enables AI agents to interact with different extensions through a unified tool-based interface.
 
 ## Core Concepts
 
@@ -74,7 +74,7 @@ This split allows precise error handling for tool execution while maintaining fl
 Here's a complete example of a simple extension:
 
 ```rust
-use goose_macros::tool;
+use rook_macros::tool;
 
 struct FileSystem {
     registry: ToolRegistry,

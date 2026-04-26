@@ -5,21 +5,21 @@ sidebar_position: 1
 
 # rook Architecture
 
-goose, an open source AI Agent, builds upon the basic interaction framework of Large Language Models (LLMs), which primarily functions as a text-based conversational interface. It processes text input and generates text output. This "text in, text out" approach is enhanced with tool integrations, which allows the AI agent to complete tasks, creating goose.
+rook, an open source AI Agent, builds upon the basic interaction framework of Large Language Models (LLMs), which primarily functions as a text-based conversational interface. It processes text input and generates text output. This "text in, text out" approach is enhanced with tool integrations, which allows the AI agent to complete tasks, creating rook.
 
 ## rook Components
 rook operates using three main components, the **interface**, the **agent**, and the **connected [extensions](/docs/getting-started/using-extensions)**.
 
-* **Interface**: This is the desktop application or CLI that the user is using to run goose. It collects input from the user and displays outputs to the user
+* **Interface**: This is the desktop application or CLI that the user is using to run rook. It collects input from the user and displays outputs to the user
 
-* **Agent**: The agent runs goose's core logic, managing the interactive loop. 
+* **Agent**: The agent runs rook's core logic, managing the interactive loop. 
 
 * **Extensions**: Extensions are components that provide specific tools and capabilities for the agent to use. These tools enable rook to perform actions such as running commands and managing files.
 
-In a typical session, the interface spins up an instance of the agent, which then connects to one or more extensions simultaneously. The interface can also create multiple agents to handle different tasks concurrently. Extensions and the interactive loop are important parts of goose's functionality. The next sections will explain how rook connects to extensions and processes user requests.
+In a typical session, the interface spins up an instance of the agent, which then connects to one or more extensions simultaneously. The interface can also create multiple agents to handle different tasks concurrently. Extensions and the interactive loop are important parts of rook's functionality. The next sections will explain how rook connects to extensions and processes user requests.
 
 ## Interoperability with Extensions
-[Model Context Protocol (MCP)](https://modelcontextprotocol.io/) is an open standard that allows for interoperability between data sources and AI agents. rook utilizes MCP to connect to [MCP systems/servers](https://github.com/modelcontextprotocol/servers?tab=readme-ov-file#model-context-protocol-servers). In goose, these systems/servers are referred to as extensions.
+[Model Context Protocol (MCP)](https://modelcontextprotocol.io/) is an open standard that allows for interoperability between data sources and AI agents. rook utilizes MCP to connect to [MCP systems/servers](https://github.com/modelcontextprotocol/servers?tab=readme-ov-file#model-context-protocol-servers). In rook, these systems/servers are referred to as extensions.
 
 
 Extensions expose their functionality to rook through tools. Tools are the functions that allow extensions to perform specific actions, such as running commands, or performing file operations. For example, the Google Drive extension includes a tool for searching documents. That tool is what gives rook the ability to perform that action.
@@ -27,7 +27,7 @@ Extensions expose their functionality to rook through tools. Tools are the funct
 
 rook comes with a set of [built-in extensions](/docs/getting-started/using-extensions#built-in-extensions), each designed to enhance your interaction. These include tools for development, web scraping, automation, memory, and more. rook also supports [connecting to external extensions](/docs/getting-started/using-extensions#adding-extensions) or [creating custom extensions](/docs/tutorials/custom-extensions) as MCP servers. 
 
-To learn more about the design and implementation of extensions and tools, refer to the [Extensions Design Guide](/docs/goose-architecture/extensions-design#tools).
+To learn more about the design and implementation of extensions and tools, refer to the [Extensions Design Guide](/docs/rook-architecture/extensions-design#tools).
 
 ## Agent Client Protocol (ACP)
 
@@ -58,11 +58,11 @@ Let's take a closer look at the interactive loop shown above.
 
 6. **Model Response**: Once all the tool calls are done, the LLM sends a final response back to you and restarts the loop once you respond.
 
-## Error Handling in goose
+## Error Handling in rook
 
 As opposed to allowing an error to break the flow, rook captures and handles traditional errors along with execution errors. Errors such as invalid JSON, missing tools, etc. are sent back to the model as tool responses giving the LLM the information it needs to resolve the error and continue. 
 
-For more details on how rook handles errors, refer to the [Error Handling in goose](/docs/goose-architecture/error-handling) Guide.
+For more details on how rook handles errors, refer to the [Error Handling in rook](/docs/rook-architecture/error-handling) Guide.
 
 
 ## Context Revision: Token Management

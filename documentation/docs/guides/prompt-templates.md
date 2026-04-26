@@ -2,7 +2,7 @@
 sidebar_position: 86
 title: Customizing Prompt Templates
 sidebar_label: Prompt Templates
-description: Learn how to customize the prompt templates that define goose's behavior in different situations
+description: Learn how to customize the prompt templates that define rook's behavior in different situations
 ---
 
 import Tabs from '@theme/Tabs';
@@ -13,7 +13,7 @@ rook comes with built-in prompt templates that guide its behavior in different s
 
 ## How It Works
 
-goose's default prompt templates are defined in the codebase and embedded in the application. You can override any default by creating a custom version in your local config directory (either directly or via rook Desktop).
+rook's default prompt templates are defined in the codebase and embedded in the application. You can override any default by creating a custom version in your local config directory (either directly or via rook Desktop).
 
 When you customize a template:
 
@@ -29,7 +29,7 @@ Your changes can range from major updates to minor adjustments such as:
 See [Template Variable Syntax](#template-variable-syntax) for important information about modifying template variables.
 
 :::info Related Configuration
-Other rook settings and features can also affect behavior or provide context, such as [config files](/docs/guides/config-files), [.goosehints](/docs/guides/context-engineering/using-goosehints), and [skills](/docs/guides/context-engineering/using-skills).
+Other rook settings and features can also affect behavior or provide context, such as [config files](/docs/guides/config-files), [.rookhints](/docs/guides/context-engineering/using-rookhints), and [skills](/docs/guides/context-engineering/using-skills).
 :::
 
 ## Managing Prompt Templates
@@ -67,8 +67,8 @@ Other rook settings and features can also affect behavior or provide context, su
 
   Custom templates are stored in:
 
-  - **macOS/Linux:** `~/.config/goose/prompts/`
-  - **Windows:** `%APPDATA%\Block\goose\config\prompts\`
+  - **macOS/Linux:** `~/.config/rook/prompts/`
+  - **Windows:** `%APPDATA%\Block\rook\config\prompts\`
 
   **To customize a template:**
 
@@ -90,16 +90,16 @@ The following default templates can be customized.
 
 | Template | Description | Applies To |
 |----------|-------------|------------|
-| [system.md](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/prompts/system.md) | General system prompt defining goose's role, capabilities, and response format | Desktop and CLI |
-| [apps_create.md](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/prompts/apps_create.md) | Prompt for generating new standalone apps (in development) | Desktop only |
-| [apps_iterate.md](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/prompts/apps_iterate.md) | Prompt for updating existing standalone apps (in development) | Desktop only |
-| [compaction.md](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/prompts/compaction.md) | Prompt for summarizing conversation history when context limits are reached | Desktop and CLI |
-| [permission_judge.md](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/prompts/permission_judge.md) | Prompt for analyzing tool operations for read-only detection | Desktop and CLI |
-| [plan.md](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/prompts/plan.md) | Instructions for creating detailed, actionable plans with clarifying questions | CLI only |
-| [recipe.md](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/prompts/recipe.md) | Prompt for generating recipe files from conversations | Desktop and CLI |
-| [subagent_system.md](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/prompts/subagent_system.md) | System prompt for subagents spawned to handle specific tasks | Desktop and CLI |
+| [system.md](https://github.com/aaif-rook/rook/blob/main/crates/rook/src/prompts/system.md) | General system prompt defining rook's role, capabilities, and response format | Desktop and CLI |
+| [apps_create.md](https://github.com/aaif-rook/rook/blob/main/crates/rook/src/prompts/apps_create.md) | Prompt for generating new standalone apps (in development) | Desktop only |
+| [apps_iterate.md](https://github.com/aaif-rook/rook/blob/main/crates/rook/src/prompts/apps_iterate.md) | Prompt for updating existing standalone apps (in development) | Desktop only |
+| [compaction.md](https://github.com/aaif-rook/rook/blob/main/crates/rook/src/prompts/compaction.md) | Prompt for summarizing conversation history when context limits are reached | Desktop and CLI |
+| [permission_judge.md](https://github.com/aaif-rook/rook/blob/main/crates/rook/src/prompts/permission_judge.md) | Prompt for analyzing tool operations for read-only detection | Desktop and CLI |
+| [plan.md](https://github.com/aaif-rook/rook/blob/main/crates/rook/src/prompts/plan.md) | Instructions for creating detailed, actionable plans with clarifying questions | CLI only |
+| [recipe.md](https://github.com/aaif-rook/rook/blob/main/crates/rook/src/prompts/recipe.md) | Prompt for generating recipe files from conversations | Desktop and CLI |
+| [subagent_system.md](https://github.com/aaif-rook/rook/blob/main/crates/rook/src/prompts/subagent_system.md) | System prompt for subagents spawned to handle specific tasks | Desktop and CLI |
 
-Customizable templates are enumerated in the `TEMPLATE_REGISTRY` array in [`prompt_template.rs`](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/prompt_template.rs).
+Customizable templates are enumerated in the `TEMPLATE_REGISTRY` array in [`prompt_template.rs`](https://github.com/aaif-rook/rook/blob/main/crates/rook/src/prompt_template.rs).
 
 ### Template Variable Syntax
 

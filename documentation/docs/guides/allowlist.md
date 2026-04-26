@@ -12,7 +12,7 @@ This guide explains how you can create an **allowlist** of safe extensions that 
 
 1. The allowlist is a YAML file that contains a list of allowed extension commands.
 2. rook fetches the allowlist from a URL specified by the `GOOSE_ALLOWLIST` environment variable.
-3. The allowlist is fetched when first needed and is cached. It is refetched on every restart of goose.
+3. The allowlist is fetched when first needed and is cached. It is refetched on every restart of rook.
 4. When a user attempts to install an extension, rook checks the MCP server's installation command against the allowlist.
 5. If the command is not in the allowlist, the extension installation is rejected.
 
@@ -54,7 +54,7 @@ After creating the allowlist, you must deploy it to a URL.
 Create an environment variable called `GOOSE_ALLOWLIST` and set the value to the URL of your YAML file:
 
 ```bash
-export GOOSE_ALLOWLIST=https://example.com/goose-allowlist.yaml
+export GOOSE_ALLOWLIST=https://example.com/rook-allowlist.yaml
 ```
 
 You can also add this export to your shell configuration file (On a Mac, it's your `~/.bashrc` or `~/.zshrc` file). 

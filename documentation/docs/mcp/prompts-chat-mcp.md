@@ -13,7 +13,7 @@ This tutorial covers how to add the [prompts.chat MCP Server](https://prompts.ch
 :::tip Quick Install
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  [Launch the installer](goose://extension?cmd=npx&arg=-y&arg=@fkadev/prompts.chat-mcp@latest&id=prompts-chat-mcp&name=prompts.chat&description=Access%20thousands%20of%20AI%20prompts%20directly%20in%20your%20AI%20assistant&env=PROMPTS_API_KEY%3DAPI%20Key%20to%20save%20and%20list%20private%20prompts)
+  [Launch the installer](rook://extension?cmd=npx&arg=-y&arg=@fkadev/prompts.chat-mcp@latest&id=prompts-chat-mcp&name=prompts.chat&description=Access%20thousands%20of%20AI%20prompts%20directly%20in%20your%20AI%20assistant&env=PROMPTS_API_KEY%3DAPI%20Key%20to%20save%20and%20list%20private%20prompts)
   </TabItem>
   <TabItem value="cli" label="rook CLI">
   **Command**
@@ -71,7 +71,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
 ## Example Usage
 
-The prompts.chat extension provides access to a curated library of AI prompts that you can search and use directly within goose. This is useful when you need inspiration or want to leverage proven prompt patterns for specific tasks.
+The prompts.chat extension provides access to a curated library of AI prompts that you can search and use directly within rook. This is useful when you need inspiration or want to leverage proven prompt patterns for specific tasks.
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>

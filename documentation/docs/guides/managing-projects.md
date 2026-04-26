@@ -6,14 +6,14 @@ sidebar_label: Managing Projects
 
 rook Projects automatically track your working directories and associated sessions, making it easy to resume work across multiple codebases with full context preservation.
 
-A **project** in rook is a record of a working directory where you've used goose. Every time you run goose, it automatically tracks the current directory as a project, storing:
+A **project** in rook is a record of a working directory where you've used rook. Every time you run rook, it automatically tracks the current directory as a project, storing:
 
 - **Path**: The absolute path to the project directory
 - **Last accessed**: When you last worked on this project  
-- **Last instruction**: The most recent command you gave to goose
+- **Last instruction**: The most recent command you gave to rook
 - **Session ID**: The associated session for context continuity
 
-Projects are stored in `~/.local/share/goose/projects.json`.
+Projects are stored in `~/.local/share/rook/projects.json`.
 
 :::info CLI Only Feature
 Projects are currently available only through the rook CLI. Desktop support is planned for future releases.
@@ -36,7 +36,7 @@ rook projects
 When resuming a project, you can continue the previous session or start fresh in that directory.
 :::
 
-For complete command syntax and options, see the [CLI Commands Guide](/docs/guides/goose-cli-commands#project).
+For complete command syntax and options, see the [CLI Commands Guide](/docs/guides/rook-cli-commands#project).
 
 ## Workflow Example
 

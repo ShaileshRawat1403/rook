@@ -36,7 +36,7 @@ Let rook complete its tasks without interruption - avoid using your mouse or key
 
   2. Choose to `Toggle Extensions`
   ```sh
-  ┌   goose-configure 
+  ┌   rook-configure 
   │
   ◇  What would you like to configure?
   │  Toggle Extensions 
@@ -72,7 +72,7 @@ In this example, I'll show you how rook can multitask, handling everything from 
 
 ### rook Prompt
 ```
-goose, I need to decompress while researching AI models for tomorrow's meeting. Can you create a relaxing environment and help me research?
+rook, I need to decompress while researching AI models for tomorrow's meeting. Can you create a relaxing environment and help me research?
 
 1. Play classical music in Safari
 2. Dim screen brightness (2 levels)

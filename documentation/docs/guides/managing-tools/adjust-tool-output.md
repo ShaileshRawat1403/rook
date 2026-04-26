@@ -42,7 +42,7 @@ rook configure
 Then choose `Adjust Tool Output`
 
 ```sh
-┌   goose-configure 
+┌   rook-configure 
 │
 ◆  What would you like to configure?
 │  ○ Configure Providers 
@@ -57,7 +57,7 @@ Then choose `Adjust Tool Output`
 Next, choose one of the available modes:
 
 ```sh
-┌   goose-configure 
+┌   rook-configure 
 │
 ◇  What would you like to configure?
 │  Adjust Tool Output 
