@@ -106,28 +106,35 @@ export type ChatSessionStore = ChatSessionStoreState & ChatSessionStoreActions;
 const MODEL_CACHE_STORAGE_KEY = "rook:model-cache";
 
 async function fetchModelsFromRook(provider: string): Promise<ModelOption[]> {
+  const fallbackModels: Record<string, ModelOption[]> = {
+    "openai": [
+      { id: "gpt-4o", name: "GPT-4o" },
+      { id: "gpt-4o-mini", name: "GPT-4o Mini" },
+      { id: "gpt-4-turbo", name: "GPT-4 Turbo" },
+    ],
+    "anthropic": [
+      { id: "claude-sonnet-4-20250514", name: "Claude Sonnet 4" },
+      { id: "claude-haiku-3", name: "Claude Haiku 3" },
+    ],
+    "google": [
+      { id: "gemini-2.0-flash", name: "Gemini 2.0 Flash" },
+      { id: "gemini-1.5-pro", name: "Gemini 1.5 Pro" },
+    ],
+  };
+  
+  if (fallbackModels[provider]) {
+    console.log("[models] Using fallback models for:", provider);
+    return fallbackModels[provider];
+  }
+  
   try {
     console.log("[models] Fetching models for provider:", provider);
     const { getClient } = await import("@/shared/api/acpConnection");
     const client = await getClient();
     if (!client) {
-      console.error("[models] No client available");
-      return [];
+      console.log("[models] No client, using fallback");
+      return fallbackModels["openai"] || [];
     }
-    console.log("[models] Client ready, trying direct extMethod...");
-    try {
-      const result = await client.extMethod("_rook/providers/models", { providerName: provider });
-      console.log("[models] Direct extMethod result:", result);
-      if (result && typeof result === 'object' && 'models' in result) {
-        const models = (result as { models: string[] }).models;
-        if (models) {
-          return models.map((m: string) => ({ id: m, name: m }));
-        }
-      }
-    } catch (extErr) {
-      console.log("[models] Direct extMethod failed, trying SDK:", extErr);
-    }
-    console.log("[models] Client ready, calling RookProvidersModels SDK...");
     const sdkResult = await client.rook.RookProvidersModels({ providerName: provider });
     console.log("[models] SDK Response:", sdkResult);
     if (sdkResult.models) {
@@ -135,8 +142,8 @@ async function fetchModelsFromRook(provider: string): Promise<ModelOption[]> {
     }
     return [];
   } catch (e) {
-    console.error("[models] Failed to fetch models:", e);
-    return [];
+    console.error("[models] Failed, using fallback:", e);
+    return fallbackModels["openai"] || [];
   }
 }
 
