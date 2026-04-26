@@ -1,5 +1,6 @@
 use tauri::{AppHandle, Emitter};
 use tokio::io::{AsyncBufReadExt, BufReader};
+use tokio::time::{timeout, Duration};
 
 use crate::services::acp::rook_serve::get_rook_command;
 
@@ -8,6 +9,16 @@ use crate::services::acp::rook_serve::get_rook_command;
 struct ModelSetupOutput {
     provider_id: String,
     line: String,
+}
+
+fn emit_output(app_handle: &AppHandle, provider_id: &str, line: &str) {
+    let _ = app_handle.emit(
+        "model-setup:output",
+        ModelSetupOutput {
+            provider_id: provider_id.to_string(),
+            line: line.to_string(),
+        },
+    );
 }
 
 #[tauri::command]
@@ -20,200 +31,114 @@ pub async fn authenticate_model_provider(
         return Err("Native Rook sign-in is not supported on Windows yet".to_string());
     }
 
-    let rook_command = get_rook_command(&app_handle)?;
-    let quoted_label = shell_quote(&provider_label);
-    let quoted_binary = shell_quote(&rook_command.as_std().get_program().to_string_lossy());
+    emit_output(&app_handle, &provider_id, "Starting Rook sign-in...");
+    emit_output(&app_handle, &provider_id, &format!("Connecting to {}...", provider_label));
 
-    let command = if cfg!(target_os = "linux") {
-        format!(
-            "printf '\\n%s\\n' {quoted_label} | script -qf /dev/null -c '{quoted_binary} configure'",
-        )
-    } else {
-        format!("printf '\\n%s\\n' {quoted_label} | script -q /dev/null {quoted_binary} configure",)
-    };
-
-    run_shell_command(&app_handle, &provider_id, &command).await
+    run_oauth_flow(&app_handle, &provider_id, &provider_label).await
 }
 
-fn shell_quote(value: &str) -> String {
-    format!("'{}'", value.replace('\'', "'\"'\"'"))
-}
-
-fn strip_ansi(value: &str) -> String {
-    let bytes = value.as_bytes();
-    let mut index = 0;
-    let mut output = String::new();
-
-    while index < bytes.len() {
-        if bytes[index] == 0x1b {
-            index += 1;
-            if index < bytes.len() && bytes[index] == b'[' {
-                index += 1;
-                while index < bytes.len() {
-                    let byte = bytes[index];
-                    index += 1;
-                    if (0x40..=0x7e).contains(&byte) {
-                        break;
-                    }
-                }
-            }
-            continue;
-        }
-
-        if bytes[index].is_ascii_control() {
-            index += 1;
-            continue;
-        }
-
-        output.push(bytes[index] as char);
-        index += 1;
-    }
-
-    output
-}
-
-fn normalize_output_line(line: &str) -> Option<String> {
-    let cleaned = strip_ansi(line);
-    let trimmed = cleaned
-        .trim()
-        .trim_start_matches(['│', '┌', '└', '◆', '◇', '●', '○'])
-        .trim();
-
-    if trimmed.is_empty()
-        || trimmed == "Configure Providers"
-        || trimmed == "What would you like to configure?"
-        || trimmed == "Which model provider should we use?"
-        || trimmed == "This will update your existing config files"
-        || trimmed.starts_with("if you prefer, you can edit them directly at")
-    {
-        return None;
-    }
-
-    Some(trimmed.to_string())
-}
-
-fn is_relevant_output(line: &str) -> bool {
-    line.starts_with("Configuring ")
-        || line.starts_with("Please visit ")
-        || line.starts_with("Open ")
-        || line.starts_with("Opening ")
-        || line.starts_with("Waiting ")
-        || line.starts_with("Authentication")
-        || line.starts_with("Authenticated")
-        || line.starts_with("Saved ")
-        || line.contains("oauth")
-        || line.contains("OAuth")
-        || line.contains("device code")
-        || line.contains("login/device")
-        || line.contains("browser")
-}
-
-async fn run_shell_command(
+async fn run_oauth_flow(
     app_handle: &AppHandle,
     provider_id: &str,
-    command: &str,
+    provider_label: &str,
 ) -> Result<(), String> {
-    let shell = if cfg!(target_os = "windows") {
-        "cmd"
-    } else {
-        "sh"
-    };
-    let flag = if cfg!(target_os = "windows") {
-        "/C"
-    } else {
-        "-c"
-    };
+    let rook_command = get_rook_command(app_handle).map_err(|e| e.to_string())?;
+    let binary_path = rook_command.as_std().get_program().to_string_lossy().to_string();
 
-    let _ = app_handle.emit(
-        "model-setup:output",
-        ModelSetupOutput {
-            provider_id: provider_id.to_string(),
-            line: "Starting Rook sign-in...".to_string(),
-        },
-    );
+    let escaped_label = provider_label.replace('\'', "'\\''");
+    let command = format!("printf '{}\\n' '{}' | '{}' configure", "%s\n", escaped_label, binary_path);
+
+    let shell = if cfg!(target_os = "windows") { "cmd" } else { "sh" };
+    let shell_arg = if cfg!(target_os = "windows") { "/C" } else { "-c" };
 
     let mut child = tokio::process::Command::new(shell)
-        .arg(flag)
-        .arg(command)
+        .arg(shell_arg)
+        .arg(&command)
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped())
         .spawn()
-        .map_err(|e| format!("Failed to start sign-in flow: {e}"))?;
+        .map_err(|e| format!("Failed to start sign-in: {e}"))?;
 
     let stdout = child.stdout.take();
     let stderr = child.stderr.take();
 
-    let provider_id_stdout = provider_id.to_string();
-    let app_stdout = app_handle.clone();
+    let provider_id_owned = provider_id.to_string();
+    let app_handle_owned = app_handle.clone();
 
-    let stdout_task = tokio::spawn(async move {
-        let mut has_relevant_output = false;
+    let provider_id_stdderr = provider_id.to_string();
+    let app_handle_stderr = app_handle.clone();
+
+    let stdout_handle = tokio::spawn(async move {
         if let Some(stdout) = stdout {
             let reader = BufReader::new(stdout);
             let mut lines = reader.lines();
             while let Ok(Some(line)) = lines.next_line().await {
-                let Some(line) = normalize_output_line(&line) else {
+                let trimmed = line.trim();
+                if trimmed.is_empty() {
                     continue;
-                };
-
-                if !has_relevant_output && is_relevant_output(&line) {
-                    has_relevant_output = true;
                 }
-
-                if has_relevant_output {
-                    let _ = app_stdout.emit(
-                        "model-setup:output",
-                        ModelSetupOutput {
-                            provider_id: provider_id_stdout.clone(),
-                            line,
-                        },
-                    );
+                let cleaned: String = trimmed
+                    .chars()
+                    .filter(|c| !['│', '┌', '└', '◆', '◇', '●', '○'].contains(c))
+                    .collect();
+                let cleaned = cleaned.trim().to_string();
+                if !cleaned.is_empty() {
+                    emit_output(&app_handle_owned, &provider_id_owned, &cleaned);
                 }
             }
         }
     });
 
-    let provider_id_stderr = provider_id.to_string();
-    let app_stderr = app_handle.clone();
-
-    let stderr_task = tokio::spawn(async move {
-        let mut has_relevant_output = false;
+    let stderr_handle = tokio::spawn(async move {
         if let Some(stderr) = stderr {
             let reader = BufReader::new(stderr);
             let mut lines = reader.lines();
             while let Ok(Some(line)) = lines.next_line().await {
-                let Some(line) = normalize_output_line(&line) else {
+                let trimmed = line.trim();
+                if trimmed.is_empty() {
                     continue;
-                };
-
-                if !has_relevant_output && is_relevant_output(&line) {
-                    has_relevant_output = true;
                 }
-
-                if has_relevant_output {
-                    let _ = app_stderr.emit(
-                        "model-setup:output",
-                        ModelSetupOutput {
-                            provider_id: provider_id_stderr.clone(),
-                            line,
-                        },
-                    );
+                let cleaned: String = trimmed
+                    .chars()
+                    .filter(|c| !['│', '┌', '└', '◆', '◇', '●', '○'].contains(c))
+                    .collect();
+                let cleaned = cleaned.trim().to_string();
+                if !cleaned.is_empty() {
+                    emit_output(&app_handle_stderr, &provider_id_stdderr, &cleaned);
                 }
             }
         }
     });
 
-    let _ = tokio::join!(stdout_task, stderr_task);
+    let result = timeout(Duration::from_secs(120), async {
+        tokio::try_join!(stdout_handle, stderr_handle)
+    })
+    .await;
 
-    let status = child
-        .wait()
-        .await
-        .map_err(|e| format!("Failed to wait for sign-in flow: {e}"))?;
+    match result {
+        Ok(Ok(_)) => {
+            let status = child
+                .wait()
+                .await
+                .map_err(|e| format!("Failed to wait: {e}"))?;
 
-    if status.success() {
-        Ok(())
-    } else {
-        let code = status.code().unwrap_or(-1);
-        Err(format!("Rook sign-in exited with code {code}"))
+            if status.success() {
+                emit_output(app_handle, provider_id, "Successfully connected!");
+                Ok(())
+            } else {
+                let code = status.code().unwrap_or(-1);
+                Err(format!("Sign-in exited with code {code}"))
+            }
+        }
+        Ok(Err(e)) => Err(format!("Error reading output: {e}")),
+        Err(_) => {
+            let _ = child.kill().await;
+            emit_output(
+                app_handle,
+                provider_id,
+                "Timed out. Check if a browser opened and complete sign-in, then restart.",
+            );
+            Err("Sign-in timed out after 2 minutes".to_string())
+        }
     }
 }
