@@ -35,9 +35,6 @@
         "enable": true,
         "scope": ["$HOME/.rook/avatars/**"]
       }
-    },
-    "deepLink": {
-      "schemes": ["rook"]
     }
   },
   "bundle": {
