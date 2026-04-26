@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
- * Builds the goose binary for target platforms and places them
- * into the corresponding npm package directories under ui/goose-binary/.
+ * Builds the rook binary for target platforms and places them
+ * into the corresponding npm package directories under ui/rook-binary/.
  *
  * Usage:
- *   npm run build:native              # build for current platform only
- *   npm run build:native:all          # build for all platforms
+ *   pnpm run build:native              # build for current platform only
+ *   pnpm run build:native:all          # build for all platforms
  *   tsx scripts/build-native.ts darwin-arm64  # build specific platform
  *
  * Prerequisites:
@@ -20,7 +20,7 @@ import { mkdirSync, copyFileSync, chmodSync, existsSync } from "fs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT = resolve(__dirname, "../../..");
-const NATIVE_DIR = resolve(ROOT, "ui/goose-binary");
+const NATIVE_DIR = resolve(ROOT, "ui/rook-binary");
 
 const RUST_TARGETS: Record<string, string> = {
   "darwin-arm64": "aarch64-apple-darwin",
@@ -51,13 +51,13 @@ function buildTarget(platform: string): void {
     throw new Error(`Unknown platform: ${platform}`);
   }
 
-  const pkgDir = resolve(NATIVE_DIR, `goose-binary-${platform}`);
+  const pkgDir = resolve(NATIVE_DIR, `rook-binary-${platform}`);
   const binDir = resolve(pkgDir, "bin");
 
   console.log(`==> Building goose for ${platform} (${rustTarget})`);
 
   try {
-    execSync(`cargo build --release --target ${rustTarget} --bin goose`, {
+    execSync(`cargo build --release --target ${rustTarget} --bin rook`, {
       cwd: ROOT,
       stdio: "inherit",
     });
@@ -124,7 +124,7 @@ async function main() {
     buildTarget(currentPlatform);
   }
 
-  console.log("==> Done. Native packages staged in ui/goose-binary/");
+  console.log("==> Done. Native packages staged in ui/rook-binary/");
 }
 
 main().catch((err) => {

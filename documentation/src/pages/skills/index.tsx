@@ -79,7 +79,7 @@ export default function SkillsPage() {
           return skill.tags?.some((tag) => values.includes(tag)) ?? false;
         }
         if (group === "Source") {
-          // Use isCommunity field from manifest (true if author is not "goose")
+          // Use isCommunity field from manifest (true if author is not "rook")
           const isCommunity = skill.isCommunity ?? false;
           if (values.includes("community")) return isCommunity;
           return true;
@@ -133,7 +133,7 @@ export default function SkillsPage() {
             >
               skills
             </Link>{" "}
-            that teach goose how to perform specific tasks. Skills are reusable
+            that teach rook how to perform specific tasks. Skills are reusable
             instruction sets with optional supporting files.
           </p>
         </div>
