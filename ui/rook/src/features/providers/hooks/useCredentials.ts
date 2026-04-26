@@ -7,6 +7,7 @@ import {
   checkAllProviderStatus,
   restartApp,
 } from "@/features/providers/api/credentials";
+import { useAgentStore } from "@/features/agents/stores/agentStore";
 import type { ProviderFieldValue } from "@/shared/types/providers";
 
 interface UseCredentialsReturn {
@@ -83,6 +84,10 @@ export function useCredentials(): UseCredentialsReturn {
 
   const completeNativeSetup = useCallback(async () => {
     await refreshStatuses();
+    // Also refresh agent store so connected providers appear in Home page
+    const { discoverAcpProviders } = await import("@/shared/api/acp");
+    const providers = await discoverAcpProviders();
+    useAgentStore.getState().setProviders(providers);
     setNeedsRestart(true);
   }, [refreshStatuses]);
 
