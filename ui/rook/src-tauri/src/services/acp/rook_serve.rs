@@ -44,10 +44,15 @@ impl RookServeProcess {
     async fn spawn(app_handle: tauri::AppHandle) -> Result<RookServeProcess, String> {
         let port = resolve_serve_port()?;
 
+        // Debug: log before attempting spawn
+        log::info!("Checking for existing rook serve on port {port}...");
+
         if is_server_ready(port).await {
             log::info!("Using existing rook serve on port {port}");
             return Ok(RookServeProcess { port, _child: None });
         }
+
+        log::info!("No existing server, will spawn new one...");
 
         // Use a stable working directory for the long-lived server process.
         // Individual sessions will set their own cwd via the ACP protocol.
