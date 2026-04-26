@@ -19,6 +19,8 @@ import {
   authenticateModelProvider,
   onModelSetupOutput,
 } from "@/features/providers/api/modelSetup";
+import { useChatSessionStore } from "@/features/chat/stores/chatSessionStore";
+import type { ModelOption } from "@/features/chat/types";
 import type {
   ProviderDisplayInfo,
   ProviderField,
@@ -162,6 +164,7 @@ export function ModelProviderRow({
 
     try {
       await authenticateModelProvider(provider.id, provider.nativeConnectQuery);
+      await loadModelsForProvider(provider.id);
       await onCompleteNativeSetup();
     } catch (nextError) {
       setSetupError(
@@ -174,6 +177,16 @@ export function ModelProviderRow({
       setAuthenticating(false);
     }
   }
+
+  const loadModelsForProvider = async (providerId: string) => {
+    try {
+      const store = useChatSessionStore.getState();
+      const models: ModelOption[] = [];
+      store.cacheModelsForProvider(providerId, models);
+    } catch (e) {
+      console.error("Failed to load models after OAuth:", e);
+    }
+  };
 
   function handleToggle() {
     setExpanded((current) => {
