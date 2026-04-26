@@ -149,7 +149,7 @@ enum TestMode {
     vec![
         CallToolRequestParams::new("get_file_contents").with_arguments(object!({
             "owner": "block",
-            "repo": "goose",
+            "repo": "rook",
             "path": "README.md",
             "sha": "ab62b863c1666232a67048b6c4e10007a2a5b83c"
         })),
@@ -184,11 +184,11 @@ async fn test_replayed_session(
     std::env::set_var("ROOK_MCP_CLIENT_VERSION", "0.0.0");
 
     // Setup test file for developer extension tests
-    let test_file_path = "/tmp/rook_test/goose.txt";
+    let test_file_path = "/tmp/rook_test/rook.txt";
     if let Some(parent) = std::path::Path::new(test_file_path).parent() {
         fs::create_dir_all(parent).ok();
     }
-    fs::write(test_file_path, "# goose\n").ok();
+    fs::write(test_file_path, "# rook\n").ok();
     let replay_file_name = command
         .iter()
         .map(|s| s.replace("/", "_"))

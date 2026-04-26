@@ -1,11 +1,11 @@
 //! ACP Client Example
 //!
-//! Spawns `goose acp` as a child process and sends it a completion request
+//! Spawns `rook acp` as a child process and sends it a completion request
 //! using the Agent Client Protocol over stdio.
 //!
 //! # Prerequisites
 //!
-//! You must have goose built and a provider configured (`rook configure`).
+//! You must have rook built and a provider configured (`rook configure`).
 //!
 //! # Usage
 //!
@@ -13,10 +13,10 @@
 //! cargo run -p rook-sdk --example acp_client -- "What is 2 + 2?"
 //! ```
 //!
-//! Or with a custom goose binary path:
+//! Or with a custom rook binary path:
 //!
 //! ```bash
-//! cargo run -p rook-sdk --example acp_client -- --rook-bin ./target/debug/goose "Explain Rust's ownership model in one sentence"
+//! cargo run -p rook-sdk --example acp_client -- --rook-bin ./target/debug/rook "Explain Rust's ownership model in one sentence"
 //! ```
 
 use rook_sdk::custom_requests::GetExtensionsRequest;
@@ -132,7 +132,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn parse_args(args: &[String]) -> Result<(PathBuf, String), String> {
-    let mut rook_bin = PathBuf::from("goose");
+    let mut rook_bin = PathBuf::from("rook");
     let mut i = 0;
 
     while i < args.len() {

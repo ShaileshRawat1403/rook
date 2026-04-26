@@ -77,7 +77,7 @@ fn test_custom_get_tools() {
 
         let result = send_custom(
             conn.cx(),
-            "_goose/tools",
+            "_rook/tools",
             serde_json::json!({ "sessionId": session_id }),
         )
         .await;
@@ -95,8 +95,7 @@ fn test_custom_get_extensions() {
         let openai = OpenAiFixture::new(vec![], Arc::new(EnforceSessionId::default())).await;
         let conn = AcpServerConnection::new(TestConnectionConfig::default(), openai).await;
 
-        let result =
-            send_custom(conn.cx(), "_goose/config/extensions", serde_json::json!({})).await;
+        let result = send_custom(conn.cx(), "_rook/config/extensions", serde_json::json!({})).await;
         assert!(result.is_ok(), "expected ok, got: {:?}", result);
 
         let response = result.unwrap();
@@ -117,7 +116,7 @@ fn test_custom_list_providers() {
         let openai = OpenAiFixture::new(vec![], Arc::new(EnforceSessionId::default())).await;
         let conn = AcpServerConnection::new(TestConnectionConfig::default(), openai).await;
 
-        let response = send_custom(conn.cx(), "_goose/providers/list", serde_json::json!({}))
+        let response = send_custom(conn.cx(), "_rook/providers/list", serde_json::json!({}))
             .await
             .expect("provider list should succeed");
         let providers = response
@@ -127,7 +126,7 @@ fn test_custom_list_providers() {
 
         assert!(
             providers.iter().any(|provider| {
-                provider.get("id") == Some(&serde_json::json!("goose"))
+                provider.get("id") == Some(&serde_json::json!("rook"))
                     && provider.get("label") == Some(&serde_json::json!("Rook (Default)"))
             }),
             "expected Rook default provider sentinel"
@@ -136,7 +135,7 @@ fn test_custom_list_providers() {
             providers
                 .iter()
                 .any(|provider| provider.get("id") == Some(&serde_json::json!("openai"))),
-            "expected at least one concrete provider from the goose registry"
+            "expected at least one concrete provider from the rook registry"
         );
     });
 }
@@ -149,7 +148,7 @@ fn test_custom_config_crud() {
 
         send_custom(
             conn.cx(),
-            "_goose/config/upsert",
+            "_rook/config/upsert",
             serde_json::json!({
                 "key": "ROOK_PROVIDER",
                 "value": "anthropic",
@@ -160,7 +159,7 @@ fn test_custom_config_crud() {
 
         let response = send_custom(
             conn.cx(),
-            "_goose/config/read",
+            "_rook/config/read",
             serde_json::json!({
                 "key": "ROOK_PROVIDER",
             }),
@@ -171,7 +170,7 @@ fn test_custom_config_crud() {
 
         send_custom(
             conn.cx(),
-            "_goose/config/remove",
+            "_rook/config/remove",
             serde_json::json!({
                 "key": "ROOK_PROVIDER",
             }),
@@ -181,7 +180,7 @@ fn test_custom_config_crud() {
 
         let response = send_custom(
             conn.cx(),
-            "_goose/config/read",
+            "_rook/config/read",
             serde_json::json!({
                 "key": "ROOK_PROVIDER",
             }),
@@ -214,9 +213,9 @@ fn test_provider_switching_updates_session_state() {
             .await
             .expect("provider switch to openai should succeed");
 
-        conn.set_config_option(&session_id, "provider", "goose")
+        conn.set_config_option(&session_id, "provider", "rook")
             .await
-            .expect("provider reset to goose should succeed");
+            .expect("provider reset to rook should succeed");
     });
 }
 

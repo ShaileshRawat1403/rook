@@ -64,7 +64,7 @@ async def setup_agent() -> None:
         # First create the agent
         response = await client.post(
             f"{GOOSE_URL}/agent/update_provider",
-            json={"provider": "databricks", "model": "goose"},
+            json={"provider": "databricks", "model": "rook"},
             headers={"X-Secret-Key": SECRET_KEY},
         )
         response.raise_for_status()

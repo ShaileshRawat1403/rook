@@ -368,15 +368,15 @@ fn strip_config_options(transport: DuplexTransport) -> Channel {
         let mut stripped_initial_config = HashSet::new();
 
         let rook_to_server = async {
-            let mut from_goose = filter.rx;
-            while let Some(msg) = from_goose.next().await {
+            let mut from_rook = filter.rx;
+            while let Some(msg) = from_rook.next().await {
                 if server.tx.unbounded_send(msg).is_err() {
                     break;
                 }
             }
         };
 
-        let server_to_goose = async {
+        let server_to_rook = async {
             let mut from_server = server.rx;
             while let Some(msg) = from_server.next().await {
                 let msg = match msg {
@@ -444,7 +444,7 @@ fn strip_config_options(transport: DuplexTransport) -> Channel {
             }
         };
 
-        futures::join!(rook_to_server, server_to_goose);
+        futures::join!(rook_to_server, server_to_rook);
     });
 
     client_channel
