@@ -7,7 +7,7 @@ unlisted: true
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 
 <YouTubeShortEmbed videoUrl="https://www.youtube.com/embed/p9HGYbJk9wU" />
 
@@ -96,7 +96,7 @@ You'll need to re-authenticate once a day when using the Google Drive extension.
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseDesktopInstaller
+  <RookDesktopInstaller
     extensionId="google-drive"
     extensionName="Google Drive"
     description="Google Drive integration"

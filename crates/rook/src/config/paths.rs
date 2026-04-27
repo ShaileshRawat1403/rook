@@ -13,12 +13,9 @@ impl Paths {
                 DirType::State => base.join("state"),
             }
         } else {
-            // NOTE: "Block" is kept here for backwards compatibility with existing
-            // user config/data directories (e.g. ~/Library/Application Support/Block/rook/).
-            // Changing this would orphan existing installations.
             let strategy = choose_app_strategy(AppStrategyArgs {
-                top_level_domain: "Block".to_string(),
-                author: "Block".to_string(),
+                top_level_domain: "Rook".to_string(),
+                author: "Rook".to_string(),
                 app_name: "rook".to_string(),
             })
             .expect("rook requires a home dir");

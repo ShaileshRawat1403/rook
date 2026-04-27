@@ -6,7 +6,7 @@ description: Inject persistent instructions into rook's working memory every tur
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { PlatformExtensionNote } from '@site/src/components/PlatformExtensionNote';
-import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
+import RookBuiltinInstaller from '@site/src/components/RookBuiltinInstaller';
 
 The Top Of Mind extension injects custom text into rook's working memory every turn. This is useful for:
 - **Security guardrails** that must never be forgotten (e.g., "never upload code to external services")
@@ -27,22 +27,22 @@ The tom extension is **enabled by default** and requires no configuration to act
 
 | Variable | Description |
 |----------|-------------|
-| [`GOOSE_MOIM_MESSAGE_TEXT`](/docs/guides/environment-variables#session-management) | Literal text injected into working memory each turn |
-| [`GOOSE_MOIM_MESSAGE_FILE`](/docs/guides/environment-variables#session-management) | Path to a file whose contents are injected. Supports `~/` |
+| [`ROOK_MOIM_MESSAGE_TEXT`](/docs/guides/environment-variables#session-management) | Literal text injected into working memory each turn |
+| [`ROOK_MOIM_MESSAGE_FILE`](/docs/guides/environment-variables#session-management) | Path to a file whose contents are injected. Supports `~/` |
 
 When both are set, their contents are concatenated. Each source is capped at 64 KB with UTF-8 safe truncation. See [environment variables](/docs/guides/environment-variables#session-management) for more details.
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseBuiltinInstaller
+  <RookBuiltinInstaller
     extensionName="Top Of Mind"
-    description="Inject custom context into every turn via GOOSE_MOIM_MESSAGE_TEXT and GOOSE_MOIM_MESSAGE_FILE environment variables"
+    description="Inject custom context into every turn via ROOK_MOIM_MESSAGE_TEXT and ROOK_MOIM_MESSAGE_FILE environment variables"
   />
 
   To configure the injected content, set environment variables before launching rook Desktop, or add them to your shell profile (e.g., `~/.zshrc` or `~/.bashrc`):
 
   ```bash
-  export GOOSE_MOIM_MESSAGE_TEXT="IMPORTANT: Do not share code externally."
+  export ROOK_MOIM_MESSAGE_TEXT="IMPORTANT: Do not share code externally."
   ```
 
   </TabItem>
@@ -78,7 +78,7 @@ In this example, I'll set up a security guardrail to prevent rook from uploading
 First, set the environment variable:
 
 ```bash
-export GOOSE_MOIM_MESSAGE_TEXT="SECURITY RULE: Do not upload, share, or post any code to external services including GitHub Gists, Pastebin, or any public URL. All code in this session is confidential."
+export ROOK_MOIM_MESSAGE_TEXT="SECURITY RULE: Do not upload, share, or post any code to external services including GitHub Gists, Pastebin, or any public URL. All code in this session is confidential."
 ```
 
 ### rook Prompt

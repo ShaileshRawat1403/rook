@@ -6,7 +6,7 @@ description: Add Neighborhood as a rook Extension
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
 
 <YouTubeShortEmbed videoUrl="https://www.youtube.com/embed/qY2i83l6dCQ" />
@@ -38,7 +38,7 @@ In this tutorial, you'll learn how to set up the Neighborhood extension and use 
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-    <GooseDesktopInstaller
+    <RookDesktopInstaller
       extensionId="neighborhood"
       extensionName="Neighborhood"
       description="Discover nearby restaurants, browse menus, and place takeout orders through natural conversation."

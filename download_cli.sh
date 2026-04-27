@@ -18,7 +18,7 @@ set -eu
 #   ROOK_VERSION   - Optional: specific version to install (e.g., "v1.0.25"). Overrides CANARY. Can be in the format vX.Y.Z, vX.Y.Z-suffix, or X.Y.Z
 #   ROOK_PROVIDER  - Optional: provider for rook
 #   ROOK_MODEL     - Optional: model for rook
-#   GOOSE_*        - Legacy aliases still accepted for compatibility
+#   ROOK_*        - Legacy aliases still accepted for compatibility
 #   CANARY         - Optional: if set to "true", downloads from canary release instead of stable
 #   CONFIGURE      - Optional: if set to "false", disables running rook configure interactively
 #   ** other provider specific environment variables (eg. DATABRICKS_HOST)
@@ -71,11 +71,11 @@ else
     DEFAULT_BIN_DIR="$HOME/.local/bin"
 fi
 
-ROOK_BIN_DIR="${ROOK_BIN_DIR:-${GOOSE_BIN_DIR:-$DEFAULT_BIN_DIR}}"
+ROOK_BIN_DIR="${ROOK_BIN_DIR:-${ROOK_BIN_DIR:-$DEFAULT_BIN_DIR}}"
 RELEASE="${CANARY:-false}"
 CONFIGURE="${CONFIGURE:-true}"
-if [ -n "${ROOK_VERSION:-${GOOSE_VERSION:-}}" ]; then
-  ROOK_VERSION="${ROOK_VERSION:-${GOOSE_VERSION:-}}"
+if [ -n "${ROOK_VERSION:-${ROOK_VERSION:-}}" ]; then
+  ROOK_VERSION="${ROOK_VERSION:-${ROOK_VERSION:-}}"
   # Validate the version format
   if [[ ! "$ROOK_VERSION" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+(-.*)?$ ]]; then
     echo "[error]: invalid version '$ROOK_VERSION'."
@@ -200,7 +200,7 @@ DOWNLOAD_URL="https://github.com/$REPO/releases/download/$RELEASE_TAG/$FILE"
 echo "Downloading $RELEASE_TAG release: $FILE..."
 if ! curl -sLf "$DOWNLOAD_URL" --output "$FILE"; then
   # If the download fails, only fall back to latest stable when no version was specified and canary was not requested).
-  if ! [ -n "${GOOSE_VERSION:-}" ] && [ "${CANARY:-false}" != "true" ]; then
+  if ! [ -n "${ROOK_VERSION:-}" ] && [ "${CANARY:-false}" != "true" ]; then
     LATEST_TAG=$(curl -s https://api.github.com/repos/aaif-rook/rook/releases/latest | \
       grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
     if [ -z "$LATEST_TAG" ]; then
@@ -284,30 +284,30 @@ else
   chmod +x "$EXTRACT_DIR/rook"
 fi
 
-# --- 5) Install to $GOOSE_BIN_DIR ---
-if [ ! -d "$GOOSE_BIN_DIR" ]; then
-  echo "Creating directory: $GOOSE_BIN_DIR"
-  mkdir -p "$GOOSE_BIN_DIR"
+# --- 5) Install to $ROOK_BIN_DIR ---
+if [ ! -d "$ROOK_BIN_DIR" ]; then
+  echo "Creating directory: $ROOK_BIN_DIR"
+  mkdir -p "$ROOK_BIN_DIR"
 fi
 
-echo "Moving rook to $GOOSE_BIN_DIR/$OUT_FILE"
+echo "Moving rook to $ROOK_BIN_DIR/$OUT_FILE"
 if [ "$OS" = "windows" ]; then
-  mv "$EXTRACT_DIR/rook.exe" "$GOOSE_BIN_DIR/$OUT_FILE"
+  mv "$EXTRACT_DIR/rook.exe" "$ROOK_BIN_DIR/$OUT_FILE"
 else
   # On Linux, if the target binary is currently running, writing to it fails
   # with ETXTBSY ("Text file busy"). Rename the old binary out of the way
   # first, then move the new one in. If the move fails, restore the old binary
   # so the user is never left without an executable.
-  if [ -f "$GOOSE_BIN_DIR/$OUT_FILE" ]; then
-    mv "$GOOSE_BIN_DIR/$OUT_FILE" "$GOOSE_BIN_DIR/$OUT_FILE.old"
-    if ! mv "$EXTRACT_DIR/rook" "$GOOSE_BIN_DIR/$OUT_FILE"; then
+  if [ -f "$ROOK_BIN_DIR/$OUT_FILE" ]; then
+    mv "$ROOK_BIN_DIR/$OUT_FILE" "$ROOK_BIN_DIR/$OUT_FILE.old"
+    if ! mv "$EXTRACT_DIR/rook" "$ROOK_BIN_DIR/$OUT_FILE"; then
       echo "Error: failed to install new binary, restoring previous version"
-      mv "$GOOSE_BIN_DIR/$OUT_FILE.old" "$GOOSE_BIN_DIR/$OUT_FILE"
+      mv "$ROOK_BIN_DIR/$OUT_FILE.old" "$ROOK_BIN_DIR/$OUT_FILE"
       exit 1
     fi
-    rm -f "$GOOSE_BIN_DIR/$OUT_FILE.old"
+    rm -f "$ROOK_BIN_DIR/$OUT_FILE.old"
   else
-    mv "$EXTRACT_DIR/rook" "$GOOSE_BIN_DIR/$OUT_FILE"
+    mv "$EXTRACT_DIR/rook" "$ROOK_BIN_DIR/$OUT_FILE"
   fi
 fi
 
@@ -316,7 +316,7 @@ if [ "$OS" = "windows" ]; then
   for dll in "$EXTRACT_DIR"/*.dll; do
     if [ -f "$dll" ]; then
       echo "Moving Windows runtime DLL: $(basename "$dll")"
-      mv "$dll" "$GOOSE_BIN_DIR/"
+      mv "$dll" "$ROOK_BIN_DIR/"
     fi
   done
 fi
@@ -327,7 +327,7 @@ if [ "$CONFIGURE" = true ]; then
   echo ""
   echo "Configuring rook"
   echo ""
-  "$GOOSE_BIN_DIR/$OUT_FILE" configure
+  "$ROOK_BIN_DIR/$OUT_FILE" configure
 else
   echo "Skipping 'rook configure', you may need to run this manually later"
 fi
@@ -335,9 +335,9 @@ fi
 
 
 # --- 7) Check PATH and give instructions if needed ---
-if [[ ":$PATH:" != *":$GOOSE_BIN_DIR:"* ]]; then
+if [[ ":$PATH:" != *":$ROOK_BIN_DIR:"* ]]; then
   echo ""
-  echo "Warning: rook installed, but $GOOSE_BIN_DIR is not in your PATH."
+  echo "Warning: rook installed, but $ROOK_BIN_DIR is not in your PATH."
 
   if [ "$OS" = "windows" ]; then
     echo "To add rook to your PATH in PowerShell:"
@@ -356,7 +356,7 @@ if [[ ":$PATH:" != *":$GOOSE_BIN_DIR:"* ]]; then
     SHELL_NAME=$(basename "$SHELL")
 
     echo ""
-    echo "The \$GOOSE_BIN_DIR is not in your PATH."
+    echo "The \$ROOK_BIN_DIR is not in your PATH."
 
     if [ "$CONFIGURE" = true ]; then
       echo "What would you like to do?"
@@ -378,23 +378,23 @@ if [[ ":$PATH:" != *":$GOOSE_BIN_DIR:"* ]]; then
       case "$choice" in
       1)
         RC_FILE="$HOME/.${SHELL_NAME}rc"
-        echo "Adding \$GOOSE_BIN_DIR to $RC_FILE..."
-        echo "export PATH=\"$GOOSE_BIN_DIR:\$PATH\"" >> "$RC_FILE"
+        echo "Adding \$ROOK_BIN_DIR to $RC_FILE..."
+        echo "export PATH=\"$ROOK_BIN_DIR:\$PATH\"" >> "$RC_FILE"
         echo "Done! Reload your shell or run 'source $RC_FILE' to apply changes."
         ;;
       2)
         echo ""
         echo "Add it to your PATH by editing ~/.${SHELL_NAME}rc or similar:"
-        echo "    export PATH=\"$GOOSE_BIN_DIR:\$PATH\""
+        echo "    export PATH=\"$ROOK_BIN_DIR:\$PATH\""
         echo "Then reload your shell (e.g. 'source ~/.${SHELL_NAME}rc') to apply changes."
         ;;
       *)
-        echo "Invalid choice. Please add \$GOOSE_BIN_DIR to your PATH manually."
+        echo "Invalid choice. Please add \$ROOK_BIN_DIR to your PATH manually."
         ;;
       esac
     else
       echo ""
-      echo "Configure disabled. Please add \$GOOSE_BIN_DIR to your PATH manually."
+      echo "Configure disabled. Please add \$ROOK_BIN_DIR to your PATH manually."
     fi
 
   fi

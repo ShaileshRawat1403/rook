@@ -4,10 +4,10 @@ import Admonition from "@theme/Admonition";
 const SupportedEnvironments = () => {
   return (
     <Admonition type="info" title="Supported Environments">
-      The goose CLI currently works on <strong>macOS</strong> and <strong>Linux</strong> systems and supports both <strong>ARM</strong> and <strong>x86</strong> architectures. 
-      On <strong>Windows</strong>, goose CLI can run via WSL, and goose Desktop is natively supported. If you'd like to request support for additional operating systems, please{" "}
+      The rook CLI currently works on <strong>macOS</strong> and <strong>Linux</strong> systems and supports both <strong>ARM</strong> and <strong>x86</strong> architectures. 
+      On <strong>Windows</strong>, rook CLI can run via WSL, and rook Desktop is natively supported. If you'd like to request support for additional operating systems, please{" "}
       <a
-        href="https://github.com/aaif-goose/goose/discussions/867"
+        href="https://github.com/ShaileshRawat1403/rook/discussions/867"
         target="_blank"
         rel="noopener noreferrer"
       >

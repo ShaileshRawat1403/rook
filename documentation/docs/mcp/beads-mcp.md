@@ -6,7 +6,7 @@ description: Add Beads MCP Server as a rook Extension
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 
 <!-- <YouTubeShortEmbed videoUrl="https://www.youtube.com/embed/VIDEO_ID" /> -->
 
@@ -41,7 +41,7 @@ uv tool install beads-mcp --with packaging
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-    <GooseDesktopInstaller
+    <RookDesktopInstaller
       extensionId="beads"
       extensionName="Beads"
       description="Git-backed issue tracker for AI agent task management"

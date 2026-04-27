@@ -7,7 +7,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 
 
 <YouTubeShortEmbed videoUrl="https://www.youtube.com/embed/6aV8pinnUS8" /> 
@@ -33,7 +33,7 @@ This tutorial covers how to add the [Git MCP Server](https://github.com/idosal/g
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-    <GooseDesktopInstaller
+    <RookDesktopInstaller
         extensionId="Git-mcp"
         extensionName="Git mcp"
         description="Git MCP server for up-to-date docs and project insights"

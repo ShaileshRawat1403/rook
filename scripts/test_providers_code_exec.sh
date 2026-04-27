@@ -9,7 +9,7 @@ echo ""
 
 # --- Setup ---
 
-GOOSE_BIN=$(build_rook)
+ROOK_BIN=$(build_rook)
 BUILTINS="memory,code_execution"
 
 # --- Test case ---
@@ -22,9 +22,9 @@ run_test() {
 
   # Run rook
   (
-    export GOOSE_PROVIDER="$provider"
-    export GOOSE_MODEL="$model"
-    cd "$testdir" && "$GOOSE_BIN" run --text "$prompt" --with-builtin "$BUILTINS" 2>&1
+    export ROOK_PROVIDER="$provider"
+    export ROOK_MODEL="$model"
+    cd "$testdir" && "$ROOK_BIN" run --text "$prompt" --with-builtin "$BUILTINS" 2>&1
   ) > "$output_file" 2>&1
 
   # Matches: "execute_typescript | code_execution", "get_function_details | code_execution",

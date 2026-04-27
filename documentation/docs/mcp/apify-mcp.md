@@ -6,7 +6,7 @@ description: Add Apify MCP server as a rook Extension
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 
 This tutorial covers how to add the [Apify MCP server](https://mcp.apify.com) as a rook extension, enabling rook to call thousands of tools from [Apify Store](https://apify.com/store) to extract data from social media, e-commerce sites, search engines, online maps, or any other website.
 
@@ -39,7 +39,7 @@ This tutorial covers how to add the [Apify MCP server](https://mcp.apify.com) as
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-    <GooseDesktopInstaller
+    <RookDesktopInstaller
       extensionId="apify"
       extensionName="Apify"
       description="Extract data from any website with thousands of scrapers, crawlers, and automations on Apify Store"
@@ -99,7 +99,7 @@ APIFY_TOKEN: <YOUR_APIFY_TOKEN>
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-    <GooseDesktopInstaller
+    <RookDesktopInstaller
       extensionId="mcp_apify_local"
       extensionName="Apify Local MCP Server"
       description="Extract data from any website with thousands of scrapers, crawlers, and automations on Apify Store"

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-REPO="${GOOSE_GITHUB_REPO:-$(git remote get-url origin | sed 's|.*github.com[:/]||;s|\.git$||')}"
+REPO="${ROOK_GITHUB_REPO:-$(git remote get-url origin | sed 's|.*github.com[:/]||;s|\.git$||')}"
 DEST="$HOME/Downloads"
 TMPDIR=$(mktemp -d)
 PLIST=$(mktemp /tmp/entitlements.XXXXXX)
@@ -64,7 +64,7 @@ if [[ -z "$APP" ]]; then
     exit 1
 fi
 
-APP_NAME="Goose ${VERSION}.app"
+APP_NAME="Rook ${VERSION}.app"
 rm -rf "$DEST/$APP_NAME"
 cp -R "$APP" "$DEST/$APP_NAME"
 APP_PATH="$DEST/$APP_NAME"

@@ -7,7 +7,7 @@ description: Connect rook to your Bitcoin Lightning Wallet
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 import { PanelLeft } from 'lucide-react';
 
 
@@ -49,7 +49,7 @@ You'll need [Node.js](https://nodejs.org/) installed on your system to run this 
   <TabItem value="ui" label="rook Desktop" default>
     <Tabs>
       <TabItem value="local" label="Local" default>
-        <GooseDesktopInstaller
+        <RookDesktopInstaller
           extensionId="alby"
           extensionName="Alby"
           description="Connect rook to your Bitcoin Lightning Wallet"
@@ -62,7 +62,7 @@ You'll need [Node.js](https://nodejs.org/) installed on your system to run this 
         />
       </TabItem>
       <TabItem value="remote" label="Remote">
-          <GooseDesktopInstaller
+          <RookDesktopInstaller
             extensionId="alby-remote"
             extensionName="Alby"
             description="Connect rook to your Bitcoin Lightning Wallet"

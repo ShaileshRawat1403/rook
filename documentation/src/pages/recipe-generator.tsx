@@ -101,7 +101,7 @@ export default function RecipeGenerator() {
         });
 
         // Use window.btoa for browser compatibility
-        return `goose://recipe?config=${window.btoa(JSON.stringify(recipeConfig))}`;
+        return `rook://recipe?config=${window.btoa(JSON.stringify(recipeConfig))}`;
       } else {
         // Generate YAML format
         const enabledExtensions = extensionsList.filter(ext => ext.enabled);
@@ -435,7 +435,7 @@ instructions: ${instructions}
                 <li>Copy the generated YAML using the "Copy YAML" button.</li>
                 <li>Save it as a <code>.yaml</code> file.</li>
                 <li>Use with the CLI: <code>rook run --recipe your-recipe.yaml</code></li>
-                <li>Or create a deeplink with: <code>goose recipe deeplink your-recipe.yaml</code></li>
+                <li>Or create a deeplink with: <code>rook recipe deeplink your-recipe.yaml</code></li>
               </ul>
             </li>
           </ol>

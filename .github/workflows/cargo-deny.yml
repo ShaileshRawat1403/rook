@@ -18,7 +18,7 @@ on:
 jobs:
   deny:
     runs-on: ubuntu-latest
-    if: github.repository == 'aaif-goose/goose'
+    if: github.repository == 'ShaileshRawat1403/rook'
     permissions:
       contents: read
     steps:

@@ -3,7 +3,7 @@ import type { MCPServer } from "@site/src/types/server";
 import Link from "@docusaurus/Link";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getGooseInstallLink } from "@site/src/utils/install-links";
+import { getRookInstallLink } from "@site/src/utils/install-links";
 import { fetchGitHubStars, formatStarCount } from "@site/src/utils/github-stars";
 
 const getExtensionCommand = (server: MCPServer): string => {
@@ -141,7 +141,7 @@ export function ServerCard({ server }: { server: MCPServer }) {
                   </div>
                 ) : server.show_install_link !== false ? (
                   <a
-                    href={getGooseInstallLink(server)}
+                    href={getRookInstallLink(server)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="install-button"

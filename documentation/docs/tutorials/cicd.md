@@ -69,15 +69,15 @@ jobs:
            run: |
               mkdir -p /home/runner/.local/bin
               curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh \
-                | ROOK_VERSION=REPLACE_WITH_VERSION CONFIGURE=false GOOSE_BIN_DIR=/home/runner/.local/bin bash
+                | ROOK_VERSION=REPLACE_WITH_VERSION CONFIGURE=false ROOK_BIN_DIR=/home/runner/.local/bin bash
               echo "/home/runner/.local/bin" >> $GITHUB_PATH
 
          - name: Configure rook
            run: |
               mkdir -p ~/.config/rook
               cat <<EOF > ~/.config/rook/config.yaml
-              GOOSE_PROVIDER: REPLACE_WITH_PROVIDER
-              GOOSE_MODEL: REPLACE_WITH_MODEL
+              ROOK_PROVIDER: REPLACE_WITH_PROVIDER
+              ROOK_MODEL: REPLACE_WITH_MODEL
               keyring: false
               EOF
 
@@ -159,15 +159,15 @@ steps:
       run: |
           mkdir -p /home/runner/.local/bin
           curl -fsSL https://github.com/aaif-rook/rook/releases/download/stable/download_cli.sh \
-            | ROOK_VERSION=REPLACE_WITH_VERSION CONFIGURE=false GOOSE_BIN_DIR=/home/runner/.local/bin bash
+            | ROOK_VERSION=REPLACE_WITH_VERSION CONFIGURE=false ROOK_BIN_DIR=/home/runner/.local/bin bash
           echo "/home/runner/.local/bin" >> $GITHUB_PATH
 
     - name: Configure rook
       run: |
           mkdir -p ~/.config/rook
           cat <<EOF > ~/.config/rook/config.yaml
-          GOOSE_PROVIDER: REPLACE_WITH_PROVIDER
-          GOOSE_MODEL: REPLACE_WITH_MODEL
+          ROOK_PROVIDER: REPLACE_WITH_PROVIDER
+          ROOK_MODEL: REPLACE_WITH_MODEL
           keyring: false
           EOF
 ```
@@ -178,7 +178,7 @@ In CI/CD, we recommend pinning a specific rook version with `ROOK_VERSION` for r
 
 Relevant installer options for CI:
 - `ROOK_VERSION`: the version to pin the install to (both `1.21.1` and `v1.21.1` formats are supported)
-- `GOOSE_BIN_DIR`: install directory (make sure this directory is on `PATH`)
+- `ROOK_BIN_DIR`: install directory (make sure this directory is on `PATH`)
 - `CONFIGURE=false`: skip interactive `rook configure` flow
 
 :::info Replacements

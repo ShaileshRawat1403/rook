@@ -16,24 +16,24 @@ These are the minimum required variables to get started with rook.
 
 | Variable | Purpose | Values | Default |
 |----------|---------|---------|---------|
-| `GOOSE_PROVIDER` | Specifies the LLM provider to use | [See available providers](/docs/getting-started/providers#available-providers) | None (must be [configured](/docs/getting-started/providers#configure-provider-and-model)) |
-| `GOOSE_MODEL` | Specifies which model to use from the provider | Model name (e.g., "gpt-4", "claude-sonnet-4-20250514") | None (must be [configured](/docs/getting-started/providers#configure-provider-and-model)) |
-| `GOOSE_TEMPERATURE` | Sets the [temperature](https://medium.com/@kelseyywang/a-comprehensive-guide-to-llm-temperature-%EF%B8%8F-363a40bbc91f) for model responses | Float between 0.0 and 1.0 | Model-specific default |
-| `GOOSE_MAX_TOKENS` | Sets the maximum number of tokens for each model response (truncates longer responses) | Positive integer (e.g., 4096, 8192) | Model-specific default |
+| `ROOK_PROVIDER` | Specifies the LLM provider to use | [See available providers](/docs/getting-started/providers#available-providers) | None (must be [configured](/docs/getting-started/providers#configure-provider-and-model)) |
+| `ROOK_MODEL` | Specifies which model to use from the provider | Model name (e.g., "gpt-4", "claude-sonnet-4-20250514") | None (must be [configured](/docs/getting-started/providers#configure-provider-and-model)) |
+| `ROOK_TEMPERATURE` | Sets the [temperature](https://medium.com/@kelseyywang/a-comprehensive-guide-to-llm-temperature-%EF%B8%8F-363a40bbc91f) for model responses | Float between 0.0 and 1.0 | Model-specific default |
+| `ROOK_MAX_TOKENS` | Sets the maximum number of tokens for each model response (truncates longer responses) | Positive integer (e.g., 4096, 8192) | Model-specific default |
 
 **Examples**
 
 ```bash
 # Basic model configuration
-export GOOSE_PROVIDER="anthropic"
-export GOOSE_MODEL="claude-sonnet-4-5-20250929"
-export GOOSE_TEMPERATURE=0.7
+export ROOK_PROVIDER="anthropic"
+export ROOK_MODEL="claude-sonnet-4-5-20250929"
+export ROOK_TEMPERATURE=0.7
 
 # Set a lower limit for shorter interactions
-export GOOSE_MAX_TOKENS=4096
+export ROOK_MAX_TOKENS=4096
 
 # Set a higher limit for tasks requiring longer output (e.g. code generation)
-export GOOSE_MAX_TOKENS=16000
+export ROOK_MAX_TOKENS=16000
 ```
 
 ### Advanced Provider Configuration
@@ -42,18 +42,18 @@ These variables are needed when using custom endpoints, enterprise deployments, 
 
 | Variable | Purpose | Values | Default |
 |----------|---------|---------|---------|
-| `GOOSE_PROVIDER__TYPE` | The specific type/implementation of the provider | [See available providers](/docs/getting-started/providers#available-providers) | Derived from GOOSE_PROVIDER |
-| `GOOSE_PROVIDER__HOST` | Custom API endpoint for the provider | URL (e.g., "https://api.openai.com") | Provider-specific default |
-| `GOOSE_PROVIDER__API_KEY` | Authentication key for the provider | API key string | None |
+| `ROOK_PROVIDER__TYPE` | The specific type/implementation of the provider | [See available providers](/docs/getting-started/providers#available-providers) | Derived from ROOK_PROVIDER |
+| `ROOK_PROVIDER__HOST` | Custom API endpoint for the provider | URL (e.g., "https://api.openai.com") | Provider-specific default |
+| `ROOK_PROVIDER__API_KEY` | Authentication key for the provider | API key string | None |
 | `GEMINI3_THINKING_LEVEL` | Sets the [thinking level](/docs/getting-started/providers#gemini-3-thinking-levels) for Gemini 3 models globally | `low`, `high` | `low` |
 
 **Examples**
 
 ```bash
 # Advanced provider configuration
-export GOOSE_PROVIDER__TYPE="anthropic"
-export GOOSE_PROVIDER__HOST="https://api.anthropic.com"
-export GOOSE_PROVIDER__API_KEY="your-api-key-here"
+export ROOK_PROVIDER__TYPE="anthropic"
+export ROOK_PROVIDER__HOST="https://api.anthropic.com"
+export ROOK_PROVIDER__API_KEY="your-api-key-here"
 ```
 
 ### Custom Model Definitions
@@ -62,7 +62,7 @@ Define custom model configurations with provider-specific parameters and context
 
 | Variable | Purpose | Values | Default |
 |----------|---------|---------|---------|
-| `GOOSE_PREDEFINED_MODELS` | Define custom model configurations | JSON array of model objects | None |
+| `ROOK_PREDEFINED_MODELS` | Define custom model configurations | JSON array of model objects | None |
 
 **Model Configuration Fields:**
 
@@ -80,13 +80,13 @@ Define custom model configurations with provider-specific parameters and context
 The `id`, `alias`, and `subtext` fields are currently not used.
 :::
 
-When a custom model's `context_limit` is specified, it takes precedence over pattern-matching but can still be overridden by explicit environment variables like [`GOOSE_CONTEXT_LIMIT`](#model-context-limit-overrides).
+When a custom model's `context_limit` is specified, it takes precedence over pattern-matching but can still be overridden by explicit environment variables like [`ROOK_CONTEXT_LIMIT`](#model-context-limit-overrides).
 
 **Examples**
 
 ```bash
 # Enable Anthropic's 1M context window with beta header
-export GOOSE_PREDEFINED_MODELS='[
+export ROOK_PREDEFINED_MODELS='[
   {
     "id": 1,
     "name": "claude-sonnet-4-1m",
@@ -101,7 +101,7 @@ export GOOSE_PREDEFINED_MODELS='[
 ]'
 
 # Define multiple custom models
-export GOOSE_PREDEFINED_MODELS='[
+export ROOK_PREDEFINED_MODELS='[
   {
     "id": 1,
     "name": "gpt-4-custom",
@@ -119,7 +119,7 @@ export GOOSE_PREDEFINED_MODELS='[
 ]'
 
 # Gemini 3 with high thinking level
-export GOOSE_PREDEFINED_MODELS='[
+export ROOK_PREDEFINED_MODELS='[
   {
     "name": "gemini-3-pro",
     "provider": "google",
@@ -143,8 +143,8 @@ These variables control Claude's reasoning behavior. Supported on Anthropic and 
 
 ```bash
 # Claude 4.6 adaptive thinking
-export GOOSE_PROVIDER=anthropic
-export GOOSE_MODEL=claude-sonnet-4-6
+export ROOK_PROVIDER=anthropic
+export ROOK_MODEL=claude-sonnet-4-6
 export CLAUDE_THINKING_TYPE=adaptive
 
 # Explicit extended thinking with the default budget
@@ -159,7 +159,7 @@ export CLAUDE_THINKING_TYPE=disabled
 ```
 
 :::tip Viewing Thinking Output
-To see Claude's thinking output in the **CLI**, you also need to set `GOOSE_CLI_SHOW_THINKING=1`. In **rook Desktop**, thinking output is shown automatically in a collapsible "Show reasoning" toggle.
+To see Claude's thinking output in the **CLI**, you also need to set `ROOK_CLI_SHOW_THINKING=1`. In **rook Desktop**, thinking output is shown automatically in a collapsible "Show reasoning" toggle.
 :::
 
 ### Planning Mode Configuration
@@ -168,15 +168,15 @@ These variables control rook's [planning functionality](/docs/guides/creating-pl
 
 | Variable | Purpose | Values | Default |
 |----------|---------|---------|---------|
-| `GOOSE_PLANNER_PROVIDER` | Specifies which provider to use for planning mode | [See available providers](/docs/getting-started/providers#available-providers) | Falls back to GOOSE_PROVIDER |
-| `GOOSE_PLANNER_MODEL` | Specifies which model to use for planning mode | Model name (e.g., "gpt-4", "claude-sonnet-4-20250514")| Falls back to GOOSE_MODEL |
+| `ROOK_PLANNER_PROVIDER` | Specifies which provider to use for planning mode | [See available providers](/docs/getting-started/providers#available-providers) | Falls back to ROOK_PROVIDER |
+| `ROOK_PLANNER_MODEL` | Specifies which model to use for planning mode | Model name (e.g., "gpt-4", "claude-sonnet-4-20250514")| Falls back to ROOK_MODEL |
 
 **Examples**
 
 ```bash
 # Planning mode with different model
-export GOOSE_PLANNER_PROVIDER="openai"
-export GOOSE_PLANNER_MODEL="gpt-4"
+export ROOK_PLANNER_PROVIDER="openai"
+export ROOK_PLANNER_MODEL="gpt-4"
 ```
 
 ### Provider Retries
@@ -226,86 +226,86 @@ These variables control how rook manages conversation sessions and context.
 
 | Variable | Purpose | Values | Default |
 |----------|---------|---------|---------|
-| `GOOSE_CONTEXT_STRATEGY` | Controls how rook handles context limit exceeded situations | "summarize", "truncate", "clear", "prompt" | "prompt" (interactive), "summarize" (headless) |
-| `GOOSE_MAX_TURNS` | [Maximum number of turns](/docs/guides/sessions/smart-context-management#maximum-turns) allowed without user input | Integer (e.g., 10, 50, 100) | 1000 |
-| `GOOSE_SUBAGENT_MAX_TURNS` | Sets the maximum turns allowed for a [subagent](/docs/guides/subagents) to complete before timeout. Can be overridden by [`settings.max_turns`](/docs/guides/recipes/recipe-reference#settings) in recipes or subagent tool calls. | Integer (e.g., 25) | 25 |
-| `GOOSE_MAX_BACKGROUND_TASKS` | Sets the maximum number of concurrent background [subagent](/docs/guides/subagents) tasks rook can run at once | Integer (e.g., 1, 5, 10) | 5 |
+| `ROOK_CONTEXT_STRATEGY` | Controls how rook handles context limit exceeded situations | "summarize", "truncate", "clear", "prompt" | "prompt" (interactive), "summarize" (headless) |
+| `ROOK_MAX_TURNS` | [Maximum number of turns](/docs/guides/sessions/smart-context-management#maximum-turns) allowed without user input | Integer (e.g., 10, 50, 100) | 1000 |
+| `ROOK_SUBAGENT_MAX_TURNS` | Sets the maximum turns allowed for a [subagent](/docs/guides/subagents) to complete before timeout. Can be overridden by [`settings.max_turns`](/docs/guides/recipes/recipe-reference#settings) in recipes or subagent tool calls. | Integer (e.g., 25) | 25 |
+| `ROOK_MAX_BACKGROUND_TASKS` | Sets the maximum number of concurrent background [subagent](/docs/guides/subagents) tasks rook can run at once | Integer (e.g., 1, 5, 10) | 5 |
 | `CONTEXT_FILE_NAMES` | Specifies custom filenames for [hint/context files](/docs/guides/context-engineering/using-rookhints#custom-context-files) | JSON array of strings (e.g., `["CLAUDE.md", ".rookhints"]`) | `[".rookhints"]` |
-| `GOOSE_DISABLE_SESSION_NAMING` | Disables automatic AI-generated session naming; avoids the background model call and keeps the default "CLI Session" (rook CLI) or "New Chat" (rook Desktop) | "1", "true" (case-insensitive) to enable | false |
-| `GOOSE_PROMPT_EDITOR` | [External editor](/docs/guides/rook-cli-commands#external-editor-mode) to use for composing prompts instead of CLI input | Editor command (e.g., "vim", "code --wait") | Unset (uses CLI input) |
-| `GOOSE_CLI_THEME` | [Theme](/docs/guides/rook-cli-commands#themes) for CLI response  markdown | "light", "dark", "ansi" | "dark" |
-| `GOOSE_CLI_LIGHT_THEME` | Custom [bat theme](https://github.com/sharkdp/bat#adding-new-themes) for syntax highlighting when using light mode | bat theme name (e.g., "Solarized (light)", "OneHalfLight") | "GitHub" |
-| `GOOSE_CLI_DARK_THEME` | Custom [bat theme](https://github.com/sharkdp/bat#adding-new-themes) for syntax highlighting when using dark mode | bat theme name (e.g., "Dracula", "Nord") | "zenburn" |
-| `GOOSE_CLI_NEWLINE_KEY` | Customize the keyboard shortcut for [inserting newlines in CLI input](/docs/guides/rook-cli-commands#keyboard-shortcuts) | Single character (e.g., "n", "m") | "j" (Ctrl+J) |
-| `GOOSE_CLI_SHOW_THINKING` | Shows model reasoning/thinking output in CLI responses. Some models (e.g., DeepSeek-R1, Kimi, Gemini) expose their internal reasoning process — this variable makes it visible in the CLI. | Set to any value to enable | Disabled |
-| `GOOSE_RANDOM_THINKING_MESSAGES` | Controls whether to show amusing random messages during processing | "true", "false" | "true" |
-| `GOOSE_CLI_SHOW_COST` | Toggles display of model cost estimates in CLI output | "1", "true" (case-insensitive) to enable | false |
-| `GOOSE_AUTO_COMPACT_THRESHOLD` | Set the percentage threshold at which rook [automatically summarizes your session](/docs/guides/sessions/smart-context-management#automatic-compaction). | Float between 0.0 and 1.0 (disabled at 0.0) | 0.8 |
-| `GOOSE_TOOL_CALL_CUTOFF` | Number of tool calls to keep in full detail before summarizing older tool outputs to help maintain efficient context usage  | Integer (e.g., 5, 10, 20) | 10 |
-| `GOOSE_MOIM_MESSAGE_TEXT` | Injects persistent text into rook's [working memory](/docs/guides/using-persistent-instructions) every turn. Useful for behavioral guardrails or persistent reminders. | Any text string | Not set |
-| `GOOSE_MOIM_MESSAGE_FILE` | Path to a file whose contents are injected into rook's [working memory](/docs/guides/using-persistent-instructions) every turn. Supports `~/`. Max 64 KB per file. | File path | Not set |
+| `ROOK_DISABLE_SESSION_NAMING` | Disables automatic AI-generated session naming; avoids the background model call and keeps the default "CLI Session" (rook CLI) or "New Chat" (rook Desktop) | "1", "true" (case-insensitive) to enable | false |
+| `ROOK_PROMPT_EDITOR` | [External editor](/docs/guides/rook-cli-commands#external-editor-mode) to use for composing prompts instead of CLI input | Editor command (e.g., "vim", "code --wait") | Unset (uses CLI input) |
+| `ROOK_CLI_THEME` | [Theme](/docs/guides/rook-cli-commands#themes) for CLI response  markdown | "light", "dark", "ansi" | "dark" |
+| `ROOK_CLI_LIGHT_THEME` | Custom [bat theme](https://github.com/sharkdp/bat#adding-new-themes) for syntax highlighting when using light mode | bat theme name (e.g., "Solarized (light)", "OneHalfLight") | "GitHub" |
+| `ROOK_CLI_DARK_THEME` | Custom [bat theme](https://github.com/sharkdp/bat#adding-new-themes) for syntax highlighting when using dark mode | bat theme name (e.g., "Dracula", "Nord") | "zenburn" |
+| `ROOK_CLI_NEWLINE_KEY` | Customize the keyboard shortcut for [inserting newlines in CLI input](/docs/guides/rook-cli-commands#keyboard-shortcuts) | Single character (e.g., "n", "m") | "j" (Ctrl+J) |
+| `ROOK_CLI_SHOW_THINKING` | Shows model reasoning/thinking output in CLI responses. Some models (e.g., DeepSeek-R1, Kimi, Gemini) expose their internal reasoning process — this variable makes it visible in the CLI. | Set to any value to enable | Disabled |
+| `ROOK_RANDOM_THINKING_MESSAGES` | Controls whether to show amusing random messages during processing | "true", "false" | "true" |
+| `ROOK_CLI_SHOW_COST` | Toggles display of model cost estimates in CLI output | "1", "true" (case-insensitive) to enable | false |
+| `ROOK_AUTO_COMPACT_THRESHOLD` | Set the percentage threshold at which rook [automatically summarizes your session](/docs/guides/sessions/smart-context-management#automatic-compaction). | Float between 0.0 and 1.0 (disabled at 0.0) | 0.8 |
+| `ROOK_TOOL_CALL_CUTOFF` | Number of tool calls to keep in full detail before summarizing older tool outputs to help maintain efficient context usage  | Integer (e.g., 5, 10, 20) | 10 |
+| `ROOK_MOIM_MESSAGE_TEXT` | Injects persistent text into rook's [working memory](/docs/guides/using-persistent-instructions) every turn. Useful for behavioral guardrails or persistent reminders. | Any text string | Not set |
+| `ROOK_MOIM_MESSAGE_FILE` | Path to a file whose contents are injected into rook's [working memory](/docs/guides/using-persistent-instructions) every turn. Supports `~/`. Max 64 KB per file. | File path | Not set |
 
 **Examples**
 
 ```bash
 # Automatically summarize when context limit is reached
-export GOOSE_CONTEXT_STRATEGY=summarize
+export ROOK_CONTEXT_STRATEGY=summarize
 
 # Always prompt user to choose (default for interactive mode)
-export GOOSE_CONTEXT_STRATEGY=prompt
+export ROOK_CONTEXT_STRATEGY=prompt
 
 # Set a low limit for step-by-step control
-export GOOSE_MAX_TURNS=5
+export ROOK_MAX_TURNS=5
 
 # Set a moderate limit for controlled automation
-export GOOSE_MAX_TURNS=25
+export ROOK_MAX_TURNS=25
 
 # Set a reasonable limit for production
-export GOOSE_MAX_TURNS=100
+export ROOK_MAX_TURNS=100
 
 # Customize the default subagent turn limit
 # Note: This can be overridden per-recipe or per-subagent using the max_turns setting
-export GOOSE_SUBAGENT_MAX_TURNS=50
+export ROOK_SUBAGENT_MAX_TURNS=50
 
 # Use multiple context files
 export CONTEXT_FILE_NAMES='["CLAUDE.md", ".rookhints", ".cursorrules", "project_rules.txt"]'
 
 # Disable automatic AI-generated session naming (useful for CI/headless runs)
-export GOOSE_DISABLE_SESSION_NAMING=true
+export ROOK_DISABLE_SESSION_NAMING=true
 
 # Use vim for composing prompts
-export GOOSE_PROMPT_EDITOR=vim
+export ROOK_PROMPT_EDITOR=vim
 
 # Set the ANSI theme for the session
-export GOOSE_CLI_THEME=ansi
+export ROOK_CLI_THEME=ansi
 
 # Customize syntax highlighting themes (uses bat themes)
-export GOOSE_CLI_LIGHT_THEME="Solarized (light)"
-export GOOSE_CLI_DARK_THEME="Dracula"
+export ROOK_CLI_LIGHT_THEME="Solarized (light)"
+export ROOK_CLI_DARK_THEME="Dracula"
 
 # Use Ctrl+N instead of Ctrl+J for newline
-export GOOSE_CLI_NEWLINE_KEY=n
+export ROOK_CLI_NEWLINE_KEY=n
 
 # Disable random thinking messages for less distraction
-export GOOSE_RANDOM_THINKING_MESSAGES=false
+export ROOK_RANDOM_THINKING_MESSAGES=false
 
 # Show reasoning/thinking output from models that support it (e.g., DeepSeek-R1, Kimi, Gemini)
-export GOOSE_CLI_SHOW_THINKING=1
+export ROOK_CLI_SHOW_THINKING=1
 
 # Enable model cost display in CLI
-export GOOSE_CLI_SHOW_COST=true
+export ROOK_CLI_SHOW_COST=true
 
 # Automatically compact sessions when 60% of available tokens are used
-export GOOSE_AUTO_COMPACT_THRESHOLD=0.6
+export ROOK_AUTO_COMPACT_THRESHOLD=0.6
 
 # Keep more tool calls in full detail (useful for debugging or verbose workflows)
-export GOOSE_TOOL_CALL_CUTOFF=20
+export ROOK_TOOL_CALL_CUTOFF=20
 
 # Inject a persistent reminder into rook's working memory every turn
-export GOOSE_MOIM_MESSAGE_TEXT="IMPORTANT: Always run tests before committing changes."
+export ROOK_MOIM_MESSAGE_TEXT="IMPORTANT: Always run tests before committing changes."
 
 # Load persistent instructions from a file (supports ~/)
-export GOOSE_MOIM_MESSAGE_FILE="~/.rook/guardrails.md"
+export ROOK_MOIM_MESSAGE_FILE="~/.rook/guardrails.md"
 ```
 
 ### Model Context Limit Overrides
@@ -314,20 +314,20 @@ These variables allow you to override the default context window size (token lim
 
 | Variable | Purpose | Values | Default |
 |----------|---------|---------|---------|
-| `GOOSE_CONTEXT_LIMIT` | Override context limit for the main model | Integer (number of tokens) | Model-specific default or 128,000 |
-| `GOOSE_INPUT_LIMIT` | Override input prompt limit for ollama requests (maps to `num_ctx`) | Integer (number of tokens) | Falls back to `GOOSE_CONTEXT_LIMIT` or model default |
-| `GOOSE_PLANNER_CONTEXT_LIMIT` | Override context limit for the [planner model](/docs/guides/creating-plans) | Integer (number of tokens) | Falls back to `GOOSE_CONTEXT_LIMIT` or model default |
+| `ROOK_CONTEXT_LIMIT` | Override context limit for the main model | Integer (number of tokens) | Model-specific default or 128,000 |
+| `ROOK_INPUT_LIMIT` | Override input prompt limit for ollama requests (maps to `num_ctx`) | Integer (number of tokens) | Falls back to `ROOK_CONTEXT_LIMIT` or model default |
+| `ROOK_PLANNER_CONTEXT_LIMIT` | Override context limit for the [planner model](/docs/guides/creating-plans) | Integer (number of tokens) | Falls back to `ROOK_CONTEXT_LIMIT` or model default |
 
 **Examples**
 
 ```bash
 # Set context limit for main model (useful for LiteLLM proxies)
-export GOOSE_CONTEXT_LIMIT=200000
+export ROOK_CONTEXT_LIMIT=200000
 # Override ollama input prompt limit
-export GOOSE_INPUT_LIMIT=32000
+export ROOK_INPUT_LIMIT=32000
 
 # Set context limit for planner
-export GOOSE_PLANNER_CONTEXT_LIMIT=1000000
+export ROOK_PLANNER_CONTEXT_LIMIT=1000000
 ```
 
 For more details and examples, see [Model Context Limit Overrides](/docs/guides/sessions/smart-context-management#model-context-limit-overrides).
@@ -338,35 +338,35 @@ These variables control how rook handles [tool execution](/docs/guides/rook-perm
 
 | Variable | Purpose | Values | Default |
 |----------|---------|---------|---------|
-| `GOOSE_MODE` | Controls how rook handles tool execution | "auto", "approve", "chat", "smart_approve" | "smart_approve" |
-| `GOOSE_TOOLSHIM` | Enables/disables tool call interpretation | "1", "true" (case-insensitive) to enable | false |
-| `GOOSE_TOOLSHIM_OLLAMA_MODEL` | Specifies the model for [tool call interpretation](/docs/experimental/ollama) | Model name (e.g. llama3.2, qwen2.5) | System default |
-| `GOOSE_CLI_MIN_PRIORITY` | Controls verbosity of [tool output](/docs/guides/managing-tools/adjust-tool-output) | Float between 0.0 and 1.0 | 0.0 |
-| `GOOSE_CLI_TOOL_PARAMS_TRUNCATION_MAX_LENGTH` | Maximum length for tool parameter values before truncation in CLI output (not in debug mode) | Integer | 40 |
-| `GOOSE_DEBUG` | Enables debug mode to show full tool parameters without truncation. Can also be toggled during a session using the `/r` [slash command](/docs/guides/rook-cli-commands#slash-commands) | "1", "true" (case-insensitive) to enable | false |
-| `GOOSE_SEARCH_PATHS` | Prepends additional directories to PATH for extension commands | JSON array of paths (for example, `["/usr/local/bin", "~/custom/bin"]`) | System PATH only |
-| `GOOSE_SHELL` | Overrides the shell used for Developer extension shell commands | Shell executable path or name (for example, `/bin/zsh`, `pwsh`, `C:\cygwin64\bin\bash.exe`) | Unix: `/bin/bash` if present, otherwise `$SHELL`, otherwise `sh`. Windows: `cmd` |
+| `ROOK_MODE` | Controls how rook handles tool execution | "auto", "approve", "chat", "smart_approve" | "smart_approve" |
+| `ROOK_TOOLSHIM` | Enables/disables tool call interpretation | "1", "true" (case-insensitive) to enable | false |
+| `ROOK_TOOLSHIM_OLLAMA_MODEL` | Specifies the model for [tool call interpretation](/docs/experimental/ollama) | Model name (e.g. llama3.2, qwen2.5) | System default |
+| `ROOK_CLI_MIN_PRIORITY` | Controls verbosity of [tool output](/docs/guides/managing-tools/adjust-tool-output) | Float between 0.0 and 1.0 | 0.0 |
+| `ROOK_CLI_TOOL_PARAMS_TRUNCATION_MAX_LENGTH` | Maximum length for tool parameter values before truncation in CLI output (not in debug mode) | Integer | 40 |
+| `ROOK_DEBUG` | Enables debug mode to show full tool parameters without truncation. Can also be toggled during a session using the `/r` [slash command](/docs/guides/rook-cli-commands#slash-commands) | "1", "true" (case-insensitive) to enable | false |
+| `ROOK_SEARCH_PATHS` | Prepends additional directories to PATH for extension commands | JSON array of paths (for example, `["/usr/local/bin", "~/custom/bin"]`) | System PATH only |
+| `ROOK_SHELL` | Overrides the shell used for Developer extension shell commands | Shell executable path or name (for example, `/bin/zsh`, `pwsh`, `C:\cygwin64\bin\bash.exe`) | Unix: `/bin/bash` if present, otherwise `$SHELL`, otherwise `sh`. Windows: `cmd` |
 
 **Examples**
 
 ```bash
 # Enable tool interpretation
-export GOOSE_TOOLSHIM=true
-export GOOSE_TOOLSHIM_OLLAMA_MODEL=llama3.2
-export GOOSE_MODE="auto"
-export GOOSE_CLI_MIN_PRIORITY=0.2  # Show only medium and high importance output
-export GOOSE_CLI_TOOL_PARAMS_MAX_LENGTH=100  # Show up to 100 characters for tool parameters in CLI output
+export ROOK_TOOLSHIM=true
+export ROOK_TOOLSHIM_OLLAMA_MODEL=llama3.2
+export ROOK_MODE="auto"
+export ROOK_CLI_MIN_PRIORITY=0.2  # Show only medium and high importance output
+export ROOK_CLI_TOOL_PARAMS_MAX_LENGTH=100  # Show up to 100 characters for tool parameters in CLI output
 
 # Add custom tool directories for extensions
-export GOOSE_SEARCH_PATHS='["/usr/local/bin", "~/custom/tools", "/opt/homebrew/bin"]'
+export ROOK_SEARCH_PATHS='["/usr/local/bin", "~/custom/tools", "/opt/homebrew/bin"]'
 
 # Use zsh for Developer extension shell commands
-export GOOSE_SHELL=/bin/zsh
+export ROOK_SHELL=/bin/zsh
 ```
 
 ```bat
 REM Windows: use a POSIX-like shell instead of cmd.exe
-set GOOSE_SHELL=C:\cygwin64\bin\bash.exe
+set ROOK_SHELL=C:\cygwin64\bin\bash.exe
 ```
 
 ### Enhanced Code Editing
@@ -375,9 +375,9 @@ These variables configure [AI-powered code editing](/docs/guides/enhanced-code-e
 
 | Variable | Purpose | Values | Default |
 |----------|---------|---------|---------|
-| `GOOSE_EDITOR_API_KEY` | API key for the code editing model | API key string | None |
-| `GOOSE_EDITOR_HOST` | API endpoint for the code editing model | URL (e.g., "https://api.openai.com/v1") | None |
-| `GOOSE_EDITOR_MODEL` | Model to use for code editing | Model name (e.g., "gpt-4o", "claude-sonnet-4") | None |
+| `ROOK_EDITOR_API_KEY` | API key for the code editing model | API key string | None |
+| `ROOK_EDITOR_HOST` | API endpoint for the code editing model | URL (e.g., "https://api.openai.com/v1") | None |
+| `ROOK_EDITOR_MODEL` | Model to use for code editing | Model name (e.g., "gpt-4o", "claude-sonnet-4") | None |
 
 **Examples**
 
@@ -385,19 +385,19 @@ This feature works with any OpenAI-compatible API endpoint, for example:
 
 ```bash
 # OpenAI configuration
-export GOOSE_EDITOR_API_KEY="sk-..."
-export GOOSE_EDITOR_HOST="https://api.openai.com/v1"
-export GOOSE_EDITOR_MODEL="gpt-4o"
+export ROOK_EDITOR_API_KEY="sk-..."
+export ROOK_EDITOR_HOST="https://api.openai.com/v1"
+export ROOK_EDITOR_MODEL="gpt-4o"
 
 # Anthropic configuration (via OpenAI-compatible proxy)
-export GOOSE_EDITOR_API_KEY="sk-ant-..."
-export GOOSE_EDITOR_HOST="https://api.anthropic.com/v1"
-export GOOSE_EDITOR_MODEL="claude-sonnet-4-20250514"
+export ROOK_EDITOR_API_KEY="sk-ant-..."
+export ROOK_EDITOR_HOST="https://api.anthropic.com/v1"
+export ROOK_EDITOR_MODEL="claude-sonnet-4-20250514"
 
 # Local model configuration
-export GOOSE_EDITOR_API_KEY="your-key"
-export GOOSE_EDITOR_HOST="http://localhost:8000/v1"
-export GOOSE_EDITOR_MODEL="your-model"
+export ROOK_EDITOR_API_KEY="your-key"
+export ROOK_EDITOR_HOST="http://localhost:8000/v1"
+export ROOK_EDITOR_MODEL="your-model"
 ```
 
 ## Security and Privacy
@@ -406,14 +406,14 @@ These variables control security features, credential storage, and anonymous usa
 
 | Variable | Purpose | Values | Default |
 |----------|---------|---------|---------|
-| `GOOSE_ALLOWLIST` | Controls which extensions can be loaded | URL for [allowed extensions](/docs/guides/allowlist) list | Unset |
-| `GOOSE_DISABLE_KEYRING` | Disables the system keyring for secret storage | Set to any value (e.g., "1", "true", "yes") to disable. The actual value doesn't matter, only whether the variable is set. | Unset (keyring enabled) |
+| `ROOK_ALLOWLIST` | Controls which extensions can be loaded | URL for [allowed extensions](/docs/guides/allowlist) list | Unset |
+| `ROOK_DISABLE_KEYRING` | Disables the system keyring for secret storage | Set to any value (e.g., "1", "true", "yes") to disable. The actual value doesn't matter, only whether the variable is set. | Unset (keyring enabled) |
 | `SECURITY_PROMPT_ENABLED` | Enable [prompt injection detection](/docs/guides/security/prompt-injection-detection) to identify potentially harmful commands | true/false | false |
 | `SECURITY_PROMPT_THRESHOLD` | Sensitivity threshold for prompt injection detection (higher = stricter) | Float between 0.01 and 1.0 | 0.8 |
 | `SECURITY_PROMPT_CLASSIFIER_ENABLED` | Enable ML-based prompt injection detection for advanced threat identification | true/false | false |
 | `SECURITY_PROMPT_CLASSIFIER_ENDPOINT` | Classification endpoint URL for ML-based prompt injection detection | URL (e.g., "https://api.example.com/classify") | Unset |
 | `SECURITY_PROMPT_CLASSIFIER_TOKEN` | Authentication token for `SECURITY_PROMPT_CLASSIFIER_ENDPOINT` | String | Unset |
-| `GOOSE_TELEMETRY_ENABLED` | Enable or disable [anonymous usage data collection](/docs/guides/usage-data) | true/false | false |
+| `ROOK_TELEMETRY_ENABLED` | Enable or disable [anonymous usage data collection](/docs/guides/usage-data) | true/false | false |
 
 **Examples**
 
@@ -432,8 +432,8 @@ export SECURITY_PROMPT_CLASSIFIER_ENDPOINT="https://your-endpoint.com/classify"
 export SECURITY_PROMPT_CLASSIFIER_TOKEN="your-auth-token"
 
 # Control anonymous usage data collection
-export GOOSE_TELEMETRY_ENABLED=false  # Disable telemetry
-export GOOSE_TELEMETRY_ENABLED=true   # Enable telemetry
+export ROOK_TELEMETRY_ENABLED=false  # Disable telemetry
+export ROOK_TELEMETRY_ENABLED=true   # Enable telemetry
 ```
 
 :::tip
@@ -449,7 +449,7 @@ Optional [macOS sandbox](/docs/guides/sandbox) for rook Desktop that restricts f
 
 | Variable | Purpose | Values | Default |
 |----------|---------|--------|---------|
-| `GOOSE_SANDBOX` | Enable the sandbox with [customizable security controls](/docs/guides/sandbox#configuration) | `true` or `1` to enable | `false` |
+| `ROOK_SANDBOX` | Enable the sandbox with [customizable security controls](/docs/guides/sandbox#configuration) | `true` or `1` to enable | `false` |
 
 ## Network Configuration
 
@@ -545,23 +545,23 @@ These variables control recipe discovery and management.
 
 | Variable | Purpose | Values | Default |
 |----------|---------|---------|---------|
-| `GOOSE_RECIPE_PATH` | Additional directories to search for recipes | Colon-separated paths on Unix, semicolon-separated on Windows | None |
-| `GOOSE_RECIPE_GITHUB_REPO` | GitHub repository to search for recipes | Format: "owner/repo" (e.g., "aaif-rook/rook-recipes") | None |
-| `GOOSE_RECIPE_RETRY_TIMEOUT_SECONDS` | Global timeout for recipe success check commands | Integer (seconds) | Recipe-specific default |
-| `GOOSE_RECIPE_ON_FAILURE_TIMEOUT_SECONDS` | Global timeout for recipe on_failure commands | Integer (seconds) | Recipe-specific default |
+| `ROOK_RECIPE_PATH` | Additional directories to search for recipes | Colon-separated paths on Unix, semicolon-separated on Windows | None |
+| `ROOK_RECIPE_GITHUB_REPO` | GitHub repository to search for recipes | Format: "owner/repo" (e.g., "aaif-rook/rook-recipes") | None |
+| `ROOK_RECIPE_RETRY_TIMEOUT_SECONDS` | Global timeout for recipe success check commands | Integer (seconds) | Recipe-specific default |
+| `ROOK_RECIPE_ON_FAILURE_TIMEOUT_SECONDS` | Global timeout for recipe on_failure commands | Integer (seconds) | Recipe-specific default |
 
 **Examples**
 
 ```bash
 # Add custom recipe directories
-export GOOSE_RECIPE_PATH="/path/to/my/recipes:/path/to/team/recipes"
+export ROOK_RECIPE_PATH="/path/to/my/recipes:/path/to/team/recipes"
 
 # Configure GitHub recipe repository
-export GOOSE_RECIPE_GITHUB_REPO="myorg/rook-recipes"
+export ROOK_RECIPE_GITHUB_REPO="myorg/rook-recipes"
 
 # Set global recipe timeouts
-export GOOSE_RECIPE_RETRY_TIMEOUT_SECONDS=300
-export GOOSE_RECIPE_ON_FAILURE_TIMEOUT_SECONDS=60
+export ROOK_RECIPE_RETRY_TIMEOUT_SECONDS=300
+export ROOK_RECIPE_ON_FAILURE_TIMEOUT_SECONDS=60
 ```
 
 ## Development & Testing
@@ -570,7 +570,7 @@ These variables are primarily used for development, testing, and debugging rook 
 
 | Variable | Purpose | Values | Default |
 |----------|---------|---------|---------|
-| `GOOSE_PATH_ROOT` | Override the root directory for all rook data, config, and state files | Absolute path to directory | Platform-specific defaults |
+| `ROOK_PATH_ROOT` | Override the root directory for all rook data, config, and state files | Absolute path to directory | Platform-specific defaults |
 
 **Default locations:**
 - macOS: `~/Library/Application Support/Block/rook/`
@@ -583,16 +583,16 @@ When set, rook creates `config/`, `data/`, and `state/` subdirectories under the
 
 ```bash
 # Temporary test environment
-export GOOSE_PATH_ROOT="/tmp/rook-test"
+export ROOK_PATH_ROOT="/tmp/rook-test"
 
 # Isolated environment for a single command
-GOOSE_PATH_ROOT="/tmp/rook-isolated" rook run --recipe my-recipe.yaml
+ROOK_PATH_ROOT="/tmp/rook-isolated" rook run --recipe my-recipe.yaml
 
 # CI/CD usage
-GOOSE_PATH_ROOT="$(mktemp -d)" rook run --recipe integration-test.yaml
+ROOK_PATH_ROOT="$(mktemp -d)" rook run --recipe integration-test.yaml
 
 # Use with developer tools
-GOOSE_PATH_ROOT="/tmp/rook-test" ./scripts/rook-db-helper.sh status
+ROOK_PATH_ROOT="/tmp/rook-test" ./scripts/rook-db-helper.sh status
 ```
 
 ## Variables Controlled by rook
@@ -601,7 +601,7 @@ These variables are automatically set by rook during command execution.
 
 | Variable | Purpose | Values | Default |
 |----------|---------|---------|---------|
-| `GOOSE_TERMINAL` | Indicates that a command is being executed by rook, enables [customizing shell behavior](#customizing-shell-behavior) | "1" when set | Unset |
+| `ROOK_TERMINAL` | Indicates that a command is being executed by rook, enables [customizing shell behavior](#customizing-shell-behavior) | "1" when set | Unset |
 | `AGENT` | Generic agent identifier for cross-tool compatibility, enables tools and scripts to detect when they're being run by rook | "rook" when set | Unset |
 | `AGENT_SESSION_ID` | The current session ID for [session-isolated workflows](#using-session-ids-in-workflows), automatically available to STDIO extensions and the Developer extension shell commands | Session ID string (e.g., `20260217_5`) | Unset (only set in extension/shell contexts) |
 
@@ -618,10 +618,10 @@ This is most useful when using rook CLI, where shell commands are executed direc
 
 **How it works:**
 
-rook provides the `GOOSE_TERMINAL` and `AGENT` variables you can use to detect whether rook is the executing agent.
+rook provides the `ROOK_TERMINAL` and `AGENT` variables you can use to detect whether rook is the executing agent.
 
 1. When rook runs commands:
-   - `GOOSE_TERMINAL` is automatically set to "1"
+   - `ROOK_TERMINAL` is automatically set to "1"
    - `AGENT` is automatically set to "rook"
 2. Your shell configuration can detect this and change behavior while keeping your normal terminal usage unchanged
 
@@ -631,7 +631,7 @@ rook provides the `GOOSE_TERMINAL` and `AGENT` variables you can use to detect w
 # In ~/.zshenv (for zsh users) or ~/.bashrc (for bash users)
 
 # Block git commit when run by rook
-if [[ -n "$GOOSE_TERMINAL" ]]; then
+if [[ -n "$ROOK_TERMINAL" ]]; then
   git() {
     if [[ "$1" == "commit" ]]; then
       echo "❌ BLOCKED: git commit is not allowed when run by rook"
@@ -644,7 +644,7 @@ fi
 
 ```bash
 # Guide rook toward better tool choices
-if [[ -n "$GOOSE_TERMINAL" ]]; then
+if [[ -n "$ROOK_TERMINAL" ]]; then
   alias find="echo 'Use rg instead: rg --files | rg <pattern> for filenames, or rg <pattern> for content search'"
 fi
 ```

@@ -140,10 +140,10 @@ rook recipe list --format json
 rook searches for recipes in the following locations (in order):
 
 1. **Current directory**: `.` (looks for `*.yaml` and `*.json` files)
-2. **Custom paths**: Directories specified in [`GOOSE_RECIPE_PATH`](/docs/guides/environment-variables#recipe-configuration) environment variable
+2. **Custom paths**: Directories specified in [`ROOK_RECIPE_PATH`](/docs/guides/environment-variables#recipe-configuration) environment variable
 3. **Global recipe library**: `~/.config/rook/recipes/` (or equivalent on your OS)
 4. **Local project recipes**: `./.rook/recipes/`
-5. **GitHub repository**: If [`GOOSE_RECIPE_GITHUB_REPO`](/docs/guides/environment-variables#recipe-configuration) environment variable is configured
+5. **GitHub repository**: If [`ROOK_RECIPE_GITHUB_REPO`](/docs/guides/environment-variables#recipe-configuration) environment variable is configured
 
 **Example Output**
 
@@ -192,13 +192,13 @@ Available recipes:
 
 Add custom recipe directories:
 ```bash
-export GOOSE_RECIPE_PATH="/path/to/my/recipes:/path/to/team/recipes"
+export ROOK_RECIPE_PATH="/path/to/my/recipes:/path/to/team/recipes"
 rook recipe list
 ```
 
 Configure GitHub recipe repository:
 ```bash
-export GOOSE_RECIPE_GITHUB_REPO="myorg/rook-recipes"
+export ROOK_RECIPE_GITHUB_REPO="myorg/rook-recipes"
 rook recipe list
 ```
 

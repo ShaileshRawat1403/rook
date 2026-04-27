@@ -6,7 +6,7 @@ description: Add Neon MCP Server as a rook Extension
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 import { PanelLeft } from 'lucide-react';
 
 This tutorial covers how to add the [Neon MCP Server](https://github.com/neondatabase/mcp-server-neon) as a rook extension to interact with your Neon Postgres databases and manage your projects, branches, and more.
@@ -46,7 +46,7 @@ The Neon MCP Server grants powerful database management capabilities and is inte
 
   <Tabs groupId="interface">
     <TabItem value="ui" label="rook Desktop" default>
-      <GooseDesktopInstaller
+      <RookDesktopInstaller
         extensionId="neon"
         extensionName="Neon"
         description="Manage Neon Postgres databases, projects, and branches"
@@ -92,7 +92,7 @@ The Neon MCP Server grants powerful database management capabilities and is inte
 
   <Tabs groupId="interface">
     <TabItem value="ui" label="rook Desktop" default>
-    <GooseDesktopInstaller
+    <RookDesktopInstaller
       extensionId="neon"
       extensionName="Neon"
       description="Manage your Neon Postgres databases, projects, and branches"

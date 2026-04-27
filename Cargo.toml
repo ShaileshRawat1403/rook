@@ -15,7 +15,7 @@ resolver = "2"
 [workspace.package]
 edition = "2021"
 version = "1.31.0"
-authors = ["AAIF <ai-oss-tools@block.xyz>"]
+authors = ["Shailesh Rawat <shaileshrawat1403@gmail.com>"]
 license = "Apache-2.0"
 repository = "https://github.com/ShaileshRawat1403/rook"
 description = "Rook: A general-purpose AI operator for life and work."

@@ -6,7 +6,7 @@ description: Add Knowledge Graph Memory MCP Server as a rook Extension
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
 
 <YouTubeShortEmbed videoUrl="https://www.youtube.com/embed/PF6hpDaI9Mc" />
@@ -36,7 +36,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseDesktopInstaller
+  <RookDesktopInstaller
     extensionId="knowledge_graph_memory"
     extensionName="Knowledge Graph Memory"
     description="Graph-based memory system for persistent knowledge storage"

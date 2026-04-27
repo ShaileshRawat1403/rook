@@ -6,7 +6,7 @@ description: Load skills and delegate tasks to subagents
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { PlatformExtensionNote } from '@site/src/components/PlatformExtensionNote';
-import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
+import RookBuiltinInstaller from '@site/src/components/RookBuiltinInstaller';
 
 The Summon extension lets you load knowledge into rook's context and delegate tasks to [subagents](/docs/guides/subagents). 
 
@@ -26,7 +26,7 @@ This extension is available in v1.25.0+.
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseBuiltinInstaller
+  <RookBuiltinInstaller
     extensionName="Summon"
     description="Load knowledge and delegate tasks to subagents"
   />

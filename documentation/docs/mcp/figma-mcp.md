@@ -7,7 +7,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 import { PanelLeft } from 'lucide-react';
 
 This tutorial covers how to add the [Figma Dev Mode MCP Server](https://help.figma.com/hc/en-us/articles/32132100833559-Guide-to-the-Dev-Mode-MCP-Server) as a rook extension to enable interaction with Figma files, designs, and components.
@@ -52,7 +52,7 @@ The Dev Mode MCP Server must be enabled in the [Figma desktop app](https://www.f
 2. Add the Figma extension to rook:
    <Tabs groupId="interface">
      <TabItem value="ui" label="rook Desktop" default>
-       <GooseDesktopInstaller
+       <RookDesktopInstaller
          extensionId="figma"
          extensionName="Figma"
          description="Convert Figma designs into code and extract design context"

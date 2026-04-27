@@ -6,7 +6,7 @@ description: Load reusable instruction sets that teach rook specific workflows
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { PlatformExtensionNote } from '@site/src/components/PlatformExtensionNote';
-import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
+import RookBuiltinInstaller from '@site/src/components/RookBuiltinInstaller';
 
 :::caution Deprecated
 This extension has been deprecated and is only available in v1.16.0 - v1.24.0. For v1.25.0+, see the [Summon extension](/docs/mcp/summon-mcp).
@@ -22,7 +22,7 @@ rook automatically discovers skills at startup and uses them when relevant to yo
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseBuiltinInstaller
+  <RookBuiltinInstaller
     extensionName="Skills"
     description="Load and use skills from the .agents/skills directory"
   />

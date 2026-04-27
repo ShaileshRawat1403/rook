@@ -13,7 +13,7 @@ import { getPromptById } from "@site/src/utils/prompts";
 import ReactMarkdown from "react-markdown";
 
 import type { Prompt, Extension } from "@site/src/types/prompt";
-import { getGooseInstallLink } from "@site/src/utils/install-links";
+import { getRookInstallLink } from "@site/src/utils/install-links";
 
 function extensionToMCPServer(extension: Extension): MCPServer {
   return {
@@ -114,7 +114,7 @@ function ExtensionDetails({
           >
             <div className="mt-2 bg-background-subtle rounded-md p-3 border border-borderSubtle space-y-3">
               <a
-                href={getGooseInstallLink(extensionToMCPServer(extension))}
+                href={getRookInstallLink(extensionToMCPServer(extension))}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-textStandard hover:text-textProminent"

@@ -463,14 +463,6 @@ const config: Config = {
               label: "Twitter / X",
               href: "https://x.com/rook_oss",
             },
-            {
-              label: "BlueSky",
-              href: "https://bsky.app/profile/opensource.block.xyz",
-            },
-            {
-              label: "Nostr",
-              href: "https://njump.me/opensource@block.xyz",
-            },
           ],
         },
         {
@@ -487,7 +479,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} AAIF (Agentic AI Foundation)`,
+      copyright: `Copyright © ${new Date().getFullYear()} Shailesh Rawat`,
     },
     prism: {
       theme: prismThemes.github,
@@ -516,9 +508,9 @@ const config: Config = {
       },
     },
     announcementBar: {
-      id: 'rook-aaif-announcement', // Increment on new announcements to reuse the bar
+      id: 'rook-launch-announcement',
       content:
-        '✨ rook continues the open-agent lineage with a terminal-first focus: <a href="/blog/2026/04/07/goose-moves-to-aaif">Learn more</a>! ✨',
+        '🚀 rook is now independent! A terminal-first AI agent built for developers. 🚀',
       backgroundColor: '#20232a',
       textColor: '#fff',
       isCloseable: true,

@@ -1,4 +1,4 @@
-# @aaif/rook-sdk
+# @shaileshrawat/rook-sdk
 
 TypeScript client library for the Rook Agent Client Protocol (ACP).
 
@@ -9,7 +9,7 @@ This package provides:
 ## Installation
 
 ```bash
-npm install @aaif/rook-sdk
+npm install @shaileshrawat/rook-sdk
 ```
 
 The native `rook` binaries are distributed as optional dependencies
@@ -52,7 +52,7 @@ npm run build
 npm link
 
 # In ui/rook (or another project)
-npm link @aaif/rook-sdk
+npm link @shaileshrawat/rook-sdk
 ```
 
 ### Schema Generation
@@ -78,13 +78,13 @@ Platform-specific npm packages for the `rook` binary are located in
 
 | Package | Platform |
 |---------|----------|
-| `@aaif/rook-binary-darwin-arm64` | macOS Apple Silicon |
-| `@aaif/rook-binary-darwin-x64` | macOS Intel |
-| `@aaif/rook-binary-linux-arm64` | Linux ARM64 |
-| `@aaif/rook-binary-linux-x64` | Linux x64 |
-| `@aaif/rook-binary-win32-x64` | Windows x64 |
+| `@shaileshrawat/rook-binary-darwin-arm64` | macOS Apple Silicon |
+| `@shaileshrawat/rook-binary-darwin-x64` | macOS Intel |
+| `@shaileshrawat/rook-binary-linux-arm64` | Linux ARM64 |
+| `@shaileshrawat/rook-binary-linux-x64` | Linux x64 |
+| `@shaileshrawat/rook-binary-win32-x64` | Windows x64 |
 
-These are published separately from `@aaif/rook-sdk`.
+These are published separately from `@shaileshrawat/rook-sdk`.
 
 ### Building Native Binaries
 
@@ -111,13 +111,13 @@ For manual publishing:
 ```
 
 This will:
-1. Build and publish `@aaif/rook-sdk`
+1. Build and publish `@shaileshrawat/rook-sdk`
 2. Publish all native binary packages
 
 ## Usage
 
 ```typescript
-import { RookClient } from "@aaif/rook-sdk";
+import { RookClient } from "@shaileshrawat/rook-sdk";
 
 const client = new RookClient({
   // ... configuration

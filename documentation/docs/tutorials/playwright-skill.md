@@ -5,7 +5,7 @@ description: Use rook with the Playwright CLI to generate automated tests using 
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
+import RookBuiltinInstaller from '@site/src/components/RookBuiltinInstaller';
 
 <iframe
   class="aspect-ratio"
@@ -57,7 +57,7 @@ In rook, enable the [Summon extension](/docs/mcp/summon-mcp) to load Agent Skill
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseBuiltinInstaller
+  <RookBuiltinInstaller
     extensionName="Summon"
   />
   </TabItem>

@@ -10,22 +10,22 @@
 **macOS:**
 ```bash
 # If built from source:
-export GOOSE_CLI=~/claude/rook-fork/target/release/rook
+export ROOK_CLI=~/claude/rook-fork/target/release/rook
 
 # Verify:
-$GOOSE_CLI --version
+$ROOK_CLI --version
 ```
 
 **Linux:**
 ```bash
 # If installed via .deb:
-export GOOSE_CLI=/usr/bin/rook
+export ROOK_CLI=/usr/bin/rook
 
 # If built from source:
-export GOOSE_CLI=~/rook-fork/target/release/rook
+export ROOK_CLI=~/rook-fork/target/release/rook
 
 # Verify:
-$GOOSE_CLI --version
+$ROOK_CLI --version
 ```
 
 ## Test 1: Configure VMware Tanzu Platform Provider

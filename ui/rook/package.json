@@ -27,7 +27,7 @@
     "test-driver": "tsx tests/app-e2e/lib/test-driver-cli.ts"
   },
   "dependencies": {
-    "@aaif/rook-sdk": "workspace:*",
+    "@shaileshrawat/rook-sdk": "workspace:*",
     "@agentclientprotocol/sdk": "^0.19.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",

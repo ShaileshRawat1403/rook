@@ -6,7 +6,7 @@ description: Breaks complex work into trackable steps to help rook stay organize
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { PlatformExtensionNote } from '@site/src/components/PlatformExtensionNote';
-import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
+import RookBuiltinInstaller from '@site/src/components/RookBuiltinInstaller';
 
 The Todo extension helps rook stay organized by breaking complex work into a series of steps and keeping you updated as it completes each step.
 
@@ -24,7 +24,7 @@ This tutorial will cover enabling and using the Todo extension.
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseBuiltinInstaller
+  <RookBuiltinInstaller
     extensionName="Todo"
     description="Manage complex tasks with structured checklists and progress tracking"
   />

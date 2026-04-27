@@ -6,7 +6,7 @@ description: Add Fetch MCP Server as a rook Extension
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
 
 <YouTubeShortEmbed videoUrl="https://www.youtube.com/embed/_WMm4kDYMog" />
@@ -39,7 +39,7 @@ Note that you'll need [uv](https://docs.astral.sh/uv/#installation) installed on
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseDesktopInstaller
+  <RookDesktopInstaller
     extensionId="fetch"
     extensionName="Fetch"
     description="Web content fetching and processing capabilities"

@@ -6,7 +6,7 @@ description: Use Developer MCP Server as a rook Extension
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
-import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
+import RookBuiltinInstaller from '@site/src/components/RookBuiltinInstaller';
 import { Tornado } from 'lucide-react';
 
 <YouTubeShortEmbed videoUrl="https://www.youtube.com/embed/on_p-LeIrak" />
@@ -24,7 +24,7 @@ The Developer extension is already enabled by default when rook is installed.
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseBuiltinInstaller
+  <RookBuiltinInstaller
     extensionName="Developer"
     description="Automate developer-centric tasks like file editing and shell commands"
   />
@@ -221,7 +221,7 @@ Here's an example configuration that enables oversight:
 1. **Set the [permission mode](/docs/guides/rook-permissions)** to Smart Approval or Manual Approval:
    ```yaml
    # ~/.config/rook/config.yaml
-   GOOSE_MODE: smart_approve  # or approve
+   ROOK_MODE: smart_approve  # or approve
    ```
 
 2. **Create a [`.rookignore` file](/docs/guides/using-rookignore)** in your project to protect sensitive files:

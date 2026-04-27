@@ -254,7 +254,7 @@ function WhyRookSection() {
           />
         </div>
         <p className={styles.sectionSubtitle}>
-          Why did the goose turn into a rook? Because the goose kept honking,
+          Why did the rook turn into a rook? Because the rook kept honking,
           and the rook started shipping.
         </p>
       </div>
@@ -273,7 +273,7 @@ function StandardsSection() {
             <p>
               <a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener">MCP</a>{" "}
               is the open standard for connecting AI agents to tools and data
-              sources. goose was one of the earliest adopters and has one of the
+              sources. rook was one of the earliest adopters and has one of the
               deepest integrations in the ecosystem — with 70+ documented
               extensions and growing.
             </p>
@@ -283,16 +283,16 @@ function StandardsSection() {
             <h3>Agent Client Protocol</h3>
             <p>
               <a href="https://agentclientprotocol.com/" target="_blank" rel="noopener">ACP</a>{" "}
-              is a standard for communicating with coding agents. goose works as
+              is a standard for communicating with coding agents. rook works as
               an ACP server — connect from Zed, JetBrains, or VS Code — and can
               use ACP agents like Claude Code and Codex as providers.
             </p>
-            <Link to="/docs/guides/acp-clients">goose as ACP server →</Link>
+            <Link to="/docs/guides/acp-clients">rook as ACP server →</Link>
           </div>
           <div className={styles.standardCard}>
             <h3>Agentic AI Foundation</h3>
             <p>
-              goose is part of the{" "}
+              rook is part of the{" "}
               <a href="https://aaif.io/" target="_blank" rel="noopener">
                 Agentic AI Foundation
               </a>{" "}
@@ -340,7 +340,7 @@ function CommunitySection() {
           >
             <h3>🐙 GitHub</h3>
             <p>
-              Star, fork, file issues, contribute code. goose is built in the
+              Star, fork, file issues, contribute code. rook is built in the
               open.
             </p>
           </a>
@@ -386,7 +386,7 @@ function InstallSection() {
             </div>
             <pre className={styles.terminalBody}>
               <code>
-{`curl -fsSL https://github.com/aaif-goose/goose/releases/download/stable/download_cli.sh | bash`}
+{`curl -fsSL https://github.com/ShaileshRawat1403/rook/releases/download/stable/download_cli.sh | bash`}
               </code>
             </pre>
           </div>
@@ -400,7 +400,7 @@ function VideoSection() {
   return (
     <section className={styles.section}>
       <div className={styles.container}>
-        <h2 className={styles.sectionTitle}>See goose in action</h2>
+        <h2 className={styles.sectionTitle}>See rook in action</h2>
         <div className={styles.videoWrapper}>
           <iframe
             src="https://www.youtube.com/embed/D-DpDunrbpo"

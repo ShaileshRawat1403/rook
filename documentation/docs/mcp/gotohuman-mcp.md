@@ -7,7 +7,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 
 
 <!-- <YouTubeShortEmbed videoUrl="https://www.youtube.com/embed/6aV8pinnUS8" />  -->
@@ -37,7 +37,7 @@ This tutorial covers how to add the [gotoHuman MCP Server](https://github.com/go
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseDesktopInstaller
+  <RookDesktopInstaller
     extensionId="gotoHuman"
     extensionName="gotoHuman"
     description="gotoHuman MCP server for human-in-the-loop approvals"

@@ -83,7 +83,7 @@ Wraps `pi-acp`, an ACP adapter for Pi. Uses your existing Pi installation.
 
    Set the provider environment variable:
    ```bash
-   export GOOSE_PROVIDER=amp-acp
+   export ROOK_PROVIDER=amp-acp
    ```
 
    Or configure through the rook CLI using `rook configure`.
@@ -104,7 +104,7 @@ Wraps `pi-acp`, an ACP adapter for Pi. Uses your existing Pi installation.
 
    Set the provider environment variable:
    ```bash
-   export GOOSE_PROVIDER=claude-acp
+   export ROOK_PROVIDER=claude-acp
    ```
 
    Or configure through the rook CLI using `rook configure`:
@@ -140,7 +140,7 @@ Wraps `pi-acp`, an ACP adapter for Pi. Uses your existing Pi installation.
 
    Set the provider environment variable:
    ```bash
-   export GOOSE_PROVIDER=codex-acp
+   export ROOK_PROVIDER=codex-acp
    ```
 
    Or configure through the rook CLI using `rook configure`:
@@ -174,7 +174,7 @@ Wraps `pi-acp`, an ACP adapter for Pi. Uses your existing Pi installation.
 
    Set the provider environment variable:
    ```bash
-   export GOOSE_PROVIDER=pi-acp
+   export ROOK_PROVIDER=pi-acp
    ```
 
    Or configure through the rook CLI using `rook configure`.
@@ -192,13 +192,13 @@ rook session
 Extensions configured via `--with-extension` or `--with-streamable-http-extension` are passed through to the ACP agent:
 
 ```bash
-GOOSE_PROVIDER=claude-acp rook run \
+ROOK_PROVIDER=claude-acp rook run \
   --with-extension 'npx -y @modelcontextprotocol/server-everything' \
   -t 'Use the echo tool to say hello'
 ```
 
 ```bash
-GOOSE_PROVIDER=codex-acp rook run \
+ROOK_PROVIDER=codex-acp rook run \
   --with-streamable-http-extension 'https://mcp.kiwi.com' \
   -t 'Search for flights from BKI to SYD tomorrow'
 ```
@@ -209,24 +209,24 @@ GOOSE_PROVIDER=codex-acp rook run \
 
 | Environment Variable | Description       | Default   |
 |----------------------|-------------------|-----------|
-| `GOOSE_PROVIDER`     | Set to `amp-acp`  | None      |
-| `GOOSE_MODEL`        | Model to use      | `current` |
-| `GOOSE_MODE`         | Permission mode   | `auto`    |
+| `ROOK_PROVIDER`     | Set to `amp-acp`  | None      |
+| `ROOK_MODEL`        | Model to use      | `current` |
+| `ROOK_MODE`         | Permission mode   | `auto`    |
 
 ### Claude ACP Configuration
 
 | Environment Variable | Description         | Default   |
 |----------------------|---------------------|-----------|
-| `GOOSE_PROVIDER`     | Set to `claude-acp` | None      |
-| `GOOSE_MODEL`        | Model to use        | `default` |
-| `GOOSE_MODE`         | Permission mode     | `auto`    |
+| `ROOK_PROVIDER`     | Set to `claude-acp` | None      |
+| `ROOK_MODEL`        | Model to use        | `default` |
+| `ROOK_MODE`         | Permission mode     | `auto`    |
 
 **Known Models:**
 - `default` (opus)
 - `sonnet`
 - `haiku`
 
-**Permission Modes (`GOOSE_MODE`):**
+**Permission Modes (`ROOK_MODE`):**
 
 | Mode            | Session Mode        | Behavior                                              |
 |-----------------|---------------------|-------------------------------------------------------|
@@ -241,9 +241,9 @@ See [claude-agent-acp](https://github.com/zed-industries/claude-agent-acp) for s
 
 | Environment Variable | Description        | Default         |
 |----------------------|--------------------|-----------------|
-| `GOOSE_PROVIDER`     | Set to `codex-acp` | None            |
-| `GOOSE_MODEL`        | Model to use       | `gpt-5.2-codex` |
-| `GOOSE_MODE`         | Permission mode    | `auto`          |
+| `ROOK_PROVIDER`     | Set to `codex-acp` | None            |
+| `ROOK_MODEL`        | Model to use       | `gpt-5.2-codex` |
+| `ROOK_MODE`         | Permission mode    | `auto`          |
 
 **Known Models:**
 - `gpt-5.2-codex`
@@ -251,7 +251,7 @@ See [claude-agent-acp](https://github.com/zed-industries/claude-agent-acp) for s
 - `gpt-5.1-codex-max`
 - `gpt-5.1-codex-mini`
 
-**Permission Modes (`GOOSE_MODE`):**
+**Permission Modes (`ROOK_MODE`):**
 
 | Mode            | Approval / Sandbox          | Behavior                                                       |
 |-----------------|-----------------------------|----------------------------------------------------------------|
@@ -266,9 +266,9 @@ See [codex-acp](https://github.com/zed-industries/codex-acp) for approval policy
 
 | Environment Variable | Description      | Default   |
 |----------------------|------------------|-----------|
-| `GOOSE_PROVIDER`     | Set to `pi-acp`  | None      |
-| `GOOSE_MODEL`        | Model to use     | `current` |
-| `GOOSE_MODE`         | Permission mode  | `auto`    |
+| `ROOK_PROVIDER`     | Set to `pi-acp`  | None      |
+| `ROOK_MODEL`        | Model to use     | `current` |
+| `ROOK_MODE`         | Permission mode  | `auto`    |
 
 ## Error Handling
 

@@ -109,7 +109,7 @@ jobs:
           cross --version
 
           export CC="${{ matrix.cc || ''}}"
-          cross build --release --target ${TARGET} -p goose-cli
+          cross build --release --target ${TARGET} -p rook-cli
 
       - name: Setup Rust (Windows)
         if: matrix.os == 'windows'
@@ -123,16 +123,16 @@ jobs:
         shell: bash
         run: |
           echo "🚀 Building Windows CLI executable..."
-          cargo build --release --target x86_64-pc-windows-msvc -p goose-cli
+          cargo build --release --target x86_64-pc-windows-msvc -p rook-cli
 
-          if [ ! -f "./target/x86_64-pc-windows-msvc/release/goose.exe" ]; then
+          if [ ! -f "./target/x86_64-pc-windows-msvc/release/rook.exe" ]; then
             echo "❌ Windows CLI binary not found."
             ls -la ./target/x86_64-pc-windows-msvc/release/ || echo "Release directory doesn't exist"
             exit 1
           fi
 
           echo "✅ Windows CLI binary found!"
-          ls -la ./target/x86_64-pc-windows-msvc/release/goose.exe
+          ls -la ./target/x86_64-pc-windows-msvc/release/rook.exe
 
       - name: Package CLI (Linux/macOS)
         if: matrix.use-cross
@@ -141,16 +141,16 @@ jobs:
           export TARGET="${{ matrix.architecture }}-${{ matrix.target-suffix }}"
 
           # Create a directory for the package contents
-          mkdir -p "target/${TARGET}/release/goose-package"
+          mkdir -p "target/${TARGET}/release/rook-package"
 
-          # Copy the goose binary
-          cp "target/${TARGET}/release/goose" "target/${TARGET}/release/goose-package/"
+          # Copy the rook binary
+          cp "target/${TARGET}/release/rook" "target/${TARGET}/release/rook-package/"
 
           cd "target/${TARGET}/release"
-          tar -cjf "goose-${TARGET}.tar.bz2" -C goose-package .
-          tar -czf "goose-${TARGET}.tar.gz" -C goose-package .
-          echo "ARTIFACT_BZ2=target/${TARGET}/release/goose-${TARGET}.tar.bz2" >> $GITHUB_ENV
-          echo "ARTIFACT_GZ=target/${TARGET}/release/goose-${TARGET}.tar.gz" >> $GITHUB_ENV
+          tar -cjf "rook-${TARGET}.tar.bz2" -C rook-package .
+          tar -czf "rook-${TARGET}.tar.gz" -C rook-package .
+          echo "ARTIFACT_BZ2=target/${TARGET}/release/rook-${TARGET}.tar.bz2" >> $GITHUB_ENV
+          echo "ARTIFACT_GZ=target/${TARGET}/release/rook-${TARGET}.tar.gz" >> $GITHUB_ENV
 
       - name: Package CLI (Windows)
         if: matrix.os == 'windows'
@@ -158,18 +158,18 @@ jobs:
         run: |
           export TARGET="${{ matrix.architecture }}-${{ matrix.target-suffix }}"
 
-          mkdir -p "target/${TARGET}/release/goose-package"
+          mkdir -p "target/${TARGET}/release/rook-package"
 
-          cp "target/${TARGET}/release/goose.exe" "target/${TARGET}/release/goose-package/"
+          cp "target/${TARGET}/release/rook.exe" "target/${TARGET}/release/rook-package/"
 
           cd "target/${TARGET}/release"
-          7z a -tzip "goose-${TARGET}.zip" goose-package/
-          echo "ARTIFACT_ZIP=target/${TARGET}/release/goose-${TARGET}.zip" >> $GITHUB_ENV
+          7z a -tzip "rook-${TARGET}.zip" rook-package/
+          echo "ARTIFACT_ZIP=target/${TARGET}/release/rook-${TARGET}.zip" >> $GITHUB_ENV
 
       - name: Upload CLI artifact
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
         with:
-          name: goose-${{ matrix.architecture }}-${{ matrix.target-suffix }}
+          name: rook-${{ matrix.architecture }}-${{ matrix.target-suffix }}
           path: |
             ${{ env.ARTIFACT_BZ2 }}
             ${{ env.ARTIFACT_GZ }}

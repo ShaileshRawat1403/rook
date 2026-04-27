@@ -224,7 +224,7 @@ You can customize how rook generates recipes by editing the `recipe.md` [prompt 
      **Manual URL Entry:**
 
          1. Paste a recipe link into your browser's address bar 
-         2. Press `Enter` and click the `Open Goose.app` prompt
+         2. Press `Enter` and click the `Open Rook.app` prompt
        
      **Recipe Library:**
 
@@ -327,7 +327,7 @@ You can customize how rook generates recipes by editing the `recipe.md` [prompt 
 
        Add to your config file:
        ```yaml title="~/.config/rook/config.yaml"
-       GOOSE_RECIPE_GITHUB_REPO: "owner/repo"
+       ROOK_RECIPE_GITHUB_REPO: "owner/repo"
        ```
 
      </TabItem>
@@ -340,7 +340,7 @@ You can customize how rook generates recipes by editing the `recipe.md` [prompt 
 
        **Basic Usage** - Run once and exit (see [run options](/docs/guides/rook-cli-commands#run-options) and [recipe commands](/docs/guides/rook-cli-commands#recipe) for more):
        ```sh
-       # Using recipe file in current directory or [`GOOSE_RECIPE_PATH`](/docs/guides/environment-variables#recipe-configuration) directories
+       # Using recipe file in current directory or [`ROOK_RECIPE_PATH`](/docs/guides/environment-variables#recipe-configuration) directories
        rook run --recipe recipe.yaml
 
        # Using full path

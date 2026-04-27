@@ -6,7 +6,7 @@ description: Create, manage, and launch custom HTML apps in standalone windows
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { PlatformExtensionNote } from '@site/src/components/PlatformExtensionNote';
-import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
+import RookBuiltinInstaller from '@site/src/components/RookBuiltinInstaller';
 
 The Apps extension lets you create, manage, and launch simple custom apps through chat. This feature is ideal for:
 - Quick utilities and tools like calculators and converters
@@ -26,7 +26,7 @@ You can create, modify, and delete apps through chat without needing to edit fil
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseBuiltinInstaller
+  <RookBuiltinInstaller
     extensionName="Apps"
     description="Create and manage custom rook apps through chat. Apps are HTML/CSS/JavaScript and run in sandboxed windows."
   />

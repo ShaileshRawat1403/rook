@@ -7,7 +7,7 @@ description: Learn how rook renders interactive UI components from MCP Apps and 
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
 import { PanelLeft } from 'lucide-react';
 
@@ -81,7 +81,7 @@ See how interactive responses work in rook. For this exercise, we'll add an exte
 
   <Tabs groupId="interface">
     <TabItem value="ui" label="rook Desktop" default>
-      <GooseDesktopInstaller
+      <RookDesktopInstaller
         extensionId="richdemo"
         extensionName="Rich Demo"
         description="Demo interactive extension"

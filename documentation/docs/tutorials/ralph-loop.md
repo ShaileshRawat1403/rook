@@ -72,8 +72,8 @@ Continue? [y/N]: y
 
 | Variable | Description |
 |--------|-------------|
-| Worker model | The model that does the actual coding work. Defaults to `GOOSE_MODEL` if set. |
-| Worker provider | The provider for the worker model (e.g., `openai`, `anthropic`). Defaults to `GOOSE_PROVIDER` if set. |
+| Worker model | The model that does the actual coding work. Defaults to `ROOK_MODEL` if set. |
+| Worker provider | The provider for the worker model (e.g., `openai`, `anthropic`). Defaults to `ROOK_PROVIDER` if set. |
 | Reviewer model | The model that reviews the work. Should be different from the worker for best results. |
 | Reviewer provider | The provider for the reviewer model. |
 | Max iterations | How many work/review cycles before giving up. Defaults to 10. |
@@ -212,8 +212,8 @@ fi
 
 # Function to prompt for settings
 prompt_for_settings() {
-    local default_model="${GOOSE_MODEL:-}"
-    local default_provider="${GOOSE_PROVIDER:-}"
+    local default_model="${ROOK_MODEL:-}"
+    local default_provider="${ROOK_PROVIDER:-}"
     
     # Worker model
     if [ -n "$default_model" ]; then
@@ -343,7 +343,7 @@ for i in $(seq 1 "$MAX_ITERATIONS"); do
     echo ""
     echo -e "${YELLOW}▶ WORK PHASE${NC}"
     
-    GOOSE_PROVIDER="$WORKER_PROVIDER" GOOSE_MODEL="$WORKER_MODEL" rook run --recipe "$RECIPE_DIR/ralph-work.yaml" || {
+    ROOK_PROVIDER="$WORKER_PROVIDER" ROOK_MODEL="$WORKER_MODEL" rook run --recipe "$RECIPE_DIR/ralph-work.yaml" || {
         echo -e "${RED}✗ WORK PHASE FAILED${NC}"
         exit 1
     }
@@ -358,7 +358,7 @@ for i in $(seq 1 "$MAX_ITERATIONS"); do
     echo ""
     echo -e "${YELLOW}▶ REVIEW PHASE${NC}"
     
-    GOOSE_PROVIDER="$REVIEWER_PROVIDER" GOOSE_MODEL="$REVIEWER_MODEL" rook run --recipe "$RECIPE_DIR/ralph-review.yaml" || {
+    ROOK_PROVIDER="$REVIEWER_PROVIDER" ROOK_MODEL="$REVIEWER_MODEL" rook run --recipe "$RECIPE_DIR/ralph-review.yaml" || {
         echo -e "${RED}✗ REVIEW PHASE FAILED${NC}"
         exit 1
     }

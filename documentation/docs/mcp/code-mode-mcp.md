@@ -6,7 +6,7 @@ description: Execute JavaScript code to interact with multiple MCP tools
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { PlatformExtensionNote } from '@site/src/components/PlatformExtensionNote';
-import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
+import RookBuiltinInstaller from '@site/src/components/RookBuiltinInstaller';
 
 The Code Mode extension enables [Code Mode](/docs/guides/managing-tools/code-mode), a programmatic approach for interacting with MCP tools.
 
@@ -20,7 +20,7 @@ This helps manage context window usage more efficiently when multiple extensions
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseBuiltinInstaller
+  <RookBuiltinInstaller
     extensionName="Code Mode"
     description="Execute JavaScript code to interact with MCP tools efficiently"
   />

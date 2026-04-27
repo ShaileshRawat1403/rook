@@ -28,12 +28,12 @@ This layered approach lets rook handle token and context limits gracefully.
 rook automatically compacts (summarizes) older parts of your conversation when approaching token limits, allowing you to maintain long-running sessions without manual intervention. 
 Auto-compaction is triggered by default when you reach 80% of the token limit in rook Desktop and the rook CLI.
 
-Control the auto-compaction behavior with the `GOOSE_AUTO_COMPACT_THRESHOLD` [environment variable](/docs/guides/environment-variables.md#session-management). 
+Control the auto-compaction behavior with the `ROOK_AUTO_COMPACT_THRESHOLD` [environment variable](/docs/guides/environment-variables.md#session-management). 
 Disable this feature by setting the value to `0.0`.
 
 ```
 # Automatically compact sessions when 60% of available tokens are used
-export GOOSE_AUTO_COMPACT_THRESHOLD=0.6
+export ROOK_AUTO_COMPACT_THRESHOLD=0.6
 ```
 
 When you reach the auto-compaction threshold:
@@ -46,7 +46,7 @@ You can customize how rook summarizes conversations during compaction by editing
 :::
 
 :::tip Tool Output Summarization
-To help maintain efficient context usage, rook summarizes older tool call outputs in the background while keeping recent calls in full detail. By default, this happens when you have more than 10 tool calls in a session. For advanced tuning, see [`GOOSE_TOOL_CALL_CUTOFF`](/docs/guides/environment-variables#session-management).
+To help maintain efficient context usage, rook summarizes older tool call outputs in the background while keeping recent calls in full detail. By default, this happens when you have more than 10 tool calls in a session. For advanced tuning, see [`ROOK_TOOL_CALL_CUTOFF`](/docs/guides/environment-variables#session-management).
 :::
 
 ### Manual Compaction
@@ -107,21 +107,21 @@ The default behavior depends on the mode you're running in:
 - **Interactive mode**: Prompts user to choose (equivalent to `prompt`)
 - **Headless mode** (`rook run`): Automatically summarizes (equivalent to `summarize`)
 
-You can configure how rook handles context limits by setting the `GOOSE_CONTEXT_STRATEGY` environment variable:
+You can configure how rook handles context limits by setting the `ROOK_CONTEXT_STRATEGY` environment variable:
 
 ```bash
 # Set automatic strategy (choose one)
-export GOOSE_CONTEXT_STRATEGY=summarize  # Automatically summarize (recommended)
-export GOOSE_CONTEXT_STRATEGY=truncate   # Automatically remove oldest messages
-export GOOSE_CONTEXT_STRATEGY=clear      # Automatically clear session
+export ROOK_CONTEXT_STRATEGY=summarize  # Automatically summarize (recommended)
+export ROOK_CONTEXT_STRATEGY=truncate   # Automatically remove oldest messages
+export ROOK_CONTEXT_STRATEGY=clear      # Automatically clear session
 
 # Set to prompt the user
-export GOOSE_CONTEXT_STRATEGY=prompt
+export ROOK_CONTEXT_STRATEGY=prompt
 ```
 
 When you hit the context limit, the behavior depends on your configuration:
 
-**With default settings (no `GOOSE_CONTEXT_STRATEGY` set)**, you'll see this prompt to choose a management option:
+**With default settings (no `ROOK_CONTEXT_STRATEGY` set)**, you'll see this prompt to choose a management option:
 
 ```sh
 ◇  The model's context length is maxed out. You will need to reduce the # msgs. Do you want to?
@@ -138,20 +138,20 @@ Context maxed out
 rook summarized messages for you.
 ```
 
-**With `GOOSE_CONTEXT_STRATEGY` configured**, rook will automatically apply your chosen strategy:
+**With `ROOK_CONTEXT_STRATEGY` configured**, rook will automatically apply your chosen strategy:
 
 ```sh
-# Example with GOOSE_CONTEXT_STRATEGY=summarize
+# Example with ROOK_CONTEXT_STRATEGY=summarize
 Context maxed out - automatically summarized messages.
 --------------------------------------------------
 rook automatically summarized messages for you.
 
-# Example with GOOSE_CONTEXT_STRATEGY=truncate
+# Example with ROOK_CONTEXT_STRATEGY=truncate
 Context maxed out - automatically truncated messages.
 --------------------------------------------------
 rook tried its best to truncate messages for you.
 
-# Example with GOOSE_CONTEXT_STRATEGY=clear
+# Example with ROOK_CONTEXT_STRATEGY=clear
 Context maxed out - automatically cleared session.
 --------------------------------------------------
 ```
@@ -167,7 +167,7 @@ This feature gives you control over agent autonomy and prevents infinite loops a
 - Enabling human supervision or interaction during autonomous operations
 - Controlling loops while testing and debugging agent behavior
 
-This setting is stored as the `GOOSE_MAX_TURNS` environment variable in your [config.yaml file](/docs/guides/config-files). You can configure it using the Desktop app or CLI.
+This setting is stored as the `ROOK_MAX_TURNS` environment variable in your [config.yaml file](/docs/guides/config-files). You can configure it using the Desktop app or CLI.
 
 <Tabs groupId="interface">
     <TabItem value="ui" label="rook Desktop" default>
@@ -292,8 +292,8 @@ Context limits are automatically detected based on your model name, but rook pro
 
 | Model | Description | Best For | Setting |
 |-------|-------------|----------|---------|
-| **Main** | Set context limit for the main model (also serves as fallback for other models) | LiteLLM proxies, custom models with non-standard names | `GOOSE_CONTEXT_LIMIT` |
-| **Planner** | Set context for [planner models](/docs/guides/creating-plans) | Large planning tasks requiring extensive context | `GOOSE_PLANNER_CONTEXT_LIMIT` |
+| **Main** | Set context limit for the main model (also serves as fallback for other models) | LiteLLM proxies, custom models with non-standard names | `ROOK_CONTEXT_LIMIT` |
+| **Planner** | Set context for [planner models](/docs/guides/creating-plans) | Large planning tasks requiring extensive context | `ROOK_PLANNER_CONTEXT_LIMIT` |
 
 :::info
 This setting only affects the displayed token usage and progress indicators. Actual context management is handled by your LLM, so you may experience more or less usage than the limit you set, regardless of what the display shows.
@@ -309,8 +309,8 @@ This feature is particularly useful with:
 rook resolves context limits with the following precedence (highest to lowest):
 
 1. Explicit context_limit in model configuration (if set programmatically)
-2. Specific environment variable (e.g., `GOOSE_PLANNER_CONTEXT_LIMIT`)
-3. Global environment variable (`GOOSE_CONTEXT_LIMIT`)
+2. Specific environment variable (e.g., `ROOK_PLANNER_CONTEXT_LIMIT`)
+3. Global environment variable (`ROOK_CONTEXT_LIMIT`)
 4. Model-specific default based on name pattern matching
 5. Global default (128,000 tokens)
 
@@ -327,7 +327,7 @@ rook resolves context limits with the following precedence (highest to lowest):
     Context limit overrides only work as [environment variables](/docs/guides/environment-variables#model-context-limit-overrides), not in the config file.
 
     ```bash
-    export GOOSE_CONTEXT_LIMIT=1000
+    export ROOK_CONTEXT_LIMIT=1000
     rook session
     ```
 
@@ -341,25 +341,25 @@ rook resolves context limits with the following precedence (highest to lowest):
 
 ```bash
 # LiteLLM proxy with custom model name
-export GOOSE_PROVIDER="openai"
-export GOOSE_MODEL="my-custom-gpt4-proxy"
-export GOOSE_CONTEXT_LIMIT=200000  # Override the 32k default
+export ROOK_PROVIDER="openai"
+export ROOK_MODEL="my-custom-gpt4-proxy"
+export ROOK_CONTEXT_LIMIT=200000  # Override the 32k default
 ```
 
 2. Planner setup with a different context limit
 
 ```bash
 # Set a larger context window for planning
-export GOOSE_PLANNER_MODEL="claude-opus-custom"
-export GOOSE_PLANNER_CONTEXT_LIMIT=500000
+export ROOK_PLANNER_MODEL="claude-opus-custom"
+export ROOK_PLANNER_CONTEXT_LIMIT=500000
 ```
 
 3. Planner with large context
 
 ```bash
 # Large context for complex planning
-export GOOSE_PLANNER_MODEL="gpt-4-custom"
-export GOOSE_PLANNER_CONTEXT_LIMIT=1000000
+export ROOK_PLANNER_MODEL="gpt-4-custom"
+export ROOK_PLANNER_CONTEXT_LIMIT=1000000
 ```
 
 ## Credit Balance Monitoring
@@ -397,14 +397,14 @@ Pricing data is regularly fetched from the OpenRouter API and cached locally. Th
 These costs are estimates only, and not connected to your actual provider bill. The cost shown is an approximation based on token counts and public pricing data.
 </TabItem>
     <TabItem value="cli" label="rook CLI">
-    Show estimated cost in the rook CLI by setting the `GOOSE_CLI_SHOW_COST` [environment variable](/docs/guides/environment-variables.md#session-management) or including it in the [configuration file](/docs/guides/config-files.md).
+    Show estimated cost in the rook CLI by setting the `ROOK_CLI_SHOW_COST` [environment variable](/docs/guides/environment-variables.md#session-management) or including it in the [configuration file](/docs/guides/config-files.md).
 
   ```
   # Set environment variable
-  export GOOSE_CLI_SHOW_COST=true
+  export ROOK_CLI_SHOW_COST=true
 
   # config.yaml
-  GOOSE_CLI_SHOW_COST: true
+  ROOK_CLI_SHOW_COST: true
   ```
   </TabItem>
 </Tabs>

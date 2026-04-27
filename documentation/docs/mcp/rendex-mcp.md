@@ -5,7 +5,7 @@ description: Add Rendex MCP Server as a rook Extension for Screenshots, PDFs, an
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
 
 This tutorial covers how to add the [Rendex MCP Server](https://github.com/copperline-labs/rendex-mcp) as a rook extension to capture screenshots, generate PDFs, and render HTML to images from any webpage or raw HTML — useful for archiving UIs, generating invoices and reports, producing OG images, and giving rook a reliable "see the web" capability without spinning up a full browser automation stack.
@@ -35,7 +35,7 @@ This tutorial covers how to add the [Rendex MCP Server](https://github.com/coppe
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-    <GooseDesktopInstaller
+    <RookDesktopInstaller
       extensionId="rendex"
       extensionName="Rendex"
       description="Capture screenshots, generate PDFs, and render HTML to images via AI agents"

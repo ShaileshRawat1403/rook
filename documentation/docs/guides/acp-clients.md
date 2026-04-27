@@ -89,7 +89,7 @@ You should now be able to interact with rook directly in Zed. Your ACP sessions 
 
 ##### Overriding Provider and Model
 
-By default, rook will use the provider and model defined in your [configuration file](/docs/guides/config-files). You can override this for specific ACP configurations using the `GOOSE_PROVIDER` and `GOOSE_MODEL` environment variables.
+By default, rook will use the provider and model defined in your [configuration file](/docs/guides/config-files). You can override this for specific ACP configurations using the `ROOK_PROVIDER` and `ROOK_MODEL` environment variables.
 
 The following Zed settings example configures two rook agent instances. This is useful for:
 - Comparing model performance on the same task
@@ -107,8 +107,8 @@ The following Zed settings example configures two rook agent instances. This is 
       "command": "rook",
       "args": ["acp"],
       "env": {
-        "GOOSE_PROVIDER": "openai",
-        "GOOSE_MODEL": "gpt-4o"
+        "ROOK_PROVIDER": "openai",
+        "ROOK_MODEL": "gpt-4o"
       }
     }
   },

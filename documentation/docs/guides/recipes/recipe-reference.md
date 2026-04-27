@@ -28,10 +28,10 @@ Recipes can be loaded from:
 
 1. Local filesystem:
    - Current directory
-   - Directories specified in [`GOOSE_RECIPE_PATH`](/docs/guides/environment-variables#recipe-configuration) environment variable
+   - Directories specified in [`ROOK_RECIPE_PATH`](/docs/guides/environment-variables#recipe-configuration) environment variable
    
 2. GitHub repositories:
-   - Configure using [`GOOSE_RECIPE_GITHUB_REPO`](/docs/guides/environment-variables#recipe-configuration) configuration key
+   - Configure using [`ROOK_RECIPE_GITHUB_REPO`](/docs/guides/environment-variables#recipe-configuration) configuration key
    - Requires GitHub CLI (`gh`) to be installed and authenticated
 
 ## Core Recipe Schema
@@ -500,8 +500,8 @@ retry:
 
 You can configure retry behavior globally using environment variables:
 
-- `GOOSE_RECIPE_RETRY_TIMEOUT_SECONDS`: Global timeout for success check commands
-- `GOOSE_RECIPE_ON_FAILURE_TIMEOUT_SECONDS`: Global timeout for on_failure commands
+- `ROOK_RECIPE_RETRY_TIMEOUT_SECONDS`: Global timeout for success check commands
+- `ROOK_RECIPE_ON_FAILURE_TIMEOUT_SECONDS`: Global timeout for on_failure commands
 
 These environment variables are overridden by recipe-specific timeout configurations.
 
@@ -525,7 +525,7 @@ The `max_turns` setting controls how many iterations an agent can perform before
 **Configuration precedence (highest to lowest):**
 1. Subagent tool call override
 2. Recipe `settings.max_turns`
-3. `GOOSE_SUBAGENT_MAX_TURNS` environment variable
+3. `ROOK_SUBAGENT_MAX_TURNS` environment variable
 4. Default value (1000 for main recipes, 25 for subagents)
 
 **Common use cases:** Limit execution time for automated workflows, prevent runaway subagents, control resource usage in scheduled jobs.

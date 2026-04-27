@@ -664,14 +664,14 @@ The `/t` command controls the syntax highlighting theme for markdown content in 
 
 **Configuration:**
 - The default theme is `dark`
-- The theme setting is saved to the [configuration file](/docs/guides/config-files) as `GOOSE_CLI_THEME` and persists between sessions
-- The saved configuration can be overridden for the session using the `GOOSE_CLI_THEME` [environment variable](/docs/guides/environment-variables#session-management)
+- The theme setting is saved to the [configuration file](/docs/guides/config-files) as `ROOK_CLI_THEME` and persists between sessions
+- The saved configuration can be overridden for the session using the `ROOK_CLI_THEME` [environment variable](/docs/guides/environment-variables#session-management)
 
 **Custom Syntax Highlighting:**
 
 You can customize the underlying syntax highlighting theme used for code blocks by setting:
-- `GOOSE_CLI_LIGHT_THEME` - Theme used when in light mode (default: "GitHub")
-- `GOOSE_CLI_DARK_THEME` - Theme used when in dark mode (default: "zenburn")
+- `ROOK_CLI_LIGHT_THEME` - Theme used when in light mode (default: "GitHub")
+- `ROOK_CLI_DARK_THEME` - Theme used when in dark mode (default: "zenburn")
 
 These accept any [bat theme name](https://github.com/sharkdp/bat#adding-new-themes). Popular options include "Dracula", "Nord", "Solarized (light)", "Solarized (dark)", "OneHalfDark", and "Monokai Extended". Run `bat --list-themes` to see all available themes.
 
@@ -684,7 +684,7 @@ The rook CLI theme is independent from the rook Desktop theme.
 **Examples:**
 ```bash
 # Set ANSI theme for the session via environment variable
-export GOOSE_CLI_THEME=ansi
+export ROOK_CLI_THEME=ansi
 rook session --name use-custom-theme
 
 # Toggle theme during a session
@@ -702,7 +702,7 @@ rook session --name use-custom-theme
 
 **Session Control:**
 - **`Ctrl+C`** - Clear the current line if text is entered, interrupt the current request if processing, or exit the session if line is empty
-- **`Ctrl+J`** - Add a newline. Can customize the character via `GOOSE_CLI_NEWLINE_KEY` in the [config file](/docs/guides/config-files) (e.g. `GOOSE_CLI_NEWLINE_KEY: n`) or as an [environment variable](/docs/guides/environment-variables#session-management). Avoid "c" and common terminal shortcuts like "r", "w", "z".
+- **`Ctrl+J`** - Add a newline. Can customize the character via `ROOK_CLI_NEWLINE_KEY` in the [config file](/docs/guides/config-files) (e.g. `ROOK_CLI_NEWLINE_KEY: n`) or as an [environment variable](/docs/guides/environment-variables#session-management). Avoid "c" and common terminal shortcuts like "r", "w", "z".
 
 **Navigation:**
 - **`Cmd+Up/Down arrows`** - Navigate through command history
@@ -732,10 +732,10 @@ You can use any editor that accepts a file path argument, such as vim, nano, ema
 
   ```bash
   # For terminal editors like vim or nano
-  export GOOSE_PROMPT_EDITOR=vim
+  export ROOK_PROMPT_EDITOR=vim
 
   # Or for GUI editors like VS Code (use --wait flag)
-  export GOOSE_PROMPT_EDITOR="code --wait"
+  export ROOK_PROMPT_EDITOR="code --wait"
   ```
 
   </TabItem>
@@ -744,14 +744,14 @@ You can use any editor that accepts a file path argument, such as vim, nano, ema
   Persists across all sessions unless overridden by the environment variable.
   
   1. Navigate to the rook [configuration file](/docs/guides/config-files). For example, navigate to `~/.config/rook/config.yaml` on macOS.
-  2. Add `GOOSE_PROMPT_EDITOR` and set it to your preferred editor:
+  2. Add `ROOK_PROMPT_EDITOR` and set it to your preferred editor:
   
   ```yaml
   # For terminal editors like vim or nano
-  GOOSE_PROMPT_EDITOR: vim
+  ROOK_PROMPT_EDITOR: vim
 
   # Or for GUI editors like VS Code (use --wait flag)
-  GOOSE_PROMPT_EDITOR: code --wait
+  ROOK_PROMPT_EDITOR: code --wait
   ```
 
   </TabItem>

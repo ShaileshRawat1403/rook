@@ -42,12 +42,12 @@ jobs:
         with:
           version: 10.30.3
 
-      - name: Download goose binaries from release
+      - name: Download rook binaries from release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="${{ inputs.release-tag }}"
-          echo "Downloading goose CLI binaries from release ${TAG}"
+          echo "Downloading rook CLI binaries from release ${TAG}"
 
           # Map: npm platform name -> release artifact name (target triple)
           declare -A PLATFORM_MAP=(
@@ -60,30 +60,30 @@ jobs:
 
           for platform in "${!PLATFORM_MAP[@]}"; do
             target="${PLATFORM_MAP[$platform]}"
-            pkg_dir="ui/goose-binary/goose-binary-${platform}/bin"
+            pkg_dir="ui/rook-binary/rook-binary-${platform}/bin"
             mkdir -p "${pkg_dir}"
 
             if [[ "${platform}" == "win32-x64" ]]; then
-              artifact="goose-${target}.zip"
+              artifact="rook-${target}.zip"
               gh release download "${TAG}" --pattern "${artifact}" --dir /tmp
-              unzip -o "/tmp/${artifact}" -d /tmp/goose-extract
-              cp /tmp/goose-extract/goose-package/goose.exe "${pkg_dir}/goose.exe"
-              rm -rf /tmp/goose-extract "/tmp/${artifact}"
+              unzip -o "/tmp/${artifact}" -d /tmp/rook-extract
+              cp /tmp/rook-extract/rook-package/rook.exe "${pkg_dir}/rook.exe"
+              rm -rf /tmp/rook-extract "/tmp/${artifact}"
             else
-              artifact="goose-${target}.tar.bz2"
+              artifact="rook-${target}.tar.bz2"
               gh release download "${TAG}" --pattern "${artifact}" --dir /tmp
-              mkdir -p /tmp/goose-extract
-              tar -xjf "/tmp/${artifact}" -C /tmp/goose-extract
-              cp /tmp/goose-extract/goose "${pkg_dir}/goose"
-              chmod +x "${pkg_dir}/goose"
-              rm -rf /tmp/goose-extract "/tmp/${artifact}"
+              mkdir -p /tmp/rook-extract
+              tar -xjf "/tmp/${artifact}" -C /tmp/rook-extract
+              cp /tmp/rook-extract/rook "${pkg_dir}/rook"
+              chmod +x "${pkg_dir}/rook"
+              rm -rf /tmp/rook-extract "/tmp/${artifact}"
             fi
 
             echo "  ✅ ${platform} (${target})"
           done
 
       - name: List downloaded binaries (debug)
-        run: find ui/goose-binary -name 'goose*' -type f | sort
+        run: find ui/rook-binary -name 'rook*' -type f | sort
 
       - name: Install dependencies
         run: |
@@ -114,16 +114,16 @@ jobs:
             echo "### Release"
             echo "Tag: \`${{ inputs.release-tag }}\`"
             echo ""
-            echo "### Goose CLI Binaries"
+            echo "### Rook CLI Binaries"
             echo "✅ Downloaded from release for all platforms:"
-            for dir in ui/goose-binary/goose-binary-*/; do
-              platform=$(basename "$dir" | sed 's/goose-binary-//')
+            for dir in ui/rook-binary/rook-binary-*/; do
+              platform=$(basename "$dir" | sed 's/rook-binary-//')
               echo "  - $platform"
             done
             echo ""
             echo "### npm Packages"
             cd ui
-            for pkg in sdk text goose-binary/*/; do
+            for pkg in sdk text rook-binary/*/; do
               if [ -f "$pkg/package.json" ]; then
                 name=$(jq -r '.name' "$pkg/package.json")
                 version=$(jq -r '.version' "$pkg/package.json")
@@ -144,8 +144,8 @@ jobs:
           name: npm-packages
           path: ui/
 
-      - name: Restore executable bits on goose binaries
-        run: find ui/goose-binary -name 'goose' -type f -exec chmod +x {} +
+      - name: Restore executable bits on rook binaries
+        run: find ui/rook-binary -name 'rook' -type f -exec chmod +x {} +
 
       - name: Setup Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -165,7 +165,7 @@ jobs:
           # Publish each package individually so one failure doesn't abort the rest.
           # Skips packages whose version is already published (409/403).
           failed=0
-          for pkg in sdk goose-binary/*/ text; do
+          for pkg in sdk rook-binary/*/ text; do
             if [ -f "$pkg/package.json" ]; then
               name=$(jq -r '.name' "$pkg/package.json")
               version=$(jq -r '.version' "$pkg/package.json")
@@ -195,7 +195,7 @@ jobs:
           {
             echo "## 🚀 Published Packages"
             echo ""
-            for pkg in sdk text goose-binary/*/; do
+            for pkg in sdk text rook-binary/*/; do
               if [ -f "$pkg/package.json" ]; then
                 name=$(jq -r '.name' "$pkg/package.json")
                 version=$(jq -r '.version' "$pkg/package.json")

@@ -5,7 +5,7 @@ description: Add Cash App as a rook Extension
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
 
 Cash App brings local food ordering into the AI era. Discover nearby sellers, browse menus with calories and allergen info, customize orders, and complete checkout—all conversationally. The real magic? Combine it with your other tools: check your calendar for meeting times, log meals to your health app, or find options that fit your dietary goals. Try prompts like "Order a nut-free lunch that arrives before my 2pm flight" for truly connected experiences.
@@ -33,7 +33,7 @@ Cash App brings local food ordering into the AI era. Discover nearby sellers, br
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-    <GooseDesktopInstaller
+    <RookDesktopInstaller
       extensionId="cash-app"
       extensionName="Cash App"
       description="Cash App brings local food ordering into the AI era. Discover nearby sellers, browse menus, customize orders, and complete checkout—all conversationally."

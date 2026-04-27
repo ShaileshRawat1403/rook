@@ -6,7 +6,7 @@ description: Use Memory MCP Server as a rook Extension
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
-import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
+import RookBuiltinInstaller from '@site/src/components/RookBuiltinInstaller';
 
 <YouTubeShortEmbed videoUrl="https://youtube.com/embed/BZ0yrSLXQwk" />
 
@@ -18,7 +18,7 @@ This tutorial covers enabling and using the Memory MCP Server, which is a built-
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseBuiltinInstaller
+  <RookBuiltinInstaller
     extensionName="Memory"
     description="Store and recall personalized information for consistent assistance"
   />

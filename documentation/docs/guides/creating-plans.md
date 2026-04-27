@@ -31,8 +31,8 @@ In some workflows, it can be helpful to use one LLM for planning and a different
 
 The rook CLI plan mode uses two configuration values:
 
-- `GOOSE_PLANNER_PROVIDER`: Which provider to use for planning
-- `GOOSE_PLANNER_MODEL`: Which model to use for planning
+- `ROOK_PLANNER_PROVIDER`: Which provider to use for planning
+- `ROOK_PLANNER_MODEL`: Which model to use for planning
 
 :::tip Multi-Model Alternative to Plan Mode
 You can combine planning mode with a different default execution model to balance cost, speed, and quality.
@@ -45,8 +45,8 @@ You can also customize how rook creates plans by editing the `plan.md` [prompt t
 ### Set rook planner environment variables
 You might add these lines to your bash shell config file (.bashrc) to add the planner environment variables:
 ```bash
-export GOOSE_PLANNER_PROVIDER=<my-chosen-provider>
-export GOOSE_PLANNER_MODEL=<my-chosen-model>
+export ROOK_PLANNER_PROVIDER=<my-chosen-provider>
+export ROOK_PLANNER_MODEL=<my-chosen-model>
 ```
 After you save your changes to the config file, you need to re-start your rook session so that rook can use the variables.
 
@@ -70,14 +70,14 @@ rook Locations:
   Logs dir:         /Users/alincoln/.local/state/rook/logs
 
 rook Configuration:
-  GOOSE_PROVIDER: anthropic
-  GOOSE_MODEL: claude-3.5-sonnet
-  GOOSE_PLANNER_PROVIDER: openai
-  GOOSE_MODE: smart_approve
-  GOOSE_PLANNER_MODEL: gpt-4.1
+  ROOK_PROVIDER: anthropic
+  ROOK_MODEL: claude-3.5-sonnet
+  ROOK_PLANNER_PROVIDER: openai
+  ROOK_MODE: smart_approve
+  ROOK_PLANNER_MODEL: gpt-4.1
 ```
 
- If either `GOOSE_PLANNER_PROVIDER` or `GOOSE_PLANNER_MODEL` are not set, `GOOSE_PROVIDER` and `GOOSE_MODEL`are used to build your plan.  
+ If either `ROOK_PLANNER_PROVIDER` or `ROOK_PLANNER_MODEL` are not set, `ROOK_PROVIDER` and `ROOK_MODEL`are used to build your plan.  
 
 ## Describe your project
 While rook can handle complex project descriptions, it works best with clear, concise ones. Focus on stating your project's purpose and desired outcomes. If these aren't clear, rook will ask clarifying questions until it fully understands your goals. 

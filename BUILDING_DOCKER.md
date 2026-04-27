@@ -17,8 +17,8 @@ docker run --rm ghcr.io/ShaileshRawat1403/rook:latest --version
 
 # Run with LLM configuration
 docker run --rm \
-  -e GOOSE_PROVIDER=openai \
-  -e GOOSE_MODEL=gpt-4o \
+  -e ROOK_PROVIDER=openai \
+  -e ROOK_MODEL=gpt-4o \
   -e OPENAI_API_KEY=$OPENAI_API_KEY \
   ghcr.io/ShaileshRawat1403/rook:latest run -t "Hello, world!"
 ```
@@ -36,7 +36,7 @@ docker run --rm \
 1. Clone the repository:
 ```bash
 git clone https://github.com/ShaileshRawat1403/rook.git
-cd goose
+cd rook
 ```
 
 2. Build the Docker image:
@@ -47,7 +47,7 @@ docker build -t rook:local .
 The build process:
 - Uses a multi-stage build to minimize final image size
 - Compiles with optimizations (LTO, stripping, size optimization)
-- Results in a ~340MB image containing the `goose` CLI binary
+- Results in a ~340MB image containing the `rook` CLI binary
 
 ### Build Options
 
@@ -72,8 +72,8 @@ docker run --rm rook:local --help
 
 # Run a command
 docker run --rm \
-  -e GOOSE_PROVIDER=openai \
-  -e GOOSE_MODEL=gpt-4o \
+  -e ROOK_PROVIDER=openai \
+  -e ROOK_MODEL=gpt-4o \
   -e OPENAI_API_KEY=$OPENAI_API_KEY \
   rook:local run -t "Explain Docker containers"
 ```
@@ -83,8 +83,8 @@ With volume mounts for file access:
 docker run --rm \
   -v $(pwd):/workspace \
   -w /workspace \
-  -e GOOSE_PROVIDER=openai \
-  -e GOOSE_MODEL=gpt-4o \
+  -e ROOK_PROVIDER=openai \
+  -e ROOK_MODEL=gpt-4o \
   -e OPENAI_API_KEY=$OPENAI_API_KEY \
   rook:local run -t "Analyze the code in this directory"
 ```
@@ -92,8 +92,8 @@ docker run --rm \
 Interactive session mode with Databricks:
 ```bash
 docker run -it --rm \
-  -e GOOSE_PROVIDER=databricks \
-  -e GOOSE_MODEL=databricks-dbrx-instruct \
+  -e ROOK_PROVIDER=databricks \
+  -e ROOK_MODEL=databricks-dbrx-instruct \
   -e DATABRICKS_HOST="$DATABRICKS_HOST" \
   -e DATABRICKS_TOKEN="$DATABRICKS_TOKEN" \
   rook:local session
@@ -112,12 +112,12 @@ services:
   rook:
     image: ghcr.io/ShaileshRawat1403/rook:latest
     environment:
-      - GOOSE_PROVIDER=${GOOSE_PROVIDER:-openai}
-      - GOOSE_MODEL=${GOOSE_MODEL:-gpt-4o}
+      - ROOK_PROVIDER=${ROOK_PROVIDER:-openai}
+      - ROOK_MODEL=${ROOK_MODEL:-gpt-4o}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
     volumes:
       - ./workspace:/workspace
-      - rook-config:/home/rook/.config/goose
+      - rook-config:/home/rook/.config/rook
     working_dir: /workspace
     stdin_open: true
     tty: true
@@ -137,8 +137,8 @@ docker-compose run --rm rook session
 
 The Docker image accepts all standard rook environment variables:
 
-- `GOOSE_PROVIDER`: LLM provider (openai, anthropic, google, etc.)
-- `GOOSE_MODEL`: Model to use (gpt-4o, claude-sonnet-4, etc.)
+- `ROOK_PROVIDER`: LLM provider (openai, anthropic, google, etc.)
+- `ROOK_MODEL`: Model to use (gpt-4o, claude-sonnet-4, etc.)
 - Provider-specific API keys (OPENAI_API_KEY, ANTHROPIC_API_KEY, etc.)
 
 ### Persistent Configuration
@@ -146,7 +146,7 @@ The Docker image accepts all standard rook environment variables:
 Mount the configuration directory to persist settings:
 ```bash
 docker run --rm \
-  -v ~/.config/goose:/home/rook/.config/goose \
+  -v ~/.config/rook:/home/rook/.config/rook \
   rook:local configure
 ```
 
@@ -169,7 +169,7 @@ RUN apt-get update && apt-get install -y \
     vim \
     tmux \
     && rm -rf /var/lib/apt/lists/*
-USER goose
+USER rook
 ```
 
 ## CI/CD Integration
@@ -183,8 +183,8 @@ jobs:
     container:
       image: ghcr.io/ShaileshRawat1403/rook:latest
       env:
-        GOOSE_PROVIDER: openai
-        GOOSE_MODEL: gpt-4o
+        ROOK_PROVIDER: openai
+        ROOK_MODEL: gpt-4o
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
     steps:
       - uses: actions/checkout@v4
@@ -199,8 +199,8 @@ jobs:
 analyze:
   image: ghcr.io/ShaileshRawat1403/rook:latest
   variables:
-    GOOSE_PROVIDER: openai
-    GOOSE_MODEL: gpt-4o
+    ROOK_PROVIDER: openai
+    ROOK_MODEL: gpt-4o
   script:
     - rook run -t "Generate documentation for this project"
 ```
@@ -212,11 +212,11 @@ analyze:
 - **Base image**: Debian Bookworm Slim (minimal runtime dependencies)
 - **Final size**: ~340MB
 - **Optimizations**: Link-Time Optimization (LTO), binary stripping, size optimization
-- **Binary included**: `/usr/local/bin/goose` (32MB)
+- **Binary included**: `/usr/local/bin/rook` (32MB)
 
 ### Security
 
-- Runs as non-root user `goose` (UID 1000)
+- Runs as non-root user `rook` (UID 1000)
 - Minimal attack surface with only essential runtime dependencies
 - Regular security updates via automated builds
 
@@ -281,8 +281,8 @@ For development with hot reload:
 ```bash
 # Mount source code
 docker run --rm \
-  -v $(pwd):/usr/src/goose \
-  -w /usr/src/goose \
+  -v $(pwd):/usr/src/rook \
+  -w /usr/src/rook \
   rust:1.82-bookworm \
   cargo watch -x run
 ```
@@ -302,7 +302,7 @@ FROM ghcr.io/ShaileshRawat1403/rook:v1.6.0
 # Add any additional tools needed for your use case
 USER root
 RUN apt-get update && apt-get install -y your-tools && rm -rf /var/lib/apt/lists/*
-USER goose
+USER rook
 ```
 
 ## Contributing
@@ -317,6 +317,6 @@ When contributing Docker-related changes:
 
 ## Related Documentation
 
-- [goose in Docker Tutorial](documentation/docs/tutorials/goose-in-docker.md) - Step-by-step tutorial
-- [Installation Guide](https://goose-docs.ai/docs/getting-started/installation) - All installation methods
-- [Configuration Guide](https://goose-docs.ai/docs/guides/config-files) - Detailed configuration options
+- [rook in Docker Tutorial](documentation/docs/tutorials/rook-in-docker.md) - Step-by-step tutorial
+- [Installation Guide](https://rook-docs.ai/docs/getting-started/installation) - All installation methods
+- [Configuration Guide](https://rook-docs.ai/docs/guides/config-files) - Detailed configuration options

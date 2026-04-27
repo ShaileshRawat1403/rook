@@ -42,15 +42,15 @@ It covers:
 The simplest custom distribution just sets environment defaults:
 
 ```bash
-export GOOSE_PROVIDER=ollama
-export GOOSE_MODEL=qwen3-coder:latest
+export ROOK_PROVIDER=ollama
+export ROOK_MODEL=qwen3-coder:latest
 ```
 
 Or create an `init-config.yaml` applied on first run:
 
 ```yaml
-GOOSE_PROVIDER: ollama
-GOOSE_MODEL: qwen3-coder:latest
+ROOK_PROVIDER: ollama
+ROOK_MODEL: qwen3-coder:latest
 ```
 
 See the [full guide](https://github.com/aaif-rook/rook/blob/main/CUSTOM_DISTROS.md) for more scenarios including corporate API key distribution, audience-specific builds, and custom UIs.

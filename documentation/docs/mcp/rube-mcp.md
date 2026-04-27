@@ -6,7 +6,7 @@ description: Add Rube as a rook Extension to connect with 500+ apps
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 import { PanelLeft } from 'lucide-react';
 
 This tutorial covers how to add [Rube](https://rube.app) as a rook extension to enable seamless integration with 500+ apps including Slack, Gmail, Notion, Google Workspace, Microsoft Office, GitHub, and many more.
@@ -38,7 +38,7 @@ Rube is a platform powered by Composio that provides unified access to 500+ apps
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-    <GooseDesktopInstaller
+    <RookDesktopInstaller
       extensionId="rube"
       extensionName="Rube"
       description="Seamlessly connect across 500+ applications including Slack, Gmail, Notion, Google Workspace, Microsoft Office, GitHub, and many more"

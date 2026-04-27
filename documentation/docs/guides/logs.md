@@ -65,7 +65,7 @@ Extensions may optionally log to subdirectories under `~/.local/state/rook/logs/
 ### Desktop Application Log
 
 The desktop application maintains its own logs:
-* macOS: `~/Library/Application Support/Goose/logs/main.log`
+* macOS: `~/Library/Application Support/Rook/logs/main.log`
 * Windows: `%APPDATA%\Block\rook\logs\main.log`
 
 The desktop application follows platform conventions for its own operational logs and state data, but uses the standard rook [session records](#session-records) for actual conversations and interactions. This means your conversation history is consistent regardless of which interface you use to interact with rook.

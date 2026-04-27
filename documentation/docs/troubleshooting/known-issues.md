@@ -38,7 +38,7 @@ For particularly large or complex tasks, consider breaking them into smaller ses
 
 If you use rook CLI and work with web development projects, you may encounter commands that cause rook to hang indefinitely. Commands like `npm run dev`, `python -m http.server`, or `webpack serve` start development servers that never exit on their own.
 
-You can prevent these issues by customizing your shell to handle these commands differently when rook runs them. See [Customizing Shell Behavior](/docs/guides/environment-variables#customizing-shell-behavior) for details on using the `GOOSE_TERMINAL` environment variable.
+You can prevent these issues by customizing your shell to handle these commands differently when rook runs them. See [Customizing Shell Behavior](/docs/guides/environment-variables#customizing-shell-behavior) for details on using the `ROOK_TERMINAL` environment variable.
 
 ---
 
@@ -125,10 +125,10 @@ If you still receive authentication/keyring errors like the following, rook was 
 Failed to save token: Failed to access keyring: <error message>
 ```
 
-To resolve this (or to proactively force file-based secret storage), set `GOOSE_DISABLE_KEYRING` to any value. This example sets it only while running `rook configure`:
+To resolve this (or to proactively force file-based secret storage), set `ROOK_DISABLE_KEYRING` to any value. This example sets it only while running `rook configure`:
 
 ```bash
-GOOSE_DISABLE_KEYRING=1 rook configure
+ROOK_DISABLE_KEYRING=1 rook configure
 ```
 
 If you prefer not to store secrets in `secrets.yaml`, set the token via environment variables instead.
@@ -153,7 +153,7 @@ You may need to uninstall rook or clear existing data before re-installing. rook
 **Data Locations**
 
 - **Logs and Config**: `~/.config/rook`
-- **Application Data**: `~/Library/Application Support/Goose`
+- **Application Data**: `~/Library/Application Support/Rook`
 - **Secrets**: macOS Keychain (credential named "rook").
 
 #### Removal Steps
@@ -254,12 +254,12 @@ If you still receive keyring errors, use one of the following options:
   │  gemini-2.0-flash-exp
   ```
 
-- **If you need to disable the keyring**, set `GOOSE_DISABLE_KEYRING` to any value to force file-based secret storage. The actual value doesn't matter, only whether the variable is set.
+- **If you need to disable the keyring**, set `ROOK_DISABLE_KEYRING` to any value to force file-based secret storage. The actual value doesn't matter, only whether the variable is set.
 
   This example sets it only while running `rook configure`:
 
   ```bash
-  GOOSE_DISABLE_KEYRING=1 rook configure
+  ROOK_DISABLE_KEYRING=1 rook configure
   ```
 
 When the keyring is disabled (or cannot be accessed and rook falls back to file-based secret storage), secrets are stored here:
@@ -283,10 +283,10 @@ Keyring unavailable. Using file storage for secrets.
 
 Automatic fallback only applies to the current rook process. When you start a new session, rook will try to use the keyring again.
 
-If you need to force file-based secret storage (for example, in containers or headless environments), set `GOOSE_DISABLE_KEYRING` to any value:
+If you need to force file-based secret storage (for example, in containers or headless environments), set `ROOK_DISABLE_KEYRING` to any value:
 
 ```bash
-GOOSE_DISABLE_KEYRING=1 rook configure
+ROOK_DISABLE_KEYRING=1 rook configure
 ```
 
 See [Configuration Files](/docs/guides/config-files) for `secrets.yaml` details.
@@ -392,7 +392,7 @@ Similarly, if tools fail to create files or directories during use, it could be 
 
 If you still experience issues after fixing permissions, try launching rook with superuser (admin) privileges:
 ```sh
-sudo /Applications/Goose.app/Contents/MacOS/Goose
+sudo /Applications/Rook.app/Contents/MacOS/Rook
 ```
 
 :::note

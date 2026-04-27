@@ -7,7 +7,7 @@ unlisted: true
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 
 Server archived
 
@@ -39,7 +39,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
 <Tabs groupId="interface" defaultValue="ui">
   <TabItem value="ui" label="rook Desktop">
-  <GooseDesktopInstaller
+  <RookDesktopInstaller
     extensionId="google-maps"
     extensionName="Google Maps"
     description="Google Maps API integration"

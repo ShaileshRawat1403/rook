@@ -123,7 +123,7 @@ The Gemini CLI provider integrates with Google's [Gemini CLI tool](https://ai.go
    
    Set the provider environment variable:
    ```bash
-   export GOOSE_PROVIDER=claude-code
+   export ROOK_PROVIDER=claude-code
    ```
    
    Or configure through the rook CLI using `rook configure`:
@@ -161,7 +161,7 @@ The Gemini CLI provider integrates with Google's [Gemini CLI tool](https://ai.go
 
    Set the provider environment variable:
    ```bash
-   export GOOSE_PROVIDER=codex
+   export ROOK_PROVIDER=codex
    ```
 
    Or configure through the rook CLI using `rook configure`:
@@ -196,7 +196,7 @@ The Gemini CLI provider integrates with Google's [Gemini CLI tool](https://ai.go
    Set the provider environment variable:
 
    ```bash
-   export GOOSE_PROVIDER=cursor-agent
+   export ROOK_PROVIDER=cursor-agent
    ```
 
    Or configure through the rook CLI using `rook configure`:
@@ -230,7 +230,7 @@ The Gemini CLI provider integrates with Google's [Gemini CLI tool](https://ai.go
    
    Set the provider environment variable:
    ```bash
-   export GOOSE_PROVIDER=gemini-cli
+   export ROOK_PROVIDER=gemini-cli
    ```
    
    Or configure through the rook CLI using `rook configure`:
@@ -266,10 +266,10 @@ CLI providers also work well with planning mode when you want one model for stra
 
 ```bash
 # Use Claude Code for execution, OpenAI for planning
-export GOOSE_PROVIDER=claude-code
-export GOOSE_MODEL=default
-export GOOSE_PLANNER_PROVIDER=openai
-export GOOSE_PLANNER_MODEL=gpt-4o
+export ROOK_PROVIDER=claude-code
+export ROOK_MODEL=default
+export ROOK_PLANNER_PROVIDER=openai
+export ROOK_PLANNER_MODEL=gpt-4o
 
 rook session
 ```
@@ -280,19 +280,19 @@ rook session
 
 | Environment Variable | Description | Default |
 |---------------------|-------------|---------|
-| `GOOSE_PROVIDER` | Set to `claude-code` to use this provider | None |
-| `GOOSE_MODEL` | Model to use (only `sonnet` or `opus` are passed to CLI) | `claude-sonnet-4-20250514` |
+| `ROOK_PROVIDER` | Set to `claude-code` to use this provider | None |
+| `ROOK_MODEL` | Model to use (only `sonnet` or `opus` are passed to CLI) | `claude-sonnet-4-20250514` |
 | `CLAUDE_CODE_COMMAND` | Path to the Claude CLI command | `claude` |
 
 **Known Models:**
 
-The following models are recognized and passed to the Claude CLI via the `--model` flag. If `GOOSE_MODEL` is set to a value not in this list, no model flag is passed and Claude Code uses its default:
+The following models are recognized and passed to the Claude CLI via the `--model` flag. If `ROOK_MODEL` is set to a value not in this list, no model flag is passed and Claude Code uses its default:
 
 - `default` (opus)
 - `sonnet`
 - `haiku`
 
-**Permission Modes (`GOOSE_MODE`):**
+**Permission Modes (`ROOK_MODE`):**
 
 | Mode | Claude Code Flag | Behavior |
 |------|------------------|----------|
@@ -312,7 +312,7 @@ This provides a consistent permission experience across all rook providers while
 
 Example with approve mode:
 ```bash
-GOOSE_PROVIDER=claude-code GOOSE_MODE=approve rook session
+ROOK_PROVIDER=claude-code ROOK_MODE=approve rook session
 ```
 :::
 
@@ -320,23 +320,23 @@ GOOSE_PROVIDER=claude-code GOOSE_MODE=approve rook session
 
 | Environment Variable | Description | Default |
 |---------------------|-------------|---------|
-| `GOOSE_PROVIDER` | Set to `cursor-agent` to use this provider | None |
+| `ROOK_PROVIDER` | Set to `cursor-agent` to use this provider | None |
 | `CURSOR_AGENT_COMMAND` | Path to the Cursor Agent command | `cursor-agent` |
 
 ### OpenAI Codex Configuration
 
 | Environment Variable | Description | Default |
 |---------------------|-------------|---------|
-| `GOOSE_PROVIDER` | Set to `codex` to use this provider | None |
-| `GOOSE_MODEL` | Model to use (only known models are passed to CLI) | `gpt-5.2-codex` |
+| `ROOK_PROVIDER` | Set to `codex` to use this provider | None |
+| `ROOK_MODEL` | Model to use (only known models are passed to CLI) | `gpt-5.2-codex` |
 | `CODEX_COMMAND` | Path to the Codex CLI command | `codex` |
-| `GOOSE_THINKING_EFFORT` | Unified thinking effort (`off`, `low`, `medium`, `high`, `max`). Mapped to Codex CLI effort levels (`none/low/medium/high/xhigh`). | `high` |
+| `ROOK_THINKING_EFFORT` | Unified thinking effort (`off`, `low`, `medium`, `high`, `max`). Mapped to Codex CLI effort levels (`none/low/medium/high/xhigh`). | `high` |
 | `CODEX_ENABLE_SKILLS` | Enable Codex skills: `true` or `false` | `true` |
 | `CODEX_SKIP_GIT_CHECK` | Skip git repository requirement: `true` or `false` | `false` |
 
 **Known Models:**
 
-The following models are recognized and passed to the Codex CLI via the `-m` flag. If `GOOSE_MODEL` is set to a value not in this list, no model flag is passed and Codex uses its default:
+The following models are recognized and passed to the Codex CLI via the `-m` flag. If `ROOK_MODEL` is set to a value not in this list, no model flag is passed and Codex uses its default:
 
 - `gpt-5.2-codex` (400K context, auto-compacting)
 - `gpt-5.2` (400K context, auto-compacting)
@@ -347,7 +347,7 @@ The following models are recognized and passed to the Codex CLI via the `-m` fla
 These are the default models supported by Codex CLI v0.77.0. To access older or legacy models, you can run `codex -m <model_name>` directly or configure them in Codex's `config.toml`. See the [Codex CLI documentation](https://developers.openai.com/codex/cli) for details.
 :::
 
-**Permission Modes (`GOOSE_MODE`):**
+**Permission Modes (`ROOK_MODE`):**
 
 | Mode | Codex Flag | Behavior |
 |------|------------|----------|
@@ -360,7 +360,7 @@ These are the default models supported by Codex CLI v0.77.0. To access older or 
 
 | Environment Variable | Description | Default |
 |---------------------|-------------|---------|
-| `GOOSE_PROVIDER` | Set to `gemini-cli` to use this provider | None |
+| `ROOK_PROVIDER` | Set to `gemini-cli` to use this provider | None |
 | `GEMINI_CLI_COMMAND` | Path to the Gemini CLI command | `gemini` |
 
 ## How It Works

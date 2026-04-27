@@ -6,7 +6,7 @@ description: Add vmware-aiops MCP Server as a rook Extension for natural languag
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 
 This tutorial covers how to add [vmware-aiops](https://github.com/zw008/VMware-AIops) as a rook extension, enabling natural language management of VMware vCenter and ESXi infrastructure. With this extension, rook can list VMs, check health, power on/off machines, deploy from templates, run commands inside VMs, and orchestrate multi-step operations with automatic rollback.
 
@@ -63,7 +63,7 @@ vmware-aiops doctor
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-    <GooseDesktopInstaller
+    <RookDesktopInstaller
       extensionId="vmware-aiops"
       extensionName="VMware AIops"
       description="Natural language VMware vCenter/ESXi monitoring and operations"

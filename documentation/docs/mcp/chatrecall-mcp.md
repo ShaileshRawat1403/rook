@@ -6,7 +6,7 @@ description: Search conversation history and load session summaries across all y
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { PlatformExtensionNote } from '@site/src/components/PlatformExtensionNote';
-import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
+import RookBuiltinInstaller from '@site/src/components/RookBuiltinInstaller';
 
 The Chat Recall extension helps rook remember past conversations by searching across your session history. When you need context from previous work, rook can search for relevant conversations or load summaries of specific sessions.
 
@@ -18,7 +18,7 @@ rook automatically uses Chat Recall when you reference past work or ask question
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseBuiltinInstaller
+  <RookBuiltinInstaller
     extensionName="Chatrecall"
     description="Search conversation history across all your sessions"
   />

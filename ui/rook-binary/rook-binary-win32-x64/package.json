@@ -1,11 +1,11 @@
 {
-  "name": "@aaif/rook-binary-win32-x64",
+  "name": "@shaileshrawat/rook-binary-win32-x64",
   "version": "0.17.0",
   "description": "Rook binary for Windows x64",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aaif-rook/rook.git"
+    "url": "git+https://github.com/ShaileshRawat1403/rook.git"
   },
   "bin": {
     "rook": "bin/rook.exe"

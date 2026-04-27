@@ -6,7 +6,7 @@ description: Add Filesystem MCP Server as rook Extension
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
 import { PanelLeft, Settings } from 'lucide-react';
 
@@ -31,7 +31,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseDesktopInstaller
+  <RookDesktopInstaller
     extensionId="filesystem"
     extensionName="filesystem"
     description="Enables code analysis and file management"

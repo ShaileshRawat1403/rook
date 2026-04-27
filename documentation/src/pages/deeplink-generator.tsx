@@ -41,7 +41,7 @@ export default function DeeplinkGenerator() {
       id: "example-extension",
       name: "Example Extension",
       description: "An example rook extension",
-      command: "npx @gooseai/example-extension",
+      command: "npx @rookai/example-extension",
       environmentVariables: [
         {
           name: "API_KEY",
@@ -59,7 +59,7 @@ export default function DeeplinkGenerator() {
     if (urlParams.toString()) {
       try {
         // Check if this is a built-in extension request
-        if (urlParams.get('cmd') === 'goosed' && urlParams.getAll('arg').includes('mcp')) {
+        if (urlParams.get('cmd') === 'rookd' && urlParams.getAll('arg').includes('mcp')) {
           const args = urlParams.getAll('arg');
           const extensionId = args[args.indexOf('mcp') + 1];
           if (!extensionId) {
@@ -136,12 +136,12 @@ export default function DeeplinkGenerator() {
   const generateDeeplink = (server: ServerConfig): string => {
     if (server.is_builtin) {
       const queryParams = [
-        'cmd=goosed',
+        'cmd=rookd',
         'arg=mcp',
         `arg=${encodeURIComponent(server.id)}`,
         `description=${encodeURIComponent(server.id)}`
       ].join('&');
-      return `goose://extension?${queryParams}`;
+      return `rook://extension?${queryParams}`;
     }
 
     // Handle the case where the command is a URL
@@ -158,7 +158,7 @@ export default function DeeplinkGenerator() {
           ),
       ].join("&");
 
-      return `goose://extension?${queryParams}`;
+      return `rook://extension?${queryParams}`;
     }
 
     const parts = server.command.split(" ");
@@ -177,7 +177,7 @@ export default function DeeplinkGenerator() {
         ),
     ].join("&");
 
-    return `goose://extension?${queryParams}`;
+    return `rook://extension?${queryParams}`;
   };
 
   const handleFormSubmit = useCallback((e: React.FormEvent) => {
@@ -344,7 +344,7 @@ export default function DeeplinkGenerator() {
                       onChange={(e) => setCommand(e.target.value)}
                       required
                       className="w-full p-3 border border-borderSubtle rounded-lg bg-bgSubtle text-textStandard"
-                      placeholder="npx @gooseai/example-extension"
+                      placeholder="npx @rookai/example-extension"
                     />
                   </div>
 

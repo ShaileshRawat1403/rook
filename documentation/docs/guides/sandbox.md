@@ -24,8 +24,8 @@ The sandbox relies on `/usr/bin/sandbox-exec`, which is only available on macOS 
 To enable the sandbox, launch rook Desktop from the terminal with the environment variable set. For example:
 
 ```bash
-export GOOSE_SANDBOX=true
-open -a Goose
+export ROOK_SANDBOX=true
+open -a Rook
 ```
 
 When the app starts with sandboxing enabled, it will:
@@ -34,7 +34,7 @@ When the app starts with sandboxing enabled, it will:
 2. Start a local HTTP CONNECT proxy on localhost
 3. Launch the `rookd` backend for rook Desktop inside `sandbox-exec`, forcing all traffic through the proxy
 
-The sandbox remains active until you quit rook Desktop. To disable it, quit the app and relaunch normally (or set `GOOSE_SANDBOX=false` when opening from the terminal).
+The sandbox remains active until you quit rook Desktop. To disable it, quit the app and relaunch normally (or set `ROOK_SANDBOX=false` when opening from the terminal).
 
 ## Configuration
 
@@ -44,7 +44,7 @@ All configuration is via environment variables. Defaults are designed to be secu
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `GOOSE_SANDBOX` | `false` | Set to `true` or `1` to enable the sandbox. See [Quick Start](#quick-start) for launch instructions. |
+| `ROOK_SANDBOX` | `false` | Set to `true` or `1` to enable the sandbox. See [Quick Start](#quick-start) for launch instructions. |
 
 ----
 
@@ -62,7 +62,7 @@ The [seatbelt sandbox profile](https://github.com/aaif-rook/rook/blob/main/ui/de
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `GOOSE_SANDBOX_PROTECT_FILES` | `true` | Write-protect sensitive files listed above. Set to `false` to disable |
+| `ROOK_SANDBOX_PROTECT_FILES` | `true` | Write-protect sensitive files listed above. Set to `false` to disable |
 
 ----
 
@@ -92,8 +92,8 @@ The seatbelt sandbox blocks tools and system calls that could bypass security co
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `GOOSE_SANDBOX_BLOCK_RAW_SOCKETS` | `true` | Block `SOCK_RAW`. Set to `false` to disable |
-| `GOOSE_SANDBOX_BLOCK_TUNNELING` | `true` | Block `nc`/`netcat`/`socat`/`telnet`. Set to `false` to disable |
+| `ROOK_SANDBOX_BLOCK_RAW_SOCKETS` | `true` | Block `SOCK_RAW`. Set to `false` to disable |
+| `ROOK_SANDBOX_BLOCK_TUNNELING` | `true` | Block `nc`/`netcat`/`socat`/`telnet`. Set to `false` to disable |
 
 ----
 
@@ -114,11 +114,11 @@ For optional LaunchDarkly-based egress control, see [LaunchDarkly](#launchdarkly
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `GOOSE_SANDBOX_ALLOW_IP` | `false` | Set to `true` to allow connections to raw IP addresses |
-| `GOOSE_SANDBOX_BLOCK_LOOPBACK` | `false` | Set to `true` to block loopback relay through the proxy |
-| `GOOSE_SANDBOX_ALLOW_SSH` | `true` | Set to `false` to block all SSH traffic |
-| `GOOSE_SANDBOX_GIT_HOSTS` | built-in list | Comma-separated list of allowed SSH git hosts (e.g. `github.com,gitlab.com`) |
-| `GOOSE_SANDBOX_SSH_ALL_HOSTS` | `false` | Set to `true` to allow SSH to any host (not just git hosts) |
+| `ROOK_SANDBOX_ALLOW_IP` | `false` | Set to `true` to allow connections to raw IP addresses |
+| `ROOK_SANDBOX_BLOCK_LOOPBACK` | `false` | Set to `true` to block loopback relay through the proxy |
+| `ROOK_SANDBOX_ALLOW_SSH` | `true` | Set to `false` to block all SSH traffic |
+| `ROOK_SANDBOX_GIT_HOSTS` | built-in list | Comma-separated list of allowed SSH git hosts (e.g. `github.com,gitlab.com`) |
+| `ROOK_SANDBOX_SSH_ALL_HOSTS` | `false` | Set to `true` to allow SSH to any host (not just git hosts) |
 
 #### Managing the Domain Blocklist
 
@@ -145,10 +145,10 @@ By default, SSH is only allowed to well-known git hosting domains (e.g. GitHub, 
 
 ```bash
 # Add custom git hosts
-export GOOSE_SANDBOX_GIT_HOSTS="github.com,gitlab.com,your-gitea.internal.com"
+export ROOK_SANDBOX_GIT_HOSTS="github.com,gitlab.com,your-gitea.internal.com"
 
 # Or allow SSH to all hosts
-export GOOSE_SANDBOX_SSH_ALL_HOSTS=true
+export ROOK_SANDBOX_SSH_ALL_HOSTS=true
 ```
 
 ----
@@ -162,60 +162,60 @@ For enterprise environments, LaunchDarkly provides optional dynamic egress contr
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `LAUNCHDARKLY_CLIENT_ID` | — | LD client SDK key to enable dynamic egress control |
-| `GOOSE_SANDBOX_LD_FAILOVER` | — | Failover mode if LD is unreachable: `allow`, `deny`, or `blocklist` |
+| `ROOK_SANDBOX_LD_FAILOVER` | — | Failover mode if LD is unreachable: `allow`, `deny`, or `blocklist` |
 
 ## Example Configurations
 
 ### Maximum security
 
 ```bash
-export GOOSE_SANDBOX=true
+export ROOK_SANDBOX=true
 # All protections enabled (defaults)
 ```
 
 ### Allow raw IP connections (e.g. for internal APIs)
 
 ```bash
-export GOOSE_SANDBOX=true
-export GOOSE_SANDBOX_ALLOW_IP=true
+export ROOK_SANDBOX=true
+export ROOK_SANDBOX_ALLOW_IP=true
 ```
 
 ### Disable SSH entirely
 
 ```bash
-export GOOSE_SANDBOX=true
-export GOOSE_SANDBOX_ALLOW_SSH=false
+export ROOK_SANDBOX=true
+export ROOK_SANDBOX_ALLOW_SSH=false
 ```
 
 ### Relaxed mode (fewer restrictions)
 
 ```bash
-export GOOSE_SANDBOX=true
-export GOOSE_SANDBOX_PROTECT_FILES=false
-export GOOSE_SANDBOX_BLOCK_RAW_SOCKETS=false
-export GOOSE_SANDBOX_BLOCK_TUNNELING=false
-export GOOSE_SANDBOX_ALLOW_IP=true
-export GOOSE_SANDBOX_SSH_ALL_HOSTS=true
+export ROOK_SANDBOX=true
+export ROOK_SANDBOX_PROTECT_FILES=false
+export ROOK_SANDBOX_BLOCK_RAW_SOCKETS=false
+export ROOK_SANDBOX_BLOCK_TUNNELING=false
+export ROOK_SANDBOX_ALLOW_IP=true
+export ROOK_SANDBOX_SSH_ALL_HOSTS=true
 ```
 
 ### With LaunchDarkly egress control
 
 ```bash
-export GOOSE_SANDBOX=true
+export ROOK_SANDBOX=true
 export LAUNCHDARKLY_CLIENT_ID=sdk-your-key-here
-export GOOSE_SANDBOX_LD_FAILOVER=blocklist  # fall back to local blocklist if LD is down
+export ROOK_SANDBOX_LD_FAILOVER=blocklist  # fall back to local blocklist if LD is down
 ```
 
 ## Troubleshooting
 
-- **Error: "GOOSE_SANDBOX=true but sandbox-exec is not available (macOS only)"**  
+- **Error: "ROOK_SANDBOX=true but sandbox-exec is not available (macOS only)"**  
   You're not on macOS, or `/usr/bin/sandbox-exec` is missing. The sandbox only works on macOS.
 
 - **Extensions or tools can't reach the network**  
-  Check if the destination domain is in `~/.config/rook/sandbox/blocked.txt`, or if you need to enable `GOOSE_SANDBOX_ALLOW_IP=true` for IP-based endpoints.
+  Check if the destination domain is in `~/.config/rook/sandbox/blocked.txt`, or if you need to enable `ROOK_SANDBOX_ALLOW_IP=true` for IP-based endpoints.
 
 - **git clone over SSH fails**  
-  The target host may not be in the default Git hosts allowlist. Add it with `GOOSE_SANDBOX_GIT_HOSTS=your-host.com` or set `GOOSE_SANDBOX_SSH_ALL_HOSTS=true`.
+  The target host may not be in the default Git hosts allowlist. Add it with `ROOK_SANDBOX_GIT_HOSTS=your-host.com` or set `ROOK_SANDBOX_SSH_ALL_HOSTS=true`.
 
 - **Want to inspect what the proxy is blocking?**  
   Check the [Desktop application logs](/docs/guides/logs#desktop-application-log). Blocked connections are logged with the prefix `[sandbox-proxy]` and include the reason for blocking.

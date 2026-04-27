@@ -7,8 +7,8 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
-import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
+import RookBuiltinInstaller from '@site/src/components/RookBuiltinInstaller';
 
 This tutorial covers how to add the [Linux MCP Server](https://github.com/rhel-lightspeed/linux-mcp-server) as a rook extension to enable AI assistants to run, discover, and troubleshoot complex issues on Linux systems.
 
@@ -37,7 +37,7 @@ Note that you'll need [uv](https://docs.astral.sh/uv/#installation) installed on
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
 
-    <GooseDesktopInstaller
+    <RookDesktopInstaller
       extensionId="linux-mcp-server"
       extensionName="Linux MCP server"
       description="Tools for Linux system discovery and troubleshooting"

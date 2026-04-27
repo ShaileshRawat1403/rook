@@ -1,0 +1,18 @@
+This is a rust project with crates in the crates dir:
+rook: the main code for rook, contains all the core logic
+rook-acp: the agent client protocol implementation
+rook-acp-macros: macros for the agent client protocol
+rook-cli: the command line interface, uses rook crate
+rook-mcp: the mcp servers that ship with rook
+rook-sdk: the sdk for building extensions or embedding rook
+rook-test-support: utilities for testing rook
+
+
+ui/rook has a tauri-based desktop app in typescript.
+
+non trivial features should be implemented in the rook crate and then be called from the rook-cli crate for the cli. for the desktop, you want to interact with the backend via tauri commands or the sdk.
+
+tips: 
+- can look at unstaged changes for what is being worked on if starting
+- always check rust compiles, cargo fmt etc and `cargo clippy --all-targets -- -D warnings` (as well as run tests in files you are working on)
+- in ui/rook, look at how you can run lint checks and if other tests can run

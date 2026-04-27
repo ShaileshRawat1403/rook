@@ -5,7 +5,7 @@ description: Use rook with Remotion agent skills to generate programmatic videos
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
+import RookBuiltinInstaller from '@site/src/components/RookBuiltinInstaller';
 
 rook can create programmatic videos using [Remotion](https://www.remotion.dev/), a framework for creating videos with React. By loading [Remotion Agent Skills](https://www.remotion.dev/docs/ai/skills), rook gains knowledge of best practices for animations, compositions, text effects, and video rendering.
 
@@ -24,7 +24,7 @@ Enable the [Summon extension](/docs/mcp/summon-mcp) to allow rook to load and us
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseBuiltinInstaller
+  <RookBuiltinInstaller
     extensionName="Summon"
   />
   </TabItem>

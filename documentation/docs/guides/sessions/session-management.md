@@ -126,7 +126,7 @@ In your first session, rook prompts you to [set up an LLM (Large Language Model)
 </Tabs>
 
 :::tip Disable AI-generated Session Naming
-Use [`GOOSE_DISABLE_SESSION_NAMING`](/docs/guides/environment-variables#session-management) to keep the default name instead of calling a model to generate one (useful in CI/headless workflows). The default name in rook Desktop is "New Chat" and the default name in rook CLI is "CLI Session".
+Use [`ROOK_DISABLE_SESSION_NAMING`](/docs/guides/environment-variables#session-management) to keep the default name instead of calling a model to generate one (useful in CI/headless workflows). The default name in rook Desktop is "New Chat" and the default name in rook CLI is "CLI Session".
 :::
 
 ## Exit Session

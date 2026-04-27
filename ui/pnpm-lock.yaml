@@ -18,9 +18,6 @@ importers:
 
   rook:
     dependencies:
-      '@aaif/rook-sdk':
-        specifier: workspace:*
-        version: link:../sdk
       '@agentclientprotocol/sdk':
         specifier: ^0.19.0
         version: 0.19.2(zod@4.3.6)
@@ -108,6 +105,9 @@ importers:
       '@rive-app/react-webgl2':
         specifier: ^4.27.3
         version: 4.28.1(react@19.2.4)
+      '@shaileshrawat/rook-sdk':
+        specifier: workspace:*
+        version: link:../sdk
       '@streamdown/cjk':
         specifier: ^1.0.3
         version: 1.0.3(@types/mdast@4.0.4)(micromark-util-types@2.0.2)(micromark@4.0.2)(react@19.2.4)(unified@11.0.5)
@@ -317,15 +317,15 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0(@opentelemetry/api@1.9.0)(@types/node@25.5.0)(@vitest/ui@4.1.0)(jsdom@26.1.0)(vite@7.3.1(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2))
 
-  rook-binary/goose-binary-darwin-arm64: {}
+  rook-binary/rook-binary-darwin-arm64: {}
 
-  rook-binary/goose-binary-darwin-x64: {}
+  rook-binary/rook-binary-darwin-x64: {}
 
-  rook-binary/goose-binary-linux-arm64: {}
+  rook-binary/rook-binary-linux-arm64: {}
 
-  rook-binary/goose-binary-linux-x64: {}
+  rook-binary/rook-binary-linux-x64: {}
 
-  rook-binary/goose-binary-win32-x64: {}
+  rook-binary/rook-binary-win32-x64: {}
 
   sdk:
     dependencies:
@@ -352,33 +352,33 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
     optionalDependencies:
-      '@aaif/rook-binary-darwin-arm64':
+      '@shaileshrawat/rook-binary-darwin-arm64':
         specifier: workspace:*
-        version: link:../rook-binary/goose-binary-darwin-arm64
-      '@aaif/rook-binary-darwin-x64':
+        version: link:../rook-binary/rook-binary-darwin-arm64
+      '@shaileshrawat/rook-binary-darwin-x64':
         specifier: workspace:*
-        version: link:../rook-binary/goose-binary-darwin-x64
-      '@aaif/rook-binary-linux-arm64':
+        version: link:../rook-binary/rook-binary-darwin-x64
+      '@shaileshrawat/rook-binary-linux-arm64':
         specifier: workspace:*
-        version: link:../rook-binary/goose-binary-linux-arm64
-      '@aaif/rook-binary-linux-x64':
+        version: link:../rook-binary/rook-binary-linux-arm64
+      '@shaileshrawat/rook-binary-linux-x64':
         specifier: workspace:*
-        version: link:../rook-binary/goose-binary-linux-x64
-      '@aaif/rook-binary-win32-x64':
+        version: link:../rook-binary/rook-binary-linux-x64
+      '@shaileshrawat/rook-binary-win32-x64':
         specifier: workspace:*
-        version: link:../rook-binary/goose-binary-win32-x64
+        version: link:../rook-binary/rook-binary-win32-x64
 
   text:
     dependencies:
-      '@aaif/rook-sdk':
-        specifier: workspace:*
-        version: link:../sdk
       '@agentclientprotocol/sdk':
         specifier: ^0.14.1
         version: 0.14.1(zod@4.3.6)
       '@inkjs/ui':
         specifier: ^2.0.0
         version: 2.0.0(ink@6.8.0(@types/react@19.2.14)(react@19.2.4))
+      '@shaileshrawat/rook-sdk':
+        specifier: workspace:*
+        version: link:../sdk
       ink:
         specifier: ^6.8.0
         version: 6.8.0(@types/react@19.2.14)(react@19.2.4)

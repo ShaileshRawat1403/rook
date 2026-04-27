@@ -6,7 +6,7 @@ description: Add Supabase MCP Server as a rook Extension
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 
 This tutorial covers how to add the [Supabase MCP Server](https://github.com/supabase-community/supabase-mcp) as a rook extension to interact with your Supabase projects, manage tables, query data, deploy Edge Functions, and interact with your Supabase backend directly.
 
@@ -35,7 +35,7 @@ The Supabase MCP Server is hosted by Supabase and provides OAuth-based authentic
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
 
-    <GooseDesktopInstaller
+    <RookDesktopInstaller
       extensionId="supabase"
       extensionName="Supabase"
       description="Connect your Supabase projects to AI assistants. Manage tables, query data, deploy Edge Functions, and interact with your Supabase backend directly from your MCP client."

@@ -22,7 +22,7 @@ const FeatureList: FeatureItem[] = [
     Svg: require("@site/static/img/lock-unlocked-fill.svg").default,
     description: (
       <>
-        Built with transparency and collaboration in mind, goose empowers
+        Built with transparency and collaboration in mind, rook empowers
         developers to contribute, customize, and innovate freely.
       </>
     ),
@@ -42,7 +42,7 @@ const FeatureList: FeatureItem[] = [
     Svg: require("@site/static/img/category-ETF.svg").default,
     description: (
       <>
-        Customize goose with your preferred LLM and enhance its capabilities by connecting it to any
+        Customize rook with your preferred LLM and enhance its capabilities by connecting it to any
         external MCP server or API.
       </>
     ),
@@ -107,7 +107,7 @@ const FeatureQuotes: FeatureQuote[] = [
     github: "blackgirlbytes",
     role: "Developer Advocate",
     testimonial:
-      "My sister had been asking me for months to help her build a Google Docs extension but I kept putting it off. Today, we hopped on FaceTime and built one in just 30 minutes with Goose!",
+      "My sister had been asking me for months to help her build a Google Docs extension but I kept putting it off. Today, we hopped on FaceTime and built one in just 30 minutes with Rook!",
   }
   //Can't find Kristen's github
   // {

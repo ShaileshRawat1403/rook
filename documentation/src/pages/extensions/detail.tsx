@@ -2,7 +2,7 @@ import Layout from "@theme/Layout";
 import { Download, Terminal, Star, ArrowLeft, Info, BookOpen } from "lucide-react";
 import { Button } from "@site/src/components/ui/button";
 import { Badge } from "@site/src/components/ui/badge";
-import { getGooseInstallLink } from "@site/src/utils/install-links";
+import { getRookInstallLink } from "@site/src/utils/install-links";
 import { useLocation } from "@docusaurus/router";
 import { useEffect, useState } from "react";
 import type { MCPServer } from "@site/src/types/server";
@@ -217,7 +217,7 @@ const getDocumentationPath = (serverId: string): string => {
                       </div>
                     ) : server.show_install_link !== false ? (
                       <a
-                        href={getGooseInstallLink(server)}
+                        href={getRookInstallLink(server)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="install-button"

@@ -5,7 +5,7 @@ description: Learn how to use rook's built-in Tutorial extension for guided lear
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
+import RookBuiltinInstaller from '@site/src/components/RookBuiltinInstaller';
 
 The Tutorial extension is a built-in feature of rook that provides interactive, step-by-step guidance for learning various aspects of rook and its capabilities. It's designed to help users get comfortable with rook's features through hands-on practice.
 
@@ -20,7 +20,7 @@ The Tutorial extension serves as an interactive learning tool that:
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseBuiltinInstaller
+  <RookBuiltinInstaller
     extensionName="Tutorial"
   />
   </TabItem>

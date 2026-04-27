@@ -1,6 +1,6 @@
 # build-windows.ps1
-# Build Goose Desktop for Windows with VMware Tanzu Platform provider
-# Run this script from the root of the goose-fork repository in PowerShell
+# Build Rook Desktop for Windows with VMware Tanzu Platform provider
+# Run this script from the root of the rook-fork repository in PowerShell
 #
 # Prerequisites:
 #   - Git (https://git-scm.com/download/win)
@@ -9,12 +9,12 @@
 #   - pnpm: npm install -g pnpm
 #
 # Usage:
-#   cd C:\path\to\goose-fork
+#   cd C:\path\to\rook-fork
 #   .\scripts\build-windows.ps1
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "=== Goose Windows Build Script ===" -ForegroundColor Cyan
+Write-Host "=== Rook Windows Build Script ===" -ForegroundColor Cyan
 Write-Host ""
 
 # Check prerequisites
@@ -42,7 +42,7 @@ Write-Host ""
 # Step 1: Clone or update repo
 Write-Host "[2/7] Building Rust backend (release)..." -ForegroundColor Yellow
 Write-Host "  This may take 5-15 minutes on first build..."
-cargo build --release -p goose-server
+cargo build --release -p rook-server
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Rust build failed!" -ForegroundColor Red
     exit 1
@@ -55,9 +55,9 @@ Write-Host "[3/7] Copying binaries to desktop app..." -ForegroundColor Yellow
 $binDir = "ui\desktop\src\bin"
 if (-not (Test-Path $binDir)) { New-Item -ItemType Directory -Path $binDir -Force | Out-Null }
 
-Copy-Item "target\release\goosed.exe" "$binDir\" -Force
-if (Test-Path "target\release\goose.exe") {
-    Copy-Item "target\release\goose.exe" "$binDir\" -Force
+Copy-Item "target\release\rookd.exe" "$binDir\" -Force
+if (Test-Path "target\release\rook.exe") {
+    Copy-Item "target\release\rook.exe" "$binDir\" -Force
 }
 # Copy required DLLs if they exist (from cross-compilation)
 Get-ChildItem "target\release\*.dll" -ErrorAction SilentlyContinue | ForEach-Object {
@@ -90,7 +90,7 @@ Write-Host "  API types generated." -ForegroundColor Green
 Write-Host ""
 
 # Step 5: Package
-Write-Host "[6/7] Packaging Goose Desktop..." -ForegroundColor Yellow
+Write-Host "[6/7] Packaging Rook Desktop..." -ForegroundColor Yellow
 npx electron-forge package
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Packaging failed!" -ForegroundColor Red
@@ -118,10 +118,10 @@ Write-Host ""
 # Done
 Write-Host "=== Build Complete ===" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "Packaged app:  ui\desktop\out\Goose-win32-x64\Goose.exe" -ForegroundColor Green
+Write-Host "Packaged app:  ui\desktop\out\Rook-win32-x64\Rook.exe" -ForegroundColor Green
 Write-Host "Installer:     ui\desktop\out\make\" -ForegroundColor Green
 Write-Host ""
 Write-Host "To run the app directly:" -ForegroundColor Yellow
-Write-Host "  .\ui\desktop\out\Goose-win32-x64\Goose.exe"
+Write-Host "  .\ui\desktop\out\Rook-win32-x64\Rook.exe"
 Write-Host ""
 Write-Host "To install, find the .exe installer in ui\desktop\out\make\"

@@ -129,7 +129,7 @@ function CommunityAllStarsSection() {
           </div>
           <div className="text-sm">
             Want to be a Community All Star? Just start contributing on GitHub, helping others, or share your rook projects with the community! You can check out the{' '}
-            <Link href="https://github.com/aaif-goose/goose/blob/main/CONTRIBUTING.md">contributing guide</Link>{' '}
+            <Link href="https://github.com/ShaileshRawat1403/rook/blob/main/CONTRIBUTING.md">contributing guide</Link>{' '}
             for more tips.
           </div>
         </div>
@@ -370,7 +370,7 @@ export default function Community(): ReactNode {
   return (
     <Layout 
       title="Community" 
-      description="Join the goose community - connect with developers, contribute to the project, and help shape the future of AI-powered development tools."
+      description="Join the rook community - connect with developers, contribute to the project, and help shape the future of AI-powered development tools."
     >
       <main className="container">
         <UpcomingEventsSection />

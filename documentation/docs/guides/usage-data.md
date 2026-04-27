@@ -65,4 +65,4 @@ To change your usage data collection preference:
   </TabItem>
 </Tabs>
 
-You can also set the `GOOSE_TELEMETRY_ENABLED` variable directly in your [`config.yaml` file](/docs/guides/config-files), or use it as an [environment variable](/docs/guides/environment-variables#security-and-privacy) to set telemetry status for a given session.
+You can also set the `ROOK_TELEMETRY_ENABLED` variable directly in your [`config.yaml` file](/docs/guides/config-files), or use it as an [environment variable](/docs/guides/environment-variables#security-and-privacy) to set telemetry status for a given session.

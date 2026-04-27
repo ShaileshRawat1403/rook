@@ -6,7 +6,7 @@ description: Add prompts.chat MCP Server as a rook Extension
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 
 This tutorial covers how to add the [prompts.chat MCP Server](https://prompts.chat) as a rook extension to enable access to thousands of AI prompts directly in your AI assistant.
 
@@ -36,7 +36,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseDesktopInstaller
+  <RookDesktopInstaller
     extensionId="prompts-chat-mcp"
     extensionName="prompts.chat"
     description="Access thousands of AI prompts directly in your AI assistant"

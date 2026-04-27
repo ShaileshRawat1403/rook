@@ -5,7 +5,7 @@ description: Add Cloudinary Asset Management MCP Server as a rook Extension
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
 
@@ -40,7 +40,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseDesktopInstaller
+  <RookDesktopInstaller
     extensionId="cloudinary"
     extensionName="Cloudinary Asset Management"
     description="Powerful media processing and transformation"

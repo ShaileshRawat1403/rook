@@ -2,7 +2,7 @@
 name = "rook"
 version = "0.1.0"
 description = "Rook desktop app"
-authors = ["you"]
+authors = ["Shailesh Rawat <shaileshrawat1403@gmail.com>"]
 edition = "2021"
 
 [[bin]]

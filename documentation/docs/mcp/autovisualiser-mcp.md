@@ -6,7 +6,7 @@ description: Add automatic data visualization to rook
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
-import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
+import RookBuiltinInstaller from '@site/src/components/RookBuiltinInstaller';
 import ImageCarousel from '@site/src/components/ImageCarousel';
 
 <YouTubeShortEmbed videoUrl="https://www.youtube.com/embed/txh6DlzPwNo" />
@@ -20,7 +20,7 @@ This guide will cover enabling and using the Auto Visualiser MCP Server.
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseBuiltinInstaller
+  <RookBuiltinInstaller
     extensionName="Auto Visualiser"
     description="Automatically generate interactive data visualizations"
   />

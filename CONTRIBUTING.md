@@ -165,7 +165,7 @@ just generate-acp-types
 
 This runs the `generate-acp-schema` binary in `crates/rook-acp`, writes
 `crates/rook-acp/acp-schema.json`, and regenerates the SDK types that
-`ui/rook` consumes through the `@aaif/rook-sdk` workspace package.
+`ui/rook` consumes through the `@shaileshrawat/rook-sdk` workspace package.
 
 ### Debugging
 
@@ -216,7 +216,7 @@ git merge upstream/main
 git push origin my-feature-branch
 ```
 
-8. Open a Pull Request from your branch on your fork to aaif-goose/goose’s main branch.
+8. Open a Pull Request from your branch on your fork to ShaileshRawat1403/rook’s main branch.
 
 ## Keeping Your Fork Up-to-Date
 
@@ -275,7 +275,7 @@ your configuration.
 > At the moment, we are still updating some of the CLI configuration to make sure this is
 > respected.
 
-You can change the provider goose points to via the `GOOSE_PROVIDER` env var. If you already
+You can change the provider rook points to via the `ROOK_PROVIDER` env var. If you already
 have a credential for that provider in your keychain from previously setting up, it should
 reuse it. For things like automations or to test without doing official setup, you can also
 set the relevant env vars for that provider. For example `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`,
@@ -283,15 +283,15 @@ or `DATABRICKS_HOST`. Refer to the provider details for more info on required ke
 
 ### Isolating Test Environments
 
-When testing changes or running multiple goose configurations, use `GOOSE_PATH_ROOT` to isolate your data:
+When testing changes or running multiple rook configurations, use `ROOK_PATH_ROOT` to isolate your data:
 
 ```bash
 # Test with a clean environment
-export GOOSE_PATH_ROOT="/tmp/goose-test"
+export ROOK_PATH_ROOT="/tmp/rook-test"
 ./target/debug/rook session
 
 # Or for a single command
-GOOSE_PATH_ROOT="/tmp/goose-dev" cargo run -p goose-cli -- session
+ROOK_PATH_ROOT="/tmp/rook-dev" cargo run -p rook-cli -- session
 ```
 
 This creates isolated `config/`, `data/`, and `state/` directories under the specified path, preventing your test sessions from affecting your main rook installation. See the [environment variables guide](./documentation/docs/guides/environment-variables.md#development--testing) for more details.
@@ -338,4 +338,4 @@ There are numerous ways to be an open source contributor and contribute to rook.
 - **Help Other Members:** See another community member stuck? Or a contributor blocked by a question you know the answer to? Reply to community threads or do a code review for others to help.
 - **Showcase Your Work:** Working on a project or written a blog post recently? Share it with the community in our [#share-your-work](https://discord.com/channels/1287729918100246654/1287729920797179958) channel.
 - **Give Shoutouts:** Is there a project you love or a community/staff who's been especially helpful? Feel free to give them a shoutout in our [#general](https://discord.com/channels/1287729918100246654/1287729920797179957) channel.
-- **Spread the Word:** Help us reach more people by sharing goose's project, website, YouTube, and/or Twitter/X.
+- **Spread the Word:** Help us reach more people by sharing rook's project, website, YouTube, and/or Twitter/X.

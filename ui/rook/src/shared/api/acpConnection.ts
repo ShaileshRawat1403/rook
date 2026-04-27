@@ -1,4 +1,4 @@
-import { RookClient } from "@aaif/rook-sdk";
+import { RookClient } from "@shaileshrawat/rook-sdk";
 import {
   PROTOCOL_VERSION,
   type Client,

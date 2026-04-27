@@ -6,7 +6,7 @@ description: Add the Square API as a rook Extension
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
 
 <details>
@@ -100,7 +100,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
   <Tabs groupId="interface">
     <TabItem value="ui" label="rook Desktop" default>
-    <GooseDesktopInstaller
+    <RookDesktopInstaller
       extensionId="mcp_square_api"
       extensionName="Square MCP Server"
       description="Square API MCP Server"

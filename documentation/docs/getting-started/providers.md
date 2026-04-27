@@ -246,7 +246,7 @@ To configure your chosen provider, see available options, or select a model, vis
        This change takes effect the next time you start a session.
 
   :::note
-  `rook configure` doesn't support entering custom model names. To use a model not in the provider's list, use rook Desktop or edit the `GOOSE_MODEL` variable in your [`config.yaml`](/docs/guides/config-files) directly.
+  `rook configure` doesn't support entering custom model names. To use a model not in the provider's list, use rook Desktop or edit the `ROOK_MODEL` variable in your [`config.yaml`](/docs/guides/config-files) directly.
   :::
 
   :::tip
@@ -1282,7 +1282,7 @@ When thinking is enabled, you can view the model's reasoning process. See [Viewi
 
 :::info Priority Order
 The thinking level is determined in this order (highest to lowest priority):
-1. `request_params.thinking_level` in model configuration (via `GOOSE_PREDEFINED_MODELS`)
+1. `request_params.thinking_level` in model configuration (via `ROOK_PREDEFINED_MODELS`)
 2. `GEMINI3_THINKING_LEVEL` environment variable
 3. Default value: `low`
 :::
@@ -1304,10 +1304,10 @@ Some models expose their internal reasoning or "chain of thought" as part of the
   </TabItem>
   
   <TabItem value="cli" label="rook CLI">
-    Reasoning output is **hidden by default** in the CLI. To display it, set the `GOOSE_CLI_SHOW_THINKING` environment variable:
+    Reasoning output is **hidden by default** in the CLI. To display it, set the `ROOK_CLI_SHOW_THINKING` environment variable:
     
     ```bash
-    export GOOSE_CLI_SHOW_THINKING=1
+    export ROOK_CLI_SHOW_THINKING=1
     ```
     
     When enabled, reasoning appears under a "Thinking:" header in dimmed text before the model's main response.

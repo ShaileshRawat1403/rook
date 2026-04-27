@@ -9,7 +9,7 @@ Unlist per https://github.com/aaif-rook/rook/issues/5431
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import RookDesktopInstaller from '@site/src/components/RookDesktopInstaller';
 
 <YouTubeShortEmbed videoUrl="https://youtube.com/embed/rurAp_WzOiY" />
 
@@ -44,7 +44,7 @@ Before adding this extension, make sure [PortAudio](https://github.com/GoogleClo
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseDesktopInstaller
+  <RookDesktopInstaller
     extensionId="speech_mcp"
     extensionName="Speech Interface"
     description="Voice interaction with audio visualization for rook"

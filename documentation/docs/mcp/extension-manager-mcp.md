@@ -6,7 +6,7 @@ description: Dynamically discover, enable, and disable extensions during rook se
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { PlatformExtensionNote } from '@site/src/components/PlatformExtensionNote';
-import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
+import RookBuiltinInstaller from '@site/src/components/RookBuiltinInstaller';
 
 You don't always need to manually manage extensions. The Extension Manager extension enables rook to dynamically discover, enable, and disable extensions during active sessions. Based on the task you give it, rook recognizes when it needs a specific extension, enables it when required, and suggests disabling unused extensions if the bloat is eating up your context window.
 
@@ -18,7 +18,7 @@ Simply describe your task, and rook will handle the extension management automat
 
 <Tabs groupId="interface">
   <TabItem value="ui" label="rook Desktop" default>
-  <GooseBuiltinInstaller
+  <RookBuiltinInstaller
     extensionName="Extension Manager"
     description="Dynamically discover, enable, and disable extensions during sessions"
   />
