@@ -136,6 +136,20 @@ pub fn format_stream_status(status: &str) -> String {
         "planning" => format!("{} Planning", info("◉")),
         "executing" => format!("{} Executing", info("▸")),
         "waiting" => format!("{} Waiting", dim("○")),
+        "tool" => format!("{} Running tool", info("▸")),
+        "processing" => format!("{} Processing", dim("◐")),
+        _ => status.to_string(),
+    }
+}
+
+pub fn format_stream_status_short(status: &str) -> String {
+    match status {
+        "thinking" => format!("{} think", dim("●")),
+        "planning" => format!("{} plan", info("◉")),
+        "executing" => format!("{} exec", info("▸")),
+        "waiting" => format!("{} wait", dim("○")),
+        "tool" => format!("{} tool", info("▸")),
+        "processing" => format!("{} proc", dim("◐")),
         _ => status.to_string(),
     }
 }

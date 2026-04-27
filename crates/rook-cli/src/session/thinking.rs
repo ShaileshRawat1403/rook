@@ -1,6 +1,6 @@
 use rand::seq::SliceRandom;
 
-/// Extended list of playful thinking messages including both rook and general AI actions
+/// Playful thinking messages for Rook agent
 const THINKING_MESSAGES: &[&str] = &[
     "Spreading wings",
     "Honking thoughtfully",

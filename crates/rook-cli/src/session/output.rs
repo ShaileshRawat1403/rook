@@ -1,6 +1,9 @@
 use anstream::println;
 use bat::WrappingMode;
 use console::{measure_text_width, style, Color, Term};
+use crate::console::style::bold;
+use crate::console::tool;
+use crossterm::style::Stylize;
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use rmcp::model::{CallToolRequestParams, JsonObject, PromptArgument};
 use rook::config::Config;
@@ -122,6 +125,7 @@ pub fn get_show_full_tool_output() -> bool {
 #[derive(Default)]
 pub struct ThinkingIndicator {
     spinner: Option<cliclack::ProgressBar>,
+    reason_header_shown: bool,
 }
 
 impl ThinkingIndicator {
@@ -142,12 +146,14 @@ impl ThinkingIndicator {
             spinner.start(format!("{} Thinking...  {}", ROOK_NAME, hint));
         }
         self.spinner = Some(spinner);
+        self.reason_header_shown = false;
     }
 
     pub fn hide(&mut self) {
         if let Some(spinner) = self.spinner.take() {
             spinner.stop("");
         }
+        self.reason_header_shown = false;
     }
 
     pub fn is_shown(&self) -> bool {
@@ -170,6 +176,10 @@ thread_local! {
 
 pub fn show_thinking() {
     if std::io::stdout().is_terminal() {
+        if should_show_thinking() {
+            println!();
+            println!("{}  {}", style("▸").cyan(), style("Reasoning").bold().cyan());
+        }
         THINKING.with(|t| t.borrow_mut().show());
     }
 }
@@ -454,30 +464,37 @@ pub fn rook_mode_message(text: &str) {
 fn should_show_thinking() -> bool {
     Config::global()
         .get_param::<bool>("ROOK_CLI_SHOW_THINKING")
-        .unwrap_or(false)
+        .unwrap_or(true)
         && std::io::stdout().is_terminal()
 }
 
-fn render_thinking(text: &str, theme: Theme) {
+fn render_thinking(text: &str, _theme: Theme) {
     if should_show_thinking() {
-        println!("\n{}", style("Thinking:").dim().italic());
-        print_markdown(text, theme);
+        println!();
+        println!("{}  {}", style("▸").cyan(), style("Reasoning").bold().cyan());
+        for line in text.lines().take(10) {
+            println!("  {}", style(line).dim());
+        }
+        if text.lines().count() > 10 {
+            println!("  {} ...", style("...").dim());
+        }
+        println!();
     }
 }
 
 fn render_thinking_streaming(
     text: &str,
-    buffer: &mut MarkdownBuffer,
+    _buffer: &mut MarkdownBuffer,
     header_shown: &mut bool,
-    theme: Theme,
+    _theme: Theme,
 ) {
     if should_show_thinking() {
-        flush_markdown_buffer(buffer, theme);
         if !*header_shown {
-            println!("\n{}", style("Thinking:").dim().italic());
+            println!();
+            println!("{}  {}", style("▸").cyan(), style("Reasoning").bold().cyan());
             *header_shown = true;
         }
-        print!("{}", style(text).dim());
+        print!("  {}", style(text).dim());
         let _ = std::io::stdout().flush();
     }
 }
@@ -531,47 +548,18 @@ fn render_tool_response(resp: &ToolResponse, debug: bool) {
             }
         }
         Err(e) => {
-            println!("    {}", style(e.to_string()).red().dim());
+            println!("{}", tool::render_tool_error(&e.to_string()));
         }
     }
 }
 
 fn print_tool_output(text: &str) {
-    if text.is_empty() {
-        return;
-    }
-    if !std::io::stdout().is_terminal() {
-        print!("{}", text);
-        return;
-    }
     let max_lines = if get_show_full_tool_output() {
         usize::MAX
     } else {
         20
     };
-    let lines: Vec<&str> = text.lines().collect();
-    if lines.len() <= max_lines {
-        for line in &lines {
-            println!("  {}", style(line).dim());
-        }
-    } else {
-        let head = max_lines / 2;
-        let tail = max_lines - head;
-        for line in &lines[..head] {
-            println!("  {}", style(line).dim());
-        }
-        println!(
-            "  {}",
-            style(format!(
-                "  ··· {} more lines (use /toggle to show all) ···",
-                lines.len() - head - tail
-            ))
-            .dim()
-        );
-        for line in &lines[lines.len() - tail..] {
-            println!("  {}", style(line).dim());
-        }
-    }
+    tool::render_tool_output_block(text, max_lines);
 }
 
 fn is_shell_tool_name(name: &str) -> bool {
@@ -698,61 +686,50 @@ pub fn render_trust_summary(
     approvals_denied: usize,
 ) {
     println!();
-    println!(
-        "{}",
-        style("╭──────────────────────────────────────────────────────────────────╮").dim()
-    );
+    println!("{}", style("┌────────────────────────────────────────").dim());
 
     if success {
         println!(
-            "{}  {}  {}",
-            style("│ ").dim(),
-            style("🛡").green(),
-            style(" Session Complete").bold().green()
+            "{}  {}",
+            style("│").dim(),
+            bold(" ✓ Session Complete").green()
         );
     } else {
         println!(
-            "{}  {}  {}",
-            style("│ ").dim(),
-            style("⚠").yellow(),
-            style(" Session Ended").bold().yellow()
+            "{}  {}",
+            style("│").dim(),
+            bold(" ⚠ Session Ended").yellow()
         );
     }
 
-    println!(
-        "{}",
-        style("├──────────────────────────────────────────────────────────────────┤").dim()
-    );
+    println!("{}", style("├────────────────────────────────────────").dim());
     println!(
         "{}  {}  {}",
-        style("│ ").dim(),
+        style("│").dim(),
         style("Duration:").dim(),
         style(format!("{}s", duration_secs)).white()
     );
     let display_tokens = if tokens < 0 { 0 } else { tokens };
     println!(
         "{}  {}  {}",
-        style("│ ").dim(),
+        style("│").dim(),
         style("Tokens:").dim(),
         style(display_tokens.to_string()).white()
     );
     println!(
         "{}  {}  {}",
-        style("│ ").dim(),
+        style("│").dim(),
         style("Tools:").dim(),
         style(tools_executed.to_string()).cyan()
     );
     println!(
         "{}  {}  {}",
-        style("│ ").dim(),
+        style("│").dim(),
         style("Approvals:").dim(),
         style(format!("✓ {}  ✗ {}", approvals_granted, approvals_denied)).green()
     );
 
-    println!(
-        "{}",
-        style("╰──────────────────────────────────────────────────────────────────╯").dim()
-    );
+    println!("{}", style("└────────────────────────────────────────").dim());
     println!();
 }
 
@@ -852,11 +829,8 @@ fn render_text_editor_request(call: &CallToolRequestParams, debug: bool) {
 
     if let Some(args) = &call.arguments {
         if let Some(Value::String(path)) = args.get("path") {
-            println!(
-                "    {} {}",
-                style("path").dim(),
-                style(shorten_path(path, debug)).dim()
-            );
+            let operation = if call.name.contains("write") { "write" } else { "edit" };
+            println!("{}", tool::render_file_operation(&shorten_path(path, debug), operation));
         }
 
         if let Some(args) = &call.arguments {
@@ -876,7 +850,16 @@ fn render_text_editor_request(call: &CallToolRequestParams, debug: bool) {
 
 fn render_shell_request(call: &CallToolRequestParams, debug: bool) {
     print_tool_header(call);
-    print_params(&call.arguments, 1, debug);
+    
+    if let Some(args) = &call.arguments {
+        if let Some(Value::String(cmd)) = args.get("command") {
+            println!("{}", tool::render_shell_command(cmd));
+        }
+    }
+    
+    if debug {
+        print_params(&call.arguments, 1, debug);
+    }
     println!();
 }
 
@@ -1134,31 +1117,9 @@ fn render_subagent_tool_graph(subagent_id: &str, tool_graph: &[Value]) {
 
 fn print_tool_header(call: &CallToolRequestParams) {
     let (tool, extension) = split_tool_name(&call.name);
-    let tool = pretty_tool_name(&tool);
-    let tool_header = if extension.is_empty() {
-        format!("  {} {}", style("▸").dim(), style(tool).bold().cyan())
-    } else {
-        format!(
-            "  {} {}  {}",
-            style("▸").dim(),
-            style(tool).bold().cyan(),
-            style(format!("· {}", extension)).dim(),
-        )
-    };
+    let header = tool::render_tool_header(&tool, if extension.is_empty() { None } else { Some(&extension) });
     println!();
-    println!("{}", tool_header);
-}
-
-fn pretty_tool_name(tool_name: &str) -> String {
-    match tool_name {
-        "todo_write" => "update todo".to_string(),
-        "tree" => "inspect tree".to_string(),
-        "write" => "write file".to_string(),
-        "edit" => "edit file".to_string(),
-        "shell" => "run shell".to_string(),
-        "delegate" | "subagent" => "delegate task".to_string(),
-        other => other.replace('_', " "),
-    }
+    println!("{}", header);
 }
 
 // Respect NO_COLOR, as https://crates.io/crates/console already does
@@ -1522,20 +1483,32 @@ pub fn display_session_info(
         .unwrap_or_else(|| "unknown".to_string());
 
     println!();
+    println!("{}", style("┌────────────────────────────────────────").dim());
     println!(
-        "  {} {} {} {}",
-        style(ROOK_NAME).cyan(),
-        style("●").green(),
-        style(status).dim(),
+        "{}  {}  {}",
+        style("│").dim(),
+        bold(format!(" {} ", ROOK_NAME)).cyan(),
+        style(status).dim()
+    );
+    println!(
+        "{}  {}  {}  {}  {}",
+        style("│").dim(),
+        style(provider).dim(),
+        style("·").dim(),
+        style(model).cyan(),
         style("·").dim(),
     );
-    println!("    {}  {}", style(provider).dim(), style(model).cyan(),);
     if let Some(id) = session_id {
-        println!("    {} {}", style(id).dim(), style("·").dim(),);
-        println!("    {}", style(cwd_display).dim());
-    } else {
-        println!("    {}", style(cwd_display).dim());
+        println!(
+            "{}  {}  {}",
+            style("│").dim(),
+            style(id).dim(),
+            style("·").dim(),
+        );
     }
+    println!("{}  {}", style("│").dim(), style(cwd_display).dim());
+    println!("{}", style("└────────────────────────────────────────").dim());
+    println!();
 }
 
 fn set_terminal_title() {
