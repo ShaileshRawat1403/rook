@@ -4,8 +4,8 @@ Thank you for your interest in contributing to the rook Recipe Cookbook! This gu
 
 ## 🚀 Quick Start
 
-1. [Fork this repository](https://github.com/aaif-rook/rook/fork)
-2. Add your recipe file here: `documentation/src/pages/recipes/data/recipes/`
+1. [Fork this repository](https://github.com/ShaileshRawat1403/rook/fork)
+2. Add your recipe file here: `docs/recipes/`
 3. Create a pull request
 
 ## 📋 Step-by-Step Guide
@@ -128,6 +128,6 @@ Need inspiration? Consider recipes for:
 
 ---
 
-**Ready to contribute?** [Fork the repo](https://github.com/aaif-rook/rook/fork) and start creating! 
+**Ready to contribute?** [Fork the repo](https://github.com/ShaileshRawat1403/rook/fork) and start creating! 
 
 *Questions? Ask in your PR or hop into [discord](https://discord.gg/rook-oss) - we're here to help!* 💙
