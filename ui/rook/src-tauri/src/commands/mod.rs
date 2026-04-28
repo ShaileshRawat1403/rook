@@ -10,5 +10,6 @@ pub mod model_setup;
 pub mod notifications;
 pub mod path_resolver;
 pub mod projects;
+pub mod sentinel;
 pub mod skills;
 pub mod system;

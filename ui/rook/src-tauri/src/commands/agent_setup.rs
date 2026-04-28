@@ -82,7 +82,7 @@ fn get_agent_command_def(provider_id: &str) -> Result<&'static AgentCommandDef, 
         .ok_or_else(|| format!("Unknown agent provider '{provider_id}'"))
 }
 
-fn build_extended_path() -> String {
+pub(crate) fn build_extended_path() -> String {
     let mut paths: Vec<PathBuf> = Vec::new();
 
     if let Ok(system_path) = std::env::var("PATH") {

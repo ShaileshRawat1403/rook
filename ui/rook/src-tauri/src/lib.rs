@@ -170,6 +170,8 @@ pub fn run() {
             commands::agent_setup::check_agent_auth,
             commands::agent_setup::install_agent,
             commands::agent_setup::authenticate_agent,
+            commands::sentinel::get_sentinel_mode,
+            commands::sentinel::sentinel_evaluate,
             commands::path_resolver::resolve_path,
             commands::system::get_home_dir,
             commands::system::save_exported_session_file,
