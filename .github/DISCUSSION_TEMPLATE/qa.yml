@@ -5,8 +5,8 @@ body:
   - type: markdown
     attributes:
       value: |
-        💡 Before posting, please attach your **diagnostics zip** — it helps the Goose team debug faster and saves everyone time.  
-        [How to capture and share diagnostics](https://goose-docs.ai/docs/troubleshooting/diagnostics-and-reporting/)
+        💡 Before posting, please attach your **diagnostics zip** — it helps the Rook team debug faster and saves everyone time.  
+        [How to capture and share diagnostics](https://github.com/ShaileshRawat1403/rook/blob/main/docs/development.md)
   - type: textarea
     id: problem
     attributes:
@@ -22,5 +22,5 @@ body:
   - type: textarea
     id: version
     attributes:
-      label: Goose version and environment
-      description: Include your Goose version and operating system if known.
+      label: Rook version and environment
+      description: Include your Rook version and operating system if known.
