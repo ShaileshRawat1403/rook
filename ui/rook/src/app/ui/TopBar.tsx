@@ -2,6 +2,7 @@ import { User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/button";
+import { SentinelBadge } from "@/features/sentinel/ui/SentinelBadge";
 
 interface TopBarProps {
   onSettingsClick?: () => void;
@@ -20,6 +21,8 @@ export function TopBar({ onSettingsClick, className }: TopBarProps) {
       data-tauri-drag-region
     >
       <div className="min-w-0 flex-1" />
+
+      <SentinelBadge />
 
       <Button
         type="button"
