@@ -22,7 +22,7 @@ export const PROVIDER_CATALOG: ProviderCatalogEntry[] = [
     description:
       "Governed execution agent with planning, approvals, evidence, and trust posture.",
     setupMethod: "cli_auth",
-    binaryName: "dax",
+    binaryName: "dax-acp",
     installCommand:
       "curl -fsSL https://raw.githubusercontent.com/ShaileshRawat1403/dax/main/script/install.sh | DAX_REPO=ShaileshRawat1403/dax bash",
     authCommand: "dax auth login",

@@ -57,7 +57,7 @@ const AGENT_COMMAND_DEFS: &[AgentCommandDef] = &[
     },
     AgentCommandDef {
         id: "dax-acp",
-        binary_name: "dax",
+        binary_name: "dax-acp",
         install_command: Some(
             "curl -fsSL https://raw.githubusercontent.com/ShaileshRawat1403/dax/main/script/install.sh | DAX_REPO=ShaileshRawat1403/dax bash",
         ),
