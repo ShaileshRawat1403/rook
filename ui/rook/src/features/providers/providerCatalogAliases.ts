@@ -23,6 +23,9 @@ export const AGENT_PROVIDER_ALIAS_MAP: Record<string, string> = {
   amp: "amp-acp",
   pi_acp: "pi-acp",
   pi: "pi-acp",
+  dax_acp: "dax-acp",
+  dax_agent: "dax-acp",
+  dax: "dax-acp",
 };
 
 export const AGENT_PROVIDER_FUZZY_MATCHERS: Array<[string, string]> = [
@@ -32,4 +35,5 @@ export const AGENT_PROVIDER_FUZZY_MATCHERS: Array<[string, string]> = [
   ["cursor", "cursor-agent"],
   ["copilot", "copilot-acp"],
   ["amp", "amp-acp"],
+  ["dax", "dax-acp"],
 ];

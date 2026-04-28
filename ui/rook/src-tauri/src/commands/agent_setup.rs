@@ -55,6 +55,15 @@ const AGENT_COMMAND_DEFS: &[AgentCommandDef] = &[
         auth_command: None,
         auth_status_command: None,
     },
+    AgentCommandDef {
+        id: "dax-acp",
+        binary_name: "dax",
+        install_command: Some(
+            "curl -fsSL https://raw.githubusercontent.com/ShaileshRawat1403/dax/main/script/install.sh | DAX_REPO=ShaileshRawat1403/dax bash",
+        ),
+        auth_command: Some("dax auth login"),
+        auth_status_command: Some("dax doctor"),
+    },
 ];
 
 #[derive(serde::Serialize, Clone)]

@@ -16,6 +16,21 @@ export const PROVIDER_CATALOG: ProviderCatalogEntry[] = [
     tier: "promoted",
   },
   {
+    id: "dax-acp",
+    displayName: "DAX Agent",
+    category: "agent",
+    description:
+      "Governed execution agent with planning, approvals, evidence, and trust posture.",
+    setupMethod: "cli_auth",
+    binaryName: "dax",
+    installCommand:
+      "curl -fsSL https://raw.githubusercontent.com/ShaileshRawat1403/dax/main/script/install.sh | DAX_REPO=ShaileshRawat1403/dax bash",
+    authCommand: "dax auth login",
+    authStatusCommand: "dax doctor",
+    docsUrl: "https://github.com/ShaileshRawat1403/dax",
+    tier: "promoted",
+  },
+  {
     id: "claude-acp",
     displayName: "Claude Code",
     category: "agent",
