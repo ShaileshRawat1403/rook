@@ -72,5 +72,5 @@ CMD ["--help"]
 # Labels for metadata
 LABEL org.opencontainers.image.title="rook"
 LABEL org.opencontainers.image.description="rook CLI"
-LABEL org.opencontainers.image.vendor="AAIF"
+LABEL org.opencontainers.image.vendor="ShaileshRawat"
 LABEL org.opencontainers.image.source="https://github.com/ShaileshRawat1403/rook"

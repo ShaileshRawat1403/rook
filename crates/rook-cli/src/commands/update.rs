@@ -69,7 +69,7 @@ const GITHUB_ACTIONS_ISSUER: &str = "https://token.actions.githubusercontent.com
 
 async fn fetch_attestations(digest: &str, token: Option<&str>) -> Result<Vec<serde_json::Value>> {
     let url = format!(
-        "https://api.github.com/repos/aaif-rook/rook/attestations/sha256:{digest}\
+        "https://api.github.com/repos/ShaileshRawat1403/rook/attestations/sha256:{digest}\
          ?per_page=30&predicate_type=https://slsa.dev/provenance/v1"
     );
 
@@ -209,7 +209,7 @@ pub async fn update(canary: bool, reconfigure: bool) -> Result<()> {
     {
         let tag = if canary { "canary" } else { "stable" };
         let asset = asset_name();
-        let url = format!("https://github.com/aaif-rook/rook/releases/download/{tag}/{asset}");
+        let url = format!("https://github.com/ShaileshRawat1403/rook/releases/download/{tag}/{asset}");
 
         println!("Downloading {asset} from {tag} release...");
 
