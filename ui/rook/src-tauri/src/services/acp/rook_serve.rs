@@ -84,7 +84,6 @@ impl RookServeProcess {
             working_dir.display(),
         );
 
-        // Spawn without waiting for output - just check port availability
         let mut child = command.spawn().map_err(|error| {
             format!(
                 "Failed to spawn rook serve (binary: {binary_display}, cwd: {}): {error}",
@@ -92,7 +91,10 @@ impl RookServeProcess {
             )
         })?;
 
-        // Simply check if port becomes available - don't parse output
+        // Stream stdout/stderr to the log so failures are diagnosable. Without
+        // this, an early-exit child surfaces only an exit code with no context.
+        forward_child_output(&mut child);
+
         wait_for_server_ready(port, &mut child).await?;
 
         log::info!("Rook serve is ready on port {port}");
@@ -106,7 +108,13 @@ impl RookServeProcess {
 
 pub fn get_rook_command(app_handle: &tauri::AppHandle) -> Result<Command, String> {
     if let Ok(override_path) = std::env::var("ROOK_BIN") {
-        return Ok(Command::new(override_path));
+        let trimmed = override_path.trim();
+        if trimmed.is_empty() {
+            return Err(
+                "ROOK_BIN is set but empty; unset it or point at a rook CLI binary".into(),
+            );
+        }
+        return Ok(Command::new(trimmed));
     }
 
     if let Some(cli_path) = resolve_workspace_cli() {
@@ -119,12 +127,40 @@ pub fn get_rook_command(app_handle: &tauri::AppHandle) -> Result<Command, String
         .sidecar("rook")
         .map_err(|e| format!("could not resolve rook binary: {e}"))?;
     let std_command: std::process::Command = tauri_command.into();
+    let resolved = PathBuf::from(std_command.get_program());
+
+    if resolves_to_current_exe(&resolved) {
+        return Err(format!(
+            "Refusing to spawn 'rook serve' against the desktop app binary itself ({}). \
+             In dev mode the sidecar lookup falls back to this binary when no rook CLI \
+             has been built. Build the CLI with `cargo build -p rook-cli` or set \
+             ROOK_BIN to an explicit rook binary path.",
+            resolved.display()
+        ));
+    }
+
     Ok(std_command.into())
+}
+
+/// True when `candidate` resolves to the same on-disk file as `current_exe`.
+/// Compares canonical paths when possible so symlinks don't fool us.
+fn resolves_to_current_exe(candidate: &std::path::Path) -> bool {
+    let Ok(current_exe) = std::env::current_exe() else {
+        return false;
+    };
+    match (candidate.canonicalize(), current_exe.canonicalize()) {
+        (Ok(a), Ok(b)) => a == b,
+        _ => candidate == current_exe,
+    }
 }
 
 /// In dev builds the Tauri app binary is also named `rook`, so resolving
 /// `sidecar("rook")` silently returns the Tauri app itself. Walk up past the
 /// Tauri crate to the outer workspace root and use its rook CLI binary.
+///
+/// Skips any candidate that canonicalizes to the current executable so we can
+/// never accidentally spawn ourselves even if path comparison would otherwise
+/// fool us (symlinks, target dirs that contain the Tauri binary, etc.).
 fn resolve_workspace_cli() -> Option<PathBuf> {
     let current_exe = std::env::current_exe().ok()?;
     let mut dir = current_exe.parent()?.to_path_buf();
@@ -134,7 +170,7 @@ fn resolve_workspace_cli() -> Option<PathBuf> {
         if dir.join("Cargo.lock").is_file() {
             for profile in ["debug", "release"] {
                 let candidate = dir.join("target").join(profile).join("rook");
-                if candidate.is_file() && candidate != current_exe {
+                if candidate.is_file() && !resolves_to_current_exe(&candidate) {
                     best = Some(candidate);
                 }
             }
