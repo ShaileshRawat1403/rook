@@ -13,31 +13,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  changes:
+  rust-format:
+    name: Check Rust Code Format
     runs-on: ubuntu-latest
-    outputs:
-      docs-only: ${{ steps.set.outputs.docs-only }}
-      code: ${{ steps.set.outputs.code }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set outputs
-        id: set
-        run: |
-          echo "docs-only=false" >> $GITHUB_OUTPUT
-          echo "code=true" >> $GITHUB_OUTPUT
-
-  rust-format:
-    name: Check Rust Code Format
-    runs-on: ubuntu-latest
-    needs: changes
-    if: needs.changes.outputs.code == 'true' || github.event_name != 'pull_request'
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
-
-      - uses: actions-rust-lang/setup-rust-toolchain@150fca883cd4034361b621bd4e6a9d34e5143606  # v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
 
       - name: Run cargo fmt
         run: cargo fmt --check
@@ -45,13 +28,11 @@ jobs:
   rust-build-and-test:
     name: Build and Test Rust Project
     runs-on: ubuntu-latest
-    needs: changes
-    if: needs.changes.outputs.code == 'true' || github.event_name != 'pull_request'
     steps:
       - name: Checkout Code
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
+        uses: actions/checkout@v4
 
-      - uses: actions-rust-lang/setup-rust-toolchain@150fca883cd4034361b621bd4e6a9d34e5143606  # v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
 
       - name: Install Dependencies
         run: |
@@ -59,7 +40,7 @@ jobs:
           sudo apt install -y libdbus-1-dev gnome-keyring libxcb1-dev
 
       - name: Cache Cargo artifacts
-        uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae  # v2
+        uses: Swatinem/rust-cache@v2
 
       - name: Build and Test
         run: |
@@ -71,17 +52,16 @@ jobs:
         env:
           RUST_MIN_STACK: 8388608
 
-
   rust-build-windows:
     name: Build Rust Project on Windows
-    runs-on: windows-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: windows-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
+        uses: actions/checkout@v4
 
       - name: Cache Cargo artifacts
-        uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae  # v2
+        uses: Swatinem/rust-cache@v2
         with:
           key: windows-ci
 
@@ -99,20 +79,16 @@ jobs:
   rust-lint:
     name: Lint Rust Code
     runs-on: ubuntu-latest
-    needs: changes
-    if: needs.changes.outputs.code == 'true' || github.event_name != 'pull_request'
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
+      - uses: actions/checkout@v4
 
-      - uses: actions-rust-lang/setup-rust-toolchain@150fca883cd4034361b621bd4e6a9d34e5143606  # v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
 
       - uses: Swatinem/rust-cache@v2
 
       - name: Lint
         run: |
           source ./bin/activate-hermit
-          # use the non-hermit rust toolchain because the rust-cache action does not
-          # play nicely with hermit-managed rust
           hermit uninstall rustup
           export CARGO_INCREMENTAL=0
           cargo clippy --workspace --all-targets --exclude v8 -- -D warnings
@@ -120,13 +96,11 @@ jobs:
   schema-check:
     name: Check Generated Schemas are Up-to-Date
     runs-on: ubuntu-latest
-    needs: changes
-    if: needs.changes.outputs.code == 'true' || github.event_name != 'pull_request'
     steps:
       - name: Checkout Code
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
+        uses: actions/checkout@v4
 
-      - uses: actions-rust-lang/setup-rust-toolchain@150fca883cd4034361b621bd4e6a9d34e5143606  # v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
 
       - name: Install Dependencies
         run: |
@@ -134,7 +108,7 @@ jobs:
           sudo apt install -y libdbus-1-dev libxcb1-dev
 
       - name: Cache Cargo artifacts
-        uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae  # v2
+        uses: Swatinem/rust-cache@v2
 
       - name: Install Node.js Dependencies
         run: |
