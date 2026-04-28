@@ -15,7 +15,7 @@ on:
 jobs:
   rust-format:
     name: Check Rust Code Format
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4  # v6.0.1
@@ -27,7 +27,7 @@ jobs:
 
   rust-build-and-test:
     name: Build and Test Rust Project
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4  # v6.0.1
@@ -79,7 +79,7 @@ jobs:
 
   rust-lint:
     name: Lint Rust Code
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4  # v6.0.1
 
@@ -98,7 +98,7 @@ jobs:
 
   schema-check:
     name: Check Generated Schemas are Up-to-Date
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4  # v6.0.1
