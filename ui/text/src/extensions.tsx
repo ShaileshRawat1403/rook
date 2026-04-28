@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {Box, Text, useInput, useStdout} from "ink";
 import {TextInput} from "@inkjs/ui";
-import type {RookClient} from "@aaif/rook-sdk";
+import type {RookClient} from "@shaileshrawat/rook-sdk";
 import {CRANBERRY, GOLD, RULE_COLOR, TEAL, TEXT_DIM, TEXT_PRIMARY} from "./colors.js";
 import {Spinner, SPINNER_FRAMES} from "./components/Spinner.js";
 import {ErrorScreen} from "./components/ErrorScreen.js";

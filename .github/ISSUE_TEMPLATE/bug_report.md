@@ -8,13 +8,9 @@ assignees: ''
 
 **Describe the bug**
 
-💡 Before filing, please check common issues:  
-https://goose-docs.ai/docs/troubleshooting  
-
-📦 To help us debug faster, attach your **diagnostics zip** if possible.  
-👉 How to capture it: https://goose-docs.ai/docs/troubleshooting/diagnostics-and-reporting/
-
 A clear and concise description of what the bug is.
+
+Please attach your **diagnostics zip** if possible to help us debug faster.
 
 ---
 

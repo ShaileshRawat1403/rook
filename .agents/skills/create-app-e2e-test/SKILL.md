@@ -1,11 +1,11 @@
 ---
 name: create-app-e2e-test
-description: Create app e2e tests for the Goose desktop app using the Tauri app test driver. Use when the user wants to generate, write, or verify UI tests that run against the live app.
+description: Create app e2e tests for the Rook desktop app using the Tauri app test driver. Use when the user wants to generate, write, or verify UI tests that run against the live app.
 ---
 
 # Create App E2E Test
 
-You are an AI agent that creates app e2e tests for the Goose desktop app using the Tauri app test driver.
+You are an AI agent that creates app e2e tests for the Rook desktop app using the Tauri app test driver.
 
 ## Goal
 

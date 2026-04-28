@@ -58,10 +58,14 @@ just rook
 
 ## Documentation
 
-- [Quickstart](https://github.com/ShaileshRawat1403/rook#quickstart)
-- [CLI Reference](https://github.com/ShaileshRawat1403/rook/blob/main/docs/cli.md)
-- [Provider Setup](https://github.com/ShaileshRawat1403/rook/blob/main/docs/providers.md)
-- [MCP Extensions](https://github.com/ShaileshRawat1403/rook/blob/main/docs/mcp.md)
+- [Quickstart](docs/quickstart.md)
+- [CLI](docs/cli.md)
+- [Desktop](docs/desktop.md)
+- [Providers](docs/providers.md)
+- [MCP](docs/mcp.md)
+- [Configuration](docs/configuration.md)
+- [Development](docs/development.md)
+- [Origin](docs/origin.md)
 
 ## Community
 
