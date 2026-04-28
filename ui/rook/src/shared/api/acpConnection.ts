@@ -9,6 +9,11 @@ import {
 import { createWebSocketStream } from "./createWebSocketStream";
 import { invokeTauri, isTauriRuntimeAvailable } from "./tauri";
 import { perfLog } from "@/shared/lib/perfLog";
+import { getSentinel } from "./sentinel";
+import {
+  decisionToResponse,
+  toProposedAction,
+} from "./sentinel/permissionMapper";
 
 let notificationHandler: AcpNotificationHandler | null = null;
 
@@ -38,13 +43,24 @@ function createClientCallbacks(): () => Client {
     requestPermission: async (
       args: RequestPermissionRequest,
     ): Promise<RequestPermissionResponse> => {
-      const optionId = args.options?.[0]?.optionId ?? "approve";
-      return {
-        outcome: {
-          outcome: "selected",
-          optionId,
-        },
-      };
+      const sentinel = await getSentinel();
+      if (sentinel.mode === "off") {
+        const optionId = args.options?.[0]?.optionId ?? "approve";
+        return { outcome: { outcome: "selected", optionId } };
+      }
+
+      const action = toProposedAction(args);
+      try {
+        const decision = await sentinel.judge(action);
+        return decisionToResponse(decision, args);
+      } catch (err) {
+        console.warn(
+          "[acp] sentinel.judge threw; falling back to auto-approve:",
+          err,
+        );
+        const optionId = args.options?.[0]?.optionId ?? "approve";
+        return { outcome: { outcome: "selected", optionId } };
+      }
     },
 
     sessionUpdate: async (notification: SessionNotification): Promise<void> => {
