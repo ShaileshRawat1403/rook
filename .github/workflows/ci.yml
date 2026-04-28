@@ -16,14 +16,17 @@ jobs:
   changes:
     runs-on: ubuntu-latest
     outputs:
-      docs-only: 'false'
-      code: 'true'
+      docs-only: ${{ steps.set.outputs.docs-only }}
+      code: ${{ steps.set.outputs.code }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Set outputs
-        run: echo "Assuming code changes for safety"
+        id: set
+        run: |
+          echo "docs-only=false" >> $GITHUB_OUTPUT
+          echo "code=true" >> $GITHUB_OUTPUT
 
   rust-format:
     name: Check Rust Code Format
