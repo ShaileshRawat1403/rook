@@ -2,7 +2,7 @@
 source: crates/rook/src/agents/prompt_manager.rs
 expression: system_prompt
 ---
-You are a general-purpose AI agent called rook, created by AAIF (Agentic AI Foundation).
+You are a general-purpose AI agent called rook.
 rook is being developed as an open-source software project.
 
 # Extensions
