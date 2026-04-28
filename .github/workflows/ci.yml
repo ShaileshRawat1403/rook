@@ -16,22 +16,14 @@ jobs:
   changes:
     runs-on: ubuntu-latest
     outputs:
-      docs-only: ${{ steps.filter.outputs.docs }}
-      code: ${{ steps.filter.outputs.code }}
+      docs-only: 'false'
+      code: 'true'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Check for file changes
-        uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          filters: |
-            docs:
-              - 'docs/**'
-            code:
-              - '**'
-              - '!docs/**'
+      - name: Set outputs
+        run: echo "Assuming code changes for safety"
 
   rust-format:
     name: Check Rust Code Format
