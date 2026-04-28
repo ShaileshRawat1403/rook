@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Box, Text, useInput, useStdout } from "ink";
 import { TextInput, PasswordInput } from '@inkjs/ui';
-import type { RookClient, ProviderDetailEntry } from "@aaif/rook-sdk";
+import type { RookClient, ProviderDetailEntry } from "@shaileshrawat/rook-sdk";
 import {
   CRANBERRY,
   TEAL,

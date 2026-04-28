@@ -15,8 +15,8 @@ import type {
   ToolCallUpdate,
 } from "@agentclientprotocol/sdk";
 import { ndJsonStream } from "@agentclientprotocol/sdk";
-import { RookClient } from "@aaif/rook-sdk";
-import { resolveRookBinary } from "@aaif/rook-sdk/node";
+import { RookClient } from "@shaileshrawat/rook-sdk";
+import { resolveRookBinary } from "@shaileshrawat/rook-sdk/node";
 import Onboarding from "./onboarding.js";
 import ConfigureScreen, { ConfigureIntent } from "./configure.js";
 import ExtensionsManager from "./extensions.js";
