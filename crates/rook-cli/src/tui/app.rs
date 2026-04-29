@@ -46,9 +46,32 @@ pub fn run() -> Result<()> {
                 .checked_sub(last_tick.elapsed())
                 .unwrap_or_else(|| Duration::from_secs(0));
 
-            if event::poll(timeout).expect("failed to poll events") {
-                if let Event::Key(key) = event::read().expect("failed to read event") {
-                    futures::executor::block_on(tx.send(TuiEvent::Input(key))).ok();
+            // Poll for any terminal event. We intentionally do not panic here
+            // when the terminal misbehaves: a transient poll/read failure
+            // shouldn't tear down the whole TUI thread (which would leave the
+            // user's terminal in raw mode). Errors are logged and the loop
+            // continues; persistent failures will surface as a missing redraw.
+            match event::poll(timeout) {
+                Ok(true) => match event::read() {
+                    Ok(Event::Key(key)) => {
+                        futures::executor::block_on(tx.send(TuiEvent::Input(key))).ok();
+                    }
+                    Ok(Event::Resize(cols, rows)) => {
+                        futures::executor::block_on(tx.send(TuiEvent::Resize { cols, rows }))
+                            .ok();
+                    }
+                    Ok(_) => {
+                        // Mouse / Paste / Focus events are not consumed by the
+                        // TUI yet; ignore rather than panic on the unmatched
+                        // variant.
+                    }
+                    Err(err) => {
+                        tracing::warn!("crossterm event read failed: {err}");
+                    }
+                },
+                Ok(false) => {}
+                Err(err) => {
+                    tracing::warn!("crossterm event poll failed: {err}");
                 }
             }
 
@@ -464,6 +487,22 @@ where
                     guard.add_message(MessageRole::System, format!("Session failed: {}", err));
                 }
                 TuiEvent::Tick => {}
+                TuiEvent::Resize { cols, rows } => {
+                    // Sync the backend buffer to the new terminal size and
+                    // clear so the next draw renders against fresh dimensions
+                    // rather than a layout cached from the previous size.
+                    if let Err(err) = terminal.resize(ratatui::layout::Rect {
+                        x: 0,
+                        y: 0,
+                        width: cols,
+                        height: rows,
+                    }) {
+                        tracing::warn!("terminal resize failed: {err}");
+                    }
+                    if let Err(err) = terminal.clear() {
+                        tracing::warn!("terminal clear after resize failed: {err}");
+                    }
+                }
             }
         }
 

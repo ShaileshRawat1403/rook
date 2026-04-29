@@ -252,6 +252,7 @@ pub enum TuiEvent {
     Agent(AgentEvent),
     SessionError(String),
     Tick,
+    Resize { cols: u16, rows: u16 },
 }
 
 #[derive(Debug, Clone)]
