@@ -2,7 +2,7 @@
 
 Rook is under active experimental development.
 
-The current priority is decoupling the project from its fork origin, stabilizing the CLI/TUI experience, and building a lighter Rook-native desktop surface.
+The current priorities are governance integration with DAX, visible execution surfaces in the desktop and CLI, and documentation that's approachable to non-developers.
 
 ## Development
 

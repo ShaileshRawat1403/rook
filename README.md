@@ -15,8 +15,6 @@ Rook is a Rust AI agent framework with a terminal-first CLI, MCP support, multi-
 
 ## Why "Rook"?
 
-Rook is a bird, not the chess piece.
-
 The identity is about biological intelligence and coordinated agency:
 
 - Sophisticated tool-user: rooks select and improvise the right tool for the task.

@@ -12,4 +12,3 @@ ROOK_MODEL=
 ROOK_PATH_ROOT=
 ```
 
-Legacy Goose variables may exist in older code paths during migration, but new documentation should use only Rook names.
