@@ -6,7 +6,7 @@ use crate::providers::errors::ProviderError;
 use crate::providers::formats::google::{create_request, response_to_streaming_message};
 use crate::providers::google::GOOGLE_DOC_URL;
 
-const GEMINI_OAUTH_DEFAULT_MODEL: &str = "gemini-3-flash-preview";
+const GEMINI_OAUTH_DEFAULT_MODEL: &str = "gemini-2.5-pro";
 const GEMINI_OAUTH_DEFAULT_FAST_MODEL: &str = "gemini-2.5-flash-lite";
 use crate::providers::retry::ProviderRetry;
 use crate::providers::utils::RequestLog;
@@ -962,6 +962,14 @@ impl Provider for GeminiOAuthProvider {
             .iter()
             .map(|s| s.to_string())
             .collect())
+    }
+
+    fn skip_canonical_filtering(&self) -> bool {
+        // gemini_oauth maintains its own curated GEMINI_OAUTH_KNOWN_MODELS list.
+        // Canonical filtering exists to clean up messy provider enumerations;
+        // it is redundant here and strips models the canonical registry has
+        // not yet been regenerated to include (e.g. preview tiers).
+        true
     }
 
     async fn stream(

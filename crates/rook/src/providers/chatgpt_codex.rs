@@ -55,6 +55,10 @@ pub struct ChatGptCodexModelAttrs {
 
 pub const CHATGPT_CODEX_KNOWN_MODELS: &[ChatGptCodexModelAttrs] = &[
     ChatGptCodexModelAttrs {
+        name: "gpt-5.5",
+        reasoning_levels: &["low", "medium", "high", "xhigh"],
+    },
+    ChatGptCodexModelAttrs {
         name: "gpt-5.4",
         reasoning_levels: &["low", "medium", "high", "xhigh"],
     },
@@ -1006,6 +1010,14 @@ impl Provider for ChatGptCodexProvider {
 
     async fn fetch_supported_models(&self) -> Result<Vec<String>, ProviderError> {
         Ok(known_model_names().into_iter().map(String::from).collect())
+    }
+
+    fn skip_canonical_filtering(&self) -> bool {
+        // chatgpt_codex exposes ChatGPT-subscription-only models (gpt-5.x-codex
+        // family) that don't appear in the OpenRouter-derived canonical
+        // registry. Without this override every known model is filtered out
+        // and the picker shows empty.
+        true
     }
 }
 
