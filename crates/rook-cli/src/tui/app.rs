@@ -93,26 +93,44 @@ pub fn run_with_state(
     run_tui(state, rx, cmd_tx)
 }
 
+/// RAII guard that owns the terminal's raw-mode + alternate-screen state.
+///
+/// Restores cooked mode, leaves the alternate screen, and shows the cursor on
+/// drop — including drop-via-panic. Without this, a panic anywhere inside the
+/// event loop would leave the user staring at a corrupted terminal with no
+/// echo and no visible cursor.
+struct TerminalGuard;
+
+impl TerminalGuard {
+    fn enter() -> Result<Self> {
+        enable_raw_mode()?;
+        execute!(io::stdout(), EnterAlternateScreen)?;
+        Ok(Self)
+    }
+}
+
+impl Drop for TerminalGuard {
+    fn drop(&mut self) {
+        // Best-effort restore. Errors here can't be propagated and panicking
+        // during drop would only make things worse, so we swallow them.
+        let _ = disable_raw_mode();
+        let _ = execute!(io::stdout(), LeaveAlternateScreen, crossterm::cursor::Show);
+    }
+}
+
 fn run_tui(
     state: SharedState,
     rx: mpsc::Receiver<TuiEvent>,
     cmd_tx: mpsc::Sender<AppCommand>,
 ) -> Result<()> {
-    enable_raw_mode()?;
+    let _guard = TerminalGuard::enter()?;
 
-    let mut stdout = io::stdout();
-    execute!(stdout, EnterAlternateScreen)?;
-
-    let backend = CrosstermBackend::new(stdout);
+    let backend = CrosstermBackend::new(io::stdout());
     let mut terminal = Terminal::new(backend)?;
 
-    let result = run_event_loop(&mut terminal, state, rx, cmd_tx);
-
-    disable_raw_mode()?;
-    execute!(terminal.backend_mut(), LeaveAlternateScreen)?;
-    terminal.show_cursor()?;
-
-    result
+    run_event_loop(&mut terminal, state, rx, cmd_tx)
+    // `_guard` drops here, restoring the terminal regardless of whether the
+    // event loop returned Ok, Err, or panicked.
 }
 
 fn run_event_loop<F>(
