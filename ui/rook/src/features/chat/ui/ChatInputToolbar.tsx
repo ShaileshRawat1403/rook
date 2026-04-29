@@ -29,8 +29,10 @@ import { Progress } from "@/shared/ui/progress";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/shared/ui/tooltip";
 import { AgentModelPicker } from "./AgentModelPicker";
 import type { ModelOption } from "../types";
+import { useChatSessionStore } from "../stores/chatSessionStore";
 import { formatProviderLabel } from "@/shared/ui/icons/ProviderIcons";
 import { useAgentProviderStatus } from "@/features/providers/hooks/useAgentProviderStatus";
+import { useConfiguredModelProviderIds } from "@/features/providers/hooks/useConfiguredModelProviderIds";
 import {
   getCatalogEntry,
   resolveAgentProviderCatalogIdStrict,
@@ -129,11 +131,15 @@ export function ChatInputToolbar({
   const { t } = useTranslation("chat");
   const { formatNumber } = useLocaleFormatting();
   const { readyAgentIds } = useAgentProviderStatus();
+  const configuredModelProviderIds = useConfiguredModelProviderIds();
   const [isContextPopoverOpen, setIsContextPopoverOpen] = useState(false);
+  const modelCacheByProvider = useChatSessionStore(
+    (s) => s.modelCacheByProvider,
+  );
 
   const agentProviders = useMemo(() => {
-    const seen = new Set<string>();
-    const connected: AcpProvider[] = [];
+    const seen = new Set<string>(["rook"]);
+    const connected: AcpProvider[] = [{ id: "rook", label: "Rook" }];
     for (const p of providers) {
       const catalogId = resolveAgentProviderCatalogIdStrict(p.id);
       if (
@@ -148,16 +154,45 @@ export function ChatInputToolbar({
         label: getCatalogEntry(catalogId)?.displayName ?? p.label,
       });
     }
-    if (connected.length > 0) return connected;
-    return [
-      {
-        id: selectedProvider,
+    return connected;
+  }, [providers, readyAgentIds]);
+  const modelProviders = useMemo(() => {
+    return providers
+      .filter((provider) => {
+        if (provider.id === "rook") return false;
+        if (resolveAgentProviderCatalogIdStrict(provider.id) !== null) {
+          return false;
+        }
+        const entry = getCatalogEntry(provider.id);
+        if (entry?.category === "agent") {
+          return false;
+        }
+        return (
+          configuredModelProviderIds?.has(provider.id) ||
+          provider.id === selectedProvider ||
+          (modelCacheByProvider[provider.id]?.length ?? 0) > 0
+        );
+      })
+      .map((provider) => ({
+        id: provider.id,
         label:
-          getCatalogEntry(selectedProvider)?.displayName ??
-          formatProviderLabel(selectedProvider),
-      },
-    ];
-  }, [providers, readyAgentIds, selectedProvider]);
+          getCatalogEntry(provider.id)?.displayName ??
+          formatProviderLabel(provider.id),
+      }));
+  }, [
+    configuredModelProviderIds,
+    modelCacheByProvider,
+    providers,
+    selectedProvider,
+  ]);
+  const modelProviderIds = useMemo(
+    () => new Set(modelProviders.map((provider) => provider.id)),
+    [modelProviders],
+  );
+  const selectedAgentId =
+    selectedProvider === "rook" || modelProviderIds.has(selectedProvider)
+      ? "rook"
+      : selectedProvider;
   const selectedProject = availableProjects.find(
     (project) => project.id === selectedProjectId,
   );
@@ -206,8 +241,21 @@ export function ChatInputToolbar({
         {(agentProviders.length > 0 || providersLoading) && (
           <AgentModelPicker
             agents={agentProviders}
-            selectedAgentId={selectedProvider}
-            onAgentChange={onProviderChange}
+            selectedAgentId={selectedAgentId}
+            onAgentChange={(agentId) => {
+              if (agentId === "rook") {
+                onProviderChange(
+                  modelProviderIds.has(selectedProvider)
+                    ? selectedProvider
+                    : (modelProviders[0]?.id ?? "rook"),
+                );
+                return;
+              }
+              onProviderChange(agentId);
+            }}
+            modelProviders={modelProviders}
+            selectedProviderId={selectedProvider}
+            onProviderChange={onProviderChange}
             currentModelId={currentModelId}
             currentModelName={currentModel ?? null}
             availableModels={availableModels}

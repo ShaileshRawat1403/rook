@@ -93,7 +93,7 @@ interface ChatSessionStoreActions {
   ) => void;
   cacheModelsForProvider: (providerId: string, models: ModelOption[]) => void;
   getCachedModels: (providerId: string) => ModelOption[];
-  loadModelsForProvider: (providerId: string) => Promise<void>;
+  loadModelsForProvider: (providerId: string) => Promise<ModelOption[]>;
 
   getSession: (id: string) => ChatSession | undefined;
   getActiveSession: () => ChatSession | null;
@@ -104,47 +104,67 @@ interface ChatSessionStoreActions {
 export type ChatSessionStore = ChatSessionStoreState & ChatSessionStoreActions;
 
 const MODEL_CACHE_STORAGE_KEY = "rook:model-cache";
+const LEGACY_OPENAI_FALLBACK_MODEL_IDS = [
+  "gpt-4o",
+  "gpt-4o-mini",
+  "gpt-4-turbo",
+];
 
 async function fetchModelsFromRook(provider: string): Promise<ModelOption[]> {
-  const fallbackModels: Record<string, ModelOption[]> = {
-    "openai": [
-      { id: "gpt-4o", name: "GPT-4o" },
-      { id: "gpt-4o-mini", name: "GPT-4o Mini" },
-      { id: "gpt-4-turbo", name: "GPT-4 Turbo" },
-    ],
-    "anthropic": [
-      { id: "claude-sonnet-4-20250514", name: "Claude Sonnet 4" },
-      { id: "claude-haiku-3", name: "Claude Haiku 3" },
-    ],
-    "google": [
-      { id: "gemini-2.0-flash", name: "Gemini 2.0 Flash" },
-      { id: "gemini-1.5-pro", name: "Gemini 1.5 Pro" },
-    ],
-  };
-  
-  if (fallbackModels[provider]) {
-    console.log("[models] Using fallback models for:", provider);
-    return fallbackModels[provider];
-  }
-  
   try {
     console.log("[models] Fetching models for provider:", provider);
     const { getClient } = await import("@/shared/api/acpConnection");
     const client = await getClient();
     if (!client) {
-      console.log("[models] No client, using fallback");
-      return fallbackModels["openai"] || [];
+      console.warn("[models] No ACP client available for provider:", provider);
+      return [];
     }
-    const sdkResult = await client.rook.RookProvidersModels({ providerName: provider });
+    const sdkResult = await client.rook.RookProvidersModels({
+      providerName: provider,
+    });
     console.log("[models] SDK Response:", sdkResult);
     if (sdkResult.models) {
-      return sdkResult.models.map((m: string) => ({ id: m, name: m }));
+      return sdkResult.models.map((m: string) => ({
+        id: m,
+        name: m,
+        provider,
+      }));
     }
     return [];
   } catch (e) {
-    console.error("[models] Failed, using fallback:", e);
-    return fallbackModels["openai"] || [];
+    console.error("[models] Failed to load models for provider:", provider, e);
+    return [];
   }
+}
+
+function isLegacyOpenAiFallbackCache(
+  providerId: string,
+  models: ModelOption[] | undefined,
+): boolean {
+  if (providerId === "openai" || !models || models.length !== 3) {
+    return false;
+  }
+
+  return LEGACY_OPENAI_FALLBACK_MODEL_IDS.every(
+    (modelId, index) => models[index]?.id === modelId,
+  );
+}
+
+function sanitizeModelCache(
+  cache: Record<string, ModelOption[]>,
+): { cache: Record<string, ModelOption[]>; changed: boolean } {
+  let changed = false;
+  const sanitized: Record<string, ModelOption[]> = {};
+
+  for (const [providerId, models] of Object.entries(cache)) {
+    if (isLegacyOpenAiFallbackCache(providerId, models)) {
+      changed = true;
+      continue;
+    }
+    sanitized[providerId] = models;
+  }
+
+  return { cache: sanitized, changed };
 }
 
 function loadModelCache(): Record<string, ModelOption[]> {
@@ -153,9 +173,16 @@ function loadModelCache(): Record<string, ModelOption[]> {
     const stored = window.localStorage.getItem(MODEL_CACHE_STORAGE_KEY);
     if (!stored) return {};
     const parsed = JSON.parse(stored);
-    return typeof parsed === "object" && parsed !== null
-      ? (parsed as Record<string, ModelOption[]>)
-      : {};
+    if (typeof parsed !== "object" || parsed === null) {
+      return {};
+    }
+    const { cache, changed } = sanitizeModelCache(
+      parsed as Record<string, ModelOption[]>,
+    );
+    if (changed) {
+      persistModelCache(cache);
+    }
+    return cache;
   } catch {
     return {};
   }
@@ -647,6 +674,7 @@ export const useChatSessionStore = create<ChatSessionStore>((set, get) => ({
 
   cacheModelsForProvider: (providerId, models) => {
     if (models.length === 0) return;
+    if (isLegacyOpenAiFallbackCache(providerId, models)) return;
     const existing = get().modelCacheByProvider[providerId];
     if (modelIdsMatch(existing, models)) {
       return;
@@ -666,11 +694,12 @@ export const useChatSessionStore = create<ChatSessionStore>((set, get) => ({
 
   loadModelsForProvider: async (providerId: string) => {
     const current = get().modelCacheByProvider[providerId];
-    if (current && current.length > 0) return;
+    if (current && current.length > 0) return current;
     const models = await fetchModelsFromRook(providerId);
     if (models.length > 0) {
       get().cacheModelsForProvider(providerId, models);
     }
+    return models;
   },
 
   getSession: (id) => get().sessions.find((session) => session.id === id),

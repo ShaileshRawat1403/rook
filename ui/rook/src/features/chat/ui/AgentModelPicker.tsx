@@ -20,6 +20,9 @@ interface AgentModelPickerProps {
   agents: AcpProvider[];
   selectedAgentId: string;
   onAgentChange: (agentId: string) => void;
+  modelProviders?: AcpProvider[];
+  selectedProviderId?: string;
+  onProviderChange?: (providerId: string) => void;
   currentModelId?: string | null;
   currentModelName?: string | null;
   availableModels: ModelOption[];
@@ -120,6 +123,9 @@ export function AgentModelPicker({
   agents,
   selectedAgentId,
   onAgentChange,
+  modelProviders = [],
+  selectedProviderId = selectedAgentId,
+  onProviderChange,
   currentModelId = null,
   currentModelName = null,
   availableModels,
@@ -134,6 +140,11 @@ export function AgentModelPicker({
   const selectedAgentLabel =
     agents.find((agent) => agent.id === selectedAgentId)?.label ??
     formatProviderLabel(selectedAgentId);
+  const selectedProviderLabel =
+    modelProviders.find((provider) => provider.id === selectedProviderId)
+      ?.label ?? formatProviderLabel(selectedProviderId);
+  const isRookNative = selectedAgentId === "rook";
+  const showProviderColumn = isRookNative && modelProviders.length > 0;
   const groupedModels = useMemo<ModelGroup[]>(
     () => groupModels(availableModels, currentModelId),
     [availableModels, currentModelId],
@@ -172,6 +183,12 @@ export function AgentModelPicker({
     }
   };
 
+  const handleProviderSelect = (providerId: string) => {
+    if (providerId !== selectedProviderId) {
+      onProviderChange?.(providerId);
+    }
+  };
+
   const handleModelSelect = (modelId: string) => {
     onModelChange?.(modelId);
     setOpen(false);
@@ -198,14 +215,18 @@ export function AgentModelPicker({
             <span
               className={cn("truncate", isCompact ? "max-w-32" : "max-w-56")}
             >
-              {triggerModelLabel ?? selectedAgentLabel}
+              {triggerModelLabel ??
+                (isRookNative ? selectedProviderLabel : selectedAgentLabel)}
             </span>
           )}
         </Button>
       </PopoverTrigger>
       <PopoverContent
         align="start"
-        className="h-[min(24rem,50vh)] w-96 overflow-hidden p-1"
+        className={cn(
+          "h-[min(24rem,50vh)] overflow-hidden p-1",
+          showProviderColumn ? "w-[36rem]" : "w-96",
+        )}
         onKeyDown={(e) => {
           if (e.key === "ArrowDown" || e.key === "ArrowUp") {
             e.preventDefault();
@@ -255,7 +276,14 @@ export function AgentModelPicker({
           }
         }}
       >
-        <div className="grid h-full grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-1 overflow-hidden">
+        <div
+          className={cn(
+            "grid h-full gap-1 overflow-hidden",
+            showProviderColumn
+              ? "grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)_minmax(0,1.1fr)]"
+              : "grid-cols-[minmax(0,1fr)_minmax(0,1fr)]",
+          )}
+        >
           <div
             data-col="agent"
             className="flex min-h-0 min-w-0 overflow-hidden p-1"
@@ -291,6 +319,43 @@ export function AgentModelPicker({
               </ScrollArea>
             </div>
           </div>
+          {showProviderColumn ? (
+            <div
+              data-col="provider"
+              className="flex min-h-0 min-w-0 overflow-hidden p-1"
+            >
+              <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+                <div className="shrink-0 px-2 py-1.5 text-sm font-semibold">
+                  Provider
+                </div>
+                <ScrollArea className="min-h-0 min-w-0 flex-1">
+                  <div className="p-1 space-y-0.5">
+                    {modelProviders.map((provider) => {
+                      const isSelected = provider.id === selectedProviderId;
+
+                      return (
+                        <PickerItem
+                          key={provider.id}
+                          onClick={() => handleProviderSelect(provider.id)}
+                          selected={isSelected}
+                        >
+                          <span className="shrink-0">
+                            {getProviderIcon(provider.id, "size-4")}
+                          </span>
+                          <span className="min-w-0 flex-1 truncate">
+                            {provider.label}
+                          </span>
+                          {isSelected ? (
+                            <IconCheck className="size-4 shrink-0 text-muted-foreground" />
+                          ) : null}
+                        </PickerItem>
+                      );
+                    })}
+                  </div>
+                </ScrollArea>
+              </div>
+            </div>
+          ) : null}
           <div
             data-col="model"
             className="flex min-h-0 min-w-0 overflow-hidden p-1"
@@ -381,16 +446,11 @@ export function AgentModelPicker({
                       {currentModelName}
                     </div>
                   ) : null}
-                  {[0, 1, 2].map((row) => (
-                    <div
-                      key={row}
-                      className="h-6 animate-pulse rounded-sm bg-muted/30"
-                      style={{
-                        opacity: 1 - row * 0.25,
-                        animationDelay: `${row * 0.1}s`,
-                      }}
-                    />
-                  ))}
+                  <div className="rounded-sm border border-dashed border-border/70 px-2 py-2 text-xs text-muted-foreground">
+                    {showProviderColumn
+                      ? "No models loaded for this provider."
+                      : "No model options available."}
+                  </div>
                 </div>
               )}
             </div>

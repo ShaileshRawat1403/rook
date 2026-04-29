@@ -14,6 +14,11 @@ import { useMessageQueue } from "../hooks/useMessageQueue";
 import { useChatStore } from "../stores/chatStore";
 import { useAgentStore } from "@/features/agents/stores/agentStore";
 import { useProviderSelection } from "@/features/agents/hooks/useProviderSelection";
+import {
+  getCatalogEntry,
+  resolveAgentProviderCatalogIdStrict,
+} from "@/features/providers/providerCatalog";
+import { useConfiguredModelProviderIds } from "@/features/providers/hooks/useConfiguredModelProviderIds";
 import { useChatSessionStore } from "../stores/chatSessionStore";
 import { useProjectStore } from "@/features/projects/stores/projectStore";
 import { acpPrepareSession, acpSetModel } from "@/shared/api/acp";
@@ -81,6 +86,7 @@ export function ChatView({
     selectedProvider: globalSelectedProvider,
     setSelectedProvider: setGlobalSelectedProvider,
   } = useProviderSelection();
+  const configuredModelProviderIds = useConfiguredModelProviderIds();
   const personas = useAgentStore((s) => s.personas);
   const [selectedPersonaId, setSelectedPersonaId] = useState<string | null>(
     initialPersonaId ?? null,
@@ -90,6 +96,9 @@ export function ChatView({
   );
   const availableModels = useChatSessionStore(
     (s) => s.modelsBySession[activeSessionId] ?? EMPTY_MODELS,
+  );
+  const modelCacheByProvider = useChatSessionStore(
+    (s) => s.modelCacheByProvider,
   );
   const projects = useProjectStore((s) => s.projects);
   const projectsLoading = useProjectStore((s) => s.loading);
@@ -117,11 +126,41 @@ export function ChatView({
         })),
     [projects],
   );
-  const selectedProvider =
+  const selectedProviderPreference =
     session?.providerId ??
     initialProvider ??
     project?.preferredProvider ??
     globalSelectedProvider;
+  const modelProviders = useMemo(
+    () =>
+      providers.filter((provider) => {
+        if (provider.id === "rook") return false;
+        if (resolveAgentProviderCatalogIdStrict(provider.id) !== null) {
+          return false;
+        }
+        const entry = getCatalogEntry(provider.id);
+        if (entry?.category === "agent") {
+          return false;
+        }
+        return (
+          configuredModelProviderIds?.has(provider.id) ||
+          provider.id === selectedProviderPreference ||
+          provider.id === globalSelectedProvider ||
+          (modelCacheByProvider[provider.id]?.length ?? 0) > 0
+        );
+      }),
+    [
+      globalSelectedProvider,
+      configuredModelProviderIds,
+      modelCacheByProvider,
+      providers,
+      selectedProviderPreference,
+    ],
+  );
+  const selectedProvider =
+    selectedProviderPreference === "rook"
+      ? (modelProviders[0]?.id ?? selectedProviderPreference)
+      : selectedProviderPreference;
 
   const selectedPersona = personas.find((p) => p.id === selectedPersonaId);
   const projectArtifactRoots = useMemo(
@@ -223,6 +262,76 @@ export function ChatView({
     selectedPersonaId,
     session?.draft,
   ]);
+
+  useEffect(() => {
+    if (selectedProvider && selectedProvider !== session?.providerId) {
+      const cached = useChatSessionStore
+        .getState()
+        .getCachedModels(selectedProvider);
+      useChatSessionStore
+        .getState()
+        .switchSessionProvider(activeSessionId, selectedProvider, cached);
+    }
+    if (
+      selectedProviderPreference === "rook" &&
+      selectedProvider !== selectedProviderPreference
+    ) {
+      setGlobalSelectedProvider(selectedProvider);
+    }
+  }, [
+    activeSessionId,
+    selectedProvider,
+    selectedProviderPreference,
+    session?.providerId,
+    setGlobalSelectedProvider,
+  ]);
+
+  useEffect(() => {
+    if (!selectedProvider || selectedProvider === "rook") {
+      return;
+    }
+
+    const store = useChatSessionStore.getState();
+    const cached = store.getCachedModels(selectedProvider);
+    if (cached.length > 0) {
+      store.setSessionModels(activeSessionId, cached);
+      if (!session?.modelId) {
+        store.updateSession(activeSessionId, {
+          modelId: cached[0]?.id,
+          modelName: cached[0]?.displayName ?? cached[0]?.name,
+        });
+      }
+      return;
+    }
+
+    let cancelled = false;
+    void store.loadModelsForProvider(selectedProvider).then((loadedModels) => {
+      if (cancelled) return;
+      const latest = useChatSessionStore.getState();
+      const active = latest.getSession(activeSessionId);
+      if (
+        active &&
+        active.providerId &&
+        active.providerId !== selectedProvider
+      ) {
+        return;
+      }
+      const cachedModels = latest.getCachedModels(selectedProvider);
+      const models = cachedModels.length > 0 ? cachedModels : loadedModels;
+      latest.setSessionModels(activeSessionId, models);
+      if (models.length > 0 && !active?.modelId) {
+        latest.updateSession(activeSessionId, {
+          providerId: selectedProvider,
+          modelId: models[0]?.id,
+          modelName: models[0]?.displayName ?? models[0]?.name,
+        });
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeSessionId, selectedProvider, session?.modelId]);
 
   const handleProviderChange = useCallback(
     (providerId: string) => {

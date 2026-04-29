@@ -451,6 +451,18 @@ describe("chatSessionStore", () => {
         useChatSessionStore.getState().getSessionModels(session.id),
       ).toEqual([]);
     });
+
+    it("does not cache legacy OpenAI fallback models for non-OpenAI providers", () => {
+      useChatSessionStore.getState().cacheModelsForProvider("chatgpt_codex", [
+        { id: "gpt-4o", name: "GPT-4o" },
+        { id: "gpt-4o-mini", name: "GPT-4o Mini" },
+        { id: "gpt-4-turbo", name: "GPT-4 Turbo" },
+      ]);
+
+      expect(
+        useChatSessionStore.getState().getCachedModels("chatgpt_codex"),
+      ).toEqual([]);
+    });
   });
 
   describe("archiveSession", () => {
