@@ -3,7 +3,7 @@ import type {
   ProposedAction,
 } from "@/shared/types/governance";
 
-export type SentinelMode = "off" | "dax";
+export type SentinelMode = "off" | "dax_open";
 
 export interface Sentinel {
   readonly mode: SentinelMode;

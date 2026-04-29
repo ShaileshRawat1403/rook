@@ -13,7 +13,7 @@ import type { Sentinel } from "./types";
  * before constructing this one.
  */
 export const daxSentinel: Sentinel = {
-  mode: "dax",
+  mode: "dax_open",
   judge: async (action: ProposedAction): Promise<GovernanceDecision> => {
     if (!isTauriRuntimeAvailable()) {
       return failOpen(action, "Tauri runtime unavailable in browser context");
@@ -45,10 +45,7 @@ export const daxSentinel: Sentinel = {
   },
 };
 
-function failOpen(
-  action: ProposedAction,
-  reason: string,
-): GovernanceDecision {
+function failOpen(action: ProposedAction, reason: string): GovernanceDecision {
   console.warn("[sentinel] fail-open:", reason);
   return {
     schemaVersion: GOVERNANCE_SCHEMA_VERSION,
