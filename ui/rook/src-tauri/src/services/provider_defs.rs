@@ -37,7 +37,7 @@ pub(crate) static PROVIDER_CONFIG_DEFS: &[ProviderConfigDef] = &[
     ProviderConfigDef {
         id: "gemini_oauth",
         keys: &[],
-        oauth_cache_path: Some("gemini_oauth/info.json"),
+        oauth_cache_path: Some("gemini_oauth/tokens.json"),
     },
     ProviderConfigDef {
         id: "gemini_cli",
@@ -117,8 +117,8 @@ pub(crate) static PROVIDER_CONFIG_DEFS: &[ProviderConfigDef] = &[
     },
     ProviderConfigDef {
         id: "chatgpt_codex",
-        keys: &[key("CHATGPT_CODEX_TOKEN", true, true)],
-        oauth_cache_path: None,
+        keys: &[],
+        oauth_cache_path: Some("chatgpt_codex/tokens.json"),
     },
     ProviderConfigDef {
         id: "github_copilot",

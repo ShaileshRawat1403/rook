@@ -701,7 +701,15 @@ enum RecipeCommand {
 enum Command {
     /// Configure Rook settings
     #[command(about = "Configure Rook settings")]
-    Configure {},
+    Configure {
+        /// Configure a specific provider without opening the interactive configure menu.
+        #[arg(long = "provider", value_name = "PROVIDER")]
+        provider: Option<String>,
+
+        /// Save provider/model after authentication without sending a test model request.
+        #[arg(long = "no-test")]
+        no_test: bool,
+    },
 
     /// Display Rook configuration information
     #[command(about = "Display Rook configuration")]
@@ -1028,7 +1036,7 @@ pub struct InputConfig {
 
 fn get_command_name(command: &Option<Command>) -> &'static str {
     match command {
-        Some(Command::Configure {}) => "configure",
+        Some(Command::Configure { .. }) => "configure",
         Some(Command::Doctor {}) => "doctor",
         Some(Command::Info { .. }) => "info",
         Some(Command::Mcp { .. }) => "mcp",
@@ -1768,7 +1776,12 @@ pub async fn cli() -> anyhow::Result<()> {
             generate(shell, &mut cmd, bin_name, &mut std::io::stdout());
             Ok(())
         }
-        Some(Command::Configure {}) => handle_configure().await,
+        Some(Command::Configure { provider, no_test }) => match provider {
+            Some(provider_name) => {
+                crate::commands::configure::handle_configure_provider(provider_name, no_test).await
+            }
+            None => handle_configure().await,
+        },
         Some(Command::Doctor {}) => crate::commands::doctor::handle_doctor().await,
         Some(Command::Info { verbose }) => handle_info(verbose),
         Some(Command::Mcp { server }) => handle_mcp_command(server).await,

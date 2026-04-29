@@ -45,6 +45,170 @@ pub async fn handle_configure() -> anyhow::Result<()> {
     }
 }
 
+pub async fn handle_configure_provider(provider_name: String, no_test: bool) -> anyhow::Result<()> {
+    let config = Config::global();
+    let available_providers = providers().await;
+    let (provider_meta, _) = available_providers
+        .iter()
+        .find(|(provider, _)| provider.name == provider_name)
+        .ok_or_else(|| anyhow::anyhow!("Unknown provider '{}'", provider_name))?;
+
+    println!("Configuring provider: {}", provider_meta.display_name);
+
+    for key in provider_meta
+        .config_keys
+        .iter()
+        .filter(|key| key.oauth_flow)
+    {
+        configure_oauth_plain(&provider_name, &key.name).await?;
+    }
+
+    for key in provider_meta
+        .config_keys
+        .iter()
+        .filter(|key| key.primary && !key.oauth_flow)
+    {
+        configure_non_interactive_key(config, &provider_meta.display_name, key)?;
+    }
+
+    let model = select_non_interactive_model(&provider_name, provider_meta).await?;
+    apply_non_interactive_model_defaults(config, &provider_name, &model)?;
+
+    if !no_test {
+        println!("Checking provider configuration...");
+        let toolshim_enabled = std::env::var("ROOK_TOOLSHIM")
+            .map(|val| val == "1" || val.to_lowercase() == "true")
+            .unwrap_or(false);
+        let toolshim_model = std::env::var("ROOK_TOOLSHIM_OLLAMA_MODEL").ok();
+        test_provider_configuration(&provider_name, &model, toolshim_enabled, toolshim_model)
+            .await
+            .map_err(|e| anyhow::anyhow!("Failed to configure provider: {e}"))?;
+    }
+
+    config.set_rook_provider(&provider_name)?;
+    config.set_rook_model(&model)?;
+
+    println!("Provider configured successfully.");
+    println!("ROOK_PROVIDER={}", provider_name);
+    println!("ROOK_MODEL={}", model);
+    println!("Configuration saved successfully to {}", config.path());
+
+    Ok(())
+}
+
+async fn configure_oauth_plain(provider_name: &str, key_name: &str) -> anyhow::Result<()> {
+    println!("Starting OAuth authentication for {}...", key_name);
+
+    let temp_model = ModelConfig::new("temp")?.with_canonical_limits(provider_name);
+    let provider = create(provider_name, temp_model, Vec::new())
+        .await
+        .map_err(|e| anyhow::anyhow!("Failed to create provider for OAuth: {e}"))?;
+
+    provider
+        .configure_oauth()
+        .await
+        .map_err(|e| anyhow::anyhow!("OAuth authentication failed for {}: {}", key_name, e))?;
+
+    println!("OAuth authentication completed successfully.");
+    Ok(())
+}
+
+fn configure_non_interactive_key(
+    config: &Config,
+    display_name: &str,
+    key: &ConfigKey,
+) -> anyhow::Result<()> {
+    if std::env::var(&key.name).is_ok() {
+        println!("{} is set via environment variable.", key.name);
+        return Ok(());
+    }
+
+    let existing = if key.secret {
+        config.get_secret::<String>(&key.name).is_ok()
+    } else {
+        config.get_param::<String>(&key.name).is_ok()
+    };
+    if existing {
+        println!("{} is already configured.", key.name);
+        return Ok(());
+    }
+
+    if let Some(default) = &key.default {
+        if !key.secret {
+            config.set_param(&key.name, default)?;
+            println!("{} set to default value.", key.name);
+            return Ok(());
+        }
+    }
+
+    if key.required {
+        anyhow::bail!(
+            "Provider {} requires {}. Configure it manually or set {} in the environment.",
+            display_name,
+            key.name,
+            key.name
+        );
+    }
+
+    Ok(())
+}
+
+async fn select_non_interactive_model(
+    provider_name: &str,
+    provider_meta: &rook::providers::base::ProviderMetadata,
+) -> anyhow::Result<String> {
+    let temp_model_config =
+        ModelConfig::new(&provider_meta.default_model)?.with_canonical_limits(provider_name);
+    let temp_provider = create(provider_name, temp_model_config, Vec::new()).await?;
+
+    let models = retry_operation(&RetryConfig::default(), || async {
+        temp_provider.fetch_recommended_models().await
+    })
+    .await
+    .unwrap_or_default();
+
+    if models.contains(&provider_meta.default_model) {
+        return Ok(provider_meta.default_model.clone());
+    }
+
+    if let Some(model) = provider_meta
+        .known_models
+        .iter()
+        .map(|model| model.name.clone())
+        .find(|model| models.contains(model))
+    {
+        return Ok(model);
+    }
+
+    if let Some(model) = models.first() {
+        return Ok(model.clone());
+    }
+
+    Ok(provider_meta.default_model.clone())
+}
+
+fn apply_non_interactive_model_defaults(
+    config: &Config,
+    provider_name: &str,
+    model: &str,
+) -> anyhow::Result<()> {
+    if provider_name == "chatgpt_codex" {
+        let levels = reasoning_levels_for_model(model);
+        if levels.contains(&"medium") {
+            config.set_chatgpt_codex_reasoning_effort("medium".to_string())?;
+        } else if let Some(level) = levels.first() {
+            config.set_chatgpt_codex_reasoning_effort((*level).to_string())?;
+        }
+    }
+
+    if model.to_lowercase().starts_with("gemini-3") && config.get_gemini3_thinking_level().is_err()
+    {
+        config.set_gemini3_thinking_level("high")?;
+    }
+
+    Ok(())
+}
+
 #[cfg(feature = "telemetry")]
 pub fn configure_telemetry_consent_dialog() -> anyhow::Result<bool> {
     let config = Config::global();

@@ -34,26 +34,21 @@ pub async fn authenticate_model_provider(
     emit_output(&app_handle, &provider_id, "Starting Rook sign-in...");
     emit_output(&app_handle, &provider_id, &format!("Connecting to {}...", provider_label));
 
-    run_oauth_flow(&app_handle, &provider_id, &provider_label).await
+    run_oauth_flow(&app_handle, &provider_id).await
 }
 
 async fn run_oauth_flow(
     app_handle: &AppHandle,
     provider_id: &str,
-    provider_label: &str,
 ) -> Result<(), String> {
-    let rook_command = get_rook_command(app_handle).map_err(|e| e.to_string())?;
-    let binary_path = rook_command.as_std().get_program().to_string_lossy().to_string();
+    let mut rook_command = get_rook_command(app_handle).map_err(|e| e.to_string())?;
 
-    let escaped_label = provider_label.replace('\'', "'\\''");
-    let command = format!("printf '{}\\n' '{}' | '{}' configure", "%s\n", escaped_label, binary_path);
-
-    let shell = if cfg!(target_os = "windows") { "cmd" } else { "sh" };
-    let shell_arg = if cfg!(target_os = "windows") { "/C" } else { "-c" };
-
-    let mut child = tokio::process::Command::new(shell)
-        .arg(shell_arg)
-        .arg(&command)
+    let mut child = rook_command
+        .arg("configure")
+        .arg("--provider")
+        .arg(provider_id)
+        .arg("--no-test")
+        .stdin(std::process::Stdio::null())
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped())
         .spawn()
@@ -110,7 +105,7 @@ async fn run_oauth_flow(
         }
     });
 
-    let result = timeout(Duration::from_secs(120), async {
+    let result = timeout(Duration::from_secs(360), async {
         tokio::try_join!(stdout_handle, stderr_handle)
     })
     .await;
@@ -138,7 +133,7 @@ async fn run_oauth_flow(
                 provider_id,
                 "Timed out. Check if a browser opened and complete sign-in, then restart.",
             );
-            Err("Sign-in timed out after 2 minutes".to_string())
+            Err("Sign-in timed out after 6 minutes".to_string())
         }
     }
 }

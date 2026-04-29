@@ -2618,7 +2618,7 @@ impl RookAcpAgent {
                     .as_ref()
                     .map(|c| {
                         metadata.config_keys.iter().all(|k| {
-                            if !k.required {
+                            if !k.required || k.oauth_flow {
                                 return true;
                             }
                             if k.secret {
@@ -2669,7 +2669,6 @@ impl RookAcpAgent {
         &self,
         req: GetProviderModelsRequest,
     ) -> Result<GetProviderModelsResponse, sacp::Error> {
-        let config = self.load_config().ok();
         let all = rook::providers::providers().await;
 
         let Some((metadata, _provider_type)) =
@@ -2678,29 +2677,6 @@ impl RookAcpAgent {
             return Err(sacp::Error::invalid_params()
                 .data(format!("Unknown provider: {}", req.provider_name)));
         };
-
-        let is_configured = config
-            .as_ref()
-            .map(|c| {
-                metadata.config_keys.iter().all(|k| {
-                    if !k.required {
-                        return true;
-                    }
-                    if k.secret {
-                        c.get_secret::<String>(&k.name).is_ok()
-                    } else {
-                        c.get_param::<String>(&k.name).is_ok()
-                    }
-                })
-            })
-            .unwrap_or(false);
-
-        if !is_configured {
-            return Err(sacp::Error::invalid_params().data(format!(
-                "Provider '{}' is not configured",
-                req.provider_name
-            )));
-        }
 
         let model_config = rook::model::ModelConfig::new(&metadata.default_model)
             .map_err(|e| sacp::Error::internal_error().data(e.to_string()))?
