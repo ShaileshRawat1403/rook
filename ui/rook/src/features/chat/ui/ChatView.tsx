@@ -34,6 +34,11 @@ import { ArtifactPolicyProvider } from "../hooks/ArtifactPolicyContext";
 import type { ModelOption } from "../types";
 import { ChatContextPanel } from "./ChatContextPanel";
 import { perfLog } from "@/shared/lib/perfLog";
+import {
+  buildContextSnapshot,
+  resolveIntentRequest,
+  useIntentStore,
+} from "@/features/intent";
 
 const EMPTY_MODELS: ModelOption[] = [];
 
@@ -500,6 +505,76 @@ export function ChatView({
   } | null>(null);
   const queue = useMessageQueue(activeSessionId, chatState, sendMessage);
   const chatStore = useChatStore();
+  const setCurrentIntent = useIntentStore((s) => s.setCurrent);
+
+  const resolveRookRequest = useCallback(
+    (text: string, attachments?: ChatAttachmentDraft[]) => {
+      const context = buildContextSnapshot({
+        sessionId: activeSessionId,
+        project,
+        activeWorkspace,
+        attachments,
+        activePersonaId: selectedPersonaId,
+        selectedProvider,
+        selectedModel: session?.modelId ?? null,
+        isStreaming: chatState === "streaming" || chatState === "thinking",
+      });
+      return resolveIntentRequest(text, context);
+    },
+    [
+      activeSessionId,
+      activeWorkspace,
+      chatState,
+      project,
+      selectedPersonaId,
+      selectedProvider,
+      session?.modelId,
+    ],
+  );
+
+  const handleRookRequest = useCallback(
+    (text: string, personaId?: string, attachments?: ChatAttachmentDraft[]) => {
+      const { intent, resolution } = resolveRookRequest(text, attachments);
+      setCurrentIntent(activeSessionId, intent);
+
+      if (resolution.kind === "guidance") {
+        chatStore.addMessage(
+          activeSessionId,
+          createSystemNotificationMessage(
+            resolution.message,
+            resolution.notificationType,
+          ),
+        );
+        return;
+      }
+
+      if (resolution.notice) {
+        chatStore.addMessage(
+          activeSessionId,
+          createSystemNotificationMessage(resolution.notice, "info"),
+        );
+      }
+
+      if (chatState !== "idle" && !queue.queuedMessage) {
+        queue.enqueue(text, personaId, attachments, resolution.promptOverride);
+        return;
+      }
+
+      sendMessage(text, undefined, attachments, {
+        promptOverride: resolution.promptOverride,
+      });
+    },
+    [
+      activeSessionId,
+      chatState,
+      chatStore,
+      queue,
+      resolveRookRequest,
+      sendMessage,
+      setCurrentIntent,
+    ],
+  );
+
   const handleSend = useCallback(
     (text: string, personaId?: string, attachments?: ChatAttachmentDraft[]) => {
       if (personaId && personaId !== selectedPersonaId) {
@@ -525,23 +600,15 @@ export function ChatView({
         deferredSend.current = { text, attachments };
         return;
       }
-      // Queue if agent is busy and no message already queued
-      if (chatState !== "idle" && !queue.queuedMessage) {
-        queue.enqueue(text, personaId, attachments);
-        return;
-      }
-
-      sendMessage(text, undefined, attachments);
+      handleRookRequest(text, personaId, attachments);
     },
     [
-      sendMessage,
       selectedPersonaId,
       handlePersonaChange,
       personas,
       chatStore,
       activeSessionId,
-      chatState,
-      queue,
+      handleRookRequest,
     ],
   );
 
@@ -549,9 +616,9 @@ export function ChatView({
     if (deferredSend.current && selectedPersona) {
       const { text, attachments } = deferredSend.current;
       deferredSend.current = null;
-      sendMessage(text, undefined, attachments);
+      handleRookRequest(text, undefined, attachments);
     }
-  }, [sendMessage, selectedPersona]);
+  }, [handleRookRequest, selectedPersona]);
   const initialMessageSent = useRef(false);
   useEffect(() => {
     if (

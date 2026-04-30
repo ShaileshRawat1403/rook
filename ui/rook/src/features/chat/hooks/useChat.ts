@@ -30,6 +30,7 @@ import {
   buildAttachmentPromptPreamble,
   buildMessageAttachments,
 } from "../lib/attachments";
+import type { SendMessageOptions } from "./useMessageQueue";
 
 // TODO: Remove this fallback once Rook has first-class /-commands.
 const MANUAL_COMPACT_TRIGGER = "/compact";
@@ -154,6 +155,7 @@ export function useChat(
       text: string,
       overridePersona?: { id: string; name?: string },
       attachments?: ChatAttachmentDraft[],
+      options?: SendMessageOptions,
     ) => {
       const sid = sessionId.slice(0, 8);
       const tSendStart = performance.now();
@@ -285,7 +287,10 @@ export function useChat(
         // driver doesn't send an empty text content block that rook rejects.
         const attachmentPromptPreamble =
           buildAttachmentPromptPreamble(attachments);
-        const promptBody = text.trim() || (images?.length ? " " : text);
+        const promptBody =
+          options?.promptOverride?.trim() ||
+          text.trim() ||
+          (images?.length ? " " : text);
         const acpPrompt = `${attachmentPromptPreamble}${promptBody}`;
         const tAcp = performance.now();
         perfLog(

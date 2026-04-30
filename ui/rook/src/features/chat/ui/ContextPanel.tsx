@@ -21,6 +21,7 @@ import { ChangesWidget } from "./widgets/ChangesWidget";
 import { ArtifactsWidget } from "./widgets/ArtifactsWidget";
 import { ExtensionsWidget } from "./widgets/ExtensionsWidget";
 import { openPath } from "@tauri-apps/plugin-opener";
+import { IntentReadinessWidget } from "@/features/intent";
 
 interface ContextPanelProps {
   sessionId: string;
@@ -181,6 +182,7 @@ export function ContextPanel({
 
       <TabsContent value="details" className="flex-1 overflow-y-auto">
         <div className="space-y-2.5 px-3 pb-3 pt-2">
+          <IntentReadinessWidget sessionId={sessionId} />
           <WorkspaceWidget
             projectName={projectName}
             projectColor={projectColor}

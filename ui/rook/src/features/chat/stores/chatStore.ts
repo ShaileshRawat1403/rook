@@ -56,6 +56,7 @@ export interface QueuedMessage {
   text: string;
   personaId?: string;
   attachments?: ChatAttachmentDraft[];
+  promptOverride?: string;
 }
 
 export interface ScrollTargetMessage {

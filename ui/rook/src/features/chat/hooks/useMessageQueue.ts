@@ -3,6 +3,10 @@ import type { ChatState } from "@/shared/types/chat";
 import type { ChatAttachmentDraft } from "@/shared/types/messages";
 import { useChatStore } from "../stores/chatStore";
 
+export interface SendMessageOptions {
+  promptOverride?: string;
+}
+
 /**
  * Single-slot message queue that holds one pending message while the agent is
  * busy and auto-sends it when the chat transitions back to idle.
@@ -18,6 +22,7 @@ export function useMessageQueue(
     text: string,
     overridePersona?: { id: string; name?: string },
     attachments?: ChatAttachmentDraft[],
+    options?: SendMessageOptions,
   ) => void,
 ) {
   const queuedMessage = useChatStore(
@@ -26,18 +31,29 @@ export function useMessageQueue(
 
   useEffect(() => {
     if (chatState === "idle" && queuedMessage) {
-      const { text, personaId, attachments } = queuedMessage;
+      const { text, personaId, attachments, promptOverride } = queuedMessage;
       useChatStore.getState().dismissQueuedMessage(sessionId);
-      sendMessage(text, personaId ? { id: personaId } : undefined, attachments);
+      sendMessage(
+        text,
+        personaId ? { id: personaId } : undefined,
+        attachments,
+        promptOverride ? { promptOverride } : undefined,
+      );
     }
   }, [chatState, queuedMessage, sendMessage, sessionId]);
 
   const enqueue = useCallback(
-    (text: string, personaId?: string, attachments?: ChatAttachmentDraft[]) => {
+    (
+      text: string,
+      personaId?: string,
+      attachments?: ChatAttachmentDraft[],
+      promptOverride?: string,
+    ) => {
       useChatStore.getState().enqueueMessage(sessionId, {
         text,
         personaId,
         attachments,
+        promptOverride,
       });
     },
     [sessionId],
