@@ -133,6 +133,22 @@ fn run_tui(
     // event loop returned Ok, Err, or panicked.
 }
 
+/// Acquire the AppState mutex, recovering from poisoning rather than panicking.
+///
+/// std::sync::Mutex::lock returns Err if a previous holder panicked while
+/// the lock was held. The default `.unwrap()` would then panic on every
+/// subsequent lock attempt — including from the next user keystroke,
+/// cascading the original panic into a terminal-killing loop. Recovering
+/// the inner data lets the TUI keep running (state may be inconsistent;
+/// the user can quit cleanly via Ctrl+C and the Drop guard restores the
+/// terminal).
+fn lock_state(state: &SharedState) -> std::sync::MutexGuard<'_, AppState> {
+    state.lock().unwrap_or_else(|poison| {
+        tracing::warn!("AppState mutex was poisoned; recovering inner state");
+        poison.into_inner()
+    })
+}
+
 fn run_event_loop<F>(
     terminal: &mut Terminal<F>,
     state: SharedState,
@@ -156,7 +172,7 @@ where
                                 return Ok(());
                             }
                             KeyCode::Enter => {
-                                let mut guard = state.lock().unwrap();
+                                let mut guard = lock_state(&state);
 
                                 // High-Fidelity Provider Flow State Machine
                                 match guard.config_step {
@@ -209,7 +225,7 @@ where
                                                     .map_err(|e| anyhow::anyhow!(e.to_string()))
                                             });
 
-                                        let mut guard = state.lock().unwrap();
+                                        let mut guard = lock_state(&state);
                                         match oauth_result {
                                             Ok(()) => {
                                                 if let Some(key) =
@@ -355,7 +371,7 @@ where
                                 }
                             }
                             KeyCode::Up => {
-                                let mut guard = state.lock().unwrap();
+                                let mut guard = lock_state(&state);
                                 if guard.show_selection_modal {
                                     if guard.selection_modal_index > 0 {
                                         guard.selection_modal_index -= 1;
@@ -381,7 +397,7 @@ where
                                 }
                             }
                             KeyCode::Down => {
-                                let mut guard = state.lock().unwrap();
+                                let mut guard = lock_state(&state);
                                 if guard.show_selection_modal {
                                     if guard.selection_modal_index
                                         < guard.selection_modal_items.len().saturating_sub(1)
@@ -408,13 +424,13 @@ where
                                 }
                             }
                             KeyCode::Esc => {
-                                let mut guard = state.lock().unwrap();
+                                let mut guard = lock_state(&state);
                                 guard.show_command_palette = false;
                                 guard.show_selection_modal = false;
                                 guard.config_step = ConfigStep::None;
                             }
                             KeyCode::Char('a') | KeyCode::Char('A') => {
-                                let mut guard = state.lock().unwrap();
+                                let mut guard = lock_state(&state);
                                 if let Some(approval) = guard.projected.intervention.clone() {
                                     let id = approval.id.clone();
                                     guard.emit(crate::tui::events::RunEvent::ApprovalResolved {
@@ -428,7 +444,7 @@ where
                                 }
                             }
                             KeyCode::Char('r') | KeyCode::Char('R') => {
-                                let mut guard = state.lock().unwrap();
+                                let mut guard = lock_state(&state);
                                 if let Some(approval) = guard.projected.intervention.clone() {
                                     let id = approval.id.clone();
                                     guard.emit(crate::tui::events::RunEvent::ApprovalResolved {
@@ -442,7 +458,7 @@ where
                                 }
                             }
                             KeyCode::Char(c) => {
-                                let mut guard = state.lock().unwrap();
+                                let mut guard = lock_state(&state);
                                 if !guard.show_selection_modal {
                                     guard.input_buffer.push(c);
 
@@ -464,7 +480,7 @@ where
                                 }
                             }
                             KeyCode::Backspace => {
-                                let mut guard = state.lock().unwrap();
+                                let mut guard = lock_state(&state);
                                 if !guard.show_selection_modal {
                                     guard.input_buffer.pop();
 
@@ -495,11 +511,11 @@ where
                     }
                 }
                 TuiEvent::Agent(agent_event) => {
-                    let mut guard = state.lock().unwrap();
+                    let mut guard = lock_state(&state);
                     guard.handle_agent_event(agent_event);
                 }
                 TuiEvent::SessionError(err) => {
-                    let mut guard = state.lock().unwrap();
+                    let mut guard = lock_state(&state);
                     guard.is_processing = false;
                     guard.emit(crate::tui::events::RunEvent::RunFailed(err.clone()));
                     guard.add_message(MessageRole::System, format!("Session failed: {}", err));
@@ -542,7 +558,7 @@ where
             config_step,
             posture,
         ) = {
-            let guard = state.lock().unwrap();
+            let guard = lock_state(&state);
             (
                 guard.projected.thread.clone(),
                 guard.chat_scroll,
@@ -595,7 +611,7 @@ where
 
             let display_input = match config_step {
                 ConfigStep::EnterConfigKey => {
-                    let guard = state.lock().unwrap();
+                    let guard = lock_state(&state);
                     if guard
                         .current_provider_key()
                         .map(|key| key.secret)
@@ -611,7 +627,7 @@ where
             let placeholder = match config_step {
                 ConfigStep::EnterConfigKey => {
                     let key_label = {
-                        let guard = state.lock().unwrap();
+                        let guard = lock_state(&state);
                         guard.current_provider_key_label()
                     };
                     key_label
@@ -651,7 +667,7 @@ where
                     title: &selection_modal_title,
                     items: selection_modal_items,
                     details: {
-                        let guard = state.lock().unwrap();
+                        let guard = lock_state(&state);
                         guard.selection_modal_details.clone()
                     },
                     selected_index: selection_modal_index,
@@ -680,7 +696,7 @@ where
 
 fn prepare_provider_models(state: &SharedState) {
     let (provider, fallback_models, pending_values) = {
-        let mut guard = state.lock().unwrap();
+        let mut guard = lock_state(&state);
         let Some(provider) = guard.selected_provider.clone() else {
             return;
         };
@@ -729,7 +745,7 @@ fn prepare_provider_models(state: &SharedState) {
             .map_err(|err| anyhow::anyhow!(err.to_string()))
     });
 
-    let mut guard = state.lock().unwrap();
+    let mut guard = lock_state(&state);
     if guard
         .selected_provider
         .as_ref()
