@@ -72,6 +72,9 @@
   "labels": {
     "assistant": "Asistente",
     "copyPath": "Copiar ruta",
+    "copyRelativePath": "Copiar ruta relativa",
+    "openFile": "Abrir",
+    "openInEditor": "Abrir en {{editor}}",
     "revealInFileManager_mac": "Mostrar en Finder",
     "revealInFileManager_windows": "Mostrar en Explorador",
     "revealInFileManager_linux": "Mostrar en gestor de archivos",

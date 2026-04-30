@@ -75,6 +75,17 @@
       "sectionScripts": "Scripts",
       "sectionSuggested": "Suggested"
     },
+    "openActions": {
+      "reveal": "Reveal in file manager",
+      "revealShort": "Reveal",
+      "revealFailed": "Failed to reveal in file manager",
+      "terminal": "Open terminal at workspace",
+      "terminalShort": "Terminal",
+      "terminalFailed": "Failed to open terminal",
+      "openInEditor": "Open in {{editor}}",
+      "editorPreference": "Choose default editor",
+      "editorFailed": "Failed to open in {{editor}}"
+    },
     "errors": {
       "gitRead": "Unable to read git status."
     },

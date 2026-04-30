@@ -16,10 +16,14 @@ vi.mock("@/shared/api/system", () => ({
 
 vi.mock("@tauri-apps/plugin-opener", () => ({
   openPath: mockOpenPath,
+  revealItemInDir: mockRevealInFileManager,
 }));
 
-vi.mock("@/shared/lib/fileManager", () => ({
+vi.mock("@/shared/api/openActions", () => ({
   revealInFileManager: mockRevealInFileManager,
+  openInDefaultApp: mockOpenPath,
+  openInTerminal: vi.fn(),
+  openInEditor: vi.fn(),
 }));
 
 const makeEntry = (overrides: Record<string, unknown> = {}) => ({

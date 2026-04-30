@@ -21,10 +21,12 @@ function splitPath(relativePath: string) {
 function ChangedFileRow({
   file,
   fullPath,
+  workspaceRoot,
   onOpen,
 }: {
   file: ChangedFile;
   fullPath: string;
+  workspaceRoot: string;
   onOpen: (path: string) => void;
 }) {
   const { dir, name } = splitPath(file.path);
@@ -61,7 +63,15 @@ function ChangedFileRow({
 
   if (isDeleted) return row;
 
-  return <FileContextMenu path={fullPath}>{row}</FileContextMenu>;
+  return (
+    <FileContextMenu
+      path={fullPath}
+      workspaceRoot={workspaceRoot || undefined}
+      relativePath={file.path}
+    >
+      {row}
+    </FileContextMenu>
+  );
 }
 
 interface ChangesWidgetProps {
@@ -143,6 +153,7 @@ export function ChangesWidget({
               key={file.path}
               file={file}
               fullPath={pathJoin(repoPath, file.path)}
+              workspaceRoot={repoPath}
               onOpen={onOpenFile}
             />
           ))}

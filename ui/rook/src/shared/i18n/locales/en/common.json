@@ -72,6 +72,9 @@
   "labels": {
     "assistant": "Assistant",
     "copyPath": "Copy Path",
+    "copyRelativePath": "Copy Relative Path",
+    "openFile": "Open",
+    "openInEditor": "Open in {{editor}}",
     "revealInFileManager_mac": "Reveal in Finder",
     "revealInFileManager_windows": "Reveal in Explorer",
     "revealInFileManager_linux": "Reveal in File Manager",

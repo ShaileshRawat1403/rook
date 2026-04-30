@@ -75,6 +75,17 @@
       "sectionScripts": "Scripts",
       "sectionSuggested": "Sugeridos"
     },
+    "openActions": {
+      "reveal": "Mostrar en el gestor de archivos",
+      "revealShort": "Mostrar",
+      "revealFailed": "No se pudo mostrar en el gestor de archivos",
+      "terminal": "Abrir terminal en el espacio de trabajo",
+      "terminalShort": "Terminal",
+      "terminalFailed": "No se pudo abrir la terminal",
+      "openInEditor": "Abrir en {{editor}}",
+      "editorPreference": "Elegir editor predeterminado",
+      "editorFailed": "No se pudo abrir en {{editor}}"
+    },
     "errors": {
       "gitRead": "No se pudo leer el estado de git."
     },
