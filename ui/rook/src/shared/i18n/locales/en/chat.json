@@ -52,13 +52,18 @@
     },
     "health": {
       "branch": "Branch",
+      "branchCopied": "Branch copied",
       "changes": "Changes",
       "changesSummary": "{{count}} file(s) · +{{additions}} −{{deletions}}",
+      "copyBranch": "Copy branch name",
+      "copyPath": "Copy workspace path",
       "manifests": "Manifests",
       "noChanges": "Clean",
       "notAGitRepo": "Not a git repo",
       "packageManager": "Runner",
       "path": "Path",
+      "pathCopied": "Path copied",
+      "status": "Status",
       "unknown": "Unknown"
     },
     "commands": {
@@ -66,7 +71,9 @@
       "copyWithCwd": "Copy with cd into workspace",
       "copied": "Copied: {{command}}",
       "copiedWithCwd": "Copied command with workspace cd",
-      "copyFailed": "Copy failed"
+      "copyFailed": "Copy failed",
+      "sectionScripts": "Scripts",
+      "sectionSuggested": "Suggested"
     },
     "errors": {
       "gitRead": "Unable to read git status."

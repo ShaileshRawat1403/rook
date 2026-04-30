@@ -9,6 +9,7 @@ import { Widget } from "./Widget";
 
 interface DetectedCommandsWidgetProps {
   scripts: DetectedScript[] | undefined;
+  suggested: DetectedScript[] | undefined;
   isLoading: boolean;
   workspacePath: string | null;
 }
@@ -32,6 +33,20 @@ async function copyToClipboard(value: string): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+function quoteIfNeeded(value: string): string {
+  if (/[\s"'`$\\]/.test(value)) {
+    return `"${value.replace(/"/g, '\\"')}"`;
+  }
+  return value;
+}
+
+function sortByKind(items: DetectedScript[]): DetectedScript[] {
+  return [...items].sort((a, b) => {
+    const k = KIND_ORDER[a.kind] - KIND_ORDER[b.kind];
+    return k !== 0 ? k : a.name.localeCompare(b.name);
+  });
 }
 
 function ScriptRow({
@@ -88,19 +103,26 @@ function ScriptRow({
   );
 }
 
+function SectionHeading({ label }: { label: string }) {
+  return (
+    <div className="border-b border-border bg-background-alt/60 px-3 py-1 text-xxs font-medium uppercase tracking-wide text-foreground-subtle">
+      {label}
+    </div>
+  );
+}
+
 export function DetectedCommandsWidget({
   scripts,
+  suggested,
   isLoading,
   workspacePath,
 }: DetectedCommandsWidgetProps) {
   const { t } = useTranslation("chat");
 
-  const sorted = scripts
-    ? [...scripts].sort((a, b) => {
-        const k = KIND_ORDER[a.kind] - KIND_ORDER[b.kind];
-        return k !== 0 ? k : a.name.localeCompare(b.name);
-      })
-    : undefined;
+  const sortedScripts = scripts ? sortByKind(scripts) : undefined;
+  const sortedSuggested = suggested ? sortByKind(suggested) : undefined;
+  const hasScripts = (sortedScripts?.length ?? 0) > 0;
+  const hasSuggested = (sortedSuggested?.length ?? 0) > 0;
 
   const handleCopyCommand = useCallback(
     (script: DetectedScript) => {
@@ -133,42 +155,56 @@ export function DetectedCommandsWidget({
     [t, workspacePath],
   );
 
+  const renderRow = (script: DetectedScript) => (
+    <ScriptRow
+      key={`${script.source}:${script.name}`}
+      script={script}
+      onCopyCommand={handleCopyCommand}
+      onCopyWithCwd={handleCopyWithCwd}
+      copyLabel={t("contextPanel.commands.copyCommand")}
+      copyWithCwdLabel={t("contextPanel.commands.copyWithCwd")}
+    />
+  );
+
+  const showSectionHeadings = hasScripts && hasSuggested;
+
   return (
     <Widget
       title={t("contextPanel.widgets.commands")}
       icon={<IconTerminal2 className="size-3.5" />}
       flush
     >
-      {isLoading && !scripts ? (
+      {isLoading && !scripts && !suggested ? (
         <div className="space-y-2 px-3 py-2.5">
           <Skeleton className="h-3 w-3/4" />
           <Skeleton className="h-3 w-1/2" />
         </div>
-      ) : !sorted || sorted.length === 0 ? (
+      ) : !hasScripts && !hasSuggested ? (
         <p className="px-3 py-2.5 text-xs text-foreground-subtle">
           {t("contextPanel.empty.noCommands")}
         </p>
       ) : (
-        <div className="max-h-[240px] divide-y divide-border overflow-y-auto">
-          {sorted.map((script) => (
-            <ScriptRow
-              key={`${script.source}:${script.name}`}
-              script={script}
-              onCopyCommand={handleCopyCommand}
-              onCopyWithCwd={handleCopyWithCwd}
-              copyLabel={t("contextPanel.commands.copyCommand")}
-              copyWithCwdLabel={t("contextPanel.commands.copyWithCwd")}
-            />
-          ))}
+        <div className="max-h-[280px] overflow-y-auto">
+          {hasScripts && (
+            <div className="divide-y divide-border">
+              {showSectionHeadings && (
+                <SectionHeading
+                  label={t("contextPanel.commands.sectionScripts")}
+                />
+              )}
+              {sortedScripts?.map(renderRow)}
+            </div>
+          )}
+          {hasSuggested && (
+            <div className="divide-y divide-border">
+              <SectionHeading
+                label={t("contextPanel.commands.sectionSuggested")}
+              />
+              {sortedSuggested?.map(renderRow)}
+            </div>
+          )}
         </div>
       )}
     </Widget>
   );
-}
-
-function quoteIfNeeded(value: string): string {
-  if (/[\s"'`$\\]/.test(value)) {
-    return `"${value.replace(/"/g, '\\"')}"`;
-  }
-  return value;
 }

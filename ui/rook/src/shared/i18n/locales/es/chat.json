@@ -52,13 +52,18 @@
     },
     "health": {
       "branch": "Rama",
+      "branchCopied": "Rama copiada",
       "changes": "Cambios",
       "changesSummary": "{{count}} archivo(s) · +{{additions}} −{{deletions}}",
+      "copyBranch": "Copiar nombre de la rama",
+      "copyPath": "Copiar ruta del espacio de trabajo",
       "manifests": "Manifiestos",
       "noChanges": "Limpio",
       "notAGitRepo": "No es un repositorio git",
       "packageManager": "Gestor",
       "path": "Ruta",
+      "pathCopied": "Ruta copiada",
+      "status": "Estado",
       "unknown": "Desconocido"
     },
     "commands": {
@@ -66,7 +71,9 @@
       "copyWithCwd": "Copiar con cd al espacio de trabajo",
       "copied": "Copiado: {{command}}",
       "copiedWithCwd": "Comando copiado con cd al espacio de trabajo",
-      "copyFailed": "Error al copiar"
+      "copyFailed": "Error al copiar",
+      "sectionScripts": "Scripts",
+      "sectionSuggested": "Sugeridos"
     },
     "errors": {
       "gitRead": "No se pudo leer el estado de git."

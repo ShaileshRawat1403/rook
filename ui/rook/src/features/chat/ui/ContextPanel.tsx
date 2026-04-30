@@ -217,6 +217,7 @@ export function ContextPanel({
           />
           <DetectedCommandsWidget
             scripts={detection?.scripts}
+            suggested={detection?.suggested}
             isLoading={isDetectionLoading}
             workspacePath={gitTargetPath}
           />

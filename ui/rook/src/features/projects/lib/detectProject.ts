@@ -32,6 +32,29 @@ export interface ProjectDetection {
   packageManager: PackageManager | null;
   manifests: string[];
   scripts: DetectedScript[];
+  suggested: DetectedScript[];
+}
+
+const CARGO_SUGGESTED: ReadonlyArray<{ name: string; kind: ScriptKind }> = [
+  { name: "check", kind: "lint" },
+  { name: "test", kind: "test" },
+  { name: "build", kind: "build" },
+  { name: "run", kind: "dev" },
+  { name: "fmt", kind: "format" },
+  { name: "clippy", kind: "lint" },
+];
+
+/** Pure helper, exported for tests. */
+export function suggestedCommandsFor(
+  filenames: ReadonlySet<string>,
+): DetectedScript[] {
+  if (!filenames.has("Cargo.toml")) return [];
+  return CARGO_SUGGESTED.map(({ name, kind }) => ({
+    name: `cargo ${name}`,
+    command: `cargo ${name}`,
+    source: "Cargo.toml",
+    kind,
+  }));
 }
 
 const MANIFEST_FILES: ReadonlySet<string> = new Set([
@@ -108,14 +131,14 @@ export async function detectProject(
   workspacePath: string,
 ): Promise<ProjectDetection> {
   if (!workspacePath) {
-    return { packageManager: null, manifests: [], scripts: [] };
+    return { packageManager: null, manifests: [], scripts: [], suggested: [] };
   }
 
   let entries: FileTreeEntry[] = [];
   try {
     entries = await listDirectoryEntries(workspacePath);
   } catch {
-    return { packageManager: null, manifests: [], scripts: [] };
+    return { packageManager: null, manifests: [], scripts: [], suggested: [] };
   }
 
   const filenames = new Set(
@@ -147,5 +170,6 @@ export async function detectProject(
     }
   }
 
-  return { packageManager, manifests, scripts };
+  const suggested = suggestedCommandsFor(filenames);
+  return { packageManager, manifests, scripts, suggested };
 }

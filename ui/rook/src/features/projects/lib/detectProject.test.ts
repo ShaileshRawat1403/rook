@@ -10,6 +10,7 @@ import {
   detectProject,
   parsePackageJsonScripts,
   selectPackageManager,
+  suggestedCommandsFor,
 } from "./detectProject";
 import {
   listDirectoryEntries,
@@ -119,14 +120,24 @@ describe("detectProject", () => {
 
   it("returns the empty detection for an empty path", async () => {
     const result = await detectProject("");
-    expect(result).toEqual({ packageManager: null, manifests: [], scripts: [] });
+    expect(result).toEqual({
+      packageManager: null,
+      manifests: [],
+      scripts: [],
+      suggested: [],
+    });
     expect(listMock).not.toHaveBeenCalled();
   });
 
   it("returns the empty detection when listing fails", async () => {
     listMock.mockRejectedValue(new Error("nope"));
     const result = await detectProject("/work");
-    expect(result).toEqual({ packageManager: null, manifests: [], scripts: [] });
+    expect(result).toEqual({
+      packageManager: null,
+      manifests: [],
+      scripts: [],
+      suggested: [],
+    });
   });
 
   it("detects a pnpm project and parses package.json scripts", async () => {
@@ -149,13 +160,22 @@ describe("detectProject", () => {
       "pnpm dev",
       "pnpm build",
     ]);
+    expect(result.suggested).toEqual([]);
   });
 
-  it("returns no scripts when package.json is absent", async () => {
+  it("returns no scripts but suggests cargo commands when only Cargo.toml is present", async () => {
     listMock.mockResolvedValue([fileEntry("Cargo.toml")]);
     const result = await detectProject("/work");
     expect(result.packageManager).toBe("cargo");
     expect(result.scripts).toEqual([]);
+    expect(result.suggested.map((s) => s.command)).toEqual([
+      "cargo check",
+      "cargo test",
+      "cargo build",
+      "cargo run",
+      "cargo fmt",
+      "cargo clippy",
+    ]);
     expect(readMock).not.toHaveBeenCalled();
   });
 
@@ -164,5 +184,26 @@ describe("detectProject", () => {
     readMock.mockRejectedValue(new Error("io"));
     const result = await detectProject("/work");
     expect(result.scripts).toEqual([]);
+  });
+});
+
+describe("suggestedCommandsFor", () => {
+  it("returns the cargo suggestion set when Cargo.toml is present", () => {
+    const result = suggestedCommandsFor(new Set(["Cargo.toml"]));
+    expect(result.map((s) => s.command)).toEqual([
+      "cargo check",
+      "cargo test",
+      "cargo build",
+      "cargo run",
+      "cargo fmt",
+      "cargo clippy",
+    ]);
+    expect(result.every((s) => s.source === "Cargo.toml")).toBe(true);
+  });
+
+  it("returns no suggestions when Cargo.toml is absent", () => {
+    expect(suggestedCommandsFor(new Set(["package.json"]))).toEqual([]);
+    expect(suggestedCommandsFor(new Set(["pyproject.toml"]))).toEqual([]);
+    expect(suggestedCommandsFor(new Set())).toEqual([]);
   });
 });
