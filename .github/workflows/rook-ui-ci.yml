@@ -1,11 +1,6 @@
 name: "Rook UI CI"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "ui/rook/**"
-      - "ui/sdk/**"
   pull_request:
     branches: [main]
     paths:

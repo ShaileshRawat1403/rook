@@ -1,11 +1,7 @@
 name: Deploy Documentation
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'documentation/**'
+  workflow_dispatch:
 
 # Use same concurrency group as PR preview workflow to prevent race conditions
 # when both workflows try to modify gh-pages branch simultaneously.

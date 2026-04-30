@@ -1,11 +1,5 @@
 name: "Unused Dependencies"
 on:
-  push:
-    paths:
-      - '.github/workflows/cargo-machete.yml'
-      - '**/Cargo.toml'
-      - '**/Cargo.lock'
-      - '**/*.rs'
   pull_request:
     paths:
       - '**/Cargo.toml'

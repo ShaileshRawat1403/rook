@@ -1,13 +1,6 @@
 name: Publish Ask AI Bot Docker Image
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "services/ask-ai-bot/**"
-      - "documentation/**"
-      - ".github/workflows/publish-ask-ai-bot.yml"
   workflow_dispatch:
 
 permissions:
