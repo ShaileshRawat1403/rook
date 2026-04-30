@@ -11,7 +11,7 @@ export const PROVIDER_CATALOG: ProviderCatalogEntry[] = [
     id: "rook",
     displayName: "Rook",
     category: "agent",
-    description: "Block's open-source coding agent",
+    description: "Rook's native agent runtime",
     setupMethod: "none",
     tier: "promoted",
   },
