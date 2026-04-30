@@ -43,7 +43,7 @@ export function LoadingRook({ chatState = "idle" }: LoadingRookProps) {
   const LoadingIcon =
     chatState === "streaming" ? (
       <RookBirdSpinner
-        className="inline-block flex-shrink-0 -ml-0.5"
+        className="inline-block flex-shrink-0 -ml-0.5 text-foreground"
         cycleInterval={150}
         frameSizeClass="w-8 h-8"
       />
