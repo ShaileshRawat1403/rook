@@ -20,6 +20,10 @@ import { WorkspaceWidget } from "./widgets/WorkspaceWidget";
 import { ChangesWidget } from "./widgets/ChangesWidget";
 import { ArtifactsWidget } from "./widgets/ArtifactsWidget";
 import { ExtensionsWidget } from "./widgets/ExtensionsWidget";
+import { ProjectHealthWidget } from "./widgets/ProjectHealthWidget";
+import { DetectedCommandsWidget } from "./widgets/DetectedCommandsWidget";
+import { useProjectDetection } from "@/features/projects/hooks/useProjectDetection";
+import { pathJoin } from "@/shared/lib/pathJoin";
 import { openPath } from "@tauri-apps/plugin-opener";
 
 interface ContextPanelProps {
@@ -60,6 +64,9 @@ export function ContextPanel({
     isLoading: isFilesLoading,
     refetch: refetchFiles,
   } = useChangedFiles(gitTargetPath, activeTab === "details");
+
+  const { data: detection, isLoading: isDetectionLoading } =
+    useProjectDetection(gitTargetPath, activeTab === "details");
 
   const handleContextChange = useCallback(
     (context: ActiveWorkspace) => {
@@ -148,7 +155,7 @@ export function ContextPanel({
   const handleOpenChangedFile = useCallback(
     (filePath: string) => {
       if (!gitTargetPath) return;
-      const fullPath = `${gitTargetPath}/${filePath}`;
+      const fullPath = pathJoin(gitTargetPath, filePath);
       if (window.__TAURI_INTERNALS__) {
         void openPath(fullPath);
         return;
@@ -199,6 +206,19 @@ export function ContextPanel({
             onCreateBranch={handleCreateBranch}
             onCreateWorktree={handleCreateWorktree}
             onRefresh={handleRefresh}
+          />
+          <ProjectHealthWidget
+            workspacePath={gitTargetPath}
+            gitState={gitState}
+            isGitLoading={isLoading}
+            changedFiles={changedFiles}
+            detection={detection}
+            isDetectionLoading={isDetectionLoading}
+          />
+          <DetectedCommandsWidget
+            scripts={detection?.scripts}
+            isLoading={isDetectionLoading}
+            workspacePath={gitTargetPath}
           />
           <ChangesWidget
             files={changedFiles}

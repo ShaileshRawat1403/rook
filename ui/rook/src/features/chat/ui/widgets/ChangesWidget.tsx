@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { IconGitBranch } from "@tabler/icons-react";
 import { cn } from "@/shared/lib/cn";
+import { pathJoin } from "@/shared/lib/pathJoin";
 import { FileContextMenu } from "@/shared/ui/file-context-menu";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { Spinner } from "@/shared/ui/spinner";
@@ -141,7 +142,7 @@ export function ChangesWidget({
             <ChangedFileRow
               key={file.path}
               file={file}
-              fullPath={`${repoPath}/${file.path}`}
+              fullPath={pathJoin(repoPath, file.path)}
               onOpen={onOpenFile}
             />
           ))}

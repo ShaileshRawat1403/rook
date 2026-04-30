@@ -47,7 +47,26 @@
       "noChanges": "No uncommitted changes",
       "noProjectAssigned": "No project assigned.",
       "noExtensions": "No extensions enabled",
-      "noMatchingExtensions": "No matching extensions"
+      "noMatchingExtensions": "No matching extensions",
+      "noCommands": "No commands detected"
+    },
+    "health": {
+      "branch": "Branch",
+      "changes": "Changes",
+      "changesSummary": "{{count}} file(s) · +{{additions}} −{{deletions}}",
+      "manifests": "Manifests",
+      "noChanges": "Clean",
+      "notAGitRepo": "Not a git repo",
+      "packageManager": "Runner",
+      "path": "Path",
+      "unknown": "Unknown"
+    },
+    "commands": {
+      "copyCommand": "Copy command",
+      "copyWithCwd": "Copy with cd into workspace",
+      "copied": "Copied: {{command}}",
+      "copiedWithCwd": "Copied command with workspace cd",
+      "copyFailed": "Copy failed"
     },
     "errors": {
       "gitRead": "Unable to read git status."
@@ -90,7 +109,9 @@
       "artifacts": "Artifacts",
       "changes": "Changes",
       "changesOnBranch": "on",
+      "commands": "Commands",
       "extensions": "Extensions",
+      "health": "Health",
       "searchExtensions": "Search extensions...",
       "workspace": "Workspace"
     }

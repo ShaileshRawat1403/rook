@@ -13,3 +13,4 @@ pub mod projects;
 pub mod sentinel;
 pub mod skills;
 pub mod system;
+pub mod workspace_manifest;

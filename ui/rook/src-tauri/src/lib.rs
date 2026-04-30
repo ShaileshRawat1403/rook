@@ -180,6 +180,7 @@ pub fn run() {
             commands::system::inspect_attachment_paths,
             commands::system::list_files_for_mentions,
             commands::system::read_image_attachment,
+            commands::workspace_manifest::read_workspace_manifest,
             commands::notifications::request_notification_permission,
             commands::notifications::send_notification,
             commands::notifications::send_approval_notification,
