@@ -472,6 +472,19 @@ export function getModelProviders(): ProviderCatalogEntry[] {
   return PROVIDER_CATALOG.filter((p) => p.category === "model");
 }
 
+export function resolveModelProviderCatalogIdStrict(
+  providerId: string,
+): string | null {
+  const directMatch = getModelProviders().find(
+    (provider) => provider.id === providerId,
+  );
+  if (directMatch) {
+    return directMatch.id;
+  }
+
+  return null;
+}
+
 export function resolveAgentProviderCatalogIdStrict(
   providerId: string,
 ): string | null {

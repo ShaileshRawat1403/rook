@@ -770,6 +770,7 @@ export function ChatView({
             currentModel={session?.modelName}
             availableModels={availableModels}
             onModelChange={handleModelChange}
+            modelLoadState={selectedModelLoadState}
             selectedProjectId={session?.projectId ?? null}
             availableProjects={availableProjects}
             onProjectChange={handleProjectChange}

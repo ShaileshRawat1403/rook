@@ -260,6 +260,7 @@ export function ChatInputToolbar({
             currentModelName={currentModel ?? null}
             availableModels={availableModels}
             onModelChange={onModelChange}
+            modelLoadState={modelLoadState}
             loading={providersLoading}
             isCompact={isCompact}
           />

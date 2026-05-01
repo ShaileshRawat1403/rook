@@ -12,6 +12,7 @@ import { useProjectStore } from "@/features/projects/stores/projectStore";
 import { useLocaleFormatting } from "@/shared/i18n";
 import { RookGreeting } from "@/shared/ui/animations";
 import { RookIcon } from "@/shared/ui/icons/RookIcon";
+import { getCatalogEntry } from "@/features/providers/providerCatalog";
 
 const HOME_DRAFT_KEY = "home";
 
@@ -72,6 +73,9 @@ export function HomeScreen({
   const cachedModels = useChatSessionStore((s) =>
     s.getCachedModels(selectedProvider),
   );
+  const selectedModelLoadState = useChatSessionStore((s) =>
+    s.getModelLoadState(selectedProvider),
+  );
   const [selectedPersonaId, setSelectedPersonaId] = useState<string | null>(
     null,
   );
@@ -97,7 +101,12 @@ export function HomeScreen({
   }, []);
 
   useEffect(() => {
-    if (selectedProvider && cachedModels.length === 0 && !providersLoading) {
+    if (
+      selectedProvider &&
+      cachedModels.length === 0 &&
+      !providersLoading &&
+      getCatalogEntry(selectedProvider)?.category === "model"
+    ) {
       useChatSessionStore.getState().loadModelsForProvider(selectedProvider);
     }
   }, [selectedProvider, cachedModels, providersLoading]);
@@ -156,6 +165,7 @@ export function HomeScreen({
             currentModelId={cachedModels[0]?.id ?? null}
             currentModel={cachedModels[0]?.displayName ?? cachedModels[0]?.name}
             availableModels={cachedModels}
+            modelLoadState={selectedModelLoadState}
             selectedProjectId={selectedProjectId}
             availableProjects={projects.map((project) => ({
               id: project.id,

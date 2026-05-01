@@ -6,9 +6,15 @@ vi.mock("@/shared/api/acp", () => ({
   acpListSessions: vi.fn(),
 }));
 
+vi.mock("@/shared/api/acpConnection", () => ({
+  getClient: vi.fn(),
+}));
+
 import { acpListSessions } from "@/shared/api/acp";
+import { getClient } from "@/shared/api/acpConnection";
 
 const mockedAcpListSessions = vi.mocked(acpListSessions);
+const mockedGetClient = vi.mocked(getClient);
 
 const LEGACY_SESSION_CACHE_KEY = "rook:chat-sessions";
 const OVERLAY_CACHE_KEY = "rook:acp-session-metadata";
@@ -24,6 +30,7 @@ function resetStore() {
     activeWorkItemBySession: {},
     modelsBySession: {},
     modelCacheByProvider: {},
+    modelLoadStateByProvider: {},
   });
 }
 

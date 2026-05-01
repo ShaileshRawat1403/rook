@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { resolveAgentProviderCatalogId } from "./providerCatalog";
+import {
+  resolveAgentProviderCatalogId,
+  resolveModelProviderCatalogIdStrict,
+} from "./providerCatalog";
 
 describe("resolveAgentProviderCatalogId", () => {
   it("matches direct catalog ids", () => {
@@ -21,6 +24,14 @@ describe("resolveAgentProviderCatalogId", () => {
     expect(
       resolveAgentProviderCatalogId("databricks", "Databricks"),
     ).toBeNull();
+  });
+
+  it("does not treat agent providers as Rook Native model providers", () => {
+    expect(resolveModelProviderCatalogIdStrict("codex-acp")).toBeNull();
+    expect(resolveModelProviderCatalogIdStrict("cursor-agent")).toBeNull();
+    expect(resolveModelProviderCatalogIdStrict("chatgpt_codex")).toBe(
+      "chatgpt_codex",
+    );
   });
 
   it("matches fuzzy agent labels with extra suffixes", () => {

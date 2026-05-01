@@ -446,11 +446,29 @@ export function AgentModelPicker({
                       {currentModelName}
                     </div>
                   ) : null}
-                  <div className="rounded-sm border border-dashed border-border/70 px-2 py-2 text-xs text-muted-foreground">
-                    {showProviderColumn
-                      ? "No models loaded for this provider."
-                      : "No model options available."}
-                  </div>
+                  {modelLoadState?.status === "loading" ? (
+                    [0, 1, 2].map((row) => (
+                      <div
+                        key={row}
+                        className="h-6 animate-pulse rounded-sm bg-muted/30"
+                        style={{
+                          opacity: 1 - row * 0.25,
+                          animationDelay: `${row * 0.1}s`,
+                        }}
+                      />
+                    ))
+                  ) : (
+                    <div className="rounded-sm border border-dashed border-border/70 px-2 py-2 text-xs text-muted-foreground">
+                      {modelLoadState?.status === "failed" ? (
+                        modelLoadState.error ?? "Failed to load models."
+                      ) : showProviderColumn ? (
+                        "No models loaded for this provider."
+                      ) : (
+                        "No model options available."
+                      )}
+                    </div>
+                  )}
+                </div>
                 </div>
               )}
             </div>

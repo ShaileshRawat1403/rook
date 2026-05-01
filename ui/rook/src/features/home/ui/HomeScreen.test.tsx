@@ -34,6 +34,12 @@ vi.mock("@/features/agents/hooks/useProviderSelection", () => ({
   }),
 }));
 
+vi.mock("@/shared/ui/animations", () => ({
+  RookGreeting: ({ className }: { className?: string }) => (
+    <div className={className}>Good afternoon</div>
+  ),
+}));
+
 // HomeScreen now reads personas from the agent store, not from ACP providers
 vi.mock("@/features/agents/stores/agentStore", async (importOriginal) => {
   const actual =
