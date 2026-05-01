@@ -47,7 +47,60 @@
       "noChanges": "No uncommitted changes",
       "noProjectAssigned": "No project assigned.",
       "noExtensions": "No extensions enabled",
-      "noMatchingExtensions": "No matching extensions"
+      "noMatchingExtensions": "No matching extensions",
+      "noCommands": "No commands detected"
+    },
+    "health": {
+      "branch": "Branch",
+      "branchCopied": "Branch copied",
+      "changes": "Changes",
+      "changesSummary": "{{count}} file(s) · +{{additions}} −{{deletions}}",
+      "copyBranch": "Copy branch name",
+      "copyPath": "Copy workspace path",
+      "manifests": "Manifests",
+      "noChanges": "Clean",
+      "notAGitRepo": "Not a git repo",
+      "packageManager": "Runner",
+      "path": "Path",
+      "pathCopied": "Path copied",
+      "status": "Status",
+      "unknown": "Unknown"
+    },
+    "commands": {
+      "copyCommand": "Copy command",
+      "copyWithCwd": "Copy with cd into workspace",
+      "copied": "Copied: {{command}}",
+      "copiedWithCwd": "Copied command with workspace cd",
+      "copyFailed": "Copy failed",
+      "sectionScripts": "Scripts",
+      "sectionSuggested": "Suggested",
+      "risk": {
+        "safe": "Safe",
+        "review": "Review",
+        "blocked": "Blocked"
+      },
+      "riskTooltip": "Classification only. Rook will not run this command in this slice."
+    },
+    "summary": {
+      "stack": "Stack",
+      "tests": "Tests",
+      "docs": "Docs",
+      "notDetected": "No frameworks or test runners detected.",
+      "advisoryNote": "Detection is read-only. No commands run, no files modified.",
+      "copyContextPack": "Copy workspace context pack",
+      "copied": "Workspace context pack copied",
+      "copyFailed": "Copy failed"
+    },
+    "openActions": {
+      "reveal": "Reveal in file manager",
+      "revealShort": "Reveal",
+      "revealFailed": "Failed to reveal in file manager",
+      "terminal": "Open terminal at workspace",
+      "terminalShort": "Terminal",
+      "terminalFailed": "Failed to open terminal",
+      "openInEditor": "Open in {{editor}}",
+      "editorPreference": "Choose default editor",
+      "editorFailed": "Failed to open in {{editor}}"
     },
     "errors": {
       "gitRead": "Unable to read git status."
@@ -90,8 +143,11 @@
       "artifacts": "Artifacts",
       "changes": "Changes",
       "changesOnBranch": "on",
+      "commands": "Commands",
       "extensions": "Extensions",
+      "health": "Health",
       "searchExtensions": "Search extensions...",
+      "summary": "Summary",
       "workspace": "Workspace"
     }
   },

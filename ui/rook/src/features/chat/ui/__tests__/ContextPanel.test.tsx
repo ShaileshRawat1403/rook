@@ -28,6 +28,13 @@ vi.mock("@/shared/hooks/useChangedFiles", () => ({
   }),
 }));
 
+vi.mock("@/features/projects/hooks/useProjectDetection", () => ({
+  useProjectDetection: () => ({
+    data: undefined,
+    isLoading: false,
+  }),
+}));
+
 vi.mock("@tauri-apps/plugin-opener", () => ({
   openPath: vi.fn(),
 }));

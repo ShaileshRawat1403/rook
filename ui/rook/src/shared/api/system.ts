@@ -75,3 +75,26 @@ export async function readImageAttachment(
 ): Promise<ImageAttachmentPayload> {
   return invokeTauri("read_image_attachment", { path });
 }
+
+export type WorkspaceManifestName =
+  | "package.json"
+  | "Cargo.toml"
+  | "pyproject.toml"
+  | "Makefile"
+  | "tsconfig.json"
+  | "README.md"
+  | "AGENTS.md";
+
+export async function readWorkspaceManifest(
+  workspacePath: string,
+  manifestName: WorkspaceManifestName,
+): Promise<string | null> {
+  if (!isTauriRuntimeAvailable()) {
+    return null;
+  }
+  const result = await invokeTauri<string | null>("read_workspace_manifest", {
+    workspacePath,
+    manifestName,
+  });
+  return result ?? null;
+}

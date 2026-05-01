@@ -12,4 +12,6 @@ pub mod path_resolver;
 pub mod projects;
 pub mod sentinel;
 pub mod skills;
+pub mod open_actions;
 pub mod system;
+pub mod workspace_manifest;

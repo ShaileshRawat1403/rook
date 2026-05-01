@@ -47,7 +47,60 @@
       "noChanges": "No hay cambios sin confirmar",
       "noProjectAssigned": "No hay proyecto asignado.",
       "noExtensions": "No hay extensiones habilitadas",
-      "noMatchingExtensions": "No hay extensiones que coincidan"
+      "noMatchingExtensions": "No hay extensiones que coincidan",
+      "noCommands": "No se detectaron comandos"
+    },
+    "health": {
+      "branch": "Rama",
+      "branchCopied": "Rama copiada",
+      "changes": "Cambios",
+      "changesSummary": "{{count}} archivo(s) · +{{additions}} −{{deletions}}",
+      "copyBranch": "Copiar nombre de la rama",
+      "copyPath": "Copiar ruta del espacio de trabajo",
+      "manifests": "Manifiestos",
+      "noChanges": "Limpio",
+      "notAGitRepo": "No es un repositorio git",
+      "packageManager": "Gestor",
+      "path": "Ruta",
+      "pathCopied": "Ruta copiada",
+      "status": "Estado",
+      "unknown": "Desconocido"
+    },
+    "commands": {
+      "copyCommand": "Copiar comando",
+      "copyWithCwd": "Copiar con cd al espacio de trabajo",
+      "copied": "Copiado: {{command}}",
+      "copiedWithCwd": "Comando copiado con cd al espacio de trabajo",
+      "copyFailed": "Error al copiar",
+      "sectionScripts": "Scripts",
+      "sectionSuggested": "Sugeridos",
+      "risk": {
+        "safe": "Segura",
+        "review": "Revisar",
+        "blocked": "Bloqueada"
+      },
+      "riskTooltip": "Solo clasificación. Rook no ejecutará este comando en este slice."
+    },
+    "summary": {
+      "stack": "Stack",
+      "tests": "Pruebas",
+      "docs": "Docs",
+      "notDetected": "No se detectaron frameworks ni runners de pruebas.",
+      "advisoryNote": "Detección de solo lectura. No se ejecutan comandos ni se modifican archivos.",
+      "copyContextPack": "Copiar paquete de contexto del espacio de trabajo",
+      "copied": "Paquete de contexto copiado",
+      "copyFailed": "Error al copiar"
+    },
+    "openActions": {
+      "reveal": "Mostrar en el gestor de archivos",
+      "revealShort": "Mostrar",
+      "revealFailed": "No se pudo mostrar en el gestor de archivos",
+      "terminal": "Abrir terminal en el espacio de trabajo",
+      "terminalShort": "Terminal",
+      "terminalFailed": "No se pudo abrir la terminal",
+      "openInEditor": "Abrir en {{editor}}",
+      "editorPreference": "Elegir editor predeterminado",
+      "editorFailed": "No se pudo abrir en {{editor}}"
     },
     "errors": {
       "gitRead": "No se pudo leer el estado de git."
@@ -90,8 +143,11 @@
       "artifacts": "Artefactos",
       "changes": "Cambios",
       "changesOnBranch": "en",
+      "commands": "Comandos",
       "extensions": "Extensiones",
+      "health": "Salud",
       "searchExtensions": "Buscar extensiones...",
+      "summary": "Resumen",
       "workspace": "Espacio de trabajo"
     }
   },

@@ -7,6 +7,7 @@ import type { ActiveWorkspace } from "../../stores/chatSessionStore";
 import { Widget } from "./Widget";
 import { WorkspaceActionsMenu } from "./WorkspaceActionsMenu";
 import { WorkingContextPicker, shortenPath } from "./WorkingContextPicker";
+import { WorkspaceQuickActions } from "./WorkspaceQuickActions";
 
 interface WorkspaceWidgetProps {
   projectName?: string;
@@ -133,6 +134,9 @@ export function WorkspaceWidget({
               onCreateBranch={onCreateBranch}
               onCreateWorktree={onCreateWorktree}
             />
+            <WorkspaceQuickActions
+              workspacePath={activeContext?.path ?? primaryWorkspaceRoot}
+            />
           </div>
         ) : (
           <div className="space-y-3">
@@ -148,6 +152,7 @@ export function WorkspaceWidget({
               <IconGitBranch className="size-3" />
               {t("contextPanel.git.initRepo")}
             </Button>
+            <WorkspaceQuickActions workspacePath={primaryWorkspaceRoot} />
           </div>
         )}
       </div>
