@@ -23,6 +23,8 @@ import {
 import type { ModelOption } from "../types";
 import { ChatInputAttachments } from "./ChatInputAttachments";
 import { ChatInputCommands, type SlashCommandId } from "./ChatInputCommands";
+import { getCatalogEntry } from "@/features/providers/providerCatalog";
+import type { ModelLoadState } from "../stores/chatSessionStore";
 
 export interface ProjectOption {
   id: string;
@@ -57,6 +59,7 @@ interface ChatInputProps {
   currentModel?: string;
   availableModels?: ModelOption[];
   onModelChange?: (modelId: string) => void;
+  modelLoadState?: ModelLoadState;
   selectedProjectId?: string | null;
   availableProjects?: ProjectOption[];
   onProjectChange?: (projectId: string | null) => void;
@@ -96,6 +99,7 @@ export function ChatInput({
   currentModel,
   availableModels = [],
   onModelChange,
+  modelLoadState,
   selectedProjectId = null,
   availableProjects = [],
   onProjectChange,
@@ -143,11 +147,23 @@ export function ChatInput({
   const stickyPersona = activePersona;
   const [selectedSlashIndex, setSelectedSlashIndex] = useState(0);
 
+  const selectedProviderEntry = getCatalogEntry(selectedProvider);
+  const requiresModelSelection =
+    selectedProvider === "rook" || selectedProviderEntry?.category === "model";
+  const hasResolvedModel =
+    availableModels.length > 0 || Boolean(currentModelId || currentModel);
+  const modelSelectionBlocked =
+    providers.length > 0 &&
+    requiresModelSelection &&
+    !providersLoading &&
+    !hasResolvedModel &&
+    modelLoadState?.status !== "loading";
   const hasQueuedMessage = queuedMessage !== null;
   const canSend =
     (text.trim().length > 0 || attachments.length > 0) &&
     !hasQueuedMessage &&
-    !disabled;
+    !disabled &&
+    !modelSelectionBlocked;
 
   const {
     mentionOpen,
@@ -636,6 +652,7 @@ export function ChatInput({
                 currentModel={resolvedCurrentModel}
                 availableModels={availableModels}
                 onModelChange={onModelChange}
+                modelLoadState={modelLoadState}
                 selectedProjectId={selectedProjectId}
                 availableProjects={availableProjects}
                 onProjectChange={onProjectChange}

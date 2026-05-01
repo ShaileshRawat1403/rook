@@ -56,6 +56,7 @@ interface ChatSessionStoreState {
   activeWorkItemBySession: Record<string, ActiveWorkItemRef>;
   modelsBySession: Record<string, ModelOption[]>;
   modelCacheByProvider: Record<string, ModelOption[]>;
+  modelLoadStateByProvider: Record<string, ModelLoadState>;
 }
 
 interface CreateSessionOpts {
@@ -102,6 +103,7 @@ interface ChatSessionStoreActions {
   ) => void;
   cacheModelsForProvider: (providerId: string, models: ModelOption[]) => void;
   getCachedModels: (providerId: string) => ModelOption[];
+  getModelLoadState: (providerId: string) => ModelLoadState;
   loadModelsForProvider: (providerId: string) => Promise<ModelOption[]>;
 
   getSession: (id: string) => ChatSession | undefined;
@@ -119,30 +121,56 @@ const LEGACY_OPENAI_FALLBACK_MODEL_IDS = [
   "gpt-4-turbo",
 ];
 
-async function fetchModelsFromRook(provider: string): Promise<ModelOption[]> {
+export interface ModelLoadState {
+  status: "idle" | "loading" | "ready" | "failed";
+  error?: string;
+}
+
+const IDLE_MODEL_LOAD_STATE: ModelLoadState = { status: "idle" };
+
+interface FetchModelsResult {
+  models: ModelOption[];
+  error?: string;
+}
+
+async function fetchModelsFromRook(
+  provider: string,
+): Promise<FetchModelsResult> {
   try {
     console.log("[models] Fetching models for provider:", provider);
     const { getClient } = await import("@/shared/api/acpConnection");
     const client = await getClient();
     if (!client) {
       console.warn("[models] No ACP client available for provider:", provider);
-      return [];
+      return { models: [], error: "No ACP client available." };
     }
     const sdkResult = await client.rook.RookProvidersModels({
       providerName: provider,
     });
     console.log("[models] SDK Response:", sdkResult);
-    if (sdkResult.models) {
-      return sdkResult.models.map((m: string) => ({
-        id: m,
-        name: m,
-        provider,
-      }));
+    if (Array.isArray(sdkResult.models) && sdkResult.models.length > 0) {
+      return {
+        models: sdkResult.models.map((m: string) => ({
+          id: m,
+          name: m,
+          provider,
+        })),
+      };
     }
-    return [];
+
+    return {
+      models: [],
+      error: `No models were returned for ${provider}.`,
+    };
   } catch (e) {
     console.error("[models] Failed to load models for provider:", provider, e);
-    return [];
+    return {
+      models: [],
+      error:
+        e instanceof Error
+          ? e.message
+          : `Could not load models for ${provider}.`,
+    };
   }
 }
 
@@ -400,6 +428,7 @@ export const useChatSessionStore = create<ChatSessionStore>((set, get) => ({
   activeWorkItemBySession: {},
   modelsBySession: {},
   modelCacheByProvider: loadModelCache(),
+  modelLoadStateByProvider: {},
 
   createSession: async (_opts) => {
     throw new Error(
@@ -783,14 +812,41 @@ export const useChatSessionStore = create<ChatSessionStore>((set, get) => ({
   getCachedModels: (providerId) =>
     get().modelCacheByProvider[providerId] ?? EMPTY_MODELS,
 
+  getModelLoadState: (providerId) =>
+    get().modelLoadStateByProvider[providerId] ?? IDLE_MODEL_LOAD_STATE,
+
   loadModelsForProvider: async (providerId: string) => {
     const current = get().modelCacheByProvider[providerId];
     if (current && current.length > 0) return current;
-    const models = await fetchModelsFromRook(providerId);
+
+    set((state) => ({
+      modelLoadStateByProvider: {
+        ...state.modelLoadStateByProvider,
+        [providerId]: { status: "loading" },
+      },
+    }));
+    const { models, error } = await fetchModelsFromRook(providerId);
     if (models.length > 0) {
       get().cacheModelsForProvider(providerId, models);
+      set((state) => ({
+        modelLoadStateByProvider: {
+          ...state.modelLoadStateByProvider,
+          [providerId]: { status: "ready" },
+        },
+      }));
+      return models;
     }
-    return models;
+
+    set((state) => ({
+      modelLoadStateByProvider: {
+        ...state.modelLoadStateByProvider,
+        [providerId]: {
+          status: "failed",
+          error: error ?? `Could not load models for ${providerId}.`,
+        },
+      },
+    }));
+    return EMPTY_MODELS;
   },
 
   getSession: (id) => get().sessions.find((session) => session.id === id),

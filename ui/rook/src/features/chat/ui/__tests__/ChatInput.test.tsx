@@ -163,7 +163,7 @@ describe("ChatInput", () => {
         onSend={vi.fn()}
         providers={[
           { id: "rook", label: "Rook" },
-          { id: "claude-acp", label: "Claude Code" },
+          { id: "google", label: "Google Gemini" },
         ]}
         selectedProvider="rook"
       />,
@@ -175,7 +175,6 @@ describe("ChatInput", () => {
 
     expect(screen.getByText("Agent")).toBeInTheDocument();
     expect(screen.getByText("Model")).toBeInTheDocument();
-    expect(screen.getByText("Claude Code")).toBeInTheDocument();
   });
 
   it("opens the project selector menu", async () => {

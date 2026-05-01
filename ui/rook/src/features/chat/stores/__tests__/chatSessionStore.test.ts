@@ -6,6 +6,10 @@ vi.mock("@/shared/api/acp", () => ({
   acpListSessions: vi.fn(),
 }));
 
+vi.mock("@/shared/api/acpConnection", () => ({
+  getClient: vi.fn(),
+}));
+
 import { acpListSessions } from "@/shared/api/acp";
 
 const mockedAcpListSessions = vi.mocked(acpListSessions);
@@ -24,6 +28,7 @@ function resetStore() {
     activeWorkItemBySession: {},
     modelsBySession: {},
     modelCacheByProvider: {},
+    modelLoadStateByProvider: {},
   });
 }
 

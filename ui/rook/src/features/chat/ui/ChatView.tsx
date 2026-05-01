@@ -172,6 +172,9 @@ export function ChatView({
     selectedProviderPreference === "rook"
       ? (modelProviders[0]?.id ?? selectedProviderPreference)
       : selectedProviderPreference;
+  const selectedModelLoadState = useChatSessionStore((s) =>
+    s.getModelLoadState(selectedProvider),
+  );
 
   const selectedPersona = personas.find((p) => p.id === selectedPersonaId);
   const projectArtifactRoots = useMemo(
@@ -770,6 +773,7 @@ export function ChatView({
             currentModel={session?.modelName}
             availableModels={availableModels}
             onModelChange={handleModelChange}
+            modelLoadState={selectedModelLoadState}
             selectedProjectId={session?.projectId ?? null}
             availableProjects={availableProjects}
             onProjectChange={handleProjectChange}

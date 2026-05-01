@@ -20,6 +20,7 @@ import {
   onModelSetupOutput,
 } from "@/features/providers/api/modelSetup";
 import { useChatSessionStore } from "@/features/chat/stores/chatSessionStore";
+import { useAgentStore } from "@/features/agents/stores/agentStore";
 import type {
   ProviderDisplayInfo,
   ProviderField,
@@ -164,6 +165,7 @@ export function ModelProviderRow({
     try {
       await authenticateModelProvider(provider.id, provider.nativeConnectQuery);
       await loadModelsForProvider(provider.id);
+      useAgentStore.getState().setSelectedProvider(provider.id);
       await onCompleteNativeSetup();
     } catch (nextError) {
       setSetupError(
@@ -284,6 +286,8 @@ export function ModelProviderRow({
         await onSaveField(field.key, nextValue, field.secret);
       }
       await loadConfig();
+      await loadModelsForProvider(provider.id);
+      useAgentStore.getState().setSelectedProvider(provider.id);
       setShowSavedState(true);
       setPreserveSetupLayout(true);
     } catch (nextError) {
