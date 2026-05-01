@@ -2,12 +2,12 @@ mod commands;
 mod services;
 mod types;
 
-use services::rook_config::RookConfig;
 use services::personas::PersonaStore;
+use services::rook_config::RookConfig;
 use tauri::{
     menu::{Menu, MenuItem},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-    Manager, Emitter,
+    Emitter, Manager,
 };
 #[allow(unused_imports)]
 use tauri_plugin_global_shortcut::{Code, Modifiers, Shortcut, ShortcutState};
@@ -43,22 +43,21 @@ pub fn run() {
         )
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
-        .plugin(
-            tauri_plugin_single_instance::init(|app, argv, _cwd| {
-                if let Some(window) = app.get_webview_window("main") {
-                    let _ = window.show();
-                    let _ = window.set_focus();
+        .plugin(tauri_plugin_single_instance::init(|app, argv, _cwd| {
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.show();
+                let _ = window.set_focus();
+            }
+            if argv.len() > 1 {
+                let url = &argv[1];
+                if url.starts_with("rook://") {
+                    let _ = app.emit("deep-link", url);
                 }
-                if argv.len() > 1 {
-                    let url = &argv[1];
-                    if url.starts_with("rook://") {
-                        let _ = app.emit("deep-link", url);
-                    }
-                }
-            }),
-        )
+            }
+        }))
         .setup(|app| {
-            let show_hide = MenuItem::with_id(app, "show_hide", "Show/Hide Rook", true, None::<&str>)?;
+            let show_hide =
+                MenuItem::with_id(app, "show_hide", "Show/Hide Rook", true, None::<&str>)?;
             let quit = MenuItem::with_id(app, "quit", "Quit Rook", true, None::<&str>)?;
             let menu = Menu::with_items(app, &[&show_hide, &quit])?;
 
@@ -66,21 +65,24 @@ pub fn run() {
                 .icon(app.default_window_icon().unwrap().clone())
                 .menu(&menu)
                 .tooltip("Rook")
-                .on_menu_event(|app, event| {
-                    match event.id.as_ref() {
-                        "show_hide" => {
-                            if let Some(window) = app.get_webview_window("main") {
-                                toggle_window(&window);
-                            }
+                .on_menu_event(|app, event| match event.id.as_ref() {
+                    "show_hide" => {
+                        if let Some(window) = app.get_webview_window("main") {
+                            toggle_window(&window);
                         }
-                        "quit" => {
-                            app.exit(0);
-                        }
-                        _ => {}
                     }
+                    "quit" => {
+                        app.exit(0);
+                    }
+                    _ => {}
                 })
                 .on_tray_icon_event(|tray, event| {
-                    if let TrayIconEvent::Click { button: MouseButton::Left, button_state: MouseButtonState::Up, .. } = event {
+                    if let TrayIconEvent::Click {
+                        button: MouseButton::Left,
+                        button_state: MouseButtonState::Up,
+                        ..
+                    } = event
+                    {
                         let app = tray.app_handle();
                         if let Some(window) = app.get_webview_window("main") {
                             toggle_window(&window);
@@ -91,22 +93,27 @@ pub fn run() {
 
             #[cfg(desktop)]
             {
-                use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut, ShortcutState};
+                use tauri_plugin_global_shortcut::{
+                    Code, GlobalShortcutExt, Modifiers, Shortcut, ShortcutState,
+                };
 
                 let cmd_comma = Shortcut::new(Some(Modifiers::META), Code::Comma);
                 let cmd_b = Shortcut::new(Some(Modifiers::META), Code::KeyB);
                 let cmd_n = Shortcut::new(Some(Modifiers::META), Code::KeyN);
                 let cmd_k = Shortcut::new(Some(Modifiers::META), Code::KeyK);
 
-                let _ = app.global_shortcut().on_shortcuts([cmd_comma, cmd_b, cmd_n, cmd_k], |app, shortcut, event| {
-                    if event.state == ShortcutState::Pressed {
-                        if let Some(window) = app.get_webview_window("main") {
-                            let _ = window.show();
-                            let _ = window.set_focus();
-                            let _ = app.emit("shortcut", shortcut.to_string());
+                let _ = app.global_shortcut().on_shortcuts(
+                    [cmd_comma, cmd_b, cmd_n, cmd_k],
+                    |app, shortcut, event| {
+                        if event.state == ShortcutState::Pressed {
+                            if let Some(window) = app.get_webview_window("main") {
+                                let _ = window.show();
+                                let _ = window.set_focus();
+                                let _ = app.emit("shortcut", shortcut.to_string());
+                            }
                         }
-                    }
-                });
+                    },
+                );
             }
 
             Ok(())

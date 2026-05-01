@@ -69,6 +69,5 @@ pub async fn sentinel_evaluate(action_json: String) -> Result<String, String> {
         ));
     }
 
-    String::from_utf8(output.stdout)
-        .map_err(|e| format!("dax produced non-utf8 output: {e}"))
+    String::from_utf8(output.stdout).map_err(|e| format!("dax produced non-utf8 output: {e}"))
 }

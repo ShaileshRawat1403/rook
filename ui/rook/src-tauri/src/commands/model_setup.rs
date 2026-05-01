@@ -32,15 +32,16 @@ pub async fn authenticate_model_provider(
     }
 
     emit_output(&app_handle, &provider_id, "Starting Rook sign-in...");
-    emit_output(&app_handle, &provider_id, &format!("Connecting to {}...", provider_label));
+    emit_output(
+        &app_handle,
+        &provider_id,
+        &format!("Connecting to {}...", provider_label),
+    );
 
     run_oauth_flow(&app_handle, &provider_id).await
 }
 
-async fn run_oauth_flow(
-    app_handle: &AppHandle,
-    provider_id: &str,
-) -> Result<(), String> {
+async fn run_oauth_flow(app_handle: &AppHandle, provider_id: &str) -> Result<(), String> {
     let mut rook_command = get_rook_command(app_handle).map_err(|e| e.to_string())?;
 
     let mut child = rook_command

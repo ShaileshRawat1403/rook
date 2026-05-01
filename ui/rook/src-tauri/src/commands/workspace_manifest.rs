@@ -20,10 +20,7 @@ fn read_workspace_manifest_inner(
         return Err(format!("Manifest '{}' is not allowed", manifest_name));
     }
 
-    if manifest_name.contains('/')
-        || manifest_name.contains('\\')
-        || manifest_name.contains("..")
-    {
+    if manifest_name.contains('/') || manifest_name.contains('\\') || manifest_name.contains("..") {
         return Err(format!("Manifest '{}' is not allowed", manifest_name));
     }
 
@@ -116,16 +113,16 @@ mod tests {
     #[test]
     fn rejects_non_whitelisted_manifests() {
         let dir = tempdir().expect("tempdir");
-        let error = read_workspace_manifest_inner(dir.path(), ".env")
-            .expect_err("non-whitelisted name");
+        let error =
+            read_workspace_manifest_inner(dir.path(), ".env").expect_err("non-whitelisted name");
         assert!(error.contains("not allowed"));
     }
 
     #[test]
     fn rejects_path_traversal_in_manifest_name() {
         let dir = tempdir().expect("tempdir");
-        let error = read_workspace_manifest_inner(dir.path(), "../package.json")
-            .expect_err("traversal");
+        let error =
+            read_workspace_manifest_inner(dir.path(), "../package.json").expect_err("traversal");
         assert!(error.contains("not allowed"));
     }
 
@@ -135,8 +132,8 @@ mod tests {
         let manifest = dir.path().join("package.json");
         fs::write(&manifest, vec![b'a'; (MAX_MANIFEST_BYTES as usize) + 1]).expect("manifest");
 
-        let error = read_workspace_manifest_inner(dir.path(), "package.json")
-            .expect_err("size limit");
+        let error =
+            read_workspace_manifest_inner(dir.path(), "package.json").expect_err("size limit");
         assert!(error.contains("exceeds"));
     }
 
@@ -151,8 +148,8 @@ mod tests {
         let inside = tempdir().expect("inside");
         symlink(&secret, inside.path().join("package.json")).expect("symlink");
 
-        let error = read_workspace_manifest_inner(inside.path(), "package.json")
-            .expect_err("escape");
+        let error =
+            read_workspace_manifest_inner(inside.path(), "package.json").expect_err("escape");
         assert!(error.contains("outside the workspace"));
     }
 }

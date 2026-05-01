@@ -29,7 +29,10 @@ pub fn send_approval_notification(app: AppHandle, session_id: String) -> Result<
     app.notification()
         .builder()
         .title("Rook - Approval Required")
-        .body(format!("A task requires your approval in session {}", truncated))
+        .body(format!(
+            "A task requires your approval in session {}",
+            truncated
+        ))
         .show()
         .map_err(|e| e.to_string())
 }
