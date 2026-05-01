@@ -193,6 +193,7 @@ pub fn run() {
             commands::workspace_manifest::read_workspace_manifest,
             commands::open_actions::open_in_terminal,
             commands::open_actions::open_in_editor,
+            commands::open_actions::evaluate_open_action_policy,
             commands::work_items::list_work_items,
             commands::work_items::get_work_item,
             commands::work_items::create_work_item,

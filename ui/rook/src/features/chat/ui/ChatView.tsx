@@ -190,13 +190,16 @@ export function ChatView({
   );
   const allowedArtifactRoots = useMemo(() => {
     const roots = [
+      ...(project?.workingDirs ?? [])
+        .map((path) => path.trim())
+        .filter(Boolean),
       ...projectArtifactRoots.map((path) => path.trim()).filter(Boolean),
     ];
     if (globalArtifactRoot) {
       roots.push(globalArtifactRoot);
     }
     return [...new Set(roots)];
-  }, [globalArtifactRoot, projectArtifactRoots]);
+  }, [globalArtifactRoot, project?.workingDirs, projectArtifactRoots]);
   const projectSystemPrompt = useMemo(
     () => buildProjectSystemPrompt(project),
     [project],

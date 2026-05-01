@@ -10,7 +10,10 @@ export async function authenticateModelProvider(
   providerId: string,
   providerLabel: string,
 ): Promise<void> {
-  return invokeTauri("authenticate_model_provider", { providerId, providerLabel });
+  return invokeTauri("authenticate_model_provider", {
+    providerId,
+    providerLabel,
+  });
 }
 
 export function onModelSetupOutput(

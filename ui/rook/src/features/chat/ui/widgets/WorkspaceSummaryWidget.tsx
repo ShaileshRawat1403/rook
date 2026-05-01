@@ -39,7 +39,9 @@ function StackedRow({
   return (
     <div className="space-y-0.5">
       <div className="text-foreground-subtle">{label}</div>
-      <div className="text-foreground">{value && value.length > 0 ? value : "—"}</div>
+      <div className="text-foreground">
+        {value && value.length > 0 ? value : "—"}
+      </div>
     </div>
   );
 }

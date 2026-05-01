@@ -45,6 +45,7 @@ interface ArtifactPolicyContextValue {
   pathExists: (path: string) => Promise<boolean>;
   openResolvedPath: (path: string) => Promise<void>;
   getAllSessionArtifacts: () => SessionArtifact[];
+  normalizedRoots: string[];
 }
 
 const EMPTY_DISPLAY: ToolCardDisplay = {
@@ -59,6 +60,7 @@ const DEFAULT_CONTEXT_VALUE: ArtifactPolicyContextValue = {
   pathExists: async () => false,
   openResolvedPath: async () => {},
   getAllSessionArtifacts: () => [],
+  normalizedRoots: [],
 };
 
 const ArtifactPolicyContext = createContext<ArtifactPolicyContextValue>(
@@ -283,6 +285,7 @@ export function ArtifactPolicyProvider({
       pathExists: checkPathExists,
       openResolvedPath,
       getAllSessionArtifacts,
+      normalizedRoots,
     }),
     [
       checkPathExists,
@@ -290,6 +293,7 @@ export function ArtifactPolicyProvider({
       openResolvedPath,
       resolveMarkdownHref,
       resolveToolCardDisplay,
+      normalizedRoots,
     ],
   );
 
