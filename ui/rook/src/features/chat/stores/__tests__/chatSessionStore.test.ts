@@ -21,6 +21,7 @@ function resetStore() {
     isLoading: false,
     contextPanelOpenBySession: {},
     activeWorkspaceBySession: {},
+    activeWorkItemBySession: {},
     modelsBySession: {},
     modelCacheByProvider: {},
   });
@@ -484,6 +485,64 @@ describe("chatSessionStore", () => {
       await useChatSessionStore.getState().archiveSession(session.id);
 
       expect(useChatSessionStore.getState().activeSessionId).toBeNull();
+    });
+  });
+
+  describe("work item attachment", () => {
+    it("attaches and clears a work item on a draft session", () => {
+      const session = useChatSessionStore.getState().createDraftSession();
+
+      useChatSessionStore
+        .getState()
+        .setActiveWorkItem(session.id, "work-item-1");
+
+      expect(
+        useChatSessionStore.getState().activeWorkItemBySession[session.id],
+      ).toEqual({ workItemId: "work-item-1" });
+      expect(
+        useChatSessionStore.getState().sessions.find((s) => s.id === session.id)
+          ?.workItemId,
+      ).toBe("work-item-1");
+
+      useChatSessionStore.getState().clearActiveWorkItem(session.id);
+
+      expect(
+        useChatSessionStore.getState().activeWorkItemBySession[session.id],
+      ).toBeUndefined();
+      expect(
+        useChatSessionStore.getState().sessions.find((s) => s.id === session.id)
+          ?.workItemId,
+      ).toBeUndefined();
+    });
+
+    it("rehydrates work item metadata for ACP sessions", async () => {
+      window.localStorage.setItem(
+        OVERLAY_CACHE_KEY,
+        JSON.stringify([
+          {
+            sessionId: "acp-1",
+            projectId: "project-123",
+            workItemId: "work-item-1",
+            updatedAt: "2026-05-01T00:00:00Z",
+          },
+        ]),
+      );
+      mockedAcpListSessions.mockResolvedValue([
+        {
+          sessionId: "acp-1",
+          title: "ACP Session",
+          updatedAt: "2026-05-01T00:00:00Z",
+          messageCount: 1,
+        },
+      ]);
+
+      await useChatSessionStore.getState().loadSessions();
+
+      const session = useChatSessionStore.getState().sessions[0];
+      expect(session.workItemId).toBe("work-item-1");
+      expect(
+        useChatSessionStore.getState().activeWorkItemBySession["acp-1"],
+      ).toEqual({ workItemId: "work-item-1" });
     });
   });
 

@@ -39,6 +39,9 @@ import {
   resolveIntentRequest,
   useIntentStore,
 } from "@/features/intent";
+import { getWorkItem } from "@/features/work-items/api/workItems";
+import { buildWorkItemSystemPrompt } from "@/features/work-items/lib/buildWorkItemSystemPrompt";
+import type { WorkItem } from "@/features/work-items/types";
 
 const EMPTY_MODELS: ModelOption[] = [];
 
@@ -80,6 +83,9 @@ export function ChatView({
   const setContextPanelOpen = useChatSessionStore((s) => s.setContextPanelOpen);
   const activeWorkspace = useChatSessionStore(
     (s) => s.activeWorkspaceBySession[activeSessionId],
+  );
+  const activeWorkItemRef = useChatSessionStore(
+    (s) => s.activeWorkItemBySession[activeSessionId],
   );
   const clearActiveWorkspace = useChatSessionStore(
     (s) => s.clearActiveWorkspace,
@@ -192,6 +198,33 @@ export function ChatView({
     () => buildProjectSystemPrompt(project),
     [project],
   );
+  const [activeWorkItem, setActiveWorkItem] = useState<WorkItem | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    const workItemId = activeWorkItemRef?.workItemId;
+    if (!workItemId) {
+      setActiveWorkItem(null);
+      return;
+    }
+
+    getWorkItem(workItemId)
+      .then((workItem) => {
+        if (!cancelled) setActiveWorkItem(workItem);
+      })
+      .catch(() => {
+        if (!cancelled) setActiveWorkItem(null);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeWorkItemRef?.workItemId]);
+
+  const workItemSystemPrompt = useMemo(
+    () => buildWorkItemSystemPrompt(activeWorkItem),
+    [activeWorkItem],
+  );
   const workingContextPrompt = useMemo(() => {
     if (!activeWorkspace?.branch) return undefined;
     return `<active-working-context>\nActive branch: ${activeWorkspace.branch}\nWorking directory: ${activeWorkspace.path}\n</active-working-context>`;
@@ -202,9 +235,15 @@ export function ChatView({
       composeSystemPrompt(
         selectedPersona?.systemPrompt,
         projectSystemPrompt,
+        workItemSystemPrompt,
         workingContextPrompt,
       ),
-    [selectedPersona?.systemPrompt, projectSystemPrompt, workingContextPrompt],
+    [
+      selectedPersona?.systemPrompt,
+      projectSystemPrompt,
+      workItemSystemPrompt,
+      workingContextPrompt,
+    ],
   );
 
   useEffect(() => {
@@ -314,11 +353,7 @@ export function ChatView({
       if (cancelled) return;
       const latest = useChatSessionStore.getState();
       const active = latest.getSession(activeSessionId);
-      if (
-        active &&
-        active.providerId &&
-        active.providerId !== selectedProvider
-      ) {
+      if (active?.providerId && active.providerId !== selectedProvider) {
         return;
       }
       const cachedModels = latest.getCachedModels(selectedProvider);

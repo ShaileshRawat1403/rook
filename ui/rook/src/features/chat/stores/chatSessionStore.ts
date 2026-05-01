@@ -29,6 +29,7 @@ export interface ChatSession {
   personaId?: string;
   modelId?: string;
   modelName?: string;
+  workItemId?: string;
   createdAt: string;
   updatedAt: string;
   archivedAt?: string;
@@ -42,12 +43,17 @@ export interface ActiveWorkspace {
   branch: string | null;
 }
 
+export interface ActiveWorkItemRef {
+  workItemId: string;
+}
+
 interface ChatSessionStoreState {
   sessions: ChatSession[];
   activeSessionId: string | null;
   isLoading: boolean;
   contextPanelOpenBySession: Record<string, boolean>;
   activeWorkspaceBySession: Record<string, ActiveWorkspace>;
+  activeWorkItemBySession: Record<string, ActiveWorkItemRef>;
   modelsBySession: Record<string, ModelOption[]>;
   modelCacheByProvider: Record<string, ModelOption[]>;
 }
@@ -58,6 +64,7 @@ interface CreateSessionOpts {
   agentId?: string;
   providerId?: string;
   personaId?: string;
+  workItemId?: string;
 }
 
 interface UpdateSessionOptions {
@@ -85,6 +92,8 @@ interface ChatSessionStoreActions {
   setContextPanelOpen: (sessionId: string, open: boolean) => void;
   setActiveWorkspace: (sessionId: string, context: ActiveWorkspace) => void;
   clearActiveWorkspace: (sessionId: string) => void;
+  setActiveWorkItem: (sessionId: string, workItemId: string) => void;
+  clearActiveWorkItem: (sessionId: string) => void;
   setSessionModels: (sessionId: string, models: ModelOption[]) => void;
   switchSessionProvider: (
     sessionId: string,
@@ -150,9 +159,10 @@ function isLegacyOpenAiFallbackCache(
   );
 }
 
-function sanitizeModelCache(
-  cache: Record<string, ModelOption[]>,
-): { cache: Record<string, ModelOption[]>; changed: boolean } {
+function sanitizeModelCache(cache: Record<string, ModelOption[]>): {
+  cache: Record<string, ModelOption[]>;
+  changed: boolean;
+} {
   let changed = false;
   const sanitized: Record<string, ModelOption[]> = {};
 
@@ -235,6 +245,7 @@ function buildOverlayRecord(
     personaId: session.personaId ?? null,
     modelId: session.modelId ?? null,
     modelName: session.modelName ?? null,
+    workItemId: session.workItemId ?? null,
     archivedAt: session.archivedAt ?? null,
     createdAt: session.createdAt ?? existing?.createdAt ?? null,
     agentId: session.agentId ?? existing?.agentId ?? null,
@@ -260,6 +271,7 @@ function overlayToFallbackSession(
     personaId: overlay.personaId ?? undefined,
     modelId: overlay.modelId ?? undefined,
     modelName: overlay.modelName ?? undefined,
+    workItemId: overlay.workItemId ?? undefined,
     createdAt: overlay.createdAt ?? updatedAt,
     updatedAt,
     archivedAt: overlay.archivedAt ?? undefined,
@@ -287,6 +299,7 @@ function mergeAcpSessionWithOverlay(
     personaId: overlay?.personaId ?? undefined,
     modelId: overlay?.modelId ?? undefined,
     modelName: overlay?.modelName ?? undefined,
+    workItemId: overlay?.workItemId ?? undefined,
     createdAt: overlay?.createdAt ?? updatedAt ?? new Date().toISOString(),
     updatedAt: updatedAt ?? new Date().toISOString(),
     archivedAt: overlay?.archivedAt ?? undefined,
@@ -319,6 +332,19 @@ function mergeDraftSessions(
 function persistDraftsFromSessions(sessions: ChatSession[]): void {
   persistDraftSessionRecords(
     sessions.filter((session) => session.draft).map(draftSessionToRecord),
+  );
+}
+
+function activeWorkItemsFromSessions(
+  sessions: ChatSession[],
+): Record<string, ActiveWorkItemRef> {
+  return Object.fromEntries(
+    sessions
+      .filter((session) => session.workItemId)
+      .map((session) => [
+        session.id,
+        { workItemId: session.workItemId as string },
+      ]),
   );
 }
 
@@ -371,6 +397,7 @@ export const useChatSessionStore = create<ChatSessionStore>((set, get) => ({
   isLoading: false,
   contextPanelOpenBySession: {},
   activeWorkspaceBySession: {},
+  activeWorkItemBySession: {},
   modelsBySession: {},
   modelCacheByProvider: loadModelCache(),
 
@@ -389,6 +416,7 @@ export const useChatSessionStore = create<ChatSessionStore>((set, get) => ({
       agentId: opts?.agentId,
       providerId: opts?.providerId,
       personaId: opts?.personaId,
+      workItemId: opts?.workItemId,
       createdAt: now,
       updatedAt: now,
       messageCount: 0,
@@ -417,6 +445,8 @@ export const useChatSessionStore = create<ChatSessionStore>((set, get) => ({
       get().contextPanelOpenBySession;
     const { [id]: _ignoredContext, ...remainingContextState } =
       get().activeWorkspaceBySession;
+    const { [id]: _ignoredWorkItem, ...remainingWorkItemState } =
+      get().activeWorkItemBySession;
     const remainingModels = { ...get().modelsBySession };
     delete remainingModels[id];
     set((state) => ({
@@ -425,6 +455,7 @@ export const useChatSessionStore = create<ChatSessionStore>((set, get) => ({
         state.activeSessionId === id ? null : state.activeSessionId,
       contextPanelOpenBySession: remainingPanelState,
       activeWorkspaceBySession: remainingContextState,
+      activeWorkItemBySession: remainingWorkItemState,
       modelsBySession: remainingModels,
     }));
     removeDraftSessionRecord(id);
@@ -451,6 +482,7 @@ export const useChatSessionStore = create<ChatSessionStore>((set, get) => ({
       set({
         sessions: merged,
         activeSessionId: activeSessionStillExists ? activeSessionId : null,
+        activeWorkItemBySession: activeWorkItemsFromSessions(merged),
       });
       persistDraftsFromSessions(merged);
       syncOverlaySnapshots(mergedAcpSessions, overlays);
@@ -464,7 +496,10 @@ export const useChatSessionStore = create<ChatSessionStore>((set, get) => ({
         ...[...overlays.values()].map(overlayToFallbackSession),
         ...drafts,
       ]);
-      set({ sessions: fallbackSessions });
+      set({
+        sessions: fallbackSessions,
+        activeWorkItemBySession: activeWorkItemsFromSessions(fallbackSessions),
+      });
       persistDraftsFromSessions(fallbackSessions);
     } finally {
       set({ isLoading: false });
@@ -628,6 +663,62 @@ export const useChatSessionStore = create<ChatSessionStore>((set, get) => ({
       const { [sessionId]: _, ...rest } = state.activeWorkspaceBySession;
       return { activeWorkspaceBySession: rest };
     });
+  },
+
+  setActiveWorkItem: (sessionId, workItemId) => {
+    if (!get().sessions.some((session) => session.id === sessionId)) return;
+
+    set((state) => ({
+      sessions: state.sessions.map((session) =>
+        session.id === sessionId
+          ? { ...session, workItemId, updatedAt: new Date().toISOString() }
+          : session,
+      ),
+      activeWorkItemBySession: {
+        ...state.activeWorkItemBySession,
+        [sessionId]: { workItemId },
+      },
+    }));
+    const updatedSession = get().sessions.find(
+      (session) => session.id === sessionId,
+    );
+    persistDraftsFromSessions(get().sessions);
+    if (updatedSession && !updatedSession.draft) {
+      const key = overlayKeyForSession(updatedSession);
+      const existing = loadSessionMetadataOverlay().get(key);
+      upsertSessionMetadataOverlayRecord(
+        buildOverlayRecord(updatedSession, existing),
+      );
+    }
+  },
+
+  clearActiveWorkItem: (sessionId) => {
+    set((state) => {
+      const { [sessionId]: _, ...rest } = state.activeWorkItemBySession;
+      return {
+        sessions: state.sessions.map((session) =>
+          session.id === sessionId
+            ? {
+                ...session,
+                workItemId: undefined,
+                updatedAt: new Date().toISOString(),
+              }
+            : session,
+        ),
+        activeWorkItemBySession: rest,
+      };
+    });
+    const updatedSession = get().sessions.find(
+      (session) => session.id === sessionId,
+    );
+    persistDraftsFromSessions(get().sessions);
+    if (updatedSession && !updatedSession.draft) {
+      const key = overlayKeyForSession(updatedSession);
+      const existing = loadSessionMetadataOverlay().get(key);
+      upsertSessionMetadataOverlayRecord(
+        buildOverlayRecord(updatedSession, existing),
+      );
+    }
   },
 
   setSessionModels: (sessionId, models) => {

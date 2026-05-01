@@ -13,6 +13,7 @@ export interface SessionMetadataOverlayRecord {
   personaId?: string | null;
   modelId?: string | null;
   modelName?: string | null;
+  workItemId?: string | null;
   archivedAt?: string | null;
   createdAt?: string | null;
   agentId?: string | null;
@@ -32,6 +33,7 @@ export interface DraftSessionRecord {
   personaId?: string;
   modelId?: string;
   modelName?: string;
+  workItemId?: string;
   createdAt: string;
   updatedAt: string;
   archivedAt?: string;
@@ -100,6 +102,7 @@ function recordFromLegacySession(
     personaId: session.personaId,
     modelId: session.modelId,
     modelName: session.modelName,
+    workItemId: session.workItemId,
     archivedAt: session.archivedAt ?? null,
     createdAt: session.createdAt,
     agentId: session.agentId,
