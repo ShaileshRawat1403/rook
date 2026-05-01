@@ -80,7 +80,10 @@ export type WorkspaceManifestName =
   | "package.json"
   | "Cargo.toml"
   | "pyproject.toml"
-  | "Makefile";
+  | "Makefile"
+  | "tsconfig.json"
+  | "README.md"
+  | "AGENTS.md";
 
 export async function readWorkspaceManifest(
   workspacePath: string,

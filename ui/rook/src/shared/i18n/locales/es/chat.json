@@ -73,7 +73,23 @@
       "copiedWithCwd": "Comando copiado con cd al espacio de trabajo",
       "copyFailed": "Error al copiar",
       "sectionScripts": "Scripts",
-      "sectionSuggested": "Sugeridos"
+      "sectionSuggested": "Sugeridos",
+      "risk": {
+        "safe": "Segura",
+        "review": "Revisar",
+        "blocked": "Bloqueada"
+      },
+      "riskTooltip": "Solo clasificación. Rook no ejecutará este comando en este slice."
+    },
+    "summary": {
+      "stack": "Stack",
+      "tests": "Pruebas",
+      "docs": "Docs",
+      "notDetected": "No se detectaron frameworks ni runners de pruebas.",
+      "advisoryNote": "Detección de solo lectura. No se ejecutan comandos ni se modifican archivos.",
+      "copyContextPack": "Copiar paquete de contexto del espacio de trabajo",
+      "copied": "Paquete de contexto copiado",
+      "copyFailed": "Error al copiar"
     },
     "openActions": {
       "reveal": "Mostrar en el gestor de archivos",
@@ -131,6 +147,7 @@
       "extensions": "Extensiones",
       "health": "Salud",
       "searchExtensions": "Buscar extensiones...",
+      "summary": "Resumen",
       "workspace": "Espacio de trabajo"
     }
   },

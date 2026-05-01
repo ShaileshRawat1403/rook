@@ -21,6 +21,7 @@ import { ChangesWidget } from "./widgets/ChangesWidget";
 import { ArtifactsWidget } from "./widgets/ArtifactsWidget";
 import { ExtensionsWidget } from "./widgets/ExtensionsWidget";
 import { ProjectHealthWidget } from "./widgets/ProjectHealthWidget";
+import { WorkspaceSummaryWidget } from "./widgets/WorkspaceSummaryWidget";
 import { DetectedCommandsWidget } from "./widgets/DetectedCommandsWidget";
 import { useProjectDetection } from "@/features/projects/hooks/useProjectDetection";
 import { pathJoin } from "@/shared/lib/pathJoin";
@@ -214,6 +215,13 @@ export function ContextPanel({
             changedFiles={changedFiles}
             detection={detection}
             isDetectionLoading={isDetectionLoading}
+          />
+          <WorkspaceSummaryWidget
+            workspacePath={gitTargetPath}
+            detection={detection}
+            isLoading={isDetectionLoading}
+            gitState={gitState}
+            changedFiles={changedFiles}
           />
           <DetectedCommandsWidget
             scripts={detection?.scripts}

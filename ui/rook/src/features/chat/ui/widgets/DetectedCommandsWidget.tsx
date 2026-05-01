@@ -4,7 +4,11 @@ import { IconCopy, IconTerminal2 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Button } from "@/shared/ui/button";
 import { Skeleton } from "@/shared/ui/skeleton";
-import type { DetectedScript } from "@/features/projects/lib/detectProject";
+import { cn } from "@/shared/lib/cn";
+import type {
+  CommandRisk,
+  DetectedScript,
+} from "@/features/projects/lib/detectProject";
 import { Widget } from "./Widget";
 
 interface DetectedCommandsWidgetProps {
@@ -49,18 +53,50 @@ function sortByKind(items: DetectedScript[]): DetectedScript[] {
   });
 }
 
+const RISK_BADGE_CLASSES: Record<CommandRisk, string> = {
+  safe: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+  review: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+  blocked: "bg-rose-500/10 text-rose-600 dark:text-rose-400",
+};
+
+function RiskBadge({
+  risk,
+  label,
+  tooltip,
+}: {
+  risk: CommandRisk;
+  label: string;
+  tooltip: string;
+}) {
+  return (
+    <span
+      title={tooltip}
+      className={cn(
+        "shrink-0 rounded-sm px-1 py-px text-xxs font-medium uppercase tracking-wide",
+        RISK_BADGE_CLASSES[risk],
+      )}
+    >
+      {label}
+    </span>
+  );
+}
+
 function ScriptRow({
   script,
   onCopyCommand,
   onCopyWithCwd,
   copyLabel,
   copyWithCwdLabel,
+  riskLabel,
+  riskTooltip,
 }: {
   script: DetectedScript;
   onCopyCommand: (script: DetectedScript) => void;
   onCopyWithCwd: (script: DetectedScript) => void;
   copyLabel: string;
   copyWithCwdLabel: string;
+  riskLabel: string;
+  riskTooltip: string;
 }) {
   return (
     <div className="flex items-center gap-2 px-3 py-1.5">
@@ -69,9 +105,11 @@ function ScriptRow({
           <span className="truncate text-xs font-medium text-foreground">
             {script.name}
           </span>
-          <span className="shrink-0 text-xxs uppercase text-foreground-subtle">
-            {script.kind}
-          </span>
+          <RiskBadge
+            risk={script.risk}
+            label={riskLabel}
+            tooltip={riskTooltip}
+          />
         </div>
         <div className="truncate font-mono text-xxs text-foreground-subtle">
           {script.command}
@@ -163,6 +201,8 @@ export function DetectedCommandsWidget({
       onCopyWithCwd={handleCopyWithCwd}
       copyLabel={t("contextPanel.commands.copyCommand")}
       copyWithCwdLabel={t("contextPanel.commands.copyWithCwd")}
+      riskLabel={t(`contextPanel.commands.risk.${script.risk}`)}
+      riskTooltip={t("contextPanel.commands.riskTooltip")}
     />
   );
 

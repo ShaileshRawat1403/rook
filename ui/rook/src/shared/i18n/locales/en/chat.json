@@ -73,7 +73,23 @@
       "copiedWithCwd": "Copied command with workspace cd",
       "copyFailed": "Copy failed",
       "sectionScripts": "Scripts",
-      "sectionSuggested": "Suggested"
+      "sectionSuggested": "Suggested",
+      "risk": {
+        "safe": "Safe",
+        "review": "Review",
+        "blocked": "Blocked"
+      },
+      "riskTooltip": "Classification only. Rook will not run this command in this slice."
+    },
+    "summary": {
+      "stack": "Stack",
+      "tests": "Tests",
+      "docs": "Docs",
+      "notDetected": "No frameworks or test runners detected.",
+      "advisoryNote": "Detection is read-only. No commands run, no files modified.",
+      "copyContextPack": "Copy workspace context pack",
+      "copied": "Workspace context pack copied",
+      "copyFailed": "Copy failed"
     },
     "openActions": {
       "reveal": "Reveal in file manager",
@@ -131,6 +147,7 @@
       "extensions": "Extensions",
       "health": "Health",
       "searchExtensions": "Search extensions...",
+      "summary": "Summary",
       "workspace": "Workspace"
     }
   },

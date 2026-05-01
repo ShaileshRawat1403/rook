@@ -6,8 +6,13 @@ vi.mock("@/shared/api/system", () => ({
 }));
 
 import {
+  classifyCommandRisk,
   classifyScript,
+  detectDocumentationFiles,
+  detectFrameworks,
   detectProject,
+  detectTestFrameworks,
+  extractDependencyNames,
   parsePackageJsonScripts,
   selectPackageManager,
   suggestedCommandsFor,
@@ -71,18 +76,26 @@ describe("parsePackageJsonScripts", () => {
     });
     const scripts = parsePackageJsonScripts(json, "pnpm");
     expect(scripts).toEqual([
-      { name: "dev", command: "pnpm dev", source: "package.json", kind: "dev" },
+      {
+        name: "dev",
+        command: "pnpm dev",
+        source: "package.json",
+        kind: "dev",
+        risk: "review",
+      },
       {
         name: "build",
         command: "pnpm build",
         source: "package.json",
         kind: "build",
+        risk: "review",
       },
       {
         name: "test",
         command: "pnpm test",
         source: "package.json",
         kind: "test",
+        risk: "safe",
       },
     ]);
   });
@@ -125,6 +138,9 @@ describe("detectProject", () => {
       manifests: [],
       scripts: [],
       suggested: [],
+      frameworks: [],
+      testFrameworks: [],
+      documentationFiles: [],
     });
     expect(listMock).not.toHaveBeenCalled();
   });
@@ -137,6 +153,9 @@ describe("detectProject", () => {
       manifests: [],
       scripts: [],
       suggested: [],
+      frameworks: [],
+      testFrameworks: [],
+      documentationFiles: [],
     });
   });
 
@@ -205,5 +224,153 @@ describe("suggestedCommandsFor", () => {
     expect(suggestedCommandsFor(new Set(["package.json"]))).toEqual([]);
     expect(suggestedCommandsFor(new Set(["pyproject.toml"]))).toEqual([]);
     expect(suggestedCommandsFor(new Set())).toEqual([]);
+  });
+
+  it("classifies cargo suggestions with body-based risk", () => {
+    const result = suggestedCommandsFor(new Set(["Cargo.toml"]));
+    const byCommand = Object.fromEntries(
+      result.map((s) => [s.command, s.risk]),
+    );
+    expect(byCommand["cargo test"]).toBe("safe");
+    expect(byCommand["cargo build"]).toBe("review");
+    expect(byCommand["cargo run"]).toBe("review");
+    expect(byCommand["cargo check"]).toBe("review");
+  });
+});
+
+describe("classifyCommandRisk", () => {
+  it("returns safe for vitest/jest/test/lint/typecheck/playwright bodies", () => {
+    expect(classifyCommandRisk("vitest run")).toBe("safe");
+    expect(classifyCommandRisk("jest --runInBand")).toBe("safe");
+    expect(classifyCommandRisk("tsc --noEmit")).toBe("review");
+    expect(classifyCommandRisk("pnpm typecheck")).toBe("safe");
+    expect(classifyCommandRisk("biome lint .")).toBe("safe");
+    expect(classifyCommandRisk("playwright test")).toBe("safe");
+  });
+
+  it("treats dev/serve/watch/start/build/install/upgrade as review", () => {
+    expect(classifyCommandRisk("vite")).toBe("review");
+    expect(classifyCommandRisk("vite build")).toBe("review");
+    expect(classifyCommandRisk("pnpm dev")).toBe("review");
+    expect(classifyCommandRisk("pnpm serve")).toBe("review");
+    expect(classifyCommandRisk("pnpm watch")).toBe("review");
+    expect(classifyCommandRisk("pnpm start")).toBe("review");
+    expect(classifyCommandRisk("pnpm install")).toBe("review");
+    expect(classifyCommandRisk("pnpm upgrade")).toBe("review");
+    expect(classifyCommandRisk("tauri build")).toBe("review");
+  });
+
+  it("blocks rm, force-push, --force, deploy, publish, release", () => {
+    expect(classifyCommandRisk("rm -rf node_modules")).toBe("blocked");
+    expect(classifyCommandRisk("git push --force")).toBe("blocked");
+    expect(classifyCommandRisk("force-push origin main")).toBe("blocked");
+    expect(classifyCommandRisk("force push")).toBe("blocked");
+    expect(classifyCommandRisk("pnpm deploy")).toBe("blocked");
+    expect(classifyCommandRisk("npm publish")).toBe("blocked");
+    expect(classifyCommandRisk("semantic-release")).toBe("blocked");
+  });
+
+  it("body wins over name — script named test running rm classifies as blocked", () => {
+    // Reproduces the user's adversarial case: scripts.test = "rm -rf node_modules"
+    expect(classifyCommandRisk("rm -rf node_modules")).toBe("blocked");
+  });
+
+  it("compound bodies pick the highest severity hit", () => {
+    expect(classifyCommandRisk("pnpm install && pnpm test")).toBe("review");
+    expect(classifyCommandRisk("pnpm test && pnpm build")).toBe("review");
+    expect(classifyCommandRisk("pnpm test && rm -rf foo")).toBe("blocked");
+  });
+
+  it("defaults unknown bodies to review, including bare 'cargo run'", () => {
+    expect(classifyCommandRisk("")).toBe("review");
+    expect(classifyCommandRisk("cargo run")).toBe("review");
+    expect(classifyCommandRisk("./scripts/something")).toBe("review");
+  });
+});
+
+describe("detectFrameworks", () => {
+  it("detects react, vite, tailwind, tauri, typescript", () => {
+    const deps = [
+      "react",
+      "vite",
+      "tailwindcss",
+      "@tauri-apps/api",
+      "typescript",
+    ];
+    const frameworks = detectFrameworks(deps, false);
+    expect(frameworks).toEqual(
+      expect.arrayContaining(["react", "vite", "tailwindcss", "tauri", "typescript"]),
+    );
+  });
+
+  it("detects tauri via plugin packages too", () => {
+    expect(detectFrameworks(["@tauri-apps/plugin-opener"], false)).toContain(
+      "tauri",
+    );
+  });
+
+  it("adds rust when Cargo.toml is present", () => {
+    expect(detectFrameworks([], true)).toContain("rust");
+  });
+
+  it("ignores unrelated packages", () => {
+    expect(detectFrameworks(["lodash", "axios"], false)).toEqual([]);
+  });
+
+  it("matches radix scoped packages", () => {
+    expect(detectFrameworks(["@radix-ui/react-dialog"], false)).toContain(
+      "radix",
+    );
+  });
+});
+
+describe("detectTestFrameworks", () => {
+  it("detects vitest, jest, playwright, cypress", () => {
+    expect(
+      detectTestFrameworks(["vitest", "jest", "@playwright/test", "cypress"]),
+    ).toEqual(expect.arrayContaining(["vitest", "jest", "playwright", "cypress"]));
+  });
+
+  it("returns [] when no test deps present", () => {
+    expect(detectTestFrameworks(["react", "vite"])).toEqual([]);
+  });
+});
+
+describe("extractDependencyNames", () => {
+  it("returns names from dependencies, devDependencies, and peerDependencies", () => {
+    const json = JSON.stringify({
+      dependencies: { react: "^19.0.0" },
+      devDependencies: { vitest: "^4.0.0" },
+      peerDependencies: { typescript: "^5.0.0" },
+    });
+    expect(extractDependencyNames(json).sort()).toEqual(
+      ["react", "typescript", "vitest"].sort(),
+    );
+  });
+
+  it("returns [] for invalid JSON", () => {
+    expect(extractDependencyNames("not json")).toEqual([]);
+  });
+
+  it("dedupes when the same dep appears in multiple groups", () => {
+    const json = JSON.stringify({
+      dependencies: { react: "^19.0.0" },
+      devDependencies: { react: "^19.0.0" },
+    });
+    expect(extractDependencyNames(json)).toEqual(["react"]);
+  });
+});
+
+describe("detectDocumentationFiles", () => {
+  it("returns the subset of well-known doc files present", () => {
+    expect(
+      detectDocumentationFiles(
+        new Set(["README.md", "AGENTS.md", "package.json"]),
+      ),
+    ).toEqual(["README.md", "AGENTS.md"]);
+  });
+
+  it("returns [] when no doc files exist", () => {
+    expect(detectDocumentationFiles(new Set(["package.json"]))).toEqual([]);
   });
 });

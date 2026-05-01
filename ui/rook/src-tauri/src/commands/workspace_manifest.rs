@@ -7,6 +7,9 @@ const MANIFEST_WHITELIST: &[&str] = &[
     "Cargo.toml",
     "pyproject.toml",
     "Makefile",
+    "tsconfig.json",
+    "README.md",
+    "AGENTS.md",
 ];
 
 fn read_workspace_manifest_inner(
@@ -92,6 +95,22 @@ mod tests {
         let dir = tempdir().expect("tempdir");
         let result = read_workspace_manifest_inner(dir.path(), "package.json").expect("ok");
         assert_eq!(result, None);
+    }
+
+    #[test]
+    fn reads_extended_whitelist_entries() {
+        let dir = tempdir().expect("tempdir");
+        for (name, body) in [
+            ("tsconfig.json", "{\"compilerOptions\":{}}"),
+            ("README.md", "# Project"),
+            ("AGENTS.md", "## Agents"),
+        ] {
+            fs::write(dir.path().join(name), body).expect("manifest");
+            let read = read_workspace_manifest_inner(dir.path(), name)
+                .expect("ok")
+                .expect("contents");
+            assert_eq!(read, body);
+        }
     }
 
     #[test]
