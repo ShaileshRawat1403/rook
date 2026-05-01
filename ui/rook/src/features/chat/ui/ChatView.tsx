@@ -172,6 +172,9 @@ export function ChatView({
     selectedProviderPreference === "rook"
       ? (modelProviders[0]?.id ?? selectedProviderPreference)
       : selectedProviderPreference;
+  const selectedModelLoadState = useChatSessionStore((s) =>
+    s.getModelLoadState(selectedProvider),
+  );
 
   const selectedPersona = personas.find((p) => p.id === selectedPersonaId);
   const projectArtifactRoots = useMemo(

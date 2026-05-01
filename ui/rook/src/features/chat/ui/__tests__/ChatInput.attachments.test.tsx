@@ -206,7 +206,7 @@ describe("ChatInput attachments", () => {
 
     expect(await screen.findByText("report.pdf")).toBeInTheDocument();
     await waitFor(() => {
-      expect(screen.getByAltText("Attachment 2")).toBeInTheDocument();
+      expect(screen.getByText("diagram.png")).toBeInTheDocument();
     });
   });
 

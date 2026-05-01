@@ -158,10 +158,6 @@ async function fetchModelsFromRook(
       };
     }
 
-    if (fallbackModels.length > 0) {
-      return { models: fallbackModels };
-    }
-
     return {
       models: [],
       error: `No models were returned for ${provider}.`,
@@ -170,7 +166,10 @@ async function fetchModelsFromRook(
     console.error("[models] Failed to load models for provider:", provider, e);
     return {
       models: [],
-      error: e instanceof Error ? e.message : `Could not load models for ${provider}.`,
+      error:
+        e instanceof Error
+          ? e.message
+          : `Could not load models for ${provider}.`,
     };
   }
 }

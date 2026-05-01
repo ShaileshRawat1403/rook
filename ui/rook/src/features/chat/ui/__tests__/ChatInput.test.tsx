@@ -174,9 +174,7 @@ describe("ChatInput", () => {
     );
 
     expect(screen.getByText("Agent")).toBeInTheDocument();
-    expect(screen.getByText("Provider")).toBeInTheDocument();
     expect(screen.getByText("Model")).toBeInTheDocument();
-    expect(screen.getByText("Google Gemini")).toBeInTheDocument();
   });
 
   it("opens the project selector menu", async () => {

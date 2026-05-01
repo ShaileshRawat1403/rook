@@ -15,6 +15,7 @@ import {
   getProviderIcon,
 } from "@/shared/ui/icons/ProviderIcons";
 import type { ModelOption } from "../types";
+import type { ModelLoadState } from "../stores/chatSessionStore";
 
 interface AgentModelPickerProps {
   agents: AcpProvider[];
@@ -27,6 +28,7 @@ interface AgentModelPickerProps {
   currentModelName?: string | null;
   availableModels: ModelOption[];
   onModelChange?: (modelId: string) => void;
+  modelLoadState?: ModelLoadState;
   loading?: boolean;
   isCompact?: boolean;
 }
@@ -130,6 +132,7 @@ export function AgentModelPicker({
   currentModelName = null,
   availableModels,
   onModelChange,
+  modelLoadState,
   loading = false,
   isCompact = false,
 }: AgentModelPickerProps) {
@@ -459,16 +462,13 @@ export function AgentModelPicker({
                     ))
                   ) : (
                     <div className="rounded-sm border border-dashed border-border/70 px-2 py-2 text-xs text-muted-foreground">
-                      {modelLoadState?.status === "failed" ? (
-                        modelLoadState.error ?? "Failed to load models."
-                      ) : showProviderColumn ? (
-                        "No models loaded for this provider."
-                      ) : (
-                        "No model options available."
-                      )}
+                      {modelLoadState?.status === "failed"
+                        ? (modelLoadState.error ?? "Failed to load models.")
+                        : showProviderColumn
+                          ? "No models loaded for this provider."
+                          : "No model options available."}
                     </div>
                   )}
-                </div>
                 </div>
               )}
             </div>

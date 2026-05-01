@@ -29,6 +29,7 @@ import { Progress } from "@/shared/ui/progress";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/shared/ui/tooltip";
 import { AgentModelPicker } from "./AgentModelPicker";
 import type { ModelOption } from "../types";
+import type { ModelLoadState } from "../stores/chatSessionStore";
 import { useChatSessionStore } from "../stores/chatSessionStore";
 import { formatProviderLabel } from "@/shared/ui/icons/ProviderIcons";
 import { useAgentProviderStatus } from "@/features/providers/hooks/useAgentProviderStatus";
@@ -70,6 +71,7 @@ interface ChatInputToolbarProps {
   currentModel?: string;
   availableModels: ModelOption[];
   onModelChange?: (modelId: string) => void;
+  modelLoadState?: ModelLoadState;
   // Project
   selectedProjectId: string | null;
   availableProjects: ProjectOption[];
@@ -109,6 +111,7 @@ export function ChatInputToolbar({
   currentModel,
   availableModels,
   onModelChange,
+  modelLoadState,
   selectedProjectId,
   availableProjects,
   onProjectChange,
