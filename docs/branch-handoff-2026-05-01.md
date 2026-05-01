@@ -55,13 +55,7 @@ git diff --check
 
 ### `feat/rook-event-runtime`
 
-Status: rebased onto current `main`; focused checks pass.
-
-Current head:
-
-```text
-17a6144e feat(ui): add rook event store
-```
+Status: focused checks pass. Rebase onto latest `main` immediately before merging if `main` has moved.
 
 What it adds:
 
