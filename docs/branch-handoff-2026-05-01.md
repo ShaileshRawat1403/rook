@@ -60,7 +60,7 @@ Status: rebased onto current `main`; focused checks pass.
 Current head:
 
 ```text
-cb14641a feat(ui): add rook event store
+17a6144e feat(ui): add rook event store
 ```
 
 What it adds:
