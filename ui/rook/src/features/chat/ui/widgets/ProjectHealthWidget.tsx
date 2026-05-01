@@ -46,7 +46,13 @@ async function copyToClipboard(value: string): Promise<boolean> {
   }
 }
 
-function InlineRow({ label, value }: { label: string; value: React.ReactNode }) {
+function InlineRow({
+  label,
+  value,
+}: {
+  label: string;
+  value: React.ReactNode;
+}) {
   return (
     <div className="flex items-baseline justify-between gap-3">
       <span className="shrink-0 text-foreground-subtle">{label}</span>

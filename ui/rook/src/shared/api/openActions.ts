@@ -21,7 +21,10 @@ export async function openInDefaultApp(path: string): Promise<void> {
 
 export async function openInTerminal(path: string): Promise<void> {
   requireTauri("openInTerminal");
-  await invokeTauri<void>("open_in_terminal", { path });
+  await invokeTauri<void>("open_in_terminal", {
+    workspacePath: path,
+    targetPath: path,
+  });
 }
 
 export async function openInEditor(

@@ -25,6 +25,7 @@ import {
 } from "react";
 import { Streamdown } from "streamdown";
 import { useTranslation } from "react-i18next";
+import { remarkFilePaths } from "@/features/chat/lib/remark-plugins/remarkFilePaths";
 
 export type MessageProps = HTMLAttributes<HTMLDivElement> & {
   from: UIMessage["role"];
@@ -333,6 +334,7 @@ export const MessageResponse = memo(
         className,
       )}
       plugins={streamdownPlugins}
+      remarkPlugins={[remarkFilePaths]}
       {...props}
     />
   ),

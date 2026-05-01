@@ -1,3 +1,4 @@
+use crate::services::policy::{evaluate_open_action, OpenActionPolicyInput, PolicyDecision};
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
@@ -162,13 +163,45 @@ fn build_terminal_command(candidate: &TerminalCandidate, path: &Path) -> Command
 }
 
 #[tauri::command]
-pub fn open_in_terminal(path: String) -> Result<(), String> {
-    let path_buf = PathBuf::from(&path);
-    ensure_directory(&path_buf)?;
+pub fn evaluate_open_action_policy(
+    workspace_path: String,
+    target_path: String,
+    action: String,
+) -> Result<PolicyDecision, String> {
+    evaluate_open_action(&OpenActionPolicyInput {
+        workspace_path,
+        target_path,
+        action,
+    })
+}
+
+#[tauri::command]
+pub fn open_in_terminal(workspace_path: String, target_path: String) -> Result<(), String> {
+    let policy_decision = evaluate_open_action(&OpenActionPolicyInput {
+        workspace_path: workspace_path.clone(),
+        target_path: target_path.clone(),
+        action: "terminal".to_string(),
+    })?;
+
+    if !policy_decision.allow {
+        if let Some(reason) = policy_decision.blocked_reason {
+            return Err(reason);
+        }
+        return Err("Blocked by policy".to_string());
+    }
+
+    if policy_decision.needs_approval {
+        return Err("Action requires explicit approval".to_string());
+    }
+
+    let workspace = PathBuf::from(&workspace_path);
+    let target = PathBuf::from(&target_path);
+    let canonical_target = ensure_path_inside_workspace(&workspace, &target)?;
+    ensure_directory(&canonical_target)?;
     let candidates = terminal_candidates();
     let mut last_error = "No terminal candidates configured".to_string();
     for candidate in &candidates {
-        let cmd = build_terminal_command(candidate, &path_buf);
+        let cmd = build_terminal_command(candidate, &canonical_target);
         match spawn_detached(cmd) {
             Ok(()) => return Ok(()),
             Err(error) => last_error = format!("{}: {}", candidate.binary, error),
@@ -189,6 +222,23 @@ pub fn open_in_editor(
     target_path: String,
     editor: String,
 ) -> Result<(), String> {
+    let policy_decision = evaluate_open_action(&OpenActionPolicyInput {
+        workspace_path: workspace_path.clone(),
+        target_path: target_path.clone(),
+        action: "editor".to_string(),
+    })?;
+
+    if !policy_decision.allow {
+        if let Some(reason) = policy_decision.blocked_reason {
+            return Err(reason);
+        }
+        return Err("Blocked by policy".to_string());
+    }
+
+    if policy_decision.needs_approval {
+        return Err("Action requires explicit approval".to_string());
+    }
+
     let editor_choice = EditorChoice::from_str(&editor)?;
     let workspace = PathBuf::from(&workspace_path);
     let target = PathBuf::from(&target_path);
