@@ -96,7 +96,7 @@
     </div>
     <div id="root"></div>
     <script>
-      window.addEventListener("error", function (event) {
+      window.addEventListener("error", (event) => {
         var fallback = document.getElementById("boot-fallback");
         var errorBlock = document.getElementById("boot-error");
         var title = document.getElementById("boot-title");
@@ -108,7 +108,7 @@
           event.message ||
           "Unknown startup error";
       });
-      window.addEventListener("unhandledrejection", function (event) {
+      window.addEventListener("unhandledrejection", (event) => {
         var fallback = document.getElementById("boot-fallback");
         var errorBlock = document.getElementById("boot-error");
         var title = document.getElementById("boot-title");
@@ -120,7 +120,7 @@
             (event.reason.stack || event.reason.message || String(event.reason))) ||
           "Unknown startup rejection";
       });
-      window.__ROOK_HIDE_BOOT__ = function () {
+      window.__ROOK_HIDE_BOOT__ = () => {
         var fallback = document.getElementById("boot-fallback");
         if (fallback) {
           fallback.remove();

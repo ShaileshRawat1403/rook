@@ -48,9 +48,9 @@ describe("classifyScript", () => {
 
 describe("selectPackageManager", () => {
   it("prefers pnpm over a package.json fallback", () => {
-    expect(selectPackageManager(new Set(["package.json", "pnpm-lock.yaml"]))).toBe(
-      "pnpm",
-    );
+    expect(
+      selectPackageManager(new Set(["package.json", "pnpm-lock.yaml"])),
+    ).toBe("pnpm");
   });
 
   it("falls back to npm when only package.json is present", () => {
@@ -299,7 +299,13 @@ describe("detectFrameworks", () => {
     ];
     const frameworks = detectFrameworks(deps, false);
     expect(frameworks).toEqual(
-      expect.arrayContaining(["react", "vite", "tailwindcss", "tauri", "typescript"]),
+      expect.arrayContaining([
+        "react",
+        "vite",
+        "tailwindcss",
+        "tauri",
+        "typescript",
+      ]),
     );
   });
 
@@ -328,7 +334,9 @@ describe("detectTestFrameworks", () => {
   it("detects vitest, jest, playwright, cypress", () => {
     expect(
       detectTestFrameworks(["vitest", "jest", "@playwright/test", "cypress"]),
-    ).toEqual(expect.arrayContaining(["vitest", "jest", "playwright", "cypress"]));
+    ).toEqual(
+      expect.arrayContaining(["vitest", "jest", "playwright", "cypress"]),
+    );
   });
 
   it("returns [] when no test deps present", () => {

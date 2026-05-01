@@ -112,10 +112,7 @@ export async function prepareSession(
     const tNew = performance.now();
     const response = await acpApi.newSession(workingDir, providerId);
     rookSessionId = response.sessionId;
-    if (
-      "configOptions" in response &&
-      Array.isArray(response.configOptions)
-    ) {
+    if ("configOptions" in response && Array.isArray(response.configOptions)) {
       applyConfigOptions(sessionId, response.configOptions);
     }
     perfLog(

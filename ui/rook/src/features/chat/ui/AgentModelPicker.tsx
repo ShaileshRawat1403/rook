@@ -329,7 +329,7 @@ export function AgentModelPicker({
             >
               <div className="flex min-h-0 min-w-0 flex-1 flex-col">
                 <div className="shrink-0 px-2 py-1.5 text-sm font-semibold">
-                  Provider
+                  {t("toolbar.provider")}
                 </div>
                 <ScrollArea className="min-h-0 min-w-0 flex-1">
                   <div className="p-1 space-y-0.5">

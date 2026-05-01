@@ -33,7 +33,9 @@ function formatScriptLine(script: DetectedScript): string {
   return `  - ${script.command}`;
 }
 
-function groupByRisk(scripts: DetectedScript[]): Map<CommandRisk, DetectedScript[]> {
+function groupByRisk(
+  scripts: DetectedScript[],
+): Map<CommandRisk, DetectedScript[]> {
   const grouped = new Map<CommandRisk, DetectedScript[]>();
   for (const risk of RISK_ORDER) grouped.set(risk, []);
   for (const script of scripts) {
@@ -81,15 +83,11 @@ export function buildContextPack({
 
   if (detection) {
     lines.push(sectionHeader("Stack"));
-    lines.push(
-      `  Frameworks: ${joinOrPlaceholder(detection.frameworks)}`,
-    );
+    lines.push(`  Frameworks: ${joinOrPlaceholder(detection.frameworks)}`);
     lines.push(
       `  Test frameworks: ${joinOrPlaceholder(detection.testFrameworks)}`,
     );
-    lines.push(
-      `  Package manager: ${detection.packageManager ?? "unknown"}`,
-    );
+    lines.push(`  Package manager: ${detection.packageManager ?? "unknown"}`);
     lines.push(`  Manifests: ${joinOrPlaceholder(detection.manifests)}`);
     lines.push(
       `  Documentation: ${joinOrPlaceholder(detection.documentationFiles)}`,

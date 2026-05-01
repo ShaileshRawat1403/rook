@@ -7,7 +7,10 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
-      "@shaileshrawat/rook-sdk": resolve(__dirname, "./src/test/mocks/rook-sdk.ts"),
+      "@shaileshrawat/rook-sdk": resolve(
+        __dirname,
+        "./src/test/mocks/rook-sdk.ts",
+      ),
     },
   },
   test: {

@@ -13,13 +13,7 @@ export type PackageManager =
   | "python"
   | "make";
 
-export type ScriptKind =
-  | "dev"
-  | "build"
-  | "test"
-  | "lint"
-  | "format"
-  | "other";
+export type ScriptKind = "dev" | "build" | "test" | "lint" | "format" | "other";
 
 export type CommandRisk = "safe" | "review" | "blocked";
 

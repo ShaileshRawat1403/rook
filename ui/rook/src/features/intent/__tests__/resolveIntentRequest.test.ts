@@ -1,5 +1,8 @@
 import { afterEach, beforeEach, describe, it, expect, vi } from "vitest";
-import { onIntentResolved, resolveIntentRequest } from "../resolveIntentRequest";
+import {
+  onIntentResolved,
+  resolveIntentRequest,
+} from "../resolveIntentRequest";
 import { context } from "./testContext";
 
 afterEach(() => {
@@ -54,7 +57,9 @@ describe("resolveIntentRequest — telemetry hook", () => {
   let listener: ReturnType<typeof vi.fn>;
   beforeEach(() => {
     listener = vi.fn();
-    onIntentResolved(listener as unknown as Parameters<typeof onIntentResolved>[0]);
+    onIntentResolved(
+      listener as unknown as Parameters<typeof onIntentResolved>[0],
+    );
   });
 
   it("fires the listener once per resolve call", () => {

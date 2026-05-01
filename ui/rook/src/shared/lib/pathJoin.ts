@@ -13,7 +13,9 @@ export function pathJoin(root: string, relative: string): string {
 
   const sep = root.includes("\\") && !root.includes("/") ? "\\" : "/";
   const trimmedRoot = stripTrailingSeparators(root);
-  const trimmedRelative = stripLeadingSeparators(stripLeadingDotSlash(relative));
+  const trimmedRelative = stripLeadingSeparators(
+    stripLeadingDotSlash(relative),
+  );
   if (!trimmedRelative) return trimmedRoot;
   const lastChar = trimmedRoot[trimmedRoot.length - 1];
   const rootEndsWithSeparator = lastChar === "/" || lastChar === "\\";

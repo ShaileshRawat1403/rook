@@ -32,7 +32,10 @@ export async function saveExportedSessionFile(
   if (!isTauriRuntimeAvailable()) {
     return null;
   }
-  return invokeTauri("save_exported_session_file", { defaultFilename, contents });
+  return invokeTauri("save_exported_session_file", {
+    defaultFilename,
+    contents,
+  });
 }
 
 export async function pathExists(path: string): Promise<boolean> {

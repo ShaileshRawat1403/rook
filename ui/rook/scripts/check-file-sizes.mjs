@@ -11,12 +11,12 @@ const EXCEPTIONS = {
       "Drag-and-drop handlers for session-to-project moves and project reorder, plus activeProjectId highlight.",
   },
   "src/features/chat/ui/ChatView.tsx": {
-    limit: 620,
+    limit: 840,
     justification:
-      "ACP prewarm guards, project-aware working dir selection, working context sync, chat bootstrapping, context-ring compaction wiring, slash-help/clear handlers, and gated [perf:chatview] logging via perfLog (dev-only by default).",
+      "ACP prewarm guards, project/work-item aware prompt assembly, working context sync, chat bootstrapping, context-ring compaction wiring, slash-help/clear handlers, and context panel composition still live in the main chat surface.",
   },
   "src/features/chat/hooks/useChat.ts": {
-    limit: 510,
+    limit: 530,
     justification:
       "Session preparation, provider/model handoff, persona-aware sends, cancellation, and compaction replay still live in one chat lifecycle hook.",
   },
@@ -41,14 +41,14 @@ const EXCEPTIONS = {
       "Shell coordinates ACP session loading, replay-buffer cleanup, project reassignment, app-level chat routing, deep-link routing, and the global keyboard shortcut command bus. Includes gated [perf:load]/[perf:newtab] logging via perfLog (dev-only by default).",
   },
   "src/features/chat/stores/__tests__/chatSessionStore.test.ts": {
-    limit: 540,
+    limit: 610,
     justification:
-      "ACP session overlay regressions currently need one broad integration-style store suite.",
+      "ACP session overlay, provider/model metadata, work-item attachment, and draft migration regressions currently need one broad integration-style store suite.",
   },
   "src/features/chat/stores/chatSessionStore.ts": {
-    limit: 640,
+    limit: 880,
     justification:
-      "ACP-backed session overlay persistence, draft migration, and sidebar-facing session merge logic live together for now.",
+      "ACP-backed session overlay persistence, provider/model metadata, draft migration, work-item attachment, and sidebar-facing session merge logic live together for now.",
   },
   "src-tauri/src/commands/projects.rs": {
     limit: 520,
@@ -61,7 +61,7 @@ const EXCEPTIONS = {
       "Desktop system commands still centralize file mentions, attachment inspection, platform-aware path dedupe, guarded image loading, and export helpers in one Tauri command surface.",
   },
   "src/features/providers/providerCatalog.ts": {
-    limit: 530,
+    limit: 550,
     justification:
       "Complete provider catalog with all model providers including Gemini OAuth/CLI and agent providers.",
   },
@@ -69,6 +69,11 @@ const EXCEPTIONS = {
     limit: 700,
     justification:
       "Composer hosts mention autocomplete, slash command surface, attachment drop targets, queue UI, sticky persona chip, and toolbar wiring all in one keyboard-driven control surface.",
+  },
+  "src-tauri/src/commands/work_items.rs": {
+    limit: 560,
+    justification:
+      "Work Item Core local storage commands, validation, and regression tests are intentionally isolated until the work-item UI lands.",
   },
 };
 

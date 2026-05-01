@@ -64,7 +64,11 @@ export async function savePersonaAvatarBytes(
   bytes: number[],
   extension: string,
 ): Promise<string> {
-  return invokeTauri("save_persona_avatar_bytes", { personaId, bytes, extension });
+  return invokeTauri("save_persona_avatar_bytes", {
+    personaId,
+    bytes,
+    extension,
+  });
 }
 
 export async function getAvatarsDir(): Promise<string> {

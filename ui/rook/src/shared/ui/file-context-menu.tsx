@@ -46,7 +46,8 @@ export function FileContextMenu({
   const { t } = useTranslation("common");
   const editor = useEditorPreferenceStore((s) => s.editor);
   const computedRelative =
-    relativePath ?? (workspaceRoot ? relativeFromRoot(path, workspaceRoot) : "");
+    relativePath ??
+    (workspaceRoot ? relativeFromRoot(path, workspaceRoot) : "");
   const showRelativeCopy = Boolean(workspaceRoot && computedRelative);
   const showOpenInEditor = Boolean(workspaceRoot);
 
@@ -77,7 +78,9 @@ export function FileContextMenu({
         </ContextMenuItem>
         {showRelativeCopy && (
           <ContextMenuItem
-            onSelect={() => void navigator.clipboard.writeText(computedRelative)}
+            onSelect={() =>
+              void navigator.clipboard.writeText(computedRelative)
+            }
           >
             {t("labels.copyRelativePath")}
           </ContextMenuItem>

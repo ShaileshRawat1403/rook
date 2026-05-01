@@ -259,6 +259,7 @@
     "loadingModels": "Cargando modelos...",
     "model": "Modelo",
     "noProject": "Sin proyecto",
+    "provider": "Proveedor",
     "selectModel": "Seleccionar modelo",
     "selectProject": "Seleccionar proyecto",
     "sendMessage": "Enviar mensaje",
