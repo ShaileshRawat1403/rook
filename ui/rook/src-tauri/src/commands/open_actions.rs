@@ -28,10 +28,7 @@ impl EditorChoice {
 /// Canonicalizes both paths and ensures that the target is the workspace
 /// itself or a descendant of it. Rejects symlink escapes by relying on
 /// canonicalize, which resolves symlinks before comparing.
-pub fn ensure_path_inside_workspace(
-    workspace: &Path,
-    target: &Path,
-) -> Result<PathBuf, String> {
+pub fn ensure_path_inside_workspace(workspace: &Path, target: &Path) -> Result<PathBuf, String> {
     let canonical_workspace = workspace
         .canonicalize()
         .map_err(|error| format!("Workspace is not accessible: {}", error))?;
@@ -45,8 +42,8 @@ pub fn ensure_path_inside_workspace(
 }
 
 fn ensure_directory(path: &Path) -> Result<(), String> {
-    let metadata = fs::metadata(path)
-        .map_err(|error| format!("Path is not accessible: {}", error))?;
+    let metadata =
+        fs::metadata(path).map_err(|error| format!("Path is not accessible: {}", error))?;
     if !metadata.is_dir() {
         return Err("Path is not a directory".to_string());
     }
@@ -73,6 +70,7 @@ fn spawn_detached(mut command: Command) -> Result<(), String> {
 /// inherits it from the spawned process. We never interpolate the path
 /// into a shell-parsed string.
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 enum CwdMode {
     Arg(&'static str),
     OpenWithPath,
@@ -258,8 +256,8 @@ mod tests {
     fn ensure_path_inside_workspace_rejects_external_paths() {
         let inside = tempdir().expect("inside");
         let outside = tempdir().expect("outside");
-        let error = ensure_path_inside_workspace(inside.path(), outside.path())
-            .expect_err("escape");
+        let error =
+            ensure_path_inside_workspace(inside.path(), outside.path()).expect_err("escape");
         assert!(error.contains("outside"));
     }
 
@@ -267,8 +265,7 @@ mod tests {
     fn ensure_path_inside_workspace_rejects_missing_target() {
         let dir = tempdir().expect("tempdir");
         let missing = dir.path().join("ghost");
-        let error = ensure_path_inside_workspace(dir.path(), &missing)
-            .expect_err("missing");
+        let error = ensure_path_inside_workspace(dir.path(), &missing).expect_err("missing");
         assert!(error.contains("not accessible"));
     }
 
@@ -351,8 +348,7 @@ mod tests {
         let link = inside.path().join("link.txt");
         symlink(&secret, &link).expect("symlink");
 
-        let error = ensure_path_inside_workspace(inside.path(), &link)
-            .expect_err("symlink escape");
+        let error = ensure_path_inside_workspace(inside.path(), &link).expect_err("symlink escape");
         assert!(error.contains("outside"));
     }
 }

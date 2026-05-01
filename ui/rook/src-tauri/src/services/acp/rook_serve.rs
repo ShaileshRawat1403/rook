@@ -110,9 +110,7 @@ pub fn get_rook_command(app_handle: &tauri::AppHandle) -> Result<Command, String
     if let Ok(override_path) = std::env::var("ROOK_BIN") {
         let trimmed = override_path.trim();
         if trimmed.is_empty() {
-            return Err(
-                "ROOK_BIN is set but empty; unset it or point at a rook CLI binary".into(),
-            );
+            return Err("ROOK_BIN is set but empty; unset it or point at a rook CLI binary".into());
         }
         return Ok(Command::new(trimmed));
     }
@@ -180,7 +178,7 @@ fn resolve_workspace_cli() -> Option<PathBuf> {
 }
 
 async fn wait_for_server_ready(port: u16, child: &mut Child) -> Result<(), String> {
-    let deadline = Instant::now() + Duration::from_secs(15);
+    let deadline = Instant::now() + ROOK_SERVE_CONNECT_TIMEOUT;
 
     // First check quickly if port is already available (existing process)
     if is_server_ready(port).await {
@@ -208,7 +206,7 @@ async fn wait_for_server_ready(port: u16, child: &mut Child) -> Result<(), Strin
                     return Err(format!("Timed out waiting for rook serve on port {port}"));
                 }
 
-                tokio::time::sleep(Duration::from_millis(500)).await;
+                tokio::time::sleep(ROOK_SERVE_CONNECT_RETRY_DELAY).await;
             }
         }
     }
