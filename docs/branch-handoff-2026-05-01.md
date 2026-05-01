@@ -13,7 +13,13 @@ It includes:
 - Shell-output hardening
 - Work Item Core
 
-`main` is ahead of `origin/main`; push it after final checks pass.
+`main` has been pushed to `origin/main`.
+
+Current cleanup head:
+
+```text
+04b02c36 chore(ui): clear Tauri clippy warnings
+```
 
 ## Merged
 
@@ -107,9 +113,9 @@ Recommended next step:
 
 Rebase this branch onto current `main`, split the documentation file if it should land independently, then review the UI/session-store behavior as its own slice.
 
-## Safety refs
+## Removed cleanup refs
 
-Temporary safety branches were created before cleanup:
+Temporary safety branches were created before cleanup and deleted after `main` was pushed:
 
 ```text
 backup-main-before-cleanup
@@ -117,7 +123,7 @@ backup-work-item-core-before-merge
 backup-event-runtime-before-refresh
 ```
 
-They can be deleted after `main` is pushed and the two remaining branches are confirmed safe.
+The completed `feat/work-item-core` branch was also deleted after it was merged.
 
 ## Cleanup rule going forward
 
