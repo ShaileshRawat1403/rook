@@ -1,14 +1,10 @@
 import type { RookContextSnapshot } from "./contextSnapshot";
-import { intentSignalSets } from "./classifyRequest";
+import { intentSignalSets, signalMatchesAny } from "./classifyRequest";
 import type {
   ExecutionPosture,
   IntentClassification,
   RequestRisk,
 } from "./types";
-
-function includesAny(text: string, signals: string[]): boolean {
-  return signals.some((signal) => text.includes(signal));
-}
 
 export function chooseExecutionPosture(
   request: string,
@@ -18,11 +14,11 @@ export function chooseExecutionPosture(
 ): ExecutionPosture {
   const text = request.toLowerCase().replace(/\s+/g, " ").trim();
 
-  if (includesAny(text, intentSignalSets.externalWrite)) {
+  if (signalMatchesAny(text, intentSignalSets.externalWrite)) {
     return context.hasJiraIssue ? "review_required" : "hard_stop";
   }
 
-  if (includesAny(text, intentSignalSets.destructive)) {
+  if (signalMatchesAny(text, intentSignalSets.destructive)) {
     return context.hasWorkingDirectory ? "dry_run" : "hard_stop";
   }
 

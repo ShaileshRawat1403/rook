@@ -92,16 +92,59 @@ function safeActionsForPosture(posture: ExecutionPosture): string[] {
   return ["Proceed directly"];
 }
 
+/** Explicit override token. Casual phrases like "just build it" must NOT trigger
+ * the fast lane — only this leading sentinel does. Stripped before classification
+ * so the rest of the request is scored on its merits. */
+const OVERRIDE_TOKEN_RE = /^\s*\/!override\b\s*/i;
+
+function stripOverrideToken(text: string): {
+  text: string;
+  explicitFastLane: boolean;
+} {
+  const match = text.match(OVERRIDE_TOKEN_RE);
+  if (!match) return { text, explicitFastLane: false };
+  return { text: text.slice(match[0].length), explicitFastLane: true };
+}
+
+export interface IntentResolvedEvent {
+  text: string;
+  context: RookContextSnapshot;
+  intent: IntentClassification;
+  resolution: IntentRequestResolution;
+}
+
+type IntentResolvedListener = (event: IntentResolvedEvent) => void;
+let intentResolvedListener: IntentResolvedListener | null = null;
+
+/** Optional telemetry/observability hook. Pass `null` to clear. The listener
+ * is fired exactly once per resolveIntentRequest call, after the resolution
+ * is computed. Listener errors are swallowed so observation cannot break
+ * routing. */
+export function onIntentResolved(fn: IntentResolvedListener | null): void {
+  intentResolvedListener = fn;
+}
+
+function emitResolved(event: IntentResolvedEvent): void {
+  const listener = intentResolvedListener;
+  if (!listener) return;
+  try {
+    listener(event);
+  } catch {
+    // ignore listener faults
+  }
+}
+
 export function resolveIntentRequest(
-  text: string,
+  rawText: string,
   context: RookContextSnapshot,
 ): {
   intent: IntentClassification;
   resolution: IntentRequestResolution;
 } {
+  const { text, explicitFastLane } = stripOverrideToken(rawText);
   const classified = classifyRequest(text, context);
   const risk = assessRisk(text, context, classified);
-  const requestedFastLane = /\b(fast lane|just do it|just build)\b/i.test(text);
+  const requestedFastLane = explicitFastLane;
   const chosenPosture = chooseExecutionPosture(text, classified, risk, context);
   const executionPosture =
     requestedFastLane &&
@@ -131,86 +174,73 @@ export function resolveIntentRequest(
         : [],
   };
 
+  const finalize = (
+    resolution: IntentRequestResolution,
+  ): { intent: IntentClassification; resolution: IntentRequestResolution } => {
+    const result = { intent, resolution };
+    emitResolved({ text, context, intent, resolution });
+    return result;
+  };
+
   if (executionPosture === "direct") {
-    return { intent, resolution: { kind: "send" } };
+    return finalize({ kind: "send" });
   }
 
   if (executionPosture === "safe_draft") {
-    return {
-      intent,
-      resolution: {
-        kind: "send",
-        promptOverride: buildSafeDraftPrompt(text, intent, context),
-        notice: buildSafeDraftNotice(intent, tonePosture),
-      },
-    };
+    return finalize({
+      kind: "send",
+      promptOverride: buildSafeDraftPrompt(text, intent, context),
+      notice: buildSafeDraftNotice(intent, tonePosture),
+    });
   }
 
   if (executionPosture === "dry_run") {
-    return {
-      intent,
-      resolution: {
-        kind: "send",
-        promptOverride: buildDryRunPrompt(text, intent, context),
-        notice: buildSafeDraftNotice(intent, tonePosture),
-      },
-    };
+    return finalize({
+      kind: "send",
+      promptOverride: buildDryRunPrompt(text, intent, context),
+      notice: buildSafeDraftNotice(intent, tonePosture),
+    });
   }
 
   if (executionPosture === "ask_minimum_clarification") {
-    return {
-      intent,
-      resolution: {
-        kind: "guidance",
-        notificationType: "info",
-        message: buildClarificationMessage(intent, context, tonePosture),
-      },
-    };
+    return finalize({
+      kind: "guidance",
+      notificationType: "info",
+      message: buildClarificationMessage(intent, context, tonePosture),
+    });
   }
 
   if (executionPosture === "experimental_branch") {
-    return {
-      intent,
-      resolution: {
-        kind: "guidance",
-        notificationType: "warning",
-        message: buildExperimentalBranchRecommendation(
-          intent,
-          context,
-          tonePosture,
-        ),
-      },
-    };
+    return finalize({
+      kind: "guidance",
+      notificationType: "warning",
+      message: buildExperimentalBranchRecommendation(
+        intent,
+        context,
+        tonePosture,
+      ),
+    });
   }
 
   if (executionPosture === "review_required") {
-    return {
-      intent,
-      resolution: {
-        kind: "guidance",
-        notificationType: "warning",
-        message: buildReviewRequiredMessage(intent, context, tonePosture),
-      },
-    };
+    return finalize({
+      kind: "guidance",
+      notificationType: "warning",
+      message: buildReviewRequiredMessage(intent, context, tonePosture),
+    });
   }
 
   if (executionPosture === "override_with_warnings") {
-    return {
-      intent,
-      resolution: {
-        kind: "send",
-        promptOverride: buildSafeDraftPrompt(text, intent, context),
-        notice: buildSafeDraftNotice(intent, tonePosture),
-      },
-    };
+    return finalize({
+      kind: "send",
+      promptOverride: buildSafeDraftPrompt(text, intent, context),
+      notice: buildSafeDraftNotice(intent, tonePosture),
+    });
   }
 
-  return {
-    intent,
-    resolution: {
-      kind: "guidance",
-      notificationType: "warning",
-      message: buildHardStopMessage(intent, context, tonePosture),
-    },
-  };
+  return finalize({
+    kind: "guidance",
+    notificationType: "warning",
+    message: buildHardStopMessage(intent, context, tonePosture),
+  });
 }

@@ -63,13 +63,14 @@ function attachmentKind(
   return "unknown";
 }
 
+// Word-boundary match avoids false positives like "specimen.txt" → "spec"
+// or "prdx-config.json" → "prd". `\b` triggers between word and non-word
+// characters, so common separators (`.`, `-`, `_`, `/`, whitespace) all
+// count as boundaries while embedded matches do not.
+const PRD_FILENAME_RE = /\b(prd|prds|requirements|spec|specs)\b/;
+
 function attachmentLooksLikePrd(attachment: ChatAttachmentDraft): boolean {
-  const name = attachment.name.toLowerCase();
-  return (
-    name.includes("prd") ||
-    name.includes("requirements") ||
-    name.includes("spec")
-  );
+  return PRD_FILENAME_RE.test(attachment.name.toLowerCase());
 }
 
 function attachmentLooksLikeJira(attachment: ChatAttachmentDraft): boolean {
@@ -116,6 +117,10 @@ export function buildContextSnapshot({
     attachmentKinds: [...new Set(attachments.map(attachmentKind))],
     hasWorkItem: hasPrd || hasJiraIssue,
     hasPrd,
+    // TODO(slice-prd-readiness): wire from a future PRD readiness review.
+    // Today this is hard-coded false, which keeps planning mode in
+    // safe_draft posture. Lifting this gate is the precondition for the
+    // planning bucket to upgrade to "ready" / "direct".
     hasPrdReview: false,
     hasJiraIssue,
     activePersonaId,

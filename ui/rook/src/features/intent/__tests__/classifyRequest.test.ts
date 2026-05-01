@@ -64,4 +64,30 @@ describe("classifyRequest", () => {
     expect(result.risk).toBe("critical");
     expect(result.executionPosture).toBe("review_required");
   });
+
+  it("escalates 'plan to delete X' to destructive even though planning hits first", () => {
+    const result = classifyRequest(
+      "Plan how to delete the old generated files",
+      context({ workingDirs: ["/repo"], hasWorkingDirectory: true }),
+    );
+    expect(result.mode).toBe("execution");
+    expect(result.risk).toBe("critical");
+    expect(result.executionPosture).toBe("dry_run");
+  });
+
+  it("does not flag 'specimen' as a destructive 'spec' or PRD-anything", () => {
+    // The classifyRequest module doesn't have spec/specimen signals, but
+    // exercising it here guards against future overreach.
+    const result = classifyRequest("Look at this specimen", context());
+    expect(result.mode).toBe("analysis");
+  });
+
+  it("multi-hit execution requests get high confidence", () => {
+    const result = classifyRequest(
+      "Implement, commit, and push this change",
+      context({ workingDirs: ["/repo"], hasWorkingDirectory: true }),
+    );
+    expect(result.mode).toBe("execution");
+    expect(result.confidence).toBe("high");
+  });
 });

@@ -1,5 +1,5 @@
 import type { RookContextSnapshot } from "./contextSnapshot";
-import { intentSignalSets } from "./classifyRequest";
+import { intentSignalSets, signalMatchesAny } from "./classifyRequest";
 import type { IntentClassification, RequestRisk } from "./types";
 
 const RISK_SCORE: Record<RequestRisk, number> = {
@@ -16,10 +16,6 @@ const SCORE_RISK: Record<number, RequestRisk> = {
   4: "critical",
 };
 
-function includesAny(text: string, signals: string[]): boolean {
-  return signals.some((signal) => text.includes(signal));
-}
-
 export function assessRisk(
   request: string,
   context: RookContextSnapshot,
@@ -28,11 +24,11 @@ export function assessRisk(
   const text = request.toLowerCase().replace(/\s+/g, " ").trim();
   let score = RISK_SCORE[classification.risk];
 
-  if (includesAny(text, intentSignalSets.externalWrite)) {
+  if (signalMatchesAny(text, intentSignalSets.externalWrite)) {
     score = Math.max(score, RISK_SCORE.critical);
   }
 
-  if (includesAny(text, intentSignalSets.destructive)) {
+  if (signalMatchesAny(text, intentSignalSets.destructive)) {
     score = Math.max(score, RISK_SCORE.critical);
   }
 

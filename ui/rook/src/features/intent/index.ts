@@ -1,9 +1,13 @@
 export { buildContextSnapshot } from "./contextSnapshot";
-export { classifyRequest } from "./classifyRequest";
+export { classifyRequest, signalMatchesAny } from "./classifyRequest";
 export { assessRisk } from "./assessRisk";
 export { chooseExecutionPosture } from "./chooseExecutionPosture";
 export { chooseTonePosture } from "./chooseTonePosture";
-export { resolveIntentRequest } from "./resolveIntentRequest";
+export {
+  resolveIntentRequest,
+  onIntentResolved,
+} from "./resolveIntentRequest";
+export type { IntentResolvedEvent } from "./resolveIntentRequest";
 export { useIntentStore } from "./intentStore";
 export { IntentReadinessWidget } from "./IntentReadinessWidget";
 export {
