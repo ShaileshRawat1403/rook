@@ -68,9 +68,7 @@
     },
     "commands": {
       "copyCommand": "Copiar comando",
-      "copyWithCwd": "Copiar con cd al espacio de trabajo",
       "copied": "Copiado: {{command}}",
-      "copiedWithCwd": "Comando copiado con cd al espacio de trabajo",
       "copyFailed": "Error al copiar",
       "sectionScripts": "Scripts",
       "sectionSuggested": "Sugeridos",

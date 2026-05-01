@@ -15,7 +15,6 @@ interface DetectedCommandsWidgetProps {
   scripts: DetectedScript[] | undefined;
   suggested: DetectedScript[] | undefined;
   isLoading: boolean;
-  workspacePath: string | null;
 }
 
 const KIND_ORDER: Record<DetectedScript["kind"], number> = {
@@ -37,13 +36,6 @@ async function copyToClipboard(value: string): Promise<boolean> {
   } catch {
     return false;
   }
-}
-
-function quoteIfNeeded(value: string): string {
-  if (/[\s"'`$\\]/.test(value)) {
-    return `"${value.replace(/"/g, '\\"')}"`;
-  }
-  return value;
 }
 
 function sortByKind(items: DetectedScript[]): DetectedScript[] {
@@ -84,17 +76,13 @@ function RiskBadge({
 function ScriptRow({
   script,
   onCopyCommand,
-  onCopyWithCwd,
   copyLabel,
-  copyWithCwdLabel,
   riskLabel,
   riskTooltip,
 }: {
   script: DetectedScript;
   onCopyCommand: (script: DetectedScript) => void;
-  onCopyWithCwd: (script: DetectedScript) => void;
   copyLabel: string;
-  copyWithCwdLabel: string;
   riskLabel: string;
   riskTooltip: string;
 }) {
@@ -126,16 +114,6 @@ function ScriptRow({
         >
           <IconCopy className="size-3" />
         </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-xs"
-          onClick={() => onCopyWithCwd(script)}
-          aria-label={copyWithCwdLabel}
-          title={copyWithCwdLabel}
-        >
-          <IconTerminal2 className="size-3" />
-        </Button>
       </div>
     </div>
   );
@@ -153,7 +131,6 @@ export function DetectedCommandsWidget({
   scripts,
   suggested,
   isLoading,
-  workspacePath,
 }: DetectedCommandsWidgetProps) {
   const { t } = useTranslation("chat");
 
@@ -177,30 +154,12 @@ export function DetectedCommandsWidget({
     [t],
   );
 
-  const handleCopyWithCwd = useCallback(
-    (script: DetectedScript) => {
-      const text = workspacePath
-        ? `cd ${quoteIfNeeded(workspacePath)} && ${script.command}`
-        : script.command;
-      void copyToClipboard(text).then((ok) => {
-        if (ok) {
-          toast.success(t("contextPanel.commands.copiedWithCwd"));
-        } else {
-          toast.error(t("contextPanel.commands.copyFailed"));
-        }
-      });
-    },
-    [t, workspacePath],
-  );
-
   const renderRow = (script: DetectedScript) => (
     <ScriptRow
       key={`${script.source}:${script.name}`}
       script={script}
       onCopyCommand={handleCopyCommand}
-      onCopyWithCwd={handleCopyWithCwd}
       copyLabel={t("contextPanel.commands.copyCommand")}
-      copyWithCwdLabel={t("contextPanel.commands.copyWithCwd")}
       riskLabel={t(`contextPanel.commands.risk.${script.risk}`)}
       riskTooltip={t("contextPanel.commands.riskTooltip")}
     />

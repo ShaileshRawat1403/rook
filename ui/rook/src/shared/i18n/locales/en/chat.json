@@ -68,9 +68,7 @@
     },
     "commands": {
       "copyCommand": "Copy command",
-      "copyWithCwd": "Copy with cd into workspace",
       "copied": "Copied: {{command}}",
-      "copiedWithCwd": "Copied command with workspace cd",
       "copyFailed": "Copy failed",
       "sectionScripts": "Scripts",
       "sectionSuggested": "Suggested",

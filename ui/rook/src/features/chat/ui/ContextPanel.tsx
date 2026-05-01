@@ -229,7 +229,6 @@ export function ContextPanel({
             scripts={detection?.scripts}
             suggested={detection?.suggested}
             isLoading={isDetectionLoading}
-            workspacePath={gitTargetPath}
           />
           <ChangesWidget
             files={changedFiles}
