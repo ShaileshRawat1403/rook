@@ -58,6 +58,7 @@ describe("useMessageQueue", () => {
       "queued msg",
       undefined,
       undefined,
+      undefined,
     );
     expect(useChatStore.getState().queuedMessageBySession.s1).toBeUndefined();
   });
@@ -125,6 +126,7 @@ describe("useMessageQueue", () => {
       "with image",
       undefined,
       attachments,
+      undefined,
     );
   });
 
@@ -144,6 +146,7 @@ describe("useMessageQueue", () => {
     expect(sendMessage).toHaveBeenCalledWith(
       "for persona A",
       { id: "persona-a" },
+      undefined,
       undefined,
     );
   });
