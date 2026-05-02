@@ -795,14 +795,12 @@ impl Config {
     /// - There is an error reading or writing the config file
     /// - There is an error serializing the value
     pub fn delete(&self, key: &str) -> Result<(), ConfigError> {
-        // Lock before reading to prevent race condition.
         let _guard = self.guard.lock().unwrap_or_else(|e| e.into_inner());
-
         let mut values = self.load_raw()?;
         values.shift_remove(key);
-
         self.save_values(&values)
     }
+
 
     /// Get a secret value.
     ///
