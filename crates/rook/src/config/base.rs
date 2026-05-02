@@ -771,7 +771,13 @@ impl Config {
     /// - There is an error serializing the value
     pub fn set_param<V: Serialize>(&self, key: &str, value: V) -> Result<(), ConfigError> {
         let _guard = self.guard.lock().unwrap_or_else(|e| e.into_inner());
+
         let mut values = self.load_raw()?;
+        values.insert(
+            serde_yaml::Value::String(key.to_string()),
+            serde_yaml::to_value(value)?,
+        );
+
         self.save_values(&values)
     }
 
@@ -1872,5 +1878,20 @@ mod tests {
         assert_eq!(mode, 0o600);
 
         Ok(())
+    }
+
+    #[test]
+    fn set_param_writes_config_value() {
+        let dir = tempfile::tempdir().unwrap();
+        let config_path = dir.path().join("config.yaml");
+        let secrets_path = dir.path().join("secrets.yaml");
+
+        let config = Config::new_with_file_secrets(&config_path, &secrets_path).unwrap();
+
+        config.set_param("TEST_KEY", "test-value").unwrap();
+
+        let value: String = config.get_param("TEST_KEY").unwrap();
+
+        assert_eq!(value, "test-value");
     }
 }
