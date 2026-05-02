@@ -9,7 +9,7 @@ export const AssertionSchema = z.object({
 export const ScenarioSchema = z.object({
   name: z.string(),
   suite: z.union([z.string(), z.array(z.string())]),
-  kind: z.enum(["core_proof", "policy", "audit"]),
+  kind: z.enum(["core_proof", "policy", "audit", "prompt"]),
   input: z.string(),
   expected: z.record(z.string(), z.string()).optional(),
   expect: z.array(AssertionSchema).optional(),

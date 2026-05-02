@@ -8,6 +8,10 @@ Deterministic, local eval harness for Rook's core behaviors.
 # Run all smoke evals
 bun run eval:smoke
 
+# Run open-model-gym executable contract
+# Note: eval:gym requires a configured Rook provider. It is an executable eval contract, not a deterministic CI gate yet.
+bun run eval:gym
+
 # Run specific suite
 bun run eval:smoke -- core_proof
 bun run eval:smoke -- policy
@@ -68,6 +72,7 @@ evals/
 | `core_proof` | Core proof execution | `runCoreProof()` |
 | `policy` | Policy engine decisions | `runPolicy()` |
 | `audit` | Audit system checks | `runAudit()` |
+| `prompt` | Executes a prompt through `rook-cli term run` | `runPrompt()` |
 
 ## Baseline System
 
@@ -75,7 +80,7 @@ Baselines capture stable facts about eval results (no timestamps/durations).
 
 ```json
 {
-  "schema_version": "dax.eval.baseline.v1",
+  "schema_version": "rook.eval.baseline.v1",
   "suite": "smoke",
   "generated": "2026-05-02T12:00:00Z",
   "scenarios": {
@@ -106,8 +111,7 @@ bun run release:verify  # includes eval:smoke
 
 ## Principles
 
-1. **Deterministic**: No timestamps/randomness in evals
-2. **Local**: No external API calls
-3. **Fast**: Completes in seconds
-4. **Readable**: Clear scenario names and assertions
-5. **Robust**: Schema validation, baseline comparison
+1. **Deterministic**: Smoke evals are local and deterministic. Gym evals are executable provider-dependent contracts and are not CI gates yet.
+2. **Fast**: Completes in seconds
+3. **Readable**: Clear scenario names and assertions
+4. **Robust**: Schema validation, baseline comparison

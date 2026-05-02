@@ -1,0 +1,10 @@
+{
+  "name": "gym_error_handling",
+  "suite": ["open_model_gym", "gym"],
+  "kind": "prompt",
+  "input": "prompt/error_handling.json",
+  "expect": [
+    { "path": "result", "op": "equals", "value": "success" },
+    { "path": "output", "op": "includes", "value": ["ZeroDivisionError", "error"] }
+  ]
+}
