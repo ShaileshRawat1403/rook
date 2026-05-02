@@ -122,3 +122,23 @@ jobs:
         run: |
           source ./bin/activate-hermit
           just check-acp-schema
+
+  evals-gate:
+    name: Run Smoke Evals
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4  # v6.0.1
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: |
+          source ./bin/activate-hermit
+          cd ui && pnpm install
+      - name: Run smoke evals
+        run: |
+          source ./bin/activate-hermit
+          cd ui && pnpm eval:smoke
+
