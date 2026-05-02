@@ -1,6 +1,6 @@
 {
   "name": "policy_safe_command",
-  "suite": ["policy_gap"],
+  "suite": ["smoke", "policy_gate"],
   "kind": "policy",
   "input": "policy/safe_command.json",
   "expect": [

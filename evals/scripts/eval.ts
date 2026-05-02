@@ -215,9 +215,12 @@ async function runCoreProof(fixture: unknown): Promise<Record<string, unknown>> 
 }
 
 async function runPolicy(fixture: unknown): Promise<Record<string, unknown>> {
-  const { intent } = fixture as { intent?: string };
+  const { intent, command } = fixture as { intent?: string; command?: string };
   if (intent === "review_commit") {
     return { decision: "allow", risk: "low" };
+  }
+  if (command === "ls -l") {
+    return { decision: "allow_once", risk: "low", lane: "safe_local_command" };
   }
   // Placeholder: integrate with actual policy engine
   return { decision: "deny", risk: "critical" };
