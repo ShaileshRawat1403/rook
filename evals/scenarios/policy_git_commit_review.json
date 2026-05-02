@@ -1,6 +1,6 @@
 {
   "name": "policy_git_commit_review",
-  "suite": ["policy_gap"],
+  "suite": ["smoke", "policy_gate"],
   "kind": "policy",
   "input": "policy/git_commit_review.json",
   "expect": [
