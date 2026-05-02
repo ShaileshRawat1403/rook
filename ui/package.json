@@ -10,6 +10,7 @@
     "version": "changeset version",
     "release": "changeset publish",
     "eval:smoke": "cd ../evals && bun run scripts/eval.ts smoke",
+    "eval:gym": "cd ../evals && bun run scripts/eval.ts gym",
     "eval:verify": "cd ../evals && bun run scripts/eval.ts --compare-baseline smoke",
     "eval:baseline": "cd ../evals && bun run scripts/eval.ts --update-baseline smoke"
   },

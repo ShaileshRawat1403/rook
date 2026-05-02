@@ -1,0 +1,10 @@
+{
+  "name": "gym_code_generation",
+  "suite": ["open_model_gym", "gym"],
+  "kind": "prompt",
+  "input": "prompt/code_generation.json",
+  "expect": [
+    { "path": "result", "op": "equals", "value": "success" },
+    { "path": "output", "op": "includes", "value": ["def", "return", "reverse"] }
+  ]
+}

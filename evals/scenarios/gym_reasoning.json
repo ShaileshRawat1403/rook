@@ -1,0 +1,10 @@
+{
+  "name": "gym_reasoning",
+  "suite": ["open_model_gym", "gym"],
+  "kind": "prompt",
+  "input": "prompt/reasoning.json",
+  "expect": [
+    { "path": "result", "op": "equals", "value": "success" },
+    { "path": "output", "op": "includes", "value": ["60", "km/h"] }
+  ]
+}

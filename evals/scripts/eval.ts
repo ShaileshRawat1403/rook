@@ -3,6 +3,10 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { Scenario, Assertion, ScenarioResult, EvalReport } from "./types.js";
 import { z } from "zod";
+import { exec } from "child_process";
+import { promisify } from "util";
+
+const execAsync = promisify(exec);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -17,7 +21,7 @@ const AssertionSchema = z.object({
 const ScenarioSchema = z.object({
   name: z.string(),
   suite: z.union([z.string(), z.array(z.string())]),
-  kind: z.enum(["core_proof", "policy", "audit"]),
+  kind: z.enum(["core_proof", "policy", "audit", "prompt"]),
   input: z.string(),
   expected: z.record(z.string(), z.string()).optional(),
   expect: z.array(AssertionSchema).optional(),
@@ -78,6 +82,9 @@ function assert(assertion: Assertion, result: Record<string, unknown>): boolean 
     case "exists":
       return actual !== undefined && actual !== null;
     case "includes":
+      if (typeof actual === "string" && Array.isArray(assertion.value)) {
+        return assertion.value.every(v => actual.includes(String(v)));
+      }
       return Array.isArray(actual) && Array.isArray(assertion.value) &&
         (assertion.value as unknown[]).every(v => (actual as unknown[]).includes(v));
     case "lengthEquals":
@@ -149,8 +156,27 @@ async function dispatch(kind: string, fixture: unknown): Promise<Record<string, 
       return runPolicy(fixture);
     case "audit":
       return runAudit(fixture);
+    case "prompt":
+      return runPrompt(fixture);
     default:
       throw new Error(`Unknown scenario kind: ${kind}`);
+  }
+}
+
+async function runPrompt(fixture: unknown): Promise<Record<string, unknown>> {
+  const { prompt, max_tokens, provider } = fixture as { prompt: string; max_tokens?: number; provider?: string };
+  const providerFlag = provider ? `--provider ${provider}` : "";
+  const maxTokensFlag = max_tokens ? `--max-tokens ${max_tokens}` : "";
+  
+  // Execute the rook CLI. Ensure it is built beforehand.
+  try {
+    const { stdout, stderr } = await execAsync(`cargo run -q -p rook-cli -- term run "${prompt}"`, {
+      cwd: join(__dirname, "../../.."),
+      timeout: 60000,
+    });
+    return { result: "success", output: stdout.trim(), stderr: stderr.trim() };
+  } catch (error: any) {
+    return { result: "error", output: error.stdout?.trim(), stderr: error.stderr?.trim(), message: error.message };
   }
 }
 

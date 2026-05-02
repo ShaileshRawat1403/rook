@@ -1,7 +1,7 @@
 export interface Scenario {
   name: string;
   suite: string | string[];
-  kind: "core_proof" | "policy" | "audit";
+  kind: "core_proof" | "policy" | "audit" | "prompt";
   input: string;
   expected?: Record<string, string>;
   expect?: Assertion[];
