@@ -870,10 +870,10 @@ enum Command {
             path: Option<String>,
         },
 
-        Gateway {
-            #[command(subcommand)]
-            command: crate::commands::gateway::GatewayCommand,
-        },
+    Gateway {
+        #[command(subcommand)]
+        command: GatewayCommand,
+    },
 
     /// Update the rook CLI version
     #[command(about = "Update the rook CLI version")]
@@ -1061,6 +1061,7 @@ fn get_command_name(command: &Option<Command>) -> &'static str {
         Some(Command::Update { .. }) => "update",
         Some(Command::Recipe { .. }) => "recipe",
         Some(Command::Term { .. }) => "term",
+        Some(Command::PolicyCheck { .. }) => "policy-check",
         #[cfg(feature = "local-inference")]
         Some(Command::LocalModels { .. }) => "local-models",
         Some(Command::Completion { .. }) => "completion",
