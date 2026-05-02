@@ -1,0 +1,10 @@
+{
+  "name": "policy_ask_git_commit",
+  "suite": "smoke",
+  "kind": "policy",
+  "input": "policy/ask_git_commit.json",
+  "expect": [
+    { "path": "decision", "op": "equals", "value": "ask" },
+    { "path": "risk", "op": "equals", "value": "high" }
+  ]
+}

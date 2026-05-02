@@ -1,0 +1,4 @@
+{
+  "command": "git commit -m 'test'",
+  "context": "git commit without verification"
+}

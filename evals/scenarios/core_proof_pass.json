@@ -1,0 +1,10 @@
+{
+  "name": "core_proof_pass",
+  "suite": "smoke",
+  "kind": "core_proof",
+  "input": "core_proof/simple.json",
+  "expect": [
+    { "path": "result", "op": "equals", "value": "pass" },
+    { "path": "finalStatus", "op": "equals", "value": "completed" }
+  ]
+}

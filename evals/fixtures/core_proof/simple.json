@@ -1,0 +1,4 @@
+{
+  "messages": ["Hello, world!"],
+  "expected_result": "pass"
+}

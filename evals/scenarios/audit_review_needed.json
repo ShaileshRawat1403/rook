@@ -1,0 +1,10 @@
+{
+  "name": "audit_review_needed_missing_artifact",
+  "suite": "smoke",
+  "kind": "audit",
+  "input": "audit/missing_artifact.json",
+  "expect": [
+    { "path": "status", "op": "equals", "value": "review_needed" },
+    { "path": "hasArtifact", "op": "equals", "value": false }
+  ]
+}

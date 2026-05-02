@@ -1,0 +1,9 @@
+{
+  "name": "replay_rejects_invalid_transition",
+  "suite": "smoke",
+  "kind": "core_proof",
+  "input": "core_proof/invalid_transition.json",
+  "expect": [
+    { "path": "result", "op": "equals", "value": "fail" }
+  ]
+}

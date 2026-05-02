@@ -1,0 +1,10 @@
+{
+  "name": "policy_deny_destructive",
+  "suite": "smoke",
+  "kind": "policy",
+  "input": "policy/destructive.json",
+  "expect": [
+    { "path": "decision", "op": "equals", "value": "deny" },
+    { "path": "risk", "op": "equals", "value": "critical" }
+  ]
+}
