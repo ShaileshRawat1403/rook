@@ -103,7 +103,7 @@ run-dev:
 check-everything:
     @echo "🔧 Running all style checks…"
     @echo "  → Formatting Rust…"
-    cargo fmt --all
+    cargo fmt --check --all
     @echo "  → Running clippy…"
     cargo clippy --all-targets -- -D warnings
     @echo "  → Checking UI (lint + typecheck + biome)…"

@@ -6,7 +6,7 @@ members = [
     "crates/rook-cli",
     "crates/rook-mcp",
     "crates/rook-sdk",
-    #"crates/rook-test",
+    "crates/rook-test",
     "crates/rook-test-support",
 ]
 exclude = ["ui/rook/src-tauri"]

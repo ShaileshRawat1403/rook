@@ -30,7 +30,10 @@
       }
     ],
     "security": {
-      "csp": null,
+      "csp": {
+        "dev": "default-src 'self'; script-src 'self' http://localhost:1520; style-src 'self' http://localhost:1520; connect-src 'self' ws://127.0.0.1:52551 ws://localhost:1520; img-src 'self' data: asset://; font-src 'self' http://localhost:1520;",
+        "prod": "default-src 'self'; script-src 'self' tauri://localhost app://localhost; style-src 'self' tauri://localhost app://localhost; connect-src 'self' ws://127.0.0.1:52551; img-src 'self' data: asset://; font-src 'self' tauri://localhost app://localhost;"
+      },
       "assetProtocol": {
         "enable": true,
         "scope": ["$HOME/.rook/avatars/**"]

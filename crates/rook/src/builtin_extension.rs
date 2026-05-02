@@ -9,16 +9,16 @@ static BUILTIN_REGISTRY: Lazy<RwLock<HashMap<&'static str, SpawnServerFn>>> =
 
 /// Register a builtin extension into the global registry
 pub fn register_builtin_extension(name: &'static str, spawn_fn: SpawnServerFn) {
-    BUILTIN_REGISTRY.write().unwrap().insert(name, spawn_fn);
+    BUILTIN_REGISTRY.write().unwrap_or_else(|e| e.into_inner()).insert(name, spawn_fn);
 }
 
 /// Register multiple builtin extensions from a HashMap
 pub fn register_builtin_extensions(extensions: HashMap<&'static str, SpawnServerFn>) {
-    let mut registry = BUILTIN_REGISTRY.write().unwrap();
+    let mut registry = BUILTIN_REGISTRY.write().unwrap_or_else(|e| e.into_inner());
     registry.extend(extensions);
 }
 
 /// Get a copy of all registered builtin extensions
 pub fn get_builtin_extension(name: &str) -> Option<SpawnServerFn> {
-    BUILTIN_REGISTRY.read().unwrap().get(name).cloned()
+    BUILTIN_REGISTRY.read().unwrap_or_else(|e| e.into_inner()).get(name).cloned()
 }
