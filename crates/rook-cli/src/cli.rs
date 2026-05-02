@@ -860,10 +860,15 @@ enum Command {
         about = "Manage gateways for external platform integrations",
         visible_alias = "gw"
     )]
-    Gateway {
-        #[command(subcommand)]
-        command: GatewayCommand,
-    },
+        #[command(about = "Check tool request permission")]
+        PolicyCheck {
+            #[arg(long, value_name = "JSON")]
+            request: String,
+        },
+        Gateway {
+            #[command(subcommand)]
+            command: crate::commands::gateway::GatewayCommand,
+        },
 
     /// Update the rook CLI version
     #[command(about = "Update the rook CLI version")]

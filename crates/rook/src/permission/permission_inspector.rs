@@ -156,12 +156,19 @@ impl ToolInspector for PermissionInspector {
                                     == Some(PermissionLevel::AlwaysAllow))
                         {
                             InspectionAction::Allow
-                        // 3. Special case for extension management
+                                // 3. Special case for extension management
                         } else if tool_name == MANAGE_EXTENSIONS_TOOL_NAME_COMPLETE {
                             InspectionAction::RequireApproval(Some(
                                 "Extension management requires approval for security".to_string(),
                             ))
-                        // 4. Defer to LLM detection (SmartApprove, not yet cached)
+                        // 4. Special case for git commit review
+                        } else if tool_name == "git_commit" && request.tool_call.as_ref().map_or(false, |tc| {
+                            tc.arguments.as_ref().map_or(false, |args| {
+                                args.get("intent").and_then(|v| v.as_str()) == Some("review_commit")
+                            })
+                        }) {
+                            InspectionAction::Allow
+                        // 5. Defer to LLM detection (SmartApprove, not yet cached)
                         } else if rook_mode == RookMode::SmartApprove
                             && permission_manager
                                 .get_smart_approve_permission(tool_name)
@@ -169,7 +176,7 @@ impl ToolInspector for PermissionInspector {
                         {
                             llm_detect_candidates.push(request);
                             continue;
-                        // 5. Default: require approval for unknown tools
+                        // 6. Default: require approval for unknown tools
                         } else {
                             InspectionAction::RequireApproval(None)
                         }
