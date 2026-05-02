@@ -9,13 +9,14 @@
     "changeset": "changeset",
     "version": "changeset version",
     "release": "changeset publish",
-    "eval:smoke": "cd ../evals && bun run scripts/eval.ts smoke",
-    "eval:gym": "cd ../evals && bun run scripts/eval.ts gym",
-    "eval:verify": "cd ../evals && bun run scripts/eval.ts --compare-baseline smoke",
-    "eval:baseline": "cd ../evals && bun run scripts/eval.ts --update-baseline smoke"
+    "eval:smoke": "cd ../evals && npx tsx scripts/eval.ts smoke",
+    "eval:gym": "cd ../evals && npx tsx scripts/eval.ts gym",
+    "eval:verify": "cd ../evals && npx tsx scripts/eval.ts --compare-baseline smoke",
+    "eval:baseline": "cd ../evals && npx tsx scripts/eval.ts --update-baseline smoke"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.27.1"
+    "@changesets/cli": "^2.27.1",
+    "zod": "^3.24.2"
   },
   "pnpm": {
     "overrides": {

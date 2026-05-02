@@ -1,0 +1,11 @@
+{
+  "name": "rook-evals",
+  "private": true,
+  "scripts": {
+    "eval": "tsx scripts/eval.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0",
+    "zod": "^3.24.2"
+  }
+}
