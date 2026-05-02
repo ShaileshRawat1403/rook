@@ -1,0 +1,26 @@
+name: "Provider Accuracy Benchmark"
+description: "Tests response quality across different AI providers"
+
+config:
+  iterations: 10
+  timeout_seconds: 30
+  providers:
+    - "anthropic"
+    - "openai"
+    - "gemini-oauth"
+
+tests:
+  - name: "code_generation"
+    prompt: "Write a function that reverses a string in Python"
+    expected_keywords: ["def", "return", "reverse"]
+    max_tokens: 200
+
+  - name: "reasoning"
+    prompt: "If a train travels 120km in 2 hours, what is its average speed?"
+    expected_keywords: ["60", "km/h", "speed"]
+    max_tokens: 100
+
+  - name: "error_handling"
+    prompt: "What happens if you divide by zero in Python?"
+    expected_keywords: ["ZeroDivisionError", "exception", "error"]
+    max_tokens: 150

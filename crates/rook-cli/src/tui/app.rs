@@ -696,7 +696,7 @@ where
 
 fn prepare_provider_models(state: &SharedState) {
     let (provider, fallback_models, pending_values) = {
-        let mut guard = lock_state(&state);
+    let mut guard = lock_state(&state);
         let Some(provider) = guard.selected_provider.clone() else {
             return;
         };

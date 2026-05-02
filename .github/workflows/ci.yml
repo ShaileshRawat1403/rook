@@ -115,6 +115,9 @@ jobs:
           source ./bin/activate-hermit
           cd ui/sdk && pnpm install --frozen-lockfile
 
+      - name: Install just
+        uses: extractions/setup-just@v2
+
       - name: Check ACP Schema is Up-to-Date
         run: |
           source ./bin/activate-hermit

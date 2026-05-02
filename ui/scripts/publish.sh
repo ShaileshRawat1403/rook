@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Builds and publishes all @shaileshrawat npm packages:
+# Builds and publishes @shaileshrawat npm packages:
 #   @shaileshrawat/rook-sdk            — ACP TypeScript SDK
 #   @shaileshrawat/rook-binary-*       — platform-specific rook CLI binaries
-#   @shaileshrawat/rook               — TUI that depends on the above
 #
 # Linux binaries are built inside Docker containers on their native arch.
 # macOS binaries are built natively (requires macOS host with Rust).
@@ -19,11 +18,13 @@ set -euo pipefail
 #   - Rust toolchain with aarch64-apple-darwin and x86_64-apple-darwin targets
 #   - pnpm
 #   - NPM_PUBLISH_TOKEN env var (or ~/.npm-publish-token file)
+#
+# NOTE: The Ink-based @shaileshrawat/rook TUI package has been removed.
+# Rook's canonical terminal UI is now the Rust/Ratatui CLI in crates/rook-cli.
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 NATIVE_DIR="${REPO_ROOT}/ui/rook-binary"
 SDK_DIR="${REPO_ROOT}/ui/sdk"
-TEXT_DIR="${REPO_ROOT}/ui/text"
 REGISTRY="https://registry.npmjs.org"
 DOCKER_IMAGE="rust:1.92-bookworm"
 
@@ -111,7 +112,7 @@ build_linux_docker() {
     "${REPO_ROOT}/" "${ctx}/"
 
   # Write a minimal Dockerfile into the context
-  cat > "${ctx}/Dockerfile.npm-build" <<'DEOF'
+  cat > "${ctx}/Dockerfile.npm-build" <<'EOF'
 FROM rust:1.92-bookworm
 RUN apt-get update -qq && \
     apt-get install -y -qq --no-install-recommends \
@@ -123,7 +124,7 @@ COPY . .
 RUN mkdir -p /output && \
     cargo build --release --bin rook && \
     cp target/release/rook /output/rook
-DEOF
+EOF
 
   # Build in Docker and extract the binary
   local iid="rook-npm-build-${platform}-$$"
@@ -172,9 +173,6 @@ echo ""
 echo "==> Building @shaileshrawat/rook-sdk"
 (cd "${SDK_DIR}" && pnpm run build:ts)
 
-echo "==> Building @shaileshrawat/rook"
-(cd "${TEXT_DIR}" && pnpm run build)
-
 # ---------------------------------------------------------------------------
 # Step 5: Publish
 # ---------------------------------------------------------------------------
@@ -217,9 +215,6 @@ for plat in darwin-arm64 darwin-x64 linux-arm64 linux-x64; do
   echo "    Publishing @shaileshrawat/rook-binary-${plat}"
   (cd "${REPO_ROOT}/ui" && pnpm publish "${PUBLISH_ARGS[@]}" "${pkg}")
 done
-
-echo "==> Publishing @shaileshrawat/rook"
-(cd "${REPO_ROOT}/ui" && pnpm publish "${PUBLISH_ARGS[@]}" text)
 
 echo ""
 if [[ "${DRY_RUN}" == "true" ]]; then

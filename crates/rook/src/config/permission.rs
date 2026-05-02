@@ -117,7 +117,7 @@ impl PermissionManager {
     }
 
     fn bulk_update_smart_approve_permissions(&self, tool_names: &[String], level: PermissionLevel) {
-        let mut map = self.permission_map.write().unwrap();
+        let mut map = self.permission_map.write().unwrap_or_else(|e| e.into_inner());
         let permission_config = map.entry(SMART_APPROVE_PERMISSION.to_string()).or_default();
 
         for tool_name in tool_names {
@@ -145,7 +145,7 @@ impl PermissionManager {
 
     /// Helper function to retrieve the permission level for a specific permission category and tool.
     fn get_permission(&self, name: &str, principal_name: &str) -> Option<PermissionLevel> {
-        let map = self.permission_map.read().unwrap();
+        let map = self.permission_map.read().unwrap_or_else(|e| e.into_inner());
         // Check if the permission category exists in the map
         if let Some(permission_config) = map.get(name) {
             // Check the permission levels for the given tool
@@ -181,7 +181,7 @@ impl PermissionManager {
 
     /// Helper function to update a permission level for a specific tool in a given permission category.
     fn update_permission(&self, name: &str, principal_name: &str, level: PermissionLevel) {
-        let mut map = self.permission_map.write().unwrap();
+        let mut map = self.permission_map.write().unwrap_or_else(|e| e.into_inner());
         // Get or create a new PermissionConfig for the specified category
         let permission_config = map.entry(name.to_string()).or_default();
 
@@ -215,7 +215,7 @@ impl PermissionManager {
 
     /// Removes all entries where the principal name starts with the given extension name.
     pub fn remove_extension(&self, extension_name: &str) {
-        let mut map = self.permission_map.write().unwrap();
+        let mut map = self.permission_map.write().unwrap_or_else(|e| e.into_inner());
         for permission_config in map.values_mut() {
             permission_config
                 .always_allow
@@ -323,7 +323,7 @@ mod tests {
         );
 
         // Ensure it's removed from other levels
-        let map = manager.permission_map.read().unwrap();
+        let map = manager.permission_map.read().unwrap_or_else(|e| e.into_inner());
         let config = map.get(USER_PERMISSION).unwrap();
         assert!(!config.always_allow.contains(&"tool7".to_string()));
         assert!(!config.ask_before.contains(&"tool7".to_string()));
@@ -340,7 +340,7 @@ mod tests {
         // Remove entries starting with "prefix"
         manager.remove_extension("prefix");
 
-        let map = manager.permission_map.read().unwrap();
+        let map = manager.permission_map.read().unwrap_or_else(|e| e.into_inner());
         let config = map.get(USER_PERMISSION).unwrap();
 
         // Verify entries with "prefix" are removed

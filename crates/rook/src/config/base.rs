@@ -575,7 +575,7 @@ impl Config {
     }
 
     pub fn initialize_if_empty(&self, values: Mapping) -> Result<(), ConfigError> {
-        let _guard = self.guard.lock().unwrap();
+        let _guard = self.guard.lock().unwrap_or_else(|e| e.into_inner());
         if !self.exists() {
             self.save_values(&values)
         } else {
@@ -614,7 +614,7 @@ impl Config {
     }
 
     pub fn all_secrets(&self) -> Result<HashMap<String, Value>, ConfigError> {
-        let mut cache = self.secrets_cache.lock().unwrap();
+        let mut cache = self.secrets_cache.lock().unwrap_or_else(|e| e.into_inner());
 
         let values = if let Some(ref cached_secrets) = *cache {
             cached_secrets.clone()
@@ -770,9 +770,14 @@ impl Config {
     /// - There is an error reading or writing the config file
     /// - There is an error serializing the value
     pub fn set_param<V: Serialize>(&self, key: &str, value: V) -> Result<(), ConfigError> {
-        let _guard = self.guard.lock().unwrap();
+        let _guard = self.guard.lock().unwrap_or_else(|e| e.into_inner());
+
         let mut values = self.load_raw()?;
-        values.insert(serde_yaml::to_value(key)?, serde_yaml::to_value(value)?);
+        values.insert(
+            serde_yaml::Value::String(key.to_string()),
+            serde_yaml::to_value(value)?,
+        );
+
         self.save_values(&values)
     }
 
@@ -791,7 +796,7 @@ impl Config {
     /// - There is an error serializing the value
     pub fn delete(&self, key: &str) -> Result<(), ConfigError> {
         // Lock before reading to prevent race condition.
-        let _guard = self.guard.lock().unwrap();
+        let _guard = self.guard.lock().unwrap_or_else(|e| e.into_inner());
 
         let mut values = self.load_raw()?;
         values.shift_remove(key);
@@ -875,7 +880,7 @@ impl Config {
         V: Serialize,
     {
         // Lock before reading to prevent race condition.
-        let _guard = self.guard.lock().unwrap();
+        let _guard = self.guard.lock().unwrap_or_else(|e| e.into_inner());
 
         let mut values = self.all_secrets()?;
         values.insert(key.to_string(), serde_json::to_value(value)?);
@@ -916,7 +921,7 @@ impl Config {
     /// - There is an error serializing the remaining values
     pub fn delete_secret(&self, key: &str) -> Result<(), ConfigError> {
         // Lock before reading to prevent race condition.
-        let _guard = self.guard.lock().unwrap();
+        let _guard = self.guard.lock().unwrap_or_else(|e| e.into_inner());
 
         let mut values = self.all_secrets()?;
         values.remove(key);
@@ -981,7 +986,7 @@ impl Config {
     }
 
     pub fn invalidate_secrets_cache(&self) {
-        let mut cache = self.secrets_cache.lock().unwrap();
+        let mut cache = self.secrets_cache.lock().unwrap_or_else(|e| e.into_inner());
         *cache = None;
     }
 
@@ -1287,7 +1292,7 @@ mod tests {
                 barrier.wait();
 
                 // Get the lock and update values
-                let mut values = values.lock().unwrap();
+                let mut values = values.lock().unwrap_or_else(|e| e.into_inner());
                 values.insert(
                     serde_yaml::to_value(format!("key{}", i)).unwrap(),
                     serde_yaml::to_value(format!("value{}", i)).unwrap(),
@@ -2000,5 +2005,20 @@ mod tests {
         assert_eq!(mode, 0o600);
 
         Ok(())
+    }
+
+    #[test]
+    fn set_param_writes_config_value() {
+        let dir = tempfile::tempdir().unwrap();
+        let config_path = dir.path().join("config.yaml");
+        let secrets_path = dir.path().join("secrets.yaml");
+
+        let config = Config::new_with_file_secrets(&config_path, &secrets_path).unwrap();
+
+        config.set_param("TEST_KEY", "test-value").unwrap();
+
+        let value: String = config.get_param("TEST_KEY").unwrap();
+
+        assert_eq!(value, "test-value");
     }
 }
