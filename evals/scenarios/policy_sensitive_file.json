@@ -1,0 +1,10 @@
+{
+  "name": "policy_sensitive_file",
+  "suite": ["smoke", "policy_gate"],
+  "kind": "policy",
+  "input": "policy/sensitive_file.json",
+  "expect": [
+    { "path": "decision", "op": "equals", "value": "deny" },
+    { "path": "risk", "op": "equals", "value": "high" }
+  ]
+}

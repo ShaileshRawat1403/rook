@@ -1,0 +1,4 @@
+{
+  "command": "ls -l",
+  "context": "safe local ls"
+}

@@ -1,0 +1,4 @@
+{
+  "path": "/etc/shadow",
+  "context": "sensitive file access"
+}

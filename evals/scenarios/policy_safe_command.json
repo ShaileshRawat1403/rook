@@ -1,0 +1,9 @@
+{
+  "name": "policy_safe_command",
+  "suite": ["smoke", "policy_gate"],
+  "kind": "policy",
+  "input": "policy/safe_command.json",
+  "expect": [
+    { "path": "decision", "op": "equals", "value": "approve" }
+  ]
+}

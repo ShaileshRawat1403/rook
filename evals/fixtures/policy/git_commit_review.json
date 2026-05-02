@@ -1,0 +1,4 @@
+{
+  "command": "git commit -m 'review commit'",
+  "context": "safe git commit review"
+}
