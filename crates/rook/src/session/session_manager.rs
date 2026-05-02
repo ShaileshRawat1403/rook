@@ -2269,7 +2269,10 @@ mod tests {
                 recipe_json TEXT,
                 user_recipe_values_json TEXT,
                 provider_name TEXT,
-                model_config_json TEXT
+                model_config_json TEXT,
+                name TEXT,
+                user_set_name BOOLEAN DEFAULT FALSE,
+                session_type TEXT NOT NULL DEFAULT 'user'
             )
         "#,
         )
