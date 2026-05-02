@@ -140,10 +140,18 @@ async function runCommand(command: string, args: string[], cwd: string, timeoutM
 
     let stdout = "";
     let stderr = "";
+    let settled = false;
+
+    const finish = (result: Record<string, unknown>) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(result);
+    };
 
     const timer = setTimeout(() => {
       child.kill("SIGTERM");
-      resolve({
+      finish({
         result: "error",
         output: stdout.trim(),
         stderr: stderr.trim(),
@@ -159,9 +167,17 @@ async function runCommand(command: string, args: string[], cwd: string, timeoutM
       stderr += chunk.toString();
     });
 
+    child.on("error", error => {
+      finish({
+        result: "error",
+        output: stdout.trim(),
+        stderr: stderr.trim(),
+        message: error.message,
+      });
+    });
+
     child.on("close", code => {
-      clearTimeout(timer);
-      resolve({
+      finish({
         result: code === 0 ? "success" : "error",
         output: stdout.trim(),
         stderr: stderr.trim(),
