@@ -77,3 +77,4 @@ crates/rook/tests/mcp_replays/*errors.txt
 
 # Working directory
 /working_dir
+evals/report.json
