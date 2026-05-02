@@ -1,0 +1,10 @@
+{
+  "name": "policy_outside_system_file_deny",
+  "suite": ["policy_gap"],
+  "kind": "policy",
+  "input": "policy/outside_system_file.json",
+  "expect": [
+    { "path": "decision", "op": "equals", "value": "deny" },
+    { "path": "risk", "op": "equals", "value": "critical" }
+  ]
+}

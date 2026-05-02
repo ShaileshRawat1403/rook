@@ -1,0 +1,10 @@
+{
+  "name": "policy_git_commit_review",
+  "suite": ["policy_gap"],
+  "kind": "policy",
+  "input": "policy/git_commit_review.json",
+  "expect": [
+    { "path": "decision", "op": "equals", "value": "allow" },
+    { "path": "risk", "op": "equals", "value": "low" }
+  ]
+}

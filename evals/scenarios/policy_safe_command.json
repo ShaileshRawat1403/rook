@@ -1,0 +1,11 @@
+{
+  "name": "policy_safe_command",
+  "suite": ["policy_gap"],
+  "kind": "policy",
+  "input": "policy/safe_command.json",
+  "expect": [
+    { "path": "decision", "op": "equals", "value": "allow_once" },
+    { "path": "risk", "op": "equals", "value": "low" },
+    { "path": "lane", "op": "equals", "value": "safe_local_command" }
+  ]
+}

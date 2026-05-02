@@ -1,0 +1,5 @@
+{
+  "intent": "review_commit",
+  "request": "check my last commit and summarize it",
+  "context": "read-only commit review"
+}
