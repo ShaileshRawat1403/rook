@@ -860,11 +860,16 @@ enum Command {
         about = "Manage gateways for external platform integrations",
         visible_alias = "gw"
     )]
-        #[command(about = "Check tool request permission")]
+        #[command(about = "Check policy decision")]
         PolicyCheck {
-            #[arg(long, value_name = "JSON")]
-            request: String,
+            #[arg(long)]
+            intent: Option<String>,
+            #[arg(long)]
+            command: Option<String>,
+            #[arg(long)]
+            path: Option<String>,
         },
+
         Gateway {
             #[command(subcommand)]
             command: crate::commands::gateway::GatewayCommand,
@@ -1845,6 +1850,13 @@ pub async fn cli() -> anyhow::Result<()> {
                 model_opts,
             )
             .await
+        }
+        Some(Command::PolicyCheck {
+            intent,
+            command,
+            path,
+        }) => {
+            crate::commands::policy::handle_policy_check(intent, command, path).await
         }
         Some(Command::Gateway { command }) => handle_gateway_command(command).await,
         Some(Command::Schedule { command }) => handle_schedule_command(command).await,
