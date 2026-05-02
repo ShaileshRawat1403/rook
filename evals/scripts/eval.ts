@@ -2,44 +2,11 @@ import { readdir, readFile, writeFile } from "fs/promises";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { Scenario, Assertion, ScenarioResult, EvalReport } from "./types.js";
-import { z } from "zod";
-import { exec } from "child_process";
-import { promisify } from "util";
-
-const execAsync = promisify(exec);
+import { validateScenario } from "./validate.js";
+import { spawn } from "child_process";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-// Scenario schema validation
-const AssertionSchema = z.object({
-  path: z.string(),
-  op: z.enum(["equals", "notEquals", "startsWith", "exists", "includes", "lengthEquals"]),
-  value: z.unknown().optional(),
-});
-
-const ScenarioSchema = z.object({
-  name: z.string(),
-  suite: z.union([z.string(), z.array(z.string())]),
-  kind: z.enum(["core_proof", "policy", "audit", "prompt"]),
-  input: z.string(),
-  expected: z.record(z.string(), z.string()).optional(),
-  expect: z.array(AssertionSchema).optional(),
-}).refine(data => data.expected || data.expect, {
-  message: "Either 'expected' or 'expect' must be provided",
-});
-
-function validateScenario(scenario: unknown): scenario is Scenario {
-  try {
-    ScenarioSchema.parse(scenario);
-    return true;
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      console.error("Invalid scenario:", error.errors);
-    }
-    return false;
-  }
-}
 
 async function loadScenarios(suite?: string): Promise<Scenario[]> {
   const scenariosDir = join(__dirname, "../scenarios");
@@ -163,21 +130,67 @@ async function dispatch(kind: string, fixture: unknown): Promise<Record<string, 
   }
 }
 
-async function runPrompt(fixture: unknown): Promise<Record<string, unknown>> {
-  const { prompt, max_tokens, provider } = fixture as { prompt: string; max_tokens?: number; provider?: string };
-  const providerFlag = provider ? `--provider ${provider}` : "";
-  const maxTokensFlag = max_tokens ? `--max-tokens ${max_tokens}` : "";
-  
-  // Execute the rook CLI. Ensure it is built beforehand.
-  try {
-    const { stdout, stderr } = await execAsync(`cargo run -q -p rook-cli -- term run "${prompt}"`, {
-      cwd: join(__dirname, "../../.."),
-      timeout: 60000,
+async function runCommand(command: string, args: string[], cwd: string, timeoutMs: number) {
+  return await new Promise<Record<string, unknown>>((resolve) => {
+    const child = spawn(command, args, {
+      cwd,
+      shell: false,
+      stdio: ["ignore", "pipe", "pipe"],
     });
-    return { result: "success", output: stdout.trim(), stderr: stderr.trim() };
-  } catch (error: any) {
-    return { result: "error", output: error.stdout?.trim(), stderr: error.stderr?.trim(), message: error.message };
+
+    let stdout = "";
+    let stderr = "";
+
+    const timer = setTimeout(() => {
+      child.kill("SIGTERM");
+      resolve({
+        result: "error",
+        output: stdout.trim(),
+        stderr: stderr.trim(),
+        message: `Timed out after ${timeoutMs}ms`,
+      });
+    }, timeoutMs);
+
+    child.stdout.on("data", chunk => {
+      stdout += chunk.toString();
+    });
+
+    child.stderr.on("data", chunk => {
+      stderr += chunk.toString();
+    });
+
+    child.on("close", code => {
+      clearTimeout(timer);
+      resolve({
+        result: code === 0 ? "success" : "error",
+        output: stdout.trim(),
+        stderr: stderr.trim(),
+        exitCode: code,
+      });
+    });
+  });
+}
+
+async function runPrompt(fixture: unknown): Promise<Record<string, unknown>> {
+  const { prompt, max_tokens, provider } = fixture as {
+    prompt: string;
+    max_tokens?: number;
+    provider?: string;
+  };
+
+  const args = ["run", "-q", "-p", "rook-cli", "--", "term", "run"];
+
+  if (provider) {
+    args.push("--provider", provider);
   }
+
+  if (max_tokens) {
+    args.push("--max-tokens", String(max_tokens));
+  }
+
+  args.push(prompt);
+
+  return runCommand("cargo", args, join(__dirname, "../.."), 60_000);
 }
 
 async function runCoreProof(fixture: unknown): Promise<Record<string, unknown>> {
@@ -210,7 +223,7 @@ async function main() {
   }
 
   const report: EvalReport = {
-    schema_version: "dax.eval.v1",
+    schema_version: "rook.eval.report.v1",
     suite: suite || "all",
     timestamp: new Date().toISOString(),
     total: results.length,
@@ -242,7 +255,7 @@ async function updateBaselineFile(report: EvalReport) {
   }
   const baselinePath = join(__dirname, "../baselines", `${report.suite}-baseline.json`);
   await writeFile(baselinePath, JSON.stringify({ 
-    schema_version: "dax.eval.baseline.v1",
+    schema_version: "rook.eval.baseline.v1",
     suite: report.suite,
     generated: report.timestamp,
     scenarios: baseline 
