@@ -1,10 +1,11 @@
 {
   "name": "policy_workspace_sensitive_file_approval",
-  "suite": ["policy_gap"],
+  "suite": ["smoke", "policy_gate"],
   "kind": "policy",
   "input": "policy/workspace_sensitive_file.json",
   "expect": [
     { "path": "decision", "op": "equals", "value": "requires_approval" },
-    { "path": "risk", "op": "equals", "value": "high" }
+    { "path": "risk", "op": "equals", "value": "high" },
+    { "path": "lane", "op": "equals", "value": "sensitive_workspace_file" }
   ]
 }
