@@ -795,8 +795,135 @@ impl Config {
     /// - There is an error reading or writing the config file
     /// - There is an error serializing the value
     pub fn delete(&self, key: &str) -> Result<(), ConfigError> {
+        // Lock before reading to prevent race condition.
         let _guard = self.guard.lock().unwrap_or_else(|e| e.into_inner());
+
         let mut values = self.load_raw()?;
+        values.shift_remove(key);
+
+        self.save_values(&values)
+    }
+
+    /// Get a secret value.
+    ///
+    /// This will attempt to get the value from:
+    /// 1. Environment variable with the exact key name
+    /// 2. System keyring
+    ///
+    /// The value will be deserialized into the requested type. This works with
+    /// both simple types (String, i32, etc.) and complex types that implement
+    /// serde::Deserialize.
+    ///
+    /// # Errors
+    ///
+    /// Returns a ConfigError if:
+    /// - The key doesn't exist in either environment or keyring
+    /// - The value cannot be deserialized into the requested type
+    /// - There is an error accessing the keyring
+    pub fn get_secret<T: for<'de> Deserialize<'de>>(&self, key: &str) -> Result<T, ConfigError> {
+        // First check environment variables (convert to uppercase)
+        let env_key = key.to_uppercase();
+        if let Ok(val) = env::var(&env_key) {
+            let value = Self::parse_env_value(&val)?;
+            return Ok(serde_json::from_value(value)?);
+        }
+
+        // Then check keyring
+        let values = self.all_secrets()?;
+        values
+            .get(key)
+            .ok_or_else(|| ConfigError::NotFound(key.to_string()))
+            .and_then(|v| Ok(serde_json::from_value(v.clone())?))
+    }
+
+    /// Get secrets. If primary is in env, use env for all keys. Otherwise, use secret storage.
+    pub fn get_secrets(
+        &self,
+        primary: &str,
+        maybe_secret: &[&str],
+    ) -> Result<HashMap<String, String>, ConfigError> {
+        let use_env = env::var(primary.to_uppercase()).is_ok();
+        let get_value = |key: &str| -> Result<String, ConfigError> {
+            if use_env {
+                env::var(key.to_uppercase()).map_err(|_| ConfigError::NotFound(key.to_string()))
+            } else {
+                self.get_secret(key)
+            }
+        };
+
+        let mut result = HashMap::new();
+        result.insert(primary.to_string(), get_value(primary)?);
+        for &key in maybe_secret {
+            if let Ok(v) = get_value(key) {
+                result.insert(key.to_string(), v);
+            }
+        }
+        Ok(result)
+    }
+
+    /// Set a secret value in the system keyring.
+    ///
+    /// This will store the value in a single JSON object in the system keyring,
+    /// alongside any other secrets. The value can be any type that can be
+    /// serialized to JSON.
+    ///
+    /// Note that this does not affect environment variables - those can only
+    /// be set through the system environment.
+    ///
+    /// # Errors
+    ///
+    /// Returns a ConfigError if:
+    /// - There is an error accessing the keyring
+    /// - There is an error serializing the value
+    pub fn set_secret<V>(&self, key: &str, value: &V) -> Result<(), ConfigError>
+    where
+        V: Serialize,
+    {
+        // Lock before reading to prevent race condition.
+        let _guard = self.guard.lock().unwrap_or_else(|e| e.into_inner());
+
+        let mut values = self.all_secrets()?;
+        values.insert(key.to_string(), serde_json::to_value(value)?);
+
+        match &self.secrets {
+            SecretStorage::Keyring { service } => {
+                let json_value = serde_json::to_string(&values)?;
+                match self.handle_keyring_operation(
+                    |entry| entry.set_password(&json_value),
+                    service,
+                    Some(&values),
+                ) {
+                    Ok(_) => {}
+                    Err(ConfigError::FallbackToFileStorage) => {}
+                    Err(e) => return Err(e),
+                }
+            }
+            SecretStorage::File { path } => {
+                let yaml_value = serde_yaml::to_string(&values)?;
+                write_secrets_file(path, &yaml_value)?;
+            }
+        };
+
+        self.invalidate_secrets_cache();
+
+        Ok(())
+    }
+
+    /// Delete a secret from the system keyring.
+    ///
+    /// This will remove the specified key from the JSON object in the system keyring.
+    /// Other secrets will remain unchanged.
+    ///
+    /// # Errors
+    ///
+    /// Returns a ConfigError if:
+    /// - There is an error accessing the keyring
+    /// - There is an error serializing the remaining values
+    pub fn delete_secret(&self, key: &str) -> Result<(), ConfigError> {
+        // Lock before reading to prevent race condition.
+        let _guard = self.guard.lock().unwrap_or_else(|e| e.into_inner());
+
+        let mut values = self.all_secrets()?;
         values.remove(key);
 
         match &self.secrets {
