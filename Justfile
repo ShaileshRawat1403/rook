@@ -108,7 +108,9 @@ check-everything:
     cargo clippy --all-targets -- -D warnings
     @echo "  → Checking UI (lint + typecheck + biome)…"
     @just lint-ui
-    @echo "✅ All style checks passed."
+    @echo "  → Running smoke evals…"
+    cd ui && pnpm eval:smoke
+    @echo "✅ All style checks and smoke evals passed."
 
 # ─── Docs ───────────────────────────────────────────────────────
 

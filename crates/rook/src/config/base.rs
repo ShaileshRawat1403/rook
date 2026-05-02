@@ -801,28 +801,6 @@ impl Config {
         self.save_values(&values)
     }
 
-    /// Delete a configuration value in the config file.
-    ///
-    /// This will immediately write the value to the config file. The value
-    /// can be any type that can be serialized to JSON/YAML.
-    ///
-    /// Note that this does not affect environment variables - those can only
-    /// be set through the system environment.
-    ///
-    /// # Errors
-    ///
-    /// Returns a ConfigError if:
-    /// - There is an error reading or writing the config file
-    /// - There is an error serializing the value
-    pub fn delete(&self, key: &str) -> Result<(), ConfigError> {
-        // Lock before reading to prevent race condition.
-        let _guard = self.guard.lock().unwrap_or_else(|e| e.into_inner());
-
-        let mut values = self.load_raw()?;
-        values.shift_remove(key);
-
-        self.save_values(&values)
-    }
 
     /// Get a secret value.
     ///
