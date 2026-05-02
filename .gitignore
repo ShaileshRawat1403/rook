@@ -25,11 +25,6 @@ target/
 
 # UI
 node_modules
-./ui/desktop/out
-
-# Generated DLLs (built at build time, not checked in)
-ui/desktop/src/bin/rook_ffi.dll
-ui/desktop/src/bin/rook_llm.dll
 
 # Hermit
 .hermit/
@@ -54,20 +49,10 @@ benchmark-*
 benchconf.json
 scripts/fake.sh
 do_not_version/
-/ui/desktop/src/bin/temporal
-/temporal-service/temporal.db
-/ui/desktop/src/bin/temporal.db
+
+# Temporal
 /temporal.db
-/ui/desktop/src/bin/rook-scheduler-executor
-/ui/desktop/src/bin/rook
-/.env
 
-/working_dir
-
-# Error log artifacts from mcp replay tests
-crates/rook/tests/mcp_replays/*errors.txt
-
-.gromastate
 # Nix build output
 result
 
@@ -77,5 +62,18 @@ result
 # Rook self-test artifacts
 rookselftest/
 .tasks/
-ui/desktop/src/bin/rook
-ui/desktop/src/bin/rookd
+
+# Error log artifacts from mcp replay tests
+crates/rook/tests/mcp_replays/*errors.txt
+
+.gromastate
+
+# Rook data directories
+.rook/
+.rookignore
+
+# Environment
+/.env
+
+# Working directory
+/working_dir

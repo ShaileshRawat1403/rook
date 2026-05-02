@@ -568,9 +568,8 @@ mod tests {
                 }
             }
         };
-    }
 
-    fn run_verify(messages: Vec<Message>) -> (Vec<Message>, Vec<String>) {
+        fn run_verify(messages: Vec<Message>) -> (Vec<Message>, Vec<String>) {
         let (fixed, issues) = fix_conversation(Conversation::new_unvalidated(messages.clone()));
 
         // Uncomment the following line to print the debug report

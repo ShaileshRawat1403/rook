@@ -13,6 +13,12 @@ activities:
   - Test load tool for knowledge injection and discovery
   - Test delegate tool for task delegation (sync and async)
   - Test error boundaries including nested delegation prevention
+  - Test gateway/telegram integration
+  - Test scheduler functionality
+  - Test OAuth flows (Gemini, GCP)
+  - Test recipe system execution
+  - Test security features and permission system
+  - Test token counting accuracy
   - Generate comprehensive test report
 
 parameters:
