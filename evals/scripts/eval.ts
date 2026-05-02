@@ -2,9 +2,40 @@ import { readdir, readFile, writeFile } from "fs/promises";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { Scenario, Assertion, ScenarioResult, EvalReport } from "./types.js";
+import { z } from "zod";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+// Scenario schema validation
+const AssertionSchema = z.object({
+  path: z.string(),
+  op: z.enum(["equals", "notEquals", "startsWith", "exists", "includes", "lengthEquals"]),
+  value: z.unknown().optional(),
+});
+
+const ScenarioSchema = z.object({
+  name: z.string(),
+  suite: z.union([z.string(), z.array(z.string())]),
+  kind: z.enum(["core_proof", "policy", "audit"]),
+  input: z.string(),
+  expected: z.record(z.string(), z.string()).optional(),
+  expect: z.array(AssertionSchema).optional(),
+}).refine(data => data.expected || data.expect, {
+  message: "Either 'expected' or 'expect' must be provided",
+});
+
+function validateScenario(scenario: unknown): scenario is Scenario {
+  try {
+    ScenarioSchema.parse(scenario);
+    return true;
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error("Invalid scenario:", error.errors);
+    }
+    return false;
+  }
+}
 
 async function loadScenarios(suite?: string): Promise<Scenario[]> {
   const scenariosDir = join(__dirname, "../scenarios");
@@ -14,10 +45,15 @@ async function loadScenarios(suite?: string): Promise<Scenario[]> {
   for (const file of files) {
     if (!file.endsWith(".json")) continue;
     const content = await readFile(join(scenariosDir, file), "utf-8");
-    const scenario: Scenario = JSON.parse(content);
+    const scenario: unknown = JSON.parse(content);
+
+    if (!validateScenario(scenario)) {
+      console.error(`Skipping invalid scenario: ${file}`);
+      continue;
+    }
 
     if (suite && !matchSuite(scenario.suite, suite)) continue;
-    scenarios.push(scenario);
+    scenarios.push(scenario as Scenario);
   }
 
   return scenarios;
@@ -179,13 +215,54 @@ async function updateBaselineFile(report: EvalReport) {
     baseline[r.name] = { passed: r.passed, checks: r.checks };
   }
   const baselinePath = join(__dirname, "../baselines", `${report.suite}-baseline.json`);
-  await writeFile(baselinePath, JSON.stringify(baseline, null, 2));
+  await writeFile(baselinePath, JSON.stringify({ 
+    schema_version: "dax.eval.baseline.v1",
+    suite: report.suite,
+    generated: report.timestamp,
+    scenarios: baseline 
+  }, null, 2));
   console.log(`Baseline updated: ${baselinePath}`);
 }
 
 async function compareBaselineFile(report: EvalReport) {
-  // Placeholder for baseline comparison
-  console.log("Baseline comparison not yet implemented");
+  const baselinePath = join(__dirname, "../baselines", `${report.suite}-baseline.json`);
+  
+  try {
+    const baselineContent = await readFile(baselinePath, "utf-8");
+    const baseline = JSON.parse(baselineContent);
+    
+    let hasDrift = false;
+    for (const r of report.results) {
+      const baseScenario = baseline.scenarios?.[r.name];
+      if (!baseScenario) {
+        console.warn(`New scenario not in baseline: ${r.name}`);
+        continue;
+      }
+      
+      if (baseScenario.passed !== r.passed) {
+        console.error(`DRIFT detected in ${r.name}: expected passed=${baseScenario.passed}, got ${r.passed}`);
+        hasDrift = true;
+      }
+      
+      // Compare checks
+      for (const [key, value] of Object.entries(r.checks)) {
+        if (baseScenario.checks?.[key] !== value) {
+          console.error(`DRIFT in ${r.name}.${key}: expected ${baseScenario.checks?.[key]}, got ${value}`);
+          hasDrift = true;
+        }
+      }
+    }
+    
+    if (hasDrift) {
+      console.error("Baseline comparison FAILED: Drift detected!");
+      process.exit(1);
+    } else {
+      console.log("Baseline comparison PASSED: No drift detected.");
+    }
+  } catch (error) {
+    console.error("Failed to compare baseline:", error);
+    process.exit(1);
+  }
 }
 
 main().catch(error => {
