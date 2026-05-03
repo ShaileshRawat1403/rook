@@ -254,7 +254,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
           </button>
         </div>
       ) : (
-        <div className="flex flex-1 flex-col overflow-hidden">
+        <div className="flex flex-1 flex-col overflow-y-auto">
           <div className="mb-4 rounded-lg border border-border bg-card p-4">
             <h2 className="text-lg font-medium">{activeColony.title}</h2>
             <p className="text-sm text-muted-foreground">
@@ -281,7 +281,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
             )}
           </div>
 
-          <div className="grid flex-1 grid-cols-3 gap-4 overflow-auto">
+          <div className="grid grid-cols-3 gap-4">
             {activeColony.seats.map((seat) => (
               <ColonySeatCard
                 key={seat.id}
