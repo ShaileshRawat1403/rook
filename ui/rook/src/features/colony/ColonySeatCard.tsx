@@ -135,10 +135,14 @@ export function ColonySeatCard({
             </div>
 
             <div className="flex flex-col gap-1">
-              <span className="text-xs text-muted-foreground">Model:</span>
+              <span className="text-xs text-muted-foreground">Seat model:</span>
               <select
                 value={seat.modelName ?? sessionInfo?.modelName ?? ""}
-                onChange={(e) => onUpdateModel?.(seat.id, e.target.value)}
+                onChange={(e) => {
+                  if (e.target.value) {
+                    onUpdateModel?.(seat.id, e.target.value);
+                  }
+                }}
                 className="rounded border border-border bg-background px-1 py-0.5 text-xs"
               >
                 <option value="">Select model...</option>

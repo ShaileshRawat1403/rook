@@ -352,6 +352,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   updateSeatModel: (colonyId, seatId, modelName) => {
+    if (!modelName) return;
     set((state) => ({
       colonies: state.colonies.map((c) =>
         c.id !== colonyId
