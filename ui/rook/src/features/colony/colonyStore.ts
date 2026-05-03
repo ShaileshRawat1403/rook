@@ -41,7 +41,7 @@ type ColonyStore = ColonyStoreState & {
     },
   ) => void;
   unbindSeat: (colonyId: string, seatId: string) => void;
-  logEvent: (
+logEvent: (
     type: ColonyEventType,
     seatRole?: ColonyRole,
     seatLabel?: string,
@@ -213,10 +213,11 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
   },
 
   setActiveSeat: (colonyId, seatId) => {
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    if (colony?.activeSeatId === seatId) return;
+
     const seat = seatId
-      ? get()
-          .colonies.find((c) => c.id === colonyId)
-          ?.seats.find((s) => s.id === seatId)
+      ? colony?.seats.find((s) => s.id === seatId)
       : null;
     const now = new Date().toISOString();
     const events = [...get().events];
@@ -323,7 +324,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     });
   },
 
-  logEvent: (type, seatRole, seatLabel, details) => {
+  logEvent: (type, seatRole, seatLabel, details, taskId, taskTitle) => {
     const event: ColonyEvent = {
       id: crypto.randomUUID(),
       type,
@@ -331,6 +332,8 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       seatLabel,
       timestamp: new Date().toISOString(),
       details,
+      taskId,
+      taskTitle,
     };
     set((state) => ({
       events: [...state.events, event],
@@ -380,6 +383,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
 
     const now = new Date().toISOString();
     const newSeatId = seatId ?? null;
+    const willAssign = !!seatId;
 
     set((state) => ({
       colonies: state.colonies.map((c) =>
@@ -387,11 +391,32 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
           ? c
           : {
               ...c,
-              tasks: c.tasks.map((t) =>
-                t.id !== taskId
-                  ? t
-                  : { ...t, assignedSeatId: newSeatId ?? undefined, updatedAt: now },
-              ),
+              tasks: c.tasks.map((t) => {
+                if (t.id !== taskId) {
+                  if (
+                    willAssign &&
+                    t.assignedSeatId === newSeatId &&
+                    t.status !== "done" &&
+                    t.status !== "inProgress" &&
+                    t.status !== "blocked"
+                  ) {
+                    return { ...t, assignedSeatId: undefined, status: "todo", updatedAt: now };
+                  }
+                  return t;
+                }
+                let newStatus = t.status;
+                if (!newSeatId && t.status === "assigned") {
+                  newStatus = "todo";
+                } else if (newSeatId && t.status === "todo") {
+                  newStatus = "assigned";
+                }
+                return {
+                  ...t,
+                  assignedSeatId: newSeatId ?? undefined,
+                  status: newStatus,
+                  updatedAt: now,
+                };
+              }),
               updatedAt: now,
             },
       ),
@@ -407,7 +432,14 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
         task.title,
       );
     } else {
-      get().logEvent("task_assigned", undefined, undefined, task.title, task.id, task.title);
+      get().logEvent(
+        "task_assigned",
+        undefined,
+        undefined,
+        task.title,
+        task.id,
+        task.title,
+      );
     }
   },
 
