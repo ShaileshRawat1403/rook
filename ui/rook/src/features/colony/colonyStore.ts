@@ -379,10 +379,13 @@ seats: c.seats.map((s) =>
           if (sessionId) {
             useChatSessionStore.getState().updateSession(sessionId, {
               modelName,
+              updatedAt: new Date().toISOString(),
             });
           }
         })
-        .catch(() => {});
+        .catch((err) => {
+          console.warn("[colony] Failed to sync model to session:", err);
+        });
     }
     if (seat) {
       get().logEvent(
