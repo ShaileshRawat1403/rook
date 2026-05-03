@@ -3,7 +3,7 @@ import { useState } from "react";
 import type { ColonyHandoff, ColonyRole } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
+import { Textarea } from "@/shared/ui/textarea";
 import { Badge } from "@/shared/ui/badge";
 
 const STATUS_LABELS: Record<ColonyHandoff["status"], string> = {
@@ -152,7 +152,7 @@ Do not add scope beyond the assigned task.`;
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Handoffs</CardTitle>
         <p className="text-xs text-muted-foreground">
-          Transfer task context between seats. No automatic execution.
+          Move selected context between roles. No automatic execution.
         </p>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
@@ -190,7 +190,7 @@ Do not add scope beyond the assigned task.`;
             }
 
             onCreateHandoff(fromSeatId, toSeatId, taskId || undefined, summary);
-            (form.elements.namedItem("summary") as HTMLInputElement).value = "";
+            (form.elements.namedItem("summary") as HTMLTextAreaElement).value = "";
             (form.elements.namedItem("fromSeatId") as HTMLSelectElement).value = "";
             (form.elements.namedItem("toSeatId") as HTMLSelectElement).value = "";
             (form.elements.namedItem("taskId") as HTMLSelectElement).value = "";
@@ -238,7 +238,7 @@ Do not add scope beyond the assigned task.`;
               onChange={(e) => setSelectedTemplate(e.target.value)}
               className="rounded border border-border bg-background px-2 py-1 text-xs flex-1"
             >
-              <option value="">Template...</option>
+              <option value="">Choose handoff shape...</option>
               {HANDOFF_TEMPLATES.map((template) => (
                 <option key={template.name} value={template.name}>
                   {template.name}
@@ -258,7 +258,11 @@ Do not add scope beyond the assigned task.`;
               </option>
             ))}
           </select>
-          <Input name="summary" placeholder="Summary of context to transfer..." />
+          <Textarea
+            name="summary"
+            placeholder="Goal: What should this work accomplish?&#10;Decision Made: What decision was made?&#10;Constraints: What are the constraints?&#10;Files Involved: What files were changed?&#10;Next Action: What should happen next?&#10;Do Not Change: What should stay the same?"
+            className="min-h-[120px] resize-none text-xs"
+          />
           <Button type="submit" size="sm" className="w-full">
             Create Handoff
           </Button>

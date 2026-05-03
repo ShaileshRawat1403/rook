@@ -59,7 +59,7 @@ export function ColonyTranscript({ maxEntries = 20 }: ColonyTranscriptProps) {
           Colony Activity
         </div>
         <p className="text-xs text-muted-foreground">
-          Coordination events only. Chat messages stay inside sessions.
+          Evidence trail for role changes, task movement, and handoffs. Chat stays inside each session.
         </p>
       </div>
       <ScrollArea className="flex-1 p-3">

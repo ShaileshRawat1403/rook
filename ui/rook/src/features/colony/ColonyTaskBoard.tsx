@@ -56,10 +56,10 @@ export function ColonyTaskBoard({
 
   return (
     <Card className="flex flex-col">
-<CardHeader className="pb-2">
+      <CardHeader className="pb-2">
           <CardTitle className="text-base">Tasks</CardTitle>
           <p className="text-xs text-muted-foreground">
-            Assign work to a seat. No prompt is sent automatically.
+            What work exists? Turn intent into assignable work. No prompt is sent automatically.
           </p>
         </CardHeader>
       <CardContent className="flex flex-col gap-3">

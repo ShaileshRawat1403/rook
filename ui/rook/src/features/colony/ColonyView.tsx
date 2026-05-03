@@ -251,9 +251,12 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
         </div>
       </div>
 
+      <p className="mb-2 text-sm text-muted-foreground">
+        Intent → Task · Context → Handoff · Role → Seat · Governance → Sentinel · Evidence → Activity
+      </p>
+
       <p className="mb-6 text-sm text-muted-foreground">
-        Colony Mode starts as a coordination surface. Execution wiring comes
-        later.
+        Coordinate AI work through roles, tasks, handoffs, and evidence. Nothing executes without your action.
       </p>
 
       {!activeColony ? (
@@ -329,6 +332,9 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
           </div>
 
           <div className="grid grid-cols-3 gap-4">
+            <h3 className="col-span-3 mb-1 text-sm font-medium text-muted-foreground">
+              Seats — Who is responsible?
+            </h3>
             {activeColony.seats.map((seat) => (
               <ColonySeatCard
                 key={seat.id}
@@ -349,6 +355,9 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
           </div>
 
           <div className="mt-4">
+            <h3 className="mb-1 text-sm font-medium text-muted-foreground">
+              Tasks — What work exists?
+            </h3>
             <ColonyTaskBoard
               tasks={activeColony.tasks}
               seats={activeColony.seats}
@@ -360,6 +369,9 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
           </div>
 
           <div className="mt-4">
+            <h3 className="mb-1 text-sm font-medium text-muted-foreground">
+              Handoffs — What context moves?
+            </h3>
             <ColonyHandoffPanel
               handoffs={activeColony.handoffs}
               seats={activeColony.seats}
@@ -371,6 +383,9 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
           </div>
 
           <div className="mt-4 h-48">
+            <h3 className="mb-1 text-sm font-medium text-muted-foreground">
+              Activity — What happened?
+            </h3>
             <ColonyTranscript />
           </div>
         </div>
