@@ -147,6 +147,14 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     [activeColonyId, unbindSeat],
   );
 
+  const handleUpdateSeatModel = useCallback(
+    (seatId: string, modelName: string) => {
+      if (!activeColonyId) return;
+      colonyStore.getState().updateSeatModel(activeColonyId, seatId, modelName);
+    },
+    [activeColonyId],
+  );
+
   const handleSelectSeat = useCallback(
     (seatId: string) => {
       if (!activeColonyId) return;
@@ -367,6 +375,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
                 }
                 onUnbindSession={() => handleUnbindSeat(seat.id)}
                 onSelect={() => handleSelectSeat(seat.id)}
+                onUpdateModel={handleUpdateSeatModel}
               />
             ))}
           </div>

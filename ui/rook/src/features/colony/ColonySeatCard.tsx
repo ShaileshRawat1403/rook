@@ -55,6 +55,7 @@ interface ColonySeatCardProps {
   onOpenSession?: () => void;
   onUnbindSession?: () => void;
   onSelect?: () => void;
+  onUpdateModel?: (seatId: string, modelName: string) => void;
 }
 
 export function ColonySeatCard({
@@ -66,6 +67,7 @@ export function ColonySeatCard({
   onOpenSession,
   onUnbindSession,
   onSelect,
+  onUpdateModel,
 }: ColonySeatCardProps) {
   const Icon = ROLE_ICONS[seat.role];
   const roleColor = ROLE_COLORS[seat.role];
@@ -130,6 +132,21 @@ export function ColonySeatCard({
                   <span>{sessionInfo.modelName}</span>
                 </>
               )}
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Model:</span>
+              <select
+                value={seat.modelName ?? sessionInfo?.modelName ?? ""}
+                onChange={(e) => onUpdateModel?.(seat.id, e.target.value)}
+                className="rounded border border-border bg-background px-1 py-0.5 text-xs"
+              >
+                <option value="">Select model...</option>
+                <option value="gpt-5.5">GPT-5.5</option>
+                <option value="gpt-4o">GPT-4o</option>
+                <option value="claude-sonnet">Claude Sonnet</option>
+                <option value="claude-opus">Claude Opus</option>
+              </select>
             </div>
 
             <div className="flex items-center gap-3 text-xs text-muted-foreground">

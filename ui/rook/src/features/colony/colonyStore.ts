@@ -41,8 +41,9 @@ type ColonyStore = ColonyStoreState & {
       projectId?: string;
     },
   ) => void;
-  unbindSeat: (colonyId: string, seatId: string) => void;
-logEvent: (
+unbindSeat: (colonyId: string, seatId: string) => void;
+  updateSeatModel: (colonyId: string, seatId: string, modelName: string) => void;
+  logEvent: (
     type: ColonyEventType,
     seatRole?: ColonyRole,
     seatLabel?: string,
@@ -348,6 +349,34 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       }),
       events,
     });
+  },
+
+  updateSeatModel: (colonyId, seatId, modelName) => {
+    set((state) => ({
+      colonies: state.colonies.map((c) =>
+        c.id !== colonyId
+          ? c
+          : {
+              ...c,
+              seats: c.seats.map((s) =>
+                s.id === seatId
+                  ? { ...s, modelName, lastUpdate: new Date().toISOString() }
+                  : s,
+              ),
+              updatedAt: new Date().toISOString(),
+            },
+      ),
+    }));
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    const seat = colony?.seats.find((s) => s.id === seatId);
+    if (seat) {
+      get().logEvent(
+        "seat_model_changed",
+        seat.role,
+        seat.label,
+        modelName,
+      );
+    }
   },
 
   logEvent: (type, seatRole, seatLabel, details, taskId, taskTitle, handoffId) => {

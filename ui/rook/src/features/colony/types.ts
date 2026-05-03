@@ -56,6 +56,7 @@ export type ColonySeat = {
   role: ColonyRole;
   label: string;
   providerId?: string;
+  modelName?: string;
   sessionId?: string;
   acpSessionId?: string;
   projectId?: string;
@@ -83,6 +84,7 @@ export type ColonyEventType =
   | "colony_created"
   | "seat_linked"
   | "seat_unlinked"
+  | "seat_model_changed"
   | "active_seat_changed"
   | "sentinel_mode_changed"
   | "session_opened"

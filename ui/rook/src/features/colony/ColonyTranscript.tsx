@@ -14,6 +14,7 @@ const EVENT_TYPE_LABELS: Record<ColonyEventType, string> = {
   colony_created: "Colony created",
   seat_linked: "Session linked",
   seat_unlinked: "Session unlinked",
+  seat_model_changed: "Model changed",
   active_seat_changed: "Active seat changed",
   sentinel_mode_changed: "Sentinel mode changed",
   session_opened: "Session opened",
