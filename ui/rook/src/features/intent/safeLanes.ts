@@ -34,6 +34,13 @@ export const SAFE_LANES: Record<ExecutionPosture, SafeLane> = {
     ],
     needsReviewBefore: ["implementation", "external writes"],
   },
+  approval_once: {
+    posture: "approval_once",
+    label: "Approve once",
+    description: "Proceed after lightweight approval for local work.",
+    allowedActions: ["run local command", "make small workspace edit"],
+    needsReviewBefore: ["commit", "push", "external writes"],
+  },
   dry_run: {
     posture: "dry_run",
     label: "Dry run",

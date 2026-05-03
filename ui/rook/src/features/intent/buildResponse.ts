@@ -68,6 +68,27 @@ Proceeding options:
 2. Say "fast lane" to continue with warnings and containment.`;
 }
 
+export function buildApprovalOnceMessage(
+  classification: IntentClassification,
+): string {
+  const reason = classification.reasons.join(" ");
+  const isCommand = reason.toLowerCase().includes("local project command");
+
+  if (isCommand) {
+    return `This will run a local command and may read project files or produce output.
+
+Reason:
+${reason}`;
+  }
+
+  return `This may change workspace files.
+
+I will show the diff before anything is committed.
+
+Reason:
+${reason}`;
+}
+
 export function buildReviewRequiredMessage(
   classification: IntentClassification,
   _context: RookContextSnapshot,

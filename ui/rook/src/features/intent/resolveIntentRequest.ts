@@ -1,6 +1,7 @@
 import type { RookContextSnapshot } from "./contextSnapshot";
 import { assessRisk } from "./assessRisk";
 import {
+  buildApprovalOnceMessage,
   buildClarificationMessage,
   buildExperimentalBranchRecommendation,
   buildHardStopMessage,
@@ -18,9 +19,21 @@ import type {
   ResponseMode,
 } from "./types";
 
+export type IntentResolutionAction = {
+  id: "allow_once" | "deny" | "dry_run" | "select_workdir";
+  label: string;
+  style: "primary" | "secondary" | "danger";
+};
+
 export type IntentRequestResolution =
   | { kind: "send"; promptOverride?: string; notice?: string }
-  | { kind: "guidance"; message: string; notificationType: "info" | "warning" };
+  | {
+      kind: "guidance";
+      message: string;
+      notificationType: "info" | "warning";
+      actions?: IntentResolutionAction[];
+      promptOverride?: string;
+    };
 
 function readinessForPosture(posture: ExecutionPosture): ReadinessState {
   if (posture === "direct") return "ready";
@@ -28,6 +41,7 @@ function readinessForPosture(posture: ExecutionPosture): ReadinessState {
     return "needs_clarification";
   }
   if (posture === "safe_draft") return "safe_draft_only";
+  if (posture === "approval_once") return "ready";
   if (
     posture === "dry_run" ||
     posture === "experimental_branch" ||
@@ -52,6 +66,7 @@ function responseModeForPosture(
     return "ask_clarifying_question";
   }
   if (posture === "safe_draft") return "create_safe_draft";
+  if (posture === "approval_once") return "request_approval";
   if (posture === "review_required") return "request_approval";
   if (posture === "override_with_warnings") return "execute";
   return "recommend_safe_lane";
@@ -79,6 +94,9 @@ function safeActionsForPosture(posture: ExecutionPosture): string[] {
   }
   if (posture === "dry_run") {
     return ["Preview affected files", "List candidate actions"];
+  }
+  if (posture === "approval_once") {
+    return ["Proceed after lightweight approval", "Keep changes reviewable"];
   }
   if (posture === "experimental_branch") {
     return ["Use an experimental branch", "Summarize affected files"];
@@ -149,6 +167,7 @@ export function resolveIntentRequest(
   const executionPosture =
     requestedFastLane &&
     chosenPosture !== "hard_stop" &&
+    chosenPosture !== "ask_minimum_clarification" &&
     chosenPosture !== "review_required"
       ? "override_with_warnings"
       : chosenPosture;
@@ -196,9 +215,31 @@ export function resolveIntentRequest(
 
   if (executionPosture === "dry_run") {
     return finalize({
-      kind: "send",
+      kind: "guidance",
+      notificationType: "warning",
+      message: `This may remove or overwrite work.
+
+Dry run first?
+
+Reason:
+${intent.reasons.join(" ")}`,
       promptOverride: buildDryRunPrompt(text, intent, context),
-      notice: buildSafeDraftNotice(intent, tonePosture),
+      actions: [
+        { id: "dry_run", label: "Preview only", style: "primary" },
+        { id: "deny", label: "Do not allow", style: "secondary" },
+      ],
+    });
+  }
+
+  if (executionPosture === "approval_once") {
+    return finalize({
+      kind: "guidance",
+      notificationType: "info",
+      message: buildApprovalOnceMessage(intent),
+      actions: [
+        { id: "allow_once", label: "Allow once", style: "primary" },
+        { id: "deny", label: "Do not allow", style: "secondary" },
+      ],
     });
   }
 

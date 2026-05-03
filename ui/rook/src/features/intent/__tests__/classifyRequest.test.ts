@@ -43,6 +43,67 @@ describe("classifyRequest", () => {
     expect(result.executionPosture).toBe("experimental_branch");
   });
 
+  it("routes summarize last commit as direct read-only analysis", () => {
+    const result = classifyRequest("Summarize last commit", context());
+
+    expect(result.mode).toBe("analysis");
+    expect(result.executionPosture).toBe("direct");
+    expect(result.responseMode).toBe("analyze");
+  });
+
+  it("routes check my commit and summarize as direct read-only analysis", () => {
+    const result = classifyRequest("Check my commit and summarize", context());
+
+    expect(result.mode).toBe("analysis");
+    expect(result.executionPosture).toBe("direct");
+  });
+
+  it("routes read-only diff review as analysis", () => {
+    const result = classifyRequest("Review the diff", context());
+
+    expect(result.mode).toBe("analysis");
+    expect(result.executionPosture).toBe("direct");
+  });
+
+  it("routes PR change questions as read-only analysis", () => {
+    const result = classifyRequest("What changed in this PR?", context());
+
+    expect(result.mode).toBe("analysis");
+    expect(result.executionPosture).toBe("direct");
+  });
+
+  it("routes safe local commands to lightweight approval", () => {
+    const result = classifyRequest(
+      "Run tests",
+      context({ workingDirs: ["/repo"], hasWorkingDirectory: true }),
+    );
+
+    expect(result.mode).toBe("execution");
+    expect(result.risk).toBe("medium");
+    expect(result.executionPosture).toBe("approval_once");
+  });
+
+  it("routes explicit commit creation as execution", () => {
+    const result = classifyRequest(
+      "Commit these changes",
+      context({ workingDirs: ["/repo"], hasWorkingDirectory: true }),
+    );
+
+    expect(result.mode).toBe("execution");
+    expect(result.executionPosture).toBe("approval_once");
+  });
+
+  it("routes commit and push as review required", () => {
+    const result = classifyRequest(
+      "Commit and push this change",
+      context({ workingDirs: ["/repo"], hasWorkingDirectory: true }),
+    );
+
+    expect(result.mode).toBe("execution");
+    expect(result.risk).toBe("critical");
+    expect(result.executionPosture).toBe("review_required");
+  });
+
   it("routes destructive file requests to dry run", () => {
     const result = classifyRequest(
       "Delete unused files",
@@ -84,7 +145,7 @@ describe("classifyRequest", () => {
 
   it("multi-hit execution requests get high confidence", () => {
     const result = classifyRequest(
-      "Implement, commit, and push this change",
+      "Implement, commit these changes, and push this change",
       context({ workingDirs: ["/repo"], hasWorkingDirectory: true }),
     );
     expect(result.mode).toBe("execution");

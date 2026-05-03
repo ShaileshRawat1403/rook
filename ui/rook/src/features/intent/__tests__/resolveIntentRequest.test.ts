@@ -26,13 +26,13 @@ describe("resolveIntentRequest — explicit override token", () => {
     expect(intent.executionPosture).not.toBe("override_with_warnings");
   });
 
-  it("does not let override bypass hard_stop or review_required", () => {
-    // No working dir → hard_stop should hold even with override
+  it("does not let override bypass missing context or review_required", () => {
+    // No working dir → clarification should hold even with override
     const { intent: noDir } = resolveIntentRequest(
       "/!override Implement this feature",
       context(),
     );
-    expect(noDir.executionPosture).toBe("hard_stop");
+    expect(noDir.executionPosture).toBe("ask_minimum_clarification");
 
     // External write with Jira issue → review_required should hold
     const { intent: jira } = resolveIntentRequest(
@@ -50,6 +50,37 @@ describe("resolveIntentRequest — explicit override token", () => {
       context(),
     );
     expect(intent.mode).toBe("conversation");
+  });
+});
+
+describe("resolveIntentRequest — approval actions", () => {
+  it("does not gate read-only commit inspection", () => {
+    const { intent, resolution } = resolveIntentRequest(
+      "Summarize last commit",
+      context(),
+    );
+
+    expect(intent.mode).toBe("analysis");
+    expect(intent.executionPosture).toBe("direct");
+    expect(resolution.kind).toBe("send");
+  });
+
+  it("returns allow and deny actions for lightweight approval", () => {
+    const { intent, resolution } = resolveIntentRequest(
+      "Run tests",
+      context({ workingDirs: ["/repo"], hasWorkingDirectory: true }),
+    );
+
+    expect(intent.executionPosture).toBe("approval_once");
+    expect(resolution.kind).toBe("guidance");
+    if (resolution.kind !== "guidance") {
+      throw new Error("Expected guidance resolution");
+    }
+    expect(resolution.message).toContain("Reason:");
+    expect(resolution.actions).toEqual([
+      { id: "allow_once", label: "Allow once", style: "primary" },
+      { id: "deny", label: "Do not allow", style: "secondary" },
+    ]);
   });
 });
 
