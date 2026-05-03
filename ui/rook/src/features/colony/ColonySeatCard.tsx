@@ -9,7 +9,7 @@ import {
   Clock,
   FileText,
 } from "lucide-react";
-import type { ColonySeat, ChatSessionInfo } from "./types";
+import type { ColonySeat, ChatSessionInfo, ColonyTask } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
@@ -49,6 +49,7 @@ const BINDING_COLORS = {
 interface ColonySeatCardProps {
   seat: ColonySeat;
   sessionInfo?: ChatSessionInfo;
+  tasks?: ColonyTask[];
   isActive?: boolean;
   onCreateSession?: () => void;
   onOpenSession?: () => void;
@@ -59,6 +60,7 @@ interface ColonySeatCardProps {
 export function ColonySeatCard({
   seat,
   sessionInfo,
+  tasks,
   isActive,
   onCreateSession,
   onOpenSession,
@@ -71,6 +73,8 @@ export function ColonySeatCard({
   const bindingColor = BINDING_COLORS[seat.binding];
   const isBound = seat.binding === "linked";
   const canOpen = isBound && seat.sessionId;
+
+  const assignedTask = tasks?.find((t) => t.assignedSeatId === seat.id);
 
   return (
     <Card className={`flex flex-col cursor-pointer ${isActive ? "ring-2 ring-accent" : ""}`} onClick={onSelect}>
@@ -149,6 +153,16 @@ export function ColonySeatCard({
           <div className="flex flex-col gap-1">
             <span className="text-xs text-muted-foreground">Provider:</span>
             <span className="text-sm">{seat.providerId ?? "Not assigned"}</span>
+          </div>
+        )}
+
+        {assignedTask && (
+          <div className="flex flex-col gap-1 border-t border-border pt-2">
+            <span className="text-xs font-medium">Assigned Task</span>
+            <span className="text-sm truncate">{assignedTask.title}</span>
+            <Badge variant="secondary" className="text-[10px] w-fit">
+              {assignedTask.status}
+            </Badge>
           </div>
         )}
 

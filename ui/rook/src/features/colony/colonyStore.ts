@@ -5,6 +5,7 @@ import type {
   ColonyRole,
   ColonyEvent,
   ColonyEventType,
+  ColonyTask,
 } from "./types";
 
 interface ColonyStoreState {
@@ -45,8 +46,18 @@ type ColonyStore = ColonyStoreState & {
     seatRole?: ColonyRole,
     seatLabel?: string,
     details?: string,
+    taskId?: string,
+    taskTitle?: string,
   ) => void;
   openSessionForSeat: (colonyId: string, seatId: string) => void;
+  createTask: (colonyId: string, title: string, description?: string) => ColonyTask;
+  assignTaskToSeat: (colonyId: string, taskId: string, seatId: string | null) => void;
+  updateTaskStatus: (
+    colonyId: string,
+    taskId: string,
+    status: ColonyTask["status"],
+  ) => void;
+  deleteTask: (colonyId: string, taskId: string) => void;
 };
 
 const DEFAULT_ROLES: ColonyRole[] = ["planner", "worker", "reviewer"];
@@ -82,6 +93,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       title,
       intent,
       seats,
+      tasks: [],
       sentinelMode: "off",
       createdAt: now,
       updatedAt: now,
@@ -337,5 +349,121 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
         seat.sessionId.slice(0, 8),
       );
     }
+  },
+
+  createTask: (colonyId, title, description) => {
+    const now = new Date().toISOString();
+    const task: ColonyTask = {
+      id: crypto.randomUUID(),
+      title,
+      description,
+      status: "todo",
+      createdAt: now,
+      updatedAt: now,
+    };
+    set((state) => ({
+      colonies: state.colonies.map((c) =>
+        c.id !== colonyId
+          ? c
+          : { ...c, tasks: [...c.tasks, task], updatedAt: now },
+      ),
+    }));
+    get().logEvent("task_created", undefined, undefined, title, task.id, title);
+    return task;
+  },
+
+  assignTaskToSeat: (colonyId, taskId, seatId) => {
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    const task = colony?.tasks.find((t) => t.id === taskId);
+    const seat = seatId ? colony?.seats.find((s) => s.id === seatId) : null;
+    if (!task || !colony) return;
+
+    const now = new Date().toISOString();
+    const newSeatId = seatId ?? null;
+
+    set((state) => ({
+      colonies: state.colonies.map((c) =>
+        c.id !== colonyId
+          ? c
+          : {
+              ...c,
+              tasks: c.tasks.map((t) =>
+                t.id !== taskId
+                  ? t
+                  : { ...t, assignedSeatId: newSeatId ?? undefined, updatedAt: now },
+              ),
+              updatedAt: now,
+            },
+      ),
+    }));
+
+    if (seat) {
+      get().logEvent(
+        "task_assigned",
+        seat.role,
+        seat.label,
+        task.title,
+        task.id,
+        task.title,
+      );
+    } else {
+      get().logEvent("task_assigned", undefined, undefined, task.title, task.id, task.title);
+    }
+  },
+
+  updateTaskStatus: (colonyId, taskId, status) => {
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    const task = colony?.tasks.find((t) => t.id === taskId);
+    if (!task) return;
+
+    const now = new Date().toISOString();
+    set((state) => ({
+      colonies: state.colonies.map((c) =>
+        c.id !== colonyId
+          ? c
+          : {
+              ...c,
+              tasks: c.tasks.map((t) =>
+                t.id !== taskId ? t : { ...t, status, updatedAt: now },
+              ),
+              updatedAt: now,
+            },
+      ),
+    }));
+    get().logEvent(
+      "task_status_changed",
+      undefined,
+      undefined,
+      `${task.title}: ${status}`,
+      task.id,
+      task.title,
+    );
+  },
+
+  deleteTask: (colonyId, taskId) => {
+    const task = get()
+      .colonies.find((c) => c.id === colonyId)
+      ?.tasks.find((t) => t.id === taskId);
+    if (!task) return;
+
+    set((state) => ({
+      colonies: state.colonies.map((c) =>
+        c.id !== colonyId
+          ? c
+          : {
+              ...c,
+              tasks: c.tasks.filter((t) => t.id !== taskId),
+              updatedAt: new Date().toISOString(),
+            },
+      ),
+    }));
+    get().logEvent(
+      "task_deleted",
+      undefined,
+      undefined,
+      task.title,
+      task.id,
+      task.title,
+    );
   },
 }));

@@ -11,6 +11,18 @@ export type ColonySeatStatus =
 
 export type ColonySeatBinding = "unbound" | "linked";
 
+export type ColonyTaskStatus = "todo" | "assigned" | "inProgress" | "blocked" | "done";
+
+export type ColonyTask = {
+  id: string;
+  title: string;
+  description?: string;
+  status: ColonyTaskStatus;
+  assignedSeatId?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type ChatSessionInfo = {
   id: string;
   title: string;
@@ -42,6 +54,7 @@ export type ColonySession = {
   intent: string;
   projectId?: string;
   seats: ColonySeat[];
+  tasks: ColonyTask[];
   activeSeatId?: string;
   sentinelMode: "off" | "dax_open";
   createdAt: string;
@@ -54,13 +67,19 @@ export type ColonyEventType =
   | "seat_unlinked"
   | "active_seat_changed"
   | "sentinel_mode_changed"
-  | "session_opened";
+  | "session_opened"
+  | "task_created"
+  | "task_assigned"
+  | "task_status_changed"
+  | "task_deleted";
 
 export type ColonyEvent = {
   id: string;
   type: ColonyEventType;
   seatRole?: ColonyRole;
   seatLabel?: string;
+  taskId?: string;
+  taskTitle?: string;
   timestamp: string;
   details?: string;
 };

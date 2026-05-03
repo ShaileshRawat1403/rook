@@ -3,12 +3,13 @@ import { Bot, User, Eye } from "lucide-react";
 import { useColonyStore } from "./colonyStore";
 import { ColonySeatCard } from "./ColonySeatCard";
 import { ColonyTranscript } from "./ColonyTranscript";
+import { ColonyTaskBoard } from "./ColonyTaskBoard";
 import { useChatSessionStore } from "@/features/chat/stores/chatSessionStore";
 import { useChatStore } from "@/features/chat/stores/chatStore";
 import { useAgentStore } from "@/features/agents/stores/agentStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import type { AppView } from "@/app/AppShell";
-import type { ChatSessionInfo } from "./types";
+import type { ChatSessionInfo, ColonyTask } from "./types";
 
 const GHOST_ROLES = [
   {
@@ -46,6 +47,10 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     unbindSeat,
     setActiveSeat,
     openSessionForSeat,
+    createTask,
+    assignTaskToSeat,
+    updateTaskStatus,
+    deleteTask,
   } = useColonyStore();
 
   const sessionStore = useChatSessionStore();
@@ -144,6 +149,38 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
       setActiveSeat(activeColonyId, seatId);
     },
     [activeColonyId, setActiveSeat],
+  );
+
+  const handleTaskCreate = useCallback(
+    (title: string, _description?: string) => {
+      if (!activeColonyId) return;
+      createTask(activeColonyId, title);
+    },
+    [activeColonyId, createTask],
+  );
+
+  const handleTaskAssign = useCallback(
+    (taskId: string, seatId: string | null) => {
+      if (!activeColonyId) return;
+      assignTaskToSeat(activeColonyId, taskId, seatId);
+    },
+    [activeColonyId, assignTaskToSeat],
+  );
+
+  const handleTaskStatus = useCallback(
+    (taskId: string, status: ColonyTask["status"]) => {
+      if (!activeColonyId) return;
+      updateTaskStatus(activeColonyId, taskId, status);
+    },
+    [activeColonyId, updateTaskStatus],
+  );
+
+  const handleTaskDelete = useCallback(
+    (taskId: string) => {
+      if (!activeColonyId) return;
+      deleteTask(activeColonyId, taskId);
+    },
+    [activeColonyId, deleteTask],
   );
 
   return (
@@ -250,6 +287,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
                 key={seat.id}
                 seat={seat}
                 sessionInfo={getSessionInfo(seat.sessionId)}
+                tasks={activeColony.tasks}
                 isActive={activeColony.activeSeatId === seat.id}
                 onCreateSession={() =>
                   handleCreateSessionForSeat(seat.id, seat.label)
@@ -261,6 +299,17 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
                 onSelect={() => handleSelectSeat(seat.id)}
               />
             ))}
+          </div>
+
+          <div className="mt-4">
+            <ColonyTaskBoard
+              tasks={activeColony.tasks}
+              seats={activeColony.seats}
+              onCreateTask={handleTaskCreate}
+              onAssignTask={handleTaskAssign}
+              onUpdateStatus={handleTaskStatus}
+              onDeleteTask={handleTaskDelete}
+            />
           </div>
 
           <div className="mt-4 h-48">

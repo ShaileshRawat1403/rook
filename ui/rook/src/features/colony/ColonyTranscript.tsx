@@ -15,6 +15,10 @@ const EVENT_LABELS = {
   active_seat_changed: "Active seat changed",
   sentinel_mode_changed: "Sentinel mode changed",
   session_opened: "Session opened",
+  task_created: "Task created",
+  task_assigned: "Task assigned",
+  task_status_changed: "Task status changed",
+  task_deleted: "Task deleted",
 };
 
 interface ColonyTranscriptProps {
