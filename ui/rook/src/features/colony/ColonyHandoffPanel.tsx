@@ -5,6 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Textarea } from "@/shared/ui/textarea";
 import { Badge } from "@/shared/ui/badge";
+import {
+  getContextLoad,
+  CONTEXT_LOAD_LABELS,
+  CONTEXT_LOAD_CLASSES,
+} from "./contextBudget";
 
 const STATUS_LABELS: Record<ColonyHandoff["status"], string> = {
   draft: "Draft",
@@ -91,6 +96,7 @@ interface ColonyHandoffPanelProps {
   handoffs: ColonyHandoff[];
   seats: { id: string; role: ColonyRole; label: string }[];
   tasks: { id: string; title: string }[];
+  handoffsByTaskId: Record<string, ColonyHandoff[]>;
   onCreateHandoff: (
     fromSeatId: string,
     toSeatId: string,
@@ -110,6 +116,7 @@ export function ColonyHandoffPanel({
   handoffs,
   seats,
   tasks,
+  handoffsByTaskId,
   onCreateHandoff,
   onMarkCopied,
   onDeleteHandoff,
@@ -304,6 +311,22 @@ Do not add scope beyond the assigned task.`;
                   >
                     {STATUS_LABELS[handoff.status]}
                   </Badge>
+                  {(() => {
+                    const taskHandoffs = handoff.taskId
+                      ? handoffsByTaskId[handoff.taskId] ?? []
+                      : [];
+                    const load = getContextLoad(handoff, taskHandoffs);
+                    return (
+                      <Badge
+                        variant="secondary"
+                        className={`text-[10px] ml-1 ${
+                          CONTEXT_LOAD_CLASSES[load]
+                        }`}
+                      >
+                        {CONTEXT_LOAD_LABELS[load]}
+                      </Badge>
+                    );
+                  })()}
                 </div>
                 {handoff.taskId && (
                   <p className="text-xs text-muted-foreground">

@@ -403,6 +403,16 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
               handoffs={activeColony.handoffs}
               seats={activeColony.seats}
               tasks={activeColony.tasks.map((t) => ({ id: t.id, title: t.title }))}
+              handoffsByTaskId={activeColony.handoffs.reduce(
+                (acc, h) => {
+                  if (h.taskId) {
+                    if (!acc[h.taskId]) acc[h.taskId] = [];
+                    acc[h.taskId].push(h);
+                  }
+                  return acc;
+                },
+                {} as Record<string, typeof activeColony.handoffs>,
+              )}
               onCreateHandoff={handleHandoffCreate}
               onMarkCopied={handleHandoffCopy}
               onDeleteHandoff={handleHandoffDelete}

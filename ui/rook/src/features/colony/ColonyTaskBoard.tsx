@@ -4,6 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Badge } from "@/shared/ui/badge";
+import {
+  getContextLoad,
+  CONTEXT_LOAD_LABELS,
+  CONTEXT_LOAD_CLASSES,
+} from "./contextBudget";
 
 const STATUS_LABELS: Record<ColonyTask["status"], string> = {
   todo: "To Do",
@@ -64,14 +69,58 @@ export function ColonyTaskBoard({
     return seat?.label ?? null;
   };
 
+  const renderContextTrail = (taskId: string) => {
+    const taskHandoffs = handoffsByTaskId[taskId] ?? [];
+    if (taskHandoffs.length === 0) return null;
+
+    const load = getContextLoad(
+      taskHandoffs[0] ?? {
+        id: "",
+        fromSeatId: "",
+        toSeatId: "",
+        summary: "",
+        status: "draft",
+        createdAt: "",
+        updatedAt: "",
+      },
+      taskHandoffs,
+    );
+
+    return (
+      <div className="mt-1 flex flex-col gap-1 text-xs">
+        <div className="flex flex-wrap items-center gap-1">
+          <span className="text-muted-foreground">Context:</span>
+          {taskHandoffs.map((h) => (
+            <span
+              key={h.id}
+              className="flex items-center gap-0.5 rounded bg-muted px-1 py-0.5"
+            >
+              {getSeatLabelFromId(h.fromSeatId, seats)}
+              <ArrowRight className="h-2 w-2" />
+              {getSeatLabelFromId(h.toSeatId, seats)}
+            </span>
+          ))}
+        </div>
+        <Badge
+          variant="secondary"
+          className={`text-[10px] w-fit ${
+            CONTEXT_LOAD_CLASSES[load]
+          }`}
+        >
+          {CONTEXT_LOAD_LABELS[load]}
+        </Badge>
+      </div>
+    );
+  };
+
   return (
     <Card className="flex flex-col">
       <CardHeader className="pb-2">
-          <CardTitle className="text-base">Tasks</CardTitle>
-          <p className="text-xs text-muted-foreground">
-            What work exists? Turn intent into assignable work. No prompt is sent automatically.
-          </p>
-        </CardHeader>
+        <CardTitle className="text-base">Tasks</CardTitle>
+        <p className="text-xs text-muted-foreground">
+          What work exists? Turn intent into assignable work. No prompt is sent automatically.
+        </p>
+      </CardHeader>
       <CardContent className="flex flex-col gap-3">
         <form onSubmit={handleSubmit} className="flex gap-2">
           <Input
@@ -117,32 +166,7 @@ export function ColonyTaskBoard({
                       <span>{getSeatLabel(task.assignedSeatId)}</span>
                     </div>
                   )}
-                  {handoffsByTaskId[task.id] && handoffsByTaskId[task.id].length > 0 && (
-                    <div className="mt-1 flex flex-wrap items-center gap-1 text-xs">
-                      <span className="text-muted-foreground">Context:</span>
-                      {handoffsByTaskId[task.id].map((h) => (
-                        <span
-                          key={h.id}
-                          className="flex items-center gap-0.5 rounded bg-muted px-1 py-0.5"
-                        >
-                          {getSeatLabelFromId(h.fromSeatId, seats)}
-                          <ArrowRight className="h-2 w-2" />
-                          {getSeatLabelFromId(h.toSeatId, seats)}
-                          <span
-                            className={`ml-0.5 rounded px-1 ${
-                              h.status === "draft"
-                                ? "bg-muted-foreground text-muted"
-                                : h.status === "ready"
-                                  ? "bg-blue-500 text-white"
-                                  : "bg-green-500 text-white"
-                            }`}
-                          >
-                            {h.status}
-                          </span>
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                  {renderContextTrail(task.id)}
                 </div>
 
                 <select
