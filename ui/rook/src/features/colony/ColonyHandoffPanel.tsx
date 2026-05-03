@@ -1,4 +1,5 @@
-import { ArrowRight, Copy, Trash2 } from "lucide-react";
+import { ArrowRight, Copy, Trash2, FileText } from "lucide-react";
+import { useState } from "react";
 import type { ColonyHandoff, ColonyRole } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
@@ -16,6 +17,75 @@ const STATUS_COLORS: Record<ColonyHandoff["status"], string> = {
   ready: "bg-blue-500 text-white",
   copied: "bg-green-500 text-white",
 };
+
+interface HandoffTemplate {
+  name: string;
+  fromRole: ColonyRole;
+  toRole: ColonyRole;
+  fields: {
+    goal: string;
+    decisionMade: string;
+    constraints: string;
+    filesInvolved: string;
+    nextAction: string;
+    whatNotToChange: string;
+  };
+}
+
+const HANDOFF_TEMPLATES: HandoffTemplate[] = [
+  {
+    name: "Planner → Worker",
+    fromRole: "planner",
+    toRole: "worker",
+    fields: {
+      goal: "What should this work accomplish?",
+      decisionMade: "What decision was made?",
+      constraints: "What are the constraints or requirements?",
+      filesInvolved: "Files or areas to work on:",
+      nextAction: "What should Worker do next:",
+      whatNotToChange: "What not to change or touch:",
+    },
+  },
+  {
+    name: "Worker → Reviewer",
+    fromRole: "worker",
+    toRole: "reviewer",
+    fields: {
+      goal: "What work was completed?",
+      decisionMade: "Implementation approach used:",
+      constraints: "Limitations or boundaries:",
+      filesInvolved: "Files changed:",
+      nextAction: "What needs review:",
+      whatNotToChange: "Do not modify:",
+    },
+  },
+  {
+    name: "Reviewer → Planner",
+    fromRole: "reviewer",
+    toRole: "planner",
+    fields: {
+      goal: "What was reviewed?",
+      decisionMade: "Review finding:",
+      constraints: "Gaps or missing context:",
+      filesInvolved: "Files reviewed:",
+      nextAction: "Recommended next step:",
+      whatNotToChange: "Areas to avoid:",
+    },
+  },
+  {
+    name: "Worker → Sentinel",
+    fromRole: "worker",
+    toRole: "reviewer",
+    fields: {
+      goal: "Work to validate:",
+      decisionMade: "Risk assessment:",
+      constraints: "Safety boundaries:",
+      filesInvolved: "Files checked:",
+      nextAction: "What Sentinel should verify:",
+      whatNotToChange: "Do not approve or execute:",
+    },
+  },
+];
 
 interface ColonyHandoffPanelProps {
   handoffs: ColonyHandoff[];
@@ -39,6 +109,8 @@ export function ColonyHandoffPanel({
   onMarkCopied,
   onDeleteHandoff,
 }: ColonyHandoffPanelProps) {
+  const [selectedTemplate, setSelectedTemplate] = useState<string>("");
+
   const getSeatLabel = (seatId: string) => {
     const seat = seats.find((s) => s.id === seatId);
     return seat?.label ?? "Unknown";
@@ -95,7 +167,7 @@ Do not add scope beyond the assigned task.`;
               .value;
             const taskId = (form.elements.namedItem("taskId") as HTMLSelectElement)
               .value;
-            const summary = (
+            let summary = (
               form.elements.namedItem("summary") as HTMLInputElement
             ).value.trim();
 
@@ -104,6 +176,14 @@ Do not add scope beyond the assigned task.`;
               alert("Choose a different receiving seat.");
               return;
             }
+
+            if (selectedTemplate) {
+              const template = HANDOFF_TEMPLATES.find((t) => t.name === selectedTemplate);
+              if (template && !summary) {
+                summary = `Goal: ${template.fields.goal}\n\nDecision Made: ${template.fields.decisionMade}\n\nConstraints: ${template.fields.constraints}\n\nFiles Involved: ${template.fields.filesInvolved}\n\nNext Action: ${template.fields.nextAction}\n\nDo Not Change: ${template.fields.whatNotToChange}`;
+              }
+            }
+
             if (!summary) {
               alert("Summary is required.");
               return;
@@ -114,6 +194,7 @@ Do not add scope beyond the assigned task.`;
             (form.elements.namedItem("fromSeatId") as HTMLSelectElement).value = "";
             (form.elements.namedItem("toSeatId") as HTMLSelectElement).value = "";
             (form.elements.namedItem("taskId") as HTMLSelectElement).value = "";
+            setSelectedTemplate("");
           }}
           className="flex flex-col gap-2"
         >
@@ -146,6 +227,21 @@ Do not add scope beyond the assigned task.`;
               {seats.map((seat) => (
                 <option key={seat.id} value={seat.id}>
                   {seat.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <FileText className="h-3 w-3 text-muted-foreground" />
+            <select
+              value={selectedTemplate}
+              onChange={(e) => setSelectedTemplate(e.target.value)}
+              className="rounded border border-border bg-background px-2 py-1 text-xs flex-1"
+            >
+              <option value="">Template...</option>
+              {HANDOFF_TEMPLATES.map((template) => (
+                <option key={template.name} value={template.name}>
+                  {template.name}
                 </option>
               ))}
             </select>
