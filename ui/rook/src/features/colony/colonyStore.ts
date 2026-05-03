@@ -49,6 +49,7 @@ logEvent: (
     details?: string,
     taskId?: string,
     taskTitle?: string,
+    handoffId?: string,
   ) => void;
   openSessionForSeat: (colonyId: string, seatId: string) => void;
   createTask: (colonyId: string, title: string, description?: string) => ColonyTask;
@@ -349,7 +350,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
     });
   },
 
-  logEvent: (type, seatRole, seatLabel, details, taskId, taskTitle) => {
+  logEvent: (type, seatRole, seatLabel, details, taskId, taskTitle, handoffId) => {
     const event: ColonyEvent = {
       id: crypto.randomUUID(),
       type,
@@ -359,6 +360,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       details,
       taskId,
       taskTitle,
+      handoffId,
     };
     set((state) => ({
       events: [...state.events, event],
@@ -555,8 +557,9 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       fromSeat.role,
       fromSeat.label,
       `to ${toSeat.label}`,
+      taskId,
+      undefined,
       handoff.id,
-      `to ${toSeat.label}`,
     );
     return handoff;
   },
@@ -585,8 +588,9 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       undefined,
       undefined,
       updates.status ?? "updated",
+      handoff.taskId,
+      undefined,
       handoff.id,
-      updates.status ?? "updated",
     );
   },
 
@@ -617,8 +621,9 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       fromSeat?.role,
       fromSeat?.label,
       "copied",
+      handoff.taskId,
+      undefined,
       handoff.id,
-      "copied",
     );
   },
 
@@ -680,8 +685,9 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       undefined,
       undefined,
       reviewStatus,
+      undefined,
+      reviewNote,
       handoffId,
-      reviewStatus,
     );
   },
 }));

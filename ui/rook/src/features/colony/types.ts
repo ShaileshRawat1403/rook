@@ -102,6 +102,7 @@ export type ColonyEvent = {
   seatLabel?: string;
   taskId?: string;
   taskTitle?: string;
+  handoffId?: string;
   timestamp: string;
   details?: string;
 };
