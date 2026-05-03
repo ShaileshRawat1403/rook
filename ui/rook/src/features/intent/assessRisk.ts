@@ -33,7 +33,11 @@ export function assessRisk(
   }
 
   if (classification.mode === "execution") {
-    score = Math.max(score, RISK_SCORE.high);
+    if (signalMatchesAny(text, intentSignalSets.broadRepoChange)) {
+      score = Math.max(score, RISK_SCORE.high);
+    } else {
+      score = Math.max(score, RISK_SCORE.medium);
+    }
   }
 
   if (classification.mode === "planning" && !context.hasPrdReview) {
@@ -45,7 +49,7 @@ export function assessRisk(
     !context.hasWorkingDirectory &&
     !context.hasAttachments
   ) {
-    score = Math.max(score, RISK_SCORE.critical);
+    score = Math.max(score, RISK_SCORE.medium);
   }
 
   if (context.hasChangedFiles && classification.mode === "execution") {

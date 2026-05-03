@@ -105,6 +105,13 @@ export interface SystemNotificationContent {
   type: "systemNotification";
   notificationType: "compaction" | "info" | "warning" | "error";
   text: string;
+  actions?: SystemNotificationAction[];
+}
+
+export interface SystemNotificationAction {
+  id: string;
+  label: string;
+  style: "primary" | "secondary" | "danger";
 }
 
 export type MessageContent =
@@ -209,12 +216,13 @@ export function createUserMessage(
 export function createSystemNotificationMessage(
   text: string,
   notificationType: SystemNotificationContent["notificationType"] = "info",
+  actions?: SystemNotificationAction[],
 ): Message {
   return {
     id: crypto.randomUUID(),
     role: "system",
     created: Date.now(),
-    content: [{ type: "systemNotification", notificationType, text }],
+    content: [{ type: "systemNotification", notificationType, text, actions }],
     metadata: {
       userVisible: true,
       agentVisible: false,

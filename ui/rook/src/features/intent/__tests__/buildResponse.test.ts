@@ -36,6 +36,8 @@ describe("buildResponse", () => {
     expect(response).toContain("Recommended safer lane");
     expect(response).toContain("experimental branch");
     expect(response).toContain("recovery path");
+    expect(response).toContain("/!override");
+    expect(response).not.toContain("fast lane");
   });
 
   it("hard stop still offers a recovery path", () => {

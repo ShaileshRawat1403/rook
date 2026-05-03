@@ -16,13 +16,23 @@ describe("assessRisk", () => {
     ).toBe("low");
   });
 
-  it("raises code execution without a directory to critical", () => {
+  it("keeps broad code execution without a directory high, not critical", () => {
     const snapshot = context();
     const classification = classifyRequest("Modify the auth flow", snapshot);
 
     expect(assessRisk("Modify the auth flow", snapshot, classification)).toBe(
-      "critical",
+      "high",
     );
+  });
+
+  it("treats safe local commands as medium risk", () => {
+    const snapshot = context({
+      workingDirs: ["/repo"],
+      hasWorkingDirectory: true,
+    });
+    const classification = classifyRequest("Run tests", snapshot);
+
+    expect(assessRisk("Run tests", snapshot, classification)).toBe("medium");
   });
 
   it("marks external write-back as critical", () => {

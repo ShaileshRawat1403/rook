@@ -89,6 +89,7 @@ interface MessageBubbleProps {
   onCopy?: () => void;
   onRetryMessage?: (messageId: string) => void;
   onEditMessage?: (messageId: string) => void;
+  onSystemNotificationAction?: (messageId: string, actionId: string) => void;
 }
 
 interface ContentSection {
@@ -186,6 +187,7 @@ function renderContentBlock(
   options: {
     defaultImageAlt: string;
     redactedThinking: string;
+    onSystemNotificationAction?: (actionId: string) => void;
   },
   isStreamingMsg?: boolean,
   isUserMessage?: boolean,
@@ -266,13 +268,37 @@ function renderContentBlock(
         <div
           key={`notification-${index}`}
           className={cn(
-            "rounded-md border p-2 text-xs",
+            "whitespace-pre-wrap rounded-md border p-2 text-xs",
             isError
               ? "border-danger/30 bg-danger/10 text-danger"
               : "border-border bg-accent text-muted-foreground",
           )}
         >
           {sn.text}
+          {sn.actions?.length ? (
+            <div className="mt-2 flex flex-wrap justify-center gap-2">
+              {sn.actions.map((action) => (
+                <button
+                  key={action.id}
+                  type="button"
+                  onClick={() =>
+                    options.onSystemNotificationAction?.(action.id)
+                  }
+                  className={cn(
+                    "rounded-md border px-2.5 py-1 font-medium text-[11px] transition-colors",
+                    action.style === "primary" &&
+                      "border-primary bg-primary text-primary-foreground hover:bg-primary/90",
+                    action.style === "danger" &&
+                      "border-danger bg-danger text-danger-foreground hover:bg-danger/90",
+                    action.style === "secondary" &&
+                      "border-border bg-background text-foreground hover:bg-muted",
+                  )}
+                >
+                  {action.label}
+                </button>
+              ))}
+            </div>
+          ) : null}
         </div>
       );
     }
@@ -306,6 +332,7 @@ export const MessageBubble = memo(function MessageBubble({
   isStreaming,
   onRetryMessage,
   onEditMessage,
+  onSystemNotificationAction,
 }: MessageBubbleProps) {
   const { t } = useTranslation(["chat", "common"]);
   const { formatDate } = useLocaleFormatting();
@@ -331,6 +358,8 @@ export const MessageBubble = memo(function MessageBubble({
             renderContentBlock(c, i, {
               defaultImageAlt: t("message.defaultImageAlt"),
               redactedThinking: t("message.redactedThinking"),
+              onSystemNotificationAction: (actionId) =>
+                onSystemNotificationAction?.(message.id, actionId),
             }),
           )}
         </div>

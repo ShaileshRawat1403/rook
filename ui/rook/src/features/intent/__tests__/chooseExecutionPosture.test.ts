@@ -19,8 +19,8 @@ describe("chooseExecutionPosture", () => {
     expect(posture("Inspect this")).toBe("ask_minimum_clarification");
   });
 
-  it("hard-stops file execution without a directory", () => {
-    expect(posture("Implement this feature")).toBe("hard_stop");
+  it("asks for context instead of hard-stopping file execution without a directory", () => {
+    expect(posture("Implement this feature")).toBe("ask_minimum_clarification");
   });
 
   it("uses an experimental branch posture for code changes with a directory", () => {
@@ -39,5 +39,14 @@ describe("chooseExecutionPosture", () => {
         context({ workingDirs: ["/repo"], hasWorkingDirectory: true }),
       ),
     ).toBe("dry_run");
+  });
+
+  it("uses lightweight approval for safe local commands", () => {
+    expect(
+      posture(
+        "Run tests",
+        context({ workingDirs: ["/repo"], hasWorkingDirectory: true }),
+      ),
+    ).toBe("approval_once");
   });
 });

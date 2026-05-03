@@ -15,7 +15,7 @@ export function chooseExecutionPosture(
   const text = request.toLowerCase().replace(/\s+/g, " ").trim();
 
   if (signalMatchesAny(text, intentSignalSets.externalWrite)) {
-    return context.hasJiraIssue ? "review_required" : "hard_stop";
+    return "review_required";
   }
 
   if (signalMatchesAny(text, intentSignalSets.destructive)) {
@@ -23,13 +23,18 @@ export function chooseExecutionPosture(
   }
 
   if (classification.mode === "execution") {
-    if (!context.hasWorkingDirectory) return "hard_stop";
+    if (!context.hasWorkingDirectory) return "ask_minimum_clarification";
     if (risk === "critical") return "review_required";
-    return "experimental_branch";
+    if (risk === "high") return "experimental_branch";
+    return "approval_once";
   }
 
   if (classification.mode === "planning") {
     return context.hasPrdReview ? "direct" : "safe_draft";
+  }
+
+  if (classification.executionPosture === "direct") {
+    return "direct";
   }
 
   if (

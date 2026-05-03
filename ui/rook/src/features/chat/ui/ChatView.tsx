@@ -544,6 +544,17 @@ export function ChatView({
     text: string;
     attachments?: ChatAttachmentDraft[];
   } | null>(null);
+  const pendingIntentRequests = useRef<
+    Record<
+      string,
+      {
+        text: string;
+        personaId?: string;
+        attachments?: ChatAttachmentDraft[];
+        promptOverride?: string;
+      }
+    >
+  >({});
   const queue = useMessageQueue(activeSessionId, chatState, sendMessage);
   const chatStore = useChatStore();
   const setCurrentIntent = useIntentStore((s) => s.setCurrent);
@@ -579,13 +590,22 @@ export function ChatView({
       setCurrentIntent(activeSessionId, intent);
 
       if (resolution.kind === "guidance") {
-        chatStore.addMessage(
-          activeSessionId,
-          createSystemNotificationMessage(
-            resolution.message,
-            resolution.notificationType,
-          ),
+        const message = createSystemNotificationMessage(
+          resolution.message,
+          resolution.notificationType,
+          resolution.actions,
         );
+
+        if (resolution.actions?.length) {
+          pendingIntentRequests.current[message.id] = {
+            text,
+            personaId,
+            attachments,
+            promptOverride: resolution.promptOverride,
+          };
+        }
+
+        chatStore.addMessage(activeSessionId, message);
         return;
       }
 
@@ -614,6 +634,64 @@ export function ChatView({
       sendMessage,
       setCurrentIntent,
     ],
+  );
+
+  const handleSystemNotificationAction = useCallback(
+    (messageId: string, actionId: string) => {
+      const pending = pendingIntentRequests.current[messageId];
+
+      const updateNotification = (suffix: string) => {
+        chatStore.updateMessage(activeSessionId, messageId, (message) => ({
+          ...message,
+          content: message.content.map((content) =>
+            content.type === "systemNotification"
+              ? {
+                  ...content,
+                  text: `${content.text}\n\n${suffix}`,
+                  actions: undefined,
+                }
+              : content,
+          ),
+        }));
+      };
+
+      if (actionId === "deny") {
+        delete pendingIntentRequests.current[messageId];
+        updateNotification("No action taken.");
+        return;
+      }
+
+      if (!pending) {
+        updateNotification("This request is no longer available.");
+        return;
+      }
+
+      delete pendingIntentRequests.current[messageId];
+
+      if (actionId !== "allow_once" && actionId !== "dry_run") {
+        updateNotification("No action taken.");
+        return;
+      }
+
+      updateNotification(
+        actionId === "dry_run" ? "Preview only approved." : "Approved once.",
+      );
+
+      if (chatState !== "idle" && !queue.queuedMessage) {
+        queue.enqueue(
+          pending.text,
+          pending.personaId,
+          pending.attachments,
+          pending.promptOverride,
+        );
+        return;
+      }
+
+      sendMessage(pending.text, undefined, pending.attachments, {
+        promptOverride: pending.promptOverride,
+      });
+    },
+    [activeSessionId, chatState, chatStore, queue, sendMessage],
   );
 
   const handleSend = useCallback(
@@ -737,6 +815,7 @@ export function ChatView({
               scrollTargetMessageId={scrollTarget?.messageId ?? null}
               scrollTargetQuery={scrollTarget?.query ?? null}
               onScrollTargetHandled={handleScrollTargetHandled}
+              onSystemNotificationAction={handleSystemNotificationAction}
             />
           )}
 

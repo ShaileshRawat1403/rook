@@ -19,6 +19,7 @@ export type ExecutionPosture =
   | "direct"
   | "ask_minimum_clarification"
   | "safe_draft"
+  | "approval_once"
   | "dry_run"
   | "sandbox"
   | "experimental_branch"

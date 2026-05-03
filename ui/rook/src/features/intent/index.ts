@@ -23,7 +23,10 @@ export {
   buildSafeDraftPrompt,
 } from "./promptContracts";
 export type { RookContextSnapshot } from "./contextSnapshot";
-export type { IntentRequestResolution } from "./resolveIntentRequest";
+export type {
+  IntentRequestResolution,
+  IntentResolutionAction,
+} from "./resolveIntentRequest";
 export type {
   ExecutionPosture,
   IntentClassification,

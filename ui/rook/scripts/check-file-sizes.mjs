@@ -11,9 +11,14 @@ const EXCEPTIONS = {
       "Drag-and-drop handlers for session-to-project moves and project reorder, plus activeProjectId highlight.",
   },
   "src/features/chat/ui/ChatView.tsx": {
-    limit: 840,
+    limit: 910,
     justification:
-      "ACP prewarm guards, project/work-item aware prompt assembly, working context sync, chat bootstrapping, context-ring compaction wiring, slash-help/clear handlers, and context panel composition still live in the main chat surface.",
+      "ACP prewarm guards, project/work-item aware prompt assembly, working context sync, chat bootstrapping, intent approval handoff, context-ring compaction wiring, slash-help/clear handlers, and context panel composition still live in the main chat surface.",
+  },
+  "src/features/chat/ui/MessageBubble.tsx": {
+    limit: 520,
+    justification:
+      "Message rendering still combines text, images, tool chains, system notices, and lightweight intent approval actions in one chat bubble surface.",
   },
   "src/features/chat/hooks/useChat.ts": {
     limit: 530,
