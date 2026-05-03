@@ -37,8 +37,11 @@ export function ColonyTranscript({ maxEntries = 20 }: ColonyTranscriptProps) {
           <Clock className="h-4 w-4" />
           Colony Activity
         </div>
+        <p className="text-xs text-muted-foreground mb-2">
+          Activity logs coordination events only. It does not include chat messages.
+        </p>
         <p className="text-sm text-muted-foreground">
-          No activity yet. Create a colony to get started.
+          No activity yet. Create a task to start coordinating.
         </p>
       </div>
     );
@@ -46,9 +49,14 @@ export function ColonyTranscript({ maxEntries = 20 }: ColonyTranscriptProps) {
 
   return (
     <div className="flex h-full flex-col rounded-lg border border-border bg-card">
-      <div className="flex items-center gap-2 border-b border-border p-3 text-sm font-medium">
-        <Clock className="h-4 w-4" />
-        Colony Activity
+      <div className="flex flex-col border-b border-border p-3">
+        <div className="flex items-center gap-2 text-sm font-medium">
+          <Clock className="h-4 w-4" />
+          Colony Activity
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Coordination events only. Chat messages stay inside sessions.
+        </p>
       </div>
       <ScrollArea className="flex-1 p-3">
         <div className="flex flex-col gap-2">

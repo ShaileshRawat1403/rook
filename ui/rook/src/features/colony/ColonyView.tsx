@@ -92,7 +92,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     createColony(title, "New colony intent");
   }, [createColony]);
 
-  const sentinelLabel = sentinelMode === "off" ? "DAX: off" : "DAX: open";
+  const sentinelLabel = sentinelMode === "off" ? "Sentinel: off" : "Sentinel: open";
 
   const handleCreateSessionForSeat = useCallback(
     (seatId: string, seatLabel: string) => {
@@ -213,7 +213,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
             onClick={handleCreateColony}
             className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-foreground hover:bg-accent/90"
           >
-            New Colony
+            Reset Colony
           </button>
         </div>
       </div>
@@ -250,7 +250,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
             onClick={handleCreateColony}
             className="rounded-md bg-accent px-6 py-3 text-base font-medium text-accent-foreground hover:bg-accent/90"
           >
-            Create Colony
+            Reset Colony
           </button>
         </div>
       ) : (
@@ -262,23 +262,37 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
             </p>
           </div>
 
-          <div className="mb-4 flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">Seats:</span>
-              <span className="text-sm text-muted-foreground">
-                {activeColony.seats.length} / 3
+          <div className="mb-4 flex items-center gap-4 text-sm">
+            <div className="flex items-center gap-1">
+              <span className="font-medium">Seats:</span>
+              <span className="text-muted-foreground">3</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="font-medium">Linked:</span>
+              <span className="text-muted-foreground">
+                {activeColony.seats.filter((s) => s.binding === "linked").length}
+              </span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="font-medium">Tasks:</span>
+              <span className="text-muted-foreground">
+                {activeColony.tasks.length}
               </span>
             </div>
             {activeColony.activeSeatId && (
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium">Active:</span>
-                <span className="text-sm text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <span className="font-medium">Active:</span>
+                <span className="text-muted-foreground">
                   {activeColony.seats.find(
                     (s) => s.id === activeColony.activeSeatId,
                   )?.label ?? "—"}
                 </span>
               </div>
             )}
+            <div className="flex items-center gap-1">
+              <span className="font-medium">Sentinel:</span>
+              <span className="text-muted-foreground">{activeColony.sentinelMode}</span>
+            </div>
           </div>
 
           <div className="grid grid-cols-3 gap-4">

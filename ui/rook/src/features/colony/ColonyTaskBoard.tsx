@@ -56,9 +56,12 @@ export function ColonyTaskBoard({
 
   return (
     <Card className="flex flex-col">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-base">Tasks</CardTitle>
-      </CardHeader>
+<CardHeader className="pb-2">
+          <CardTitle className="text-base">Tasks</CardTitle>
+          <p className="text-xs text-muted-foreground">
+            Assign work to a seat. No prompt is sent automatically.
+          </p>
+        </CardHeader>
       <CardContent className="flex flex-col gap-3">
         <form onSubmit={handleSubmit} className="flex gap-2">
           <Input
@@ -72,8 +75,9 @@ export function ColonyTaskBoard({
         </form>
 
         {tasks.length === 0 ? (
-          <p className="text-xs text-muted-foreground py-2">
-            No tasks yet. Create one to start coordinating.
+          <p className="text-xs text-muted-foreground">
+            No tasks yet. Create a task, assign it to a seat, then open that seat's
+            session to work on it.
           </p>
         ) : (
           <div className="flex flex-col gap-2">

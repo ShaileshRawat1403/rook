@@ -104,11 +104,11 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       timestamp: now,
       details: title,
     };
-    set((state) => ({
-      colonies: [...state.colonies, colony],
+    set({
+      colonies: [colony],
       activeColonyId: id,
-      events: [...state.events, newEvent],
-    }));
+      events: [newEvent],
+    });
     return colony;
   },
 
