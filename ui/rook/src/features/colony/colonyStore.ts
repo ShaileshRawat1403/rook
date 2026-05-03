@@ -142,12 +142,14 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     }
     const now = new Date().toISOString();
     const events = [...get().events];
+    const oldLabel = oldMode === "dax_open" ? "open" : oldMode;
+    const newLabel = mode === "dax_open" ? "open" : mode;
     if (mode !== oldMode) {
       events.push({
         id: crypto.randomUUID(),
         type: "sentinel_mode_changed",
         timestamp: now,
-        details: `${oldMode} → ${mode}`,
+        details: `${oldLabel} → ${newLabel}`,
       });
     }
     set({
