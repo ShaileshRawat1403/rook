@@ -1,5 +1,5 @@
-import { Plus, Trash2, User } from "lucide-react";
-import type { ColonyTask, ColonyRole } from "./types";
+import { Plus, Trash2, User, ArrowRight } from "lucide-react";
+import type { ColonyTask, ColonyRole, ColonyHandoff } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
@@ -24,6 +24,7 @@ const STATUS_COLORS: Record<ColonyTask["status"], string> = {
 interface ColonyTaskBoardProps {
   tasks: ColonyTask[];
   seats: { id: string; role: ColonyRole; label: string }[];
+  handoffsByTaskId: Record<string, ColonyHandoff[]>;
   onCreateTask: (title: string, description?: string) => void;
   onAssignTask: (taskId: string, seatId: string | null) => void;
   onUpdateStatus: (taskId: string, status: ColonyTask["status"]) => void;
@@ -33,6 +34,7 @@ interface ColonyTaskBoardProps {
 export function ColonyTaskBoard({
   tasks,
   seats,
+  handoffsByTaskId,
   onCreateTask,
   onAssignTask,
   onUpdateStatus,
@@ -105,6 +107,32 @@ export function ColonyTaskBoard({
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
                       <User className="h-3 w-3" />
                       <span>{getSeatLabel(task.assignedSeatId)}</span>
+                    </div>
+                  )}
+                  {handoffsByTaskId[task.id] && handoffsByTaskId[task.id].length > 0 && (
+                    <div className="mt-1 flex flex-wrap items-center gap-1 text-xs">
+                      <span className="text-muted-foreground">Context:</span>
+                      {handoffsByTaskId[task.id].map((h) => (
+                        <span
+                          key={h.id}
+                          className="flex items-center gap-0.5 rounded bg-muted px-1 py-0.5"
+                        >
+                          {h.fromSeatId.split("-")[0]}
+                          <ArrowRight className="h-2 w-2" />
+                          {h.toSeatId.split("-")[0]}
+                          <span
+                            className={`ml-0.5 rounded px-1 ${
+                              h.status === "draft"
+                                ? "bg-muted-foreground text-muted"
+                                : h.status === "ready"
+                                  ? "bg-blue-500 text-white"
+                                  : "bg-green-500 text-white"
+                            }`}
+                          >
+                            {h.status}
+                          </span>
+                        </span>
+                      ))}
                     </div>
                   )}
                 </div>

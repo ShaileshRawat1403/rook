@@ -361,6 +361,16 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
             <ColonyTaskBoard
               tasks={activeColony.tasks}
               seats={activeColony.seats}
+              handoffsByTaskId={activeColony.handoffs.reduce(
+                (acc, h) => {
+                  if (h.taskId) {
+                    if (!acc[h.taskId]) acc[h.taskId] = [];
+                    acc[h.taskId].push(h);
+                  }
+                  return acc;
+                },
+                {} as Record<string, typeof activeColony.handoffs>,
+              )}
               onCreateTask={handleTaskCreate}
               onAssignTask={handleTaskAssign}
               onUpdateStatus={handleTaskStatus}
