@@ -4,7 +4,7 @@ import {
   IconLayoutSidebar,
   IconLayoutSidebarFilled,
 } from "@tabler/icons-react";
-import { BookOpen, Bot, History, Home, Search } from "lucide-react";
+import { BookOpen, Bot, History, Home, Search, Users } from "lucide-react";
 import { getDisplaySessionTitle } from "@/features/chat/lib/sessionTitle";
 import { RookIcon } from "@/shared/ui/icons/RookIcon";
 import { cn } from "@/shared/lib/cn";
@@ -119,6 +119,11 @@ export function Sidebar({
         id: "session-history",
         label: t("navigation.sessionHistory"),
         icon: History,
+      },
+      {
+        id: "colony",
+        label: t("navigation.colony"),
+        icon: Users,
       },
     ];
 

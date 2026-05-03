@@ -4,6 +4,7 @@ import { SkillsView } from "@/features/skills/ui/SkillsView";
 import { AgentsView } from "@/features/agents/ui/AgentsView";
 import { ProjectsView } from "@/features/projects/ui/ProjectsView";
 import { SessionHistoryView } from "@/features/sessions/ui/SessionHistoryView";
+import { ColonyView } from "@/features/colony/ColonyView";
 import type { ChatSession } from "@/features/chat/stores/chatSessionStore";
 import type { ChatAttachmentDraft } from "@/shared/types/messages";
 import type { ProjectInfo } from "@/features/projects/api/projects";
@@ -78,6 +79,8 @@ export function AppShellContent({
           onArchiveChat={onArchiveChat}
         />
       );
+    case "colony":
+      return <ColonyView />;
     case "chat":
     case "home":
       return activeSession ? (

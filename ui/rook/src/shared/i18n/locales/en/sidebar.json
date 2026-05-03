@@ -12,6 +12,7 @@
   },
   "navigation": {
     "agents": "Personas",
+    "colony": "Colony",
     "home": "Home",
     "sessionHistory": "Session History",
     "skills": "Skills"
