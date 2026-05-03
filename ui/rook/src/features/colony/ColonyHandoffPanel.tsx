@@ -65,10 +65,14 @@ Use this context to continue the work.
 Do not add scope beyond the assigned task.`;
   };
 
-  const handleCopy = (handoff: ColonyHandoff) => {
+  const handleCopy = async (handoff: ColonyHandoff) => {
     const prompt = generateHandoffPrompt(handoff);
-    navigator.clipboard.writeText(prompt);
-    onMarkCopied(handoff.id);
+    try {
+      await navigator.clipboard.writeText(prompt);
+      onMarkCopied(handoff.id);
+    } catch {
+      console.error("Failed to copy handoff to clipboard");
+    }
   };
 
   return (
@@ -93,16 +97,23 @@ Do not add scope beyond the assigned task.`;
               .value;
             const summary = (
               form.elements.namedItem("summary") as HTMLInputElement
-            ).value;
-            if (fromSeatId && toSeatId) {
-              onCreateHandoff(
-                fromSeatId,
-                toSeatId,
-                taskId || undefined,
-                summary || undefined,
-              );
-              (form.elements.namedItem("summary") as HTMLInputElement).value = "";
+            ).value.trim();
+
+            if (!fromSeatId || !toSeatId) return;
+            if (fromSeatId === toSeatId) {
+              alert("Choose a different receiving seat.");
+              return;
             }
+            if (!summary) {
+              alert("Summary is required.");
+              return;
+            }
+
+            onCreateHandoff(fromSeatId, toSeatId, taskId || undefined, summary);
+            (form.elements.namedItem("summary") as HTMLInputElement).value = "";
+            (form.elements.namedItem("fromSeatId") as HTMLSelectElement).value = "";
+            (form.elements.namedItem("toSeatId") as HTMLSelectElement).value = "";
+            (form.elements.namedItem("taskId") as HTMLSelectElement).value = "";
           }}
           className="flex flex-col gap-2"
         >

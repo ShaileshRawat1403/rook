@@ -525,13 +525,14 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       throw new Error("Invalid colony or seat");
     }
     const now = new Date().toISOString();
+    const isReady = summary.trim().length > 0;
     const handoff: ColonyHandoff = {
       id: crypto.randomUUID(),
       fromSeatId,
       toSeatId,
       taskId,
       summary,
-      status: "draft",
+      status: isReady ? "ready" : "draft",
       createdAt: now,
       updatedAt: now,
     };
