@@ -65,7 +65,7 @@ Context:
 
 Proceeding options:
 1. Ask me to create or use an experimental branch.
-2. Say "fast lane" to continue with warnings and containment.`;
+2. Use /!override to continue with warnings and containment.`;
 }
 
 export function buildApprovalOnceMessage(
