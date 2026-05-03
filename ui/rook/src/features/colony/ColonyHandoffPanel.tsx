@@ -128,6 +128,11 @@ export function ColonyHandoffPanel({
     return task?.title ?? null;
   };
 
+  const isReviewerHandoff = (handoff: ColonyHandoff) => {
+    const toSeat = seats.find((s) => s.id === handoff.toSeatId);
+    return toSeat?.role === "reviewer";
+  };
+
   const generateHandoffPrompt = (handoff: ColonyHandoff) => {
     const fromLabel = getSeatLabel(handoff.fromSeatId);
     const toLabel = getSeatLabel(handoff.toSeatId);
@@ -328,30 +333,38 @@ Do not add scope beyond the assigned task.`;
                     <Trash2 className="h-3 w-3" />
                   </Button>
                 </div>
-                {handoff.toSeatId.includes("reviewer") && (
-                  <div className="flex items-center gap-2 border-t border-border pt-2 mt-1">
+                {isReviewerHandoff(handoff) && handoff.status === "copied" && (
+                  <div className="flex flex-col gap-2 border-t border-border pt-2 mt-1">
                     <span className="text-xs text-muted-foreground">Review:</span>
                     {handoff.reviewStatus ? (
-                      <Badge
-                        variant="secondary"
-                        className={`text-[10px] ${
-                          handoff.reviewStatus === "approved"
-                            ? "bg-green-500 text-white"
-                            : "bg-red-500 text-white"
-                        } ${handoff.reviewStatus}`}
-                      >
-                        {handoff.reviewStatus === "approved" ? (
-                          <>
-                            <Check className="mr-1 h-2 w-2" />
-                            Approved
-                          </>
-                        ) : (
-                          <>
-                            <X className="mr-1 h-2 w-2" />
-                            Rejected
-                          </>
-                        )}
-                      </Badge>
+                      <>
+                        <Badge
+                          variant="secondary"
+                          className={`text-[10px] w-fit ${
+                            handoff.reviewStatus === "approved"
+                              ? "bg-green-500 text-white"
+                              : "bg-red-500 text-white"
+                          }`}
+                        >
+                          {handoff.reviewStatus === "approved" ? (
+                            <>
+                              <Check className="mr-1 h-2 w-2" />
+                              Approved
+                            </>
+                          ) : (
+                            <>
+                              <X className="mr-1 h-2 w-2" />
+                              Rejected
+                            </>
+                          )}
+                        </Badge>
+                        {handoff.reviewStatus === "rejected" &&
+                          handoff.reviewNote && (
+                            <p className="text-xs text-muted-foreground">
+                              Note: {handoff.reviewNote}
+                            </p>
+                          )}
+                      </>
                     ) : (
                       <div className="flex gap-1">
                         <Button
@@ -370,9 +383,14 @@ Do not add scope beyond the assigned task.`;
                           type="button"
                           variant="outline"
                           size="sm"
-                          onClick={() =>
-                            onReviewHandoff(handoff.id, "rejected")
-                          }
+                          onClick={() => {
+                            const note = prompt("Rejection reason (optional):");
+                            onReviewHandoff(
+                              handoff.id,
+                              "rejected",
+                              note || undefined,
+                            );
+                          }}
                           className="h-6 text-xs"
                         >
                           <X className="mr-1 h-2 w-2" />

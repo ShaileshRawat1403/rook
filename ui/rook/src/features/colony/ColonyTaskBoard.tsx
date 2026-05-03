@@ -31,6 +31,14 @@ interface ColonyTaskBoardProps {
   onDeleteTask: (taskId: string) => void;
 }
 
+const getSeatLabelFromId = (
+  seatId: string,
+  seats: { id: string; label: string }[],
+) => {
+  const seat = seats.find((s) => s.id === seatId);
+  return seat?.label ?? seatId;
+};
+
 export function ColonyTaskBoard({
   tasks,
   seats,
@@ -117,9 +125,9 @@ export function ColonyTaskBoard({
                           key={h.id}
                           className="flex items-center gap-0.5 rounded bg-muted px-1 py-0.5"
                         >
-                          {h.fromSeatId.split("-")[0]}
+                          {getSeatLabelFromId(h.fromSeatId, seats)}
                           <ArrowRight className="h-2 w-2" />
-                          {h.toSeatId.split("-")[0]}
+                          {getSeatLabelFromId(h.toSeatId, seats)}
                           <span
                             className={`ml-0.5 rounded px-1 ${
                               h.status === "draft"
