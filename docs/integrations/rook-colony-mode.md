@@ -419,6 +419,45 @@ cargo check
 
 Do not require unrelated full-stack green checks for this first scoped change.
 
+## MVP Behavior
+
+Rook Colony Mode provides a single active coordination workspace.
+
+It supports:
+
+- Planner, Worker, and Reviewer seats
+- seat-to-session binding
+- session metadata previews
+- manual task creation
+- task assignment to seats
+- task status tracking (todo → assigned → inProgress → blocked → done)
+- coordination activity log
+- Sentinel mode visibility
+- Reset Colony behavior
+
+Tasks do not send prompts automatically.
+
+Opening a seat session moves the operator into the linked chat session.
+
+Resetting the colony clears the colony board and activity log, but does not delete linked chat sessions.
+
+### Usage Flow
+
+1. **Create task**: Add a task title in the Tasks board
+2. **Assign seat**: Select a seat (Planner/Worker/Reviewer) from the dropdown
+3. **Open session**: Click "Open Session" on an assigned seat card
+4. **Track activity**: View coordination events in Colony Activity
+5. **Reset**: Click "Reset Colony" to clear the workspace
+
+### Sentinel Values
+
+The UI displays user-facing values:
+
+- `off` (Sentinel disabled)
+- `open` (Sentinel enabled)
+
+Internally, `open` maps to `dax_open` but this value is never shown in the UI.
+
 ## Final Rule
 
 Colony Mode should grow only after each layer proves useful.
