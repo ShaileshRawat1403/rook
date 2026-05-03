@@ -51,10 +51,7 @@ export function ColonyTranscript({ maxEntries = 20 }: ColonyTranscriptProps) {
           {displayEvents.map((event) => {
             const RoleIcon = event.seatRole ? ROLE_ICONS[event.seatRole] : null;
             return (
-              <div
-                key={event.id}
-                className="flex items-start gap-2 text-sm"
-              >
+              <div key={event.id} className="flex items-start gap-2 text-sm">
                 <span className="mt-0.5 text-xs text-muted-foreground">
                   {new Date(event.timestamp).toLocaleTimeString()}
                 </span>

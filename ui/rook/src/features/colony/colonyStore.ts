@@ -1,5 +1,11 @@
 import { create } from "zustand";
-import type { ColonySession, ColonySeat, ColonyRole, ColonyEvent, ColonyEventType } from "./types";
+import type {
+  ColonySession,
+  ColonySeat,
+  ColonyRole,
+  ColonyEvent,
+  ColonyEventType,
+} from "./types";
 
 interface ColonyStoreState {
   colonies: ColonySession[];
@@ -16,7 +22,11 @@ type ColonyStore = ColonyStoreState & {
   deleteColony: (colonyId: string) => void;
   setSentinelMode: (mode: "off" | "dax_open") => void;
   addSeat: (colonyId: string, role: ColonyRole, label: string) => void;
-  updateSeat: (colonyId: string, seatId: string, updates: Partial<ColonySeat>) => void;
+  updateSeat: (
+    colonyId: string,
+    seatId: string,
+    updates: Partial<ColonySeat>,
+  ) => void;
   removeSeat: (colonyId: string, seatId: string) => void;
   setActiveSeat: (colonyId: string, seatId: string | null) => void;
   bindSeatToSession: (
@@ -30,7 +40,12 @@ type ColonyStore = ColonyStoreState & {
     },
   ) => void;
   unbindSeat: (colonyId: string, seatId: string) => void;
-  logEvent: (type: ColonyEventType, seatRole?: ColonyRole, seatLabel?: string, details?: string) => void;
+  logEvent: (
+    type: ColonyEventType,
+    seatRole?: ColonyRole,
+    seatLabel?: string,
+    details?: string,
+  ) => void;
   openSessionForSeat: (colonyId: string, seatId: string) => void;
 };
 
@@ -101,7 +116,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
         colonies: newColonies,
         activeColonyId:
           state.activeColonyId === colonyId
-            ? newColonies[0]?.id ?? null
+            ? (newColonies[0]?.id ?? null)
             : state.activeColonyId,
       };
     });
@@ -126,7 +141,9 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     set({
       sentinelMode: mode,
       colonies: colonies.map((c) =>
-        c.id === activeColonyId ? { ...c, sentinelMode: mode, updatedAt: now } : c,
+        c.id === activeColonyId
+          ? { ...c, sentinelMode: mode, updatedAt: now }
+          : c,
       ),
       events,
     });
@@ -144,7 +161,9 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     };
     set((state) => ({
       colonies: state.colonies.map((c) =>
-        c.id === colonyId ? { ...c, seats: [...c.seats, seat], updatedAt: now } : c,
+        c.id === colonyId
+          ? { ...c, seats: [...c.seats, seat], updatedAt: now }
+          : c,
       ),
     }));
   },
@@ -183,8 +202,8 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
 
   setActiveSeat: (colonyId, seatId) => {
     const seat = seatId
-      ? get().colonies
-          .find((c) => c.id === colonyId)
+      ? get()
+          .colonies.find((c) => c.id === colonyId)
           ?.seats.find((s) => s.id === seatId)
       : null;
     const now = new Date().toISOString();
@@ -204,10 +223,6 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
         return {
           ...c,
           activeSeatId: seatId ?? undefined,
-          seats: c.seats.map((s) => ({
-            ...s,
-            binding: s.id === seatId ? "active" : s.binding,
-          })),
         };
       }),
       events,
@@ -215,8 +230,8 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
   },
 
   bindSeatToSession: (colonyId, seatId, session) => {
-    const seat = get().colonies
-      .find((c) => c.id === colonyId)
+    const seat = get()
+      .colonies.find((c) => c.id === colonyId)
       ?.seats.find((s) => s.id === seatId);
     const now = new Date().toISOString();
     const events = [...get().events];
@@ -256,8 +271,8 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
   },
 
   unbindSeat: (colonyId, seatId) => {
-    const seat = get().colonies
-      .find((c) => c.id === colonyId)
+    const seat = get()
+      .colonies.find((c) => c.id === colonyId)
       ?.seats.find((s) => s.id === seatId);
     const now = new Date().toISOString();
     const events = [...get().events];
@@ -311,11 +326,16 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
   },
 
   openSessionForSeat: (colonyId, seatId) => {
-    const seat = get().colonies
-      .find((c) => c.id === colonyId)
+    const seat = get()
+      .colonies.find((c) => c.id === colonyId)
       ?.seats.find((s) => s.id === seatId);
     if (seat?.sessionId) {
-      get().logEvent("session_opened", seat.role, seat.label, seat.sessionId.slice(0, 8));
+      get().logEvent(
+        "session_opened",
+        seat.role,
+        seat.label,
+        seat.sessionId.slice(0, 8),
+      );
     }
   },
 }));

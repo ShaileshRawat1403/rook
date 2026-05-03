@@ -9,10 +9,18 @@ export type ColonySeatStatus =
   | "done"
   | "failed";
 
-export type ColonySeatBinding =
-  | "unbound"
-  | "linked"
-  | "active";
+export type ColonySeatBinding = "unbound" | "linked";
+
+export type ChatSessionInfo = {
+  id: string;
+  title: string;
+  providerId?: string;
+  modelName?: string;
+  createdAt: string;
+  updatedAt: string;
+  messageCount: number;
+  draft?: boolean;
+};
 
 export type ColonySeat = {
   id: string;

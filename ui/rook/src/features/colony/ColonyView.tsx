@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { Bot, User, Eye } from "lucide-react";
 import { useColonyStore } from "./colonyStore";
 import { ColonySeatCard } from "./ColonySeatCard";
@@ -8,11 +8,27 @@ import { useChatStore } from "@/features/chat/stores/chatStore";
 import { useAgentStore } from "@/features/agents/stores/agentStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import type { AppView } from "@/app/AppShell";
+import type { ChatSessionInfo } from "./types";
 
 const GHOST_ROLES = [
-  { role: "planner", label: "Planner", icon: Bot, desc: "Task direction and reasoning" },
-  { role: "worker", label: "Worker", icon: User, desc: "Task execution and output" },
-  { role: "reviewer", label: "Reviewer", icon: Eye, desc: "Inspection and risk surfacing" },
+  {
+    role: "planner",
+    label: "Planner",
+    icon: Bot,
+    desc: "Task direction and reasoning",
+  },
+  {
+    role: "worker",
+    label: "Worker",
+    icon: User,
+    desc: "Task execution and output",
+  },
+  {
+    role: "reviewer",
+    label: "Reviewer",
+    icon: Eye,
+    desc: "Inspection and risk surfacing",
+  },
 ] as const;
 
 interface ColonyViewProps {
@@ -36,6 +52,33 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
   const chatStore = useChatStore();
   const agentStore = useAgentStore();
 
+  const sessions = sessionStore.sessions;
+
+  const sessionInfoMap = useMemo(() => {
+    const map = new Map<string, ChatSessionInfo>();
+    for (const session of sessions) {
+      map.set(session.id, {
+        id: session.id,
+        title: session.title,
+        providerId: session.providerId,
+        modelName: session.modelName,
+        createdAt: session.createdAt,
+        updatedAt: session.updatedAt,
+        messageCount: session.messageCount,
+        draft: session.draft,
+      });
+    }
+    return map;
+  }, [sessions]);
+
+  const getSessionInfo = useCallback(
+    (sessionId: string | undefined): ChatSessionInfo | undefined => {
+      if (!sessionId) return undefined;
+      return sessionInfoMap.get(sessionId);
+    },
+    [sessionInfoMap],
+  );
+
   const activeColony = colonies.find((c) => c.id === activeColonyId) ?? null;
 
   const handleCreateColony = useCallback(() => {
@@ -44,8 +87,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     createColony(title, "New colony intent");
   }, [createColony]);
 
-  const sentinelLabel =
-    sentinelMode === "off" ? "DAX: off" : "DAX: open";
+  const sentinelLabel = sentinelMode === "off" ? "DAX: off" : "DAX: open";
 
   const handleCreateSessionForSeat = useCallback(
     (seatId: string, seatLabel: string) => {
@@ -64,11 +106,18 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
         projectId: session.projectId ?? undefined,
       });
     },
-    [activeColonyId, activeColony, sessionStore, agentStore.selectedProvider, bindSeatToSession],
+    [
+      activeColonyId,
+      activeColony,
+      sessionStore,
+      agentStore.selectedProvider,
+      bindSeatToSession,
+    ],
   );
 
   const handleOpenSession = useCallback(
-    (sessionId: string, seatId: string) => {
+    async (sessionId: string, seatId: string) => {
+      await sessionStore.loadSessions();
       sessionStore.setActiveSession(sessionId);
       chatStore.setActiveSession(sessionId);
       if (activeColonyId) {
@@ -133,7 +182,8 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
       </div>
 
       <p className="mb-6 text-sm text-muted-foreground">
-        Colony Mode starts as a coordination surface. Execution wiring comes later.
+        Colony Mode starts as a coordination surface. Execution wiring comes
+        later.
       </p>
 
       {!activeColony ? (
@@ -152,9 +202,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
                   <CardTitle className="text-base">{ghost.label}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-xs text-muted-foreground">
-                    {ghost.desc}
-                  </p>
+                  <p className="text-xs text-muted-foreground">{ghost.desc}</p>
                 </CardContent>
               </Card>
             ))}
@@ -172,7 +220,9 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
         <div className="flex flex-1 flex-col overflow-hidden">
           <div className="mb-4 rounded-lg border border-border bg-card p-4">
             <h2 className="text-lg font-medium">{activeColony.title}</h2>
-            <p className="text-sm text-muted-foreground">{activeColony.intent}</p>
+            <p className="text-sm text-muted-foreground">
+              {activeColony.intent}
+            </p>
           </div>
 
           <div className="mb-4 flex items-center gap-4">
@@ -186,8 +236,9 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium">Active:</span>
                 <span className="text-sm text-muted-foreground">
-                  {activeColony.seats.find((s) => s.id === activeColony.activeSeatId)
-                    ?.label ?? "—"}
+                  {activeColony.seats.find(
+                    (s) => s.id === activeColony.activeSeatId,
+                  )?.label ?? "—"}
                 </span>
               </div>
             )}
@@ -198,8 +249,14 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
               <ColonySeatCard
                 key={seat.id}
                 seat={seat}
-                onCreateSession={() => handleCreateSessionForSeat(seat.id, seat.label)}
-                onOpenSession={() => seat.sessionId && handleOpenSession(seat.sessionId, seat.id)}
+                sessionInfo={getSessionInfo(seat.sessionId)}
+                isActive={activeColony.activeSeatId === seat.id}
+                onCreateSession={() =>
+                  handleCreateSessionForSeat(seat.id, seat.label)
+                }
+                onOpenSession={() =>
+                  seat.sessionId && handleOpenSession(seat.sessionId, seat.id)
+                }
                 onUnbindSession={() => handleUnbindSeat(seat.id)}
                 onSelect={() => handleSelectSeat(seat.id)}
               />

@@ -1,5 +1,15 @@
-import { Bot, User, Eye, Link, Unlink, ExternalLink } from "lucide-react";
-import type { ColonySeat } from "./types";
+import {
+  Bot,
+  User,
+  Eye,
+  Link,
+  Unlink,
+  ExternalLink,
+  MessageSquare,
+  Clock,
+  FileText,
+} from "lucide-react";
+import type { ColonySeat, ChatSessionInfo } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
@@ -29,17 +39,17 @@ const STATUS_COLORS = {
 const BINDING_LABELS = {
   unbound: "Unbound",
   linked: "Linked",
-  active: "Active",
 };
 
 const BINDING_COLORS = {
   unbound: "bg-muted text-muted-foreground",
   linked: "bg-green-500 text-white",
-  active: "bg-blue-500 text-white",
 };
 
 interface ColonySeatCardProps {
   seat: ColonySeat;
+  sessionInfo?: ChatSessionInfo;
+  isActive?: boolean;
   onCreateSession?: () => void;
   onOpenSession?: () => void;
   onUnbindSession?: () => void;
@@ -48,6 +58,8 @@ interface ColonySeatCardProps {
 
 export function ColonySeatCard({
   seat,
+  sessionInfo,
+  isActive,
   onCreateSession,
   onOpenSession,
   onUnbindSession,
@@ -57,13 +69,11 @@ export function ColonySeatCard({
   const roleColor = ROLE_COLORS[seat.role];
   const statusColor = STATUS_COLORS[seat.status];
   const bindingColor = BINDING_COLORS[seat.binding];
-  const isBound = seat.binding === "linked" || seat.binding === "active";
+  const isBound = seat.binding === "linked";
+  const canOpen = isBound && seat.sessionId;
 
   return (
-    <Card
-      className="flex flex-col cursor-pointer"
-      onClick={onSelect}
-    >
+    <Card className={`flex flex-col cursor-pointer ${isActive ? "ring-2 ring-accent" : ""}`} onClick={onSelect}>
       <CardHeader className="flex flex-row items-center gap-3 space-y-0 pb-2">
         <div className={`rounded-full p-2 ${roleColor}`}>
           <Icon className="h-4 w-4 text-white" />
@@ -75,7 +85,7 @@ export function ColonySeatCard({
           </p>
         </div>
       </CardHeader>
-      <CardContent className="flex flex-1 flex-col gap-3">
+      <CardContent className="flex flex-1 flex-col gap-2">
         <div className="flex items-center justify-between">
           <span className="text-xs text-muted-foreground">Session:</span>
           <Badge variant="secondary" className={bindingColor}>
@@ -90,24 +100,60 @@ export function ColonySeatCard({
           </Badge>
         </div>
 
-        {isBound && (
-          <div className="flex flex-col gap-1">
-            <span className="text-xs text-muted-foreground">Session ID:</span>
-            <span className="text-xs font-mono truncate">
-              {seat.sessionId?.slice(0, 12) ?? "—"}
-            </span>
+        {isBound && sessionInfo && (
+          <div className="flex flex-col gap-1 border-t border-border pt-2">
+            <span className="text-xs font-medium">Session Preview</span>
+
+            <div className="flex items-center gap-1 text-xs">
+              <FileText className="h-3 w-3 text-muted-foreground" />
+              <span className="truncate font-medium">
+                {sessionInfo.title}
+              </span>
+              {sessionInfo.draft && (
+                <Badge variant="outline" className="text-[10px] ml-1">
+                  Draft
+                </Badge>
+              )}
+            </div>
+
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <span className="font-mono">
+                {sessionInfo.providerId ?? "—"}
+              </span>
+              {sessionInfo.modelName && (
+                <>
+                  <span>/</span>
+                  <span>{sessionInfo.modelName}</span>
+                </>
+              )}
+            </div>
+
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <MessageSquare className="h-3 w-3" />
+                <span>{sessionInfo.messageCount}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                <span>
+                  {sessionInfo.updatedAt
+                    ? new Date(sessionInfo.updatedAt).toLocaleDateString()
+                    : "—"}
+                </span>
+              </div>
+            </div>
           </div>
         )}
 
-        <div className="flex flex-col gap-1">
-          <span className="text-xs text-muted-foreground">Provider:</span>
-          <span className="text-sm">
-            {seat.providerId ?? "Not assigned"}
-          </span>
-        </div>
+        {!sessionInfo && canOpen && (
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-muted-foreground">Provider:</span>
+            <span className="text-sm">{seat.providerId ?? "Not assigned"}</span>
+          </div>
+        )}
 
         <div className="mt-auto flex flex-col gap-2 pt-2">
-          {!isBound ? (
+          {!canOpen ? (
             <Button
               type="button"
               variant="outline"
@@ -156,9 +202,7 @@ export function ColonySeatCard({
         <div className="pt-2">
           <span className="text-xs text-muted-foreground">Last Update:</span>
           <p className="text-xs">
-            {seat.lastUpdate
-              ? new Date(seat.lastUpdate).toLocaleString()
-              : "—"}
+            {seat.lastUpdate ? new Date(seat.lastUpdate).toLocaleString() : "—"}
           </p>
         </div>
       </CardContent>
