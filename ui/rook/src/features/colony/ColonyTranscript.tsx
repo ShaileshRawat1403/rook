@@ -77,10 +77,12 @@ function EventDetailPanel({
             <span className="rounded bg-muted p-2">{event.details}</span>
           </div>
         )}
-        {event.type.startsWith("handoff") && event.id && (
+        {event.handoffId && event.type.startsWith("handoff") && (
           <div className="flex justify-between">
             <span className="text-muted-foreground">Handoff ID</span>
-            <span className="font-mono text-[10px]">{event.id.slice(0, 8)}</span>
+            <span className="font-mono text-[10px]">
+              {event.handoffId.slice(0, 8)}
+            </span>
           </div>
         )}
       </div>

@@ -684,9 +684,9 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       "handoff_updated",
       undefined,
       undefined,
-      reviewStatus,
+      reviewNote ? `${reviewStatus}: ${reviewNote}` : reviewStatus,
       undefined,
-      reviewNote,
+      undefined,
       handoffId,
     );
   },
