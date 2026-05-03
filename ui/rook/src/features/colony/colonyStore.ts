@@ -38,6 +38,7 @@ type ColonyStore = ColonyStoreState & {
       sessionId: string;
       acpSessionId?: string;
       providerId?: string;
+      modelName?: string;
       projectId?: string;
     },
   ) => void;
@@ -290,19 +291,20 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
         if (c.id !== colonyId) return c;
         return {
           ...c,
-          seats: c.seats.map((s) =>
-            s.id === seatId
-              ? {
-                  ...s,
-                  sessionId: session.sessionId,
-                  acpSessionId: session.acpSessionId,
-                  providerId: session.providerId,
-                  projectId: session.projectId,
-                  binding: "linked",
-                  lastUpdate: now,
-                }
-              : s,
-          ),
+seats: c.seats.map((s) =>
+              s.id === seatId
+                ? {
+                    ...s,
+                    sessionId: session.sessionId,
+                    acpSessionId: session.acpSessionId,
+                    providerId: session.providerId,
+                    modelName: session.modelName ?? s.modelName,
+                    projectId: session.projectId,
+                    binding: "linked",
+                    lastUpdate: now,
+                  }
+                : s,
+            ),
           updatedAt: now,
         };
       }),
@@ -353,6 +355,8 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
 
   updateSeatModel: (colonyId, seatId, modelName) => {
     if (!modelName) return;
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    const seat = colony?.seats.find((s) => s.id === seatId);
     set((state) => ({
       colonies: state.colonies.map((c) =>
         c.id !== colonyId
@@ -368,8 +372,18 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
             },
       ),
     }));
-    const colony = get().colonies.find((c) => c.id === colonyId);
-    const seat = colony?.seats.find((s) => s.id === seatId);
+    if (seat?.sessionId) {
+      import("@/features/chat/stores/chatSessionStore")
+        .then(({ useChatSessionStore }) => {
+          const sessionId = seat.sessionId;
+          if (sessionId) {
+            useChatSessionStore.getState().updateSession(sessionId, {
+              modelName,
+            });
+          }
+        })
+        .catch(() => {});
+    }
     if (seat) {
       get().logEvent(
         "seat_model_changed",
