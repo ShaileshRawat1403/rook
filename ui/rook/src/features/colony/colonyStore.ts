@@ -6,6 +6,7 @@ import type {
   ColonyEvent,
   ColonyEventType,
   ColonyTask,
+  ColonyHandoff,
 } from "./types";
 
 interface ColonyStoreState {
@@ -58,6 +59,20 @@ logEvent: (
     status: ColonyTask["status"],
   ) => void;
   deleteTask: (colonyId: string, taskId: string) => void;
+  createHandoff: (
+    colonyId: string,
+    fromSeatId: string,
+    toSeatId: string,
+    taskId?: string,
+    summary?: string,
+  ) => ColonyHandoff;
+  updateHandoff: (
+    colonyId: string,
+    handoffId: string,
+    updates: Partial<ColonyHandoff>,
+  ) => void;
+  markHandoffCopied: (colonyId: string, handoffId: string) => void;
+  deleteHandoff: (colonyId: string, handoffId: string) => void;
 };
 
 const DEFAULT_ROLES: ColonyRole[] = ["planner", "worker", "reviewer"];
@@ -94,6 +109,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       intent,
       seats,
       tasks: [],
+      handoffs: [],
       sentinelMode: "off",
       createdAt: now,
       updatedAt: now,
@@ -498,6 +514,130 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       task.title,
       task.id,
       task.title,
+    );
+  },
+
+  createHandoff: (colonyId, fromSeatId, toSeatId, taskId, summary = "") => {
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    const fromSeat = colony?.seats.find((s) => s.id === fromSeatId);
+    const toSeat = colony?.seats.find((s) => s.id === toSeatId);
+    if (!colony || !fromSeat || !toSeat) {
+      throw new Error("Invalid colony or seat");
+    }
+    const now = new Date().toISOString();
+    const handoff: ColonyHandoff = {
+      id: crypto.randomUUID(),
+      fromSeatId,
+      toSeatId,
+      taskId,
+      summary,
+      status: "draft",
+      createdAt: now,
+      updatedAt: now,
+    };
+    set((state) => ({
+      colonies: state.colonies.map((c) =>
+        c.id !== colonyId
+          ? c
+          : { ...c, handoffs: [...c.handoffs, handoff], updatedAt: now },
+      ),
+    }));
+    get().logEvent(
+      "handoff_created",
+      fromSeat.role,
+      fromSeat.label,
+      `to ${toSeat.label}`,
+      handoff.id,
+      `to ${toSeat.label}`,
+    );
+    return handoff;
+  },
+
+  updateHandoff: (colonyId, handoffId, updates) => {
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    const handoff = colony?.handoffs.find((h) => h.id === handoffId);
+    if (!handoff || !colony) return;
+
+    const now = new Date().toISOString();
+    set((state) => ({
+      colonies: state.colonies.map((c) =>
+        c.id !== colonyId
+          ? c
+          : {
+              ...c,
+              handoffs: c.handoffs.map((h) =>
+                h.id !== handoffId ? h : { ...h, ...updates, updatedAt: now },
+              ),
+              updatedAt: now,
+            },
+      ),
+    }));
+    get().logEvent(
+      "handoff_updated",
+      undefined,
+      undefined,
+      updates.status ?? "updated",
+      handoff.id,
+      updates.status ?? "updated",
+    );
+  },
+
+  markHandoffCopied: (colonyId, handoffId) => {
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    const handoff = colony?.handoffs.find((h) => h.id === handoffId);
+    const fromSeat = colony?.seats.find((s) => s.id === handoff?.fromSeatId);
+    if (!handoff || !colony) return;
+
+    const now = new Date().toISOString();
+    set((state) => ({
+      colonies: state.colonies.map((c) =>
+        c.id !== colonyId
+          ? c
+          : {
+              ...c,
+              handoffs: c.handoffs.map((h) =>
+                h.id !== handoffId
+                  ? h
+                  : { ...h, status: "copied" as const, updatedAt: now },
+              ),
+              updatedAt: now,
+            },
+      ),
+    }));
+    get().logEvent(
+      "handoff_copied",
+      fromSeat?.role,
+      fromSeat?.label,
+      "copied",
+      handoff.id,
+      "copied",
+    );
+  },
+
+  deleteHandoff: (colonyId, handoffId) => {
+    const handoff = get()
+      .colonies.find((c) => c.id === colonyId)
+      ?.handoffs.find((h) => h.id === handoffId);
+    if (!handoff) return;
+
+    set((state) => ({
+      colonies: state.colonies.map((c) =>
+        c.id !== colonyId
+          ? c
+          : {
+              ...c,
+              handoffs: c.handoffs.filter((h) => h.id !== handoffId),
+              updatedAt: new Date().toISOString(),
+            },
+      ),
+    }));
+    get().logEvent(
+      "handoff_deleted",
+      undefined,
+      undefined,
+      "deleted",
+      handoff.id,
+      "deleted",
     );
   },
 }));

@@ -19,6 +19,10 @@ const EVENT_LABELS = {
   task_assigned: "Task assigned",
   task_status_changed: "Task status changed",
   task_deleted: "Task deleted",
+  handoff_created: "Handoff created",
+  handoff_updated: "Handoff updated",
+  handoff_copied: "Handoff copied",
+  handoff_deleted: "Handoff deleted",
 };
 
 interface ColonyTranscriptProps {

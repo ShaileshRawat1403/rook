@@ -4,6 +4,7 @@ import { useColonyStore } from "./colonyStore";
 import { ColonySeatCard } from "./ColonySeatCard";
 import { ColonyTranscript } from "./ColonyTranscript";
 import { ColonyTaskBoard } from "./ColonyTaskBoard";
+import { ColonyHandoffPanel } from "./ColonyHandoffPanel";
 import { useChatSessionStore } from "@/features/chat/stores/chatSessionStore";
 import { useChatStore } from "@/features/chat/stores/chatStore";
 import { useAgentStore } from "@/features/agents/stores/agentStore";
@@ -51,6 +52,9 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     assignTaskToSeat,
     updateTaskStatus,
     deleteTask,
+    createHandoff,
+    markHandoffCopied,
+    deleteHandoff,
   } = useColonyStore();
 
   const sessionStore = useChatSessionStore();
@@ -181,6 +185,35 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
       deleteTask(activeColonyId, taskId);
     },
     [activeColonyId, deleteTask],
+  );
+
+  const handleHandoffCreate = useCallback(
+    (
+      fromSeatId: string,
+      toSeatId: string,
+      taskId?: string,
+      summary?: string,
+    ) => {
+      if (!activeColonyId) return;
+      createHandoff(activeColonyId, fromSeatId, toSeatId, taskId, summary);
+    },
+    [activeColonyId, createHandoff],
+  );
+
+  const handleHandoffCopy = useCallback(
+    (handoffId: string) => {
+      if (!activeColonyId) return;
+      markHandoffCopied(activeColonyId, handoffId);
+    },
+    [activeColonyId, markHandoffCopied],
+  );
+
+  const handleHandoffDelete = useCallback(
+    (handoffId: string) => {
+      if (!activeColonyId) return;
+      deleteHandoff(activeColonyId, handoffId);
+    },
+    [activeColonyId, deleteHandoff],
   );
 
   return (
@@ -323,6 +356,17 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
               onAssignTask={handleTaskAssign}
               onUpdateStatus={handleTaskStatus}
               onDeleteTask={handleTaskDelete}
+            />
+          </div>
+
+          <div className="mt-4">
+            <ColonyHandoffPanel
+              handoffs={activeColony.handoffs}
+              seats={activeColony.seats}
+              tasks={activeColony.tasks.map((t) => ({ id: t.id, title: t.title }))}
+              onCreateHandoff={handleHandoffCreate}
+              onMarkCopied={handleHandoffCopy}
+              onDeleteHandoff={handleHandoffDelete}
             />
           </div>
 

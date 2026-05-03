@@ -23,6 +23,19 @@ export type ColonyTask = {
   updatedAt: string;
 };
 
+export type ColonyHandoffStatus = "draft" | "ready" | "copied";
+
+export type ColonyHandoff = {
+  id: string;
+  fromSeatId: string;
+  toSeatId: string;
+  taskId?: string;
+  summary: string;
+  status: ColonyHandoffStatus;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type ChatSessionInfo = {
   id: string;
   title: string;
@@ -55,6 +68,7 @@ export type ColonySession = {
   projectId?: string;
   seats: ColonySeat[];
   tasks: ColonyTask[];
+  handoffs: ColonyHandoff[];
   activeSeatId?: string;
   sentinelMode: "off" | "dax_open";
   createdAt: string;
@@ -71,7 +85,11 @@ export type ColonyEventType =
   | "task_created"
   | "task_assigned"
   | "task_status_changed"
-  | "task_deleted";
+  | "task_deleted"
+  | "handoff_created"
+  | "handoff_updated"
+  | "handoff_copied"
+  | "handoff_deleted";
 
 export type ColonyEvent = {
   id: string;
