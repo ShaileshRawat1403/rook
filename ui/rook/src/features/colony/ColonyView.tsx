@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { Bot, User, Eye } from "lucide-react";
-import { useColonyStore } from "./colonyStore";
+import { useColonyStore, colonyStore } from "./colonyStore";
 import { ColonySeatCard } from "./ColonySeatCard";
 import { ColonyTranscript } from "./ColonyTranscript";
 import { ColonyTaskBoard } from "./ColonyTaskBoard";
@@ -216,6 +216,23 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     [activeColonyId, deleteHandoff],
   );
 
+  const handleHandoffReview = useCallback(
+    (
+      handoffId: string,
+      reviewStatus: "approved" | "rejected",
+      reviewNote?: string,
+    ) => {
+      if (!activeColonyId) return;
+      colonyStore.getState().reviewHandoff(
+        activeColonyId,
+        handoffId,
+        reviewStatus,
+        reviewNote,
+      );
+    },
+    [activeColonyId],
+  );
+
   return (
     <div className="flex h-full flex-col overflow-hidden p-6">
       <div className="mb-4 flex items-center justify-between">
@@ -389,6 +406,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
               onCreateHandoff={handleHandoffCreate}
               onMarkCopied={handleHandoffCopy}
               onDeleteHandoff={handleHandoffDelete}
+              onReviewHandoff={handleHandoffReview}
             />
           </div>
 

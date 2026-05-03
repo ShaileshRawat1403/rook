@@ -1,4 +1,4 @@
-import { ArrowRight, Copy, Trash2, FileText } from "lucide-react";
+import { ArrowRight, Copy, Trash2, FileText, Check, X } from "lucide-react";
 import { useState } from "react";
 import type { ColonyHandoff, ColonyRole } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
@@ -99,6 +99,11 @@ interface ColonyHandoffPanelProps {
   ) => void;
   onMarkCopied: (handoffId: string) => void;
   onDeleteHandoff: (handoffId: string) => void;
+  onReviewHandoff: (
+    handoffId: string,
+    reviewStatus: "approved" | "rejected",
+    reviewNote?: string,
+  ) => void;
 }
 
 export function ColonyHandoffPanel({
@@ -108,6 +113,7 @@ export function ColonyHandoffPanel({
   onCreateHandoff,
   onMarkCopied,
   onDeleteHandoff,
+  onReviewHandoff,
 }: ColonyHandoffPanelProps) {
   const [selectedTemplate, setSelectedTemplate] = useState<string>("");
 
@@ -322,6 +328,60 @@ Do not add scope beyond the assigned task.`;
                     <Trash2 className="h-3 w-3" />
                   </Button>
                 </div>
+                {handoff.toSeatId.includes("reviewer") && (
+                  <div className="flex items-center gap-2 border-t border-border pt-2 mt-1">
+                    <span className="text-xs text-muted-foreground">Review:</span>
+                    {handoff.reviewStatus ? (
+                      <Badge
+                        variant="secondary"
+                        className={`text-[10px] ${
+                          handoff.reviewStatus === "approved"
+                            ? "bg-green-500 text-white"
+                            : "bg-red-500 text-white"
+                        } ${handoff.reviewStatus}`}
+                      >
+                        {handoff.reviewStatus === "approved" ? (
+                          <>
+                            <Check className="mr-1 h-2 w-2" />
+                            Approved
+                          </>
+                        ) : (
+                          <>
+                            <X className="mr-1 h-2 w-2" />
+                            Rejected
+                          </>
+                        )}
+                      </Badge>
+                    ) : (
+                      <div className="flex gap-1">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            onReviewHandoff(handoff.id, "approved")
+                          }
+                          className="h-6 text-xs"
+                        >
+                          <Check className="mr-1 h-2 w-2" />
+                          Approve
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            onReviewHandoff(handoff.id, "rejected")
+                          }
+                          className="h-6 text-xs"
+                        >
+                          <X className="mr-1 h-2 w-2" />
+                          Reject
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>

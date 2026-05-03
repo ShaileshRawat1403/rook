@@ -25,6 +25,8 @@ export type ColonyTask = {
 
 export type ColonyHandoffStatus = "draft" | "ready" | "copied";
 
+export type ColonyHandoffReviewStatus = "pending" | "approved" | "rejected";
+
 export type ColonyHandoff = {
   id: string;
   fromSeatId: string;
@@ -32,6 +34,8 @@ export type ColonyHandoff = {
   taskId?: string;
   summary: string;
   status: ColonyHandoffStatus;
+  reviewStatus?: ColonyHandoffReviewStatus;
+  reviewNote?: string;
   createdAt: string;
   updatedAt: string;
 };

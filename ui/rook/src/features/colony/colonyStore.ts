@@ -73,15 +73,22 @@ logEvent: (
   ) => void;
   markHandoffCopied: (colonyId: string, handoffId: string) => void;
   deleteHandoff: (colonyId: string, handoffId: string) => void;
+  reviewHandoff: (
+    colonyId: string,
+    handoffId: string,
+    reviewStatus: "approved" | "rejected",
+    reviewNote?: string,
+  ) => void;
 };
 
 const DEFAULT_ROLES: ColonyRole[] = ["planner", "worker", "reviewer"];
 
-export const useColonyStore = create<ColonyStore>((set, get) => ({
+export const colonyStore = create<ColonyStore>((set, get) => ({
   colonies: [],
   activeColonyId: null,
   sentinelMode: "off",
   events: [],
+  availableProviders: [],
 
   getActiveColony: () => {
     const { colonies, activeColonyId } = get();
@@ -641,4 +648,42 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       "deleted",
     );
   },
+
+  reviewHandoff: (
+    colonyId,
+    handoffId,
+    reviewStatus,
+    reviewNote,
+  ) => {
+    set((state) => ({
+      colonies: state.colonies.map((c) =>
+        c.id !== colonyId
+          ? c
+          : {
+              ...c,
+              handoffs: c.handoffs.map((h) =>
+                h.id !== handoffId
+                  ? h
+                  : {
+                      ...h,
+                      reviewStatus,
+                      reviewNote: reviewNote ?? h.reviewNote,
+                      updatedAt: new Date().toISOString(),
+                    },
+              ),
+              updatedAt: new Date().toISOString(),
+            },
+      ),
+    }));
+    get().logEvent(
+      "handoff_updated",
+      undefined,
+      undefined,
+      reviewStatus,
+      handoffId,
+      reviewStatus,
+    );
+  },
 }));
+
+export const useColonyStore = colonyStore;
