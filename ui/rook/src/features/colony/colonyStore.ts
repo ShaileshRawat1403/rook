@@ -18,6 +18,17 @@ type ColonyStore = ColonyStoreState & {
   updateSeat: (colonyId: string, seatId: string, updates: Partial<ColonySeat>) => void;
   removeSeat: (colonyId: string, seatId: string) => void;
   setActiveSeat: (colonyId: string, seatId: string | null) => void;
+  bindSeatToSession: (
+    colonyId: string,
+    seatId: string,
+    session: {
+      sessionId: string;
+      acpSessionId?: string;
+      providerId?: string;
+      projectId?: string;
+    },
+  ) => void;
+  unbindSeat: (colonyId: string, seatId: string) => void;
 };
 
 const DEFAULT_ROLES: ColonyRole[] = ["planner", "worker", "reviewer"];
@@ -43,6 +54,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       id: crypto.randomUUID(),
       role,
       label: role.charAt(0).toUpperCase() + role.slice(1),
+      binding: "unbound",
       status: "idle",
       lastUpdate: now,
     }));
@@ -107,6 +119,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       id: crypto.randomUUID(),
       role,
       label,
+      binding: "unbound",
       status: "idle",
       lastUpdate: now,
     };
@@ -156,7 +169,72 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
   setActiveSeat: (colonyId, seatId) => {
     set((state) => ({
       colonies: state.colonies.map((c) =>
-        c.id === colonyId ? { ...c, activeSeatId: seatId ?? undefined } : c,
+        c.id === colonyId
+          ? {
+              ...c,
+              activeSeatId: seatId ?? undefined,
+              seats: c.seats.map((s) => ({
+                ...s,
+                binding: s.id === seatId ? "active" : s.binding,
+              })),
+            }
+          : c,
+      ),
+    }));
+  },
+
+  bindSeatToSession: (colonyId, seatId, session) => {
+    const now = new Date().toISOString();
+    set((state) => ({
+      colonies: state.colonies.map((c) =>
+        c.id === colonyId
+          ? {
+              ...c,
+              seats: c.seats.map((s) =>
+                s.id === seatId
+                  ? {
+                      ...s,
+                      sessionId: session.sessionId,
+                      acpSessionId: session.acpSessionId,
+                      providerId: session.providerId,
+                      projectId: session.projectId,
+                      binding: "linked",
+                      lastUpdate: now,
+                    }
+                  : s,
+              ),
+              updatedAt: now,
+            }
+          : c,
+      ),
+    }));
+  },
+
+  unbindSeat: (colonyId, seatId) => {
+    const now = new Date().toISOString();
+    set((state) => ({
+      colonies: state.colonies.map((c) =>
+        c.id === colonyId
+          ? {
+              ...c,
+              seats: c.seats.map((s) =>
+                s.id === seatId
+                  ? {
+                      ...s,
+                      sessionId: undefined,
+                      acpSessionId: undefined,
+                      providerId: undefined,
+                      projectId: undefined,
+                      binding: "unbound",
+                      lastUpdate: now,
+                    }
+                  : s,
+              ),
+              activeSeatId:
+                c.activeSeatId === seatId ? undefined : c.activeSeatId,
+              updatedAt: now,
+            }
+          : c,
       ),
     }));
   },

@@ -9,6 +9,11 @@ export type ColonySeatStatus =
   | "done"
   | "failed";
 
+export type ColonySeatBinding =
+  | "unbound"
+  | "linked"
+  | "active";
+
 export type ColonySeat = {
   id: string;
   role: ColonyRole;
@@ -17,6 +22,7 @@ export type ColonySeat = {
   sessionId?: string;
   acpSessionId?: string;
   projectId?: string;
+  binding: ColonySeatBinding;
   status: ColonySeatStatus;
   currentTask?: string;
   lastUpdate?: string;

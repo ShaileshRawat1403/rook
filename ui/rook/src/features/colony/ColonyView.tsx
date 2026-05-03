@@ -1,6 +1,10 @@
+import { useCallback } from "react";
 import { Bot, User, Eye } from "lucide-react";
 import { useColonyStore } from "./colonyStore";
 import { ColonySeatCard } from "./ColonySeatCard";
+import { useChatSessionStore } from "@/features/chat/stores/chatSessionStore";
+import { useChatStore } from "@/features/chat/stores/chatStore";
+import { useAgentStore } from "@/features/agents/stores/agentStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 
 const GHOST_ROLES = [
@@ -10,19 +14,75 @@ const GHOST_ROLES = [
 ] as const;
 
 export function ColonyView() {
-  const { colonies, activeColonyId, sentinelMode, setSentinelMode, createColony } =
-    useColonyStore();
+  const {
+    colonies,
+    activeColonyId,
+    sentinelMode,
+    setSentinelMode,
+    createColony,
+    bindSeatToSession,
+    unbindSeat,
+    setActiveSeat,
+  } = useColonyStore();
+
+  const sessionStore = useChatSessionStore();
+  const chatStore = useChatStore();
+  const agentStore = useAgentStore();
 
   const activeColony = colonies.find((c) => c.id === activeColonyId) ?? null;
 
-  const handleCreateColony = () => {
+  const handleCreateColony = useCallback(() => {
     const now = new Date().toISOString();
     const title = `Colony ${new Date(now).toLocaleDateString()}`;
     createColony(title, "New colony intent");
-  };
+  }, [createColony]);
 
   const sentinelLabel =
     sentinelMode === "off" ? "DAX: off" : "DAX: open";
+
+  const handleCreateSessionForSeat = useCallback(
+    (seatId: string, seatLabel: string) => {
+      if (!activeColonyId || !activeColony) return;
+
+      const session = sessionStore.createDraftSession({
+        title: `Colony: ${seatLabel}`,
+        projectId: activeColony.projectId,
+        providerId: agentStore.selectedProvider,
+      });
+
+      bindSeatToSession(activeColonyId, seatId, {
+        sessionId: session.id,
+        acpSessionId: session.acpSessionId,
+        providerId: session.providerId,
+        projectId: session.projectId ?? undefined,
+      });
+    },
+    [activeColonyId, activeColony, sessionStore, agentStore.selectedProvider, bindSeatToSession],
+  );
+
+  const handleOpenSession = useCallback(
+    (sessionId: string) => {
+      sessionStore.setActiveSession(sessionId);
+      chatStore.setActiveSession(sessionId);
+    },
+    [sessionStore, chatStore],
+  );
+
+  const handleUnbindSeat = useCallback(
+    (seatId: string) => {
+      if (!activeColonyId) return;
+      unbindSeat(activeColonyId, seatId);
+    },
+    [activeColonyId, unbindSeat],
+  );
+
+  const handleSelectSeat = useCallback(
+    (seatId: string) => {
+      if (!activeColonyId) return;
+      setActiveSeat(activeColonyId, seatId);
+    },
+    [activeColonyId, setActiveSeat],
+  );
 
   return (
     <div className="flex h-full flex-col overflow-hidden p-6">
@@ -102,16 +162,34 @@ export function ColonyView() {
             <p className="text-sm text-muted-foreground">{activeColony.intent}</p>
           </div>
 
-          <div className="mb-4 flex items-center gap-2">
-            <span className="text-sm font-medium">Seats:</span>
-            <span className="text-sm text-muted-foreground">
-              {activeColony.seats.length} / 3
-            </span>
+          <div className="mb-4 flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium">Seats:</span>
+              <span className="text-sm text-muted-foreground">
+                {activeColony.seats.length} / 3
+              </span>
+            </div>
+            {activeColony.activeSeatId && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">Active:</span>
+                <span className="text-sm text-muted-foreground">
+                  {activeColony.seats.find((s) => s.id === activeColony.activeSeatId)
+                    ?.label ?? "—"}
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="grid flex-1 grid-cols-3 gap-4 overflow-auto">
             {activeColony.seats.map((seat) => (
-              <ColonySeatCard key={seat.id} seat={seat} />
+              <ColonySeatCard
+                key={seat.id}
+                seat={seat}
+                onCreateSession={() => handleCreateSessionForSeat(seat.id, seat.label)}
+                onOpenSession={() => seat.sessionId && handleOpenSession(seat.sessionId)}
+                onUnbindSession={() => handleUnbindSeat(seat.id)}
+                onSelect={() => handleSelectSeat(seat.id)}
+              />
             ))}
           </div>
         </div>

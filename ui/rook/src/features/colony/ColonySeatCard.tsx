@@ -1,7 +1,8 @@
-import { Bot, User, Eye } from "lucide-react";
+import { Bot, User, Eye, Link, Unlink, ExternalLink } from "lucide-react";
 import type { ColonySeat } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Badge } from "@/shared/ui/badge";
+import { Button } from "@/shared/ui/button";
 
 const ROLE_ICONS = {
   planner: Bot,
@@ -25,17 +26,44 @@ const STATUS_COLORS = {
   failed: "bg-red-600 text-white",
 };
 
+const BINDING_LABELS = {
+  unbound: "Unbound",
+  linked: "Linked",
+  active: "Active",
+};
+
+const BINDING_COLORS = {
+  unbound: "bg-muted text-muted-foreground",
+  linked: "bg-green-500 text-white",
+  active: "bg-blue-500 text-white",
+};
+
 interface ColonySeatCardProps {
   seat: ColonySeat;
+  onCreateSession?: () => void;
+  onOpenSession?: () => void;
+  onUnbindSession?: () => void;
+  onSelect?: () => void;
 }
 
-export function ColonySeatCard({ seat }: ColonySeatCardProps) {
+export function ColonySeatCard({
+  seat,
+  onCreateSession,
+  onOpenSession,
+  onUnbindSession,
+  onSelect,
+}: ColonySeatCardProps) {
   const Icon = ROLE_ICONS[seat.role];
   const roleColor = ROLE_COLORS[seat.role];
   const statusColor = STATUS_COLORS[seat.status];
+  const bindingColor = BINDING_COLORS[seat.binding];
+  const isBound = seat.binding === "linked" || seat.binding === "active";
 
   return (
-    <Card className="flex flex-col">
+    <Card
+      className="flex flex-col cursor-pointer"
+      onClick={onSelect}
+    >
       <CardHeader className="flex flex-row items-center gap-3 space-y-0 pb-2">
         <div className={`rounded-full p-2 ${roleColor}`}>
           <Icon className="h-4 w-4 text-white" />
@@ -49,24 +77,83 @@ export function ColonySeatCard({ seat }: ColonySeatCardProps) {
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-3">
         <div className="flex items-center justify-between">
+          <span className="text-xs text-muted-foreground">Session:</span>
+          <Badge variant="secondary" className={bindingColor}>
+            {BINDING_LABELS[seat.binding]}
+          </Badge>
+        </div>
+
+        <div className="flex items-center justify-between">
           <span className="text-xs text-muted-foreground">Status:</span>
           <Badge variant="secondary" className={statusColor}>
             {seat.status}
           </Badge>
         </div>
-        <div className="flex flex-col gap-1">
-          <span className="text-xs text-muted-foreground">Current Task:</span>
-          <span className="text-sm">
-            {seat.currentTask ?? "No task yet"}
-          </span>
-        </div>
+
+        {isBound && (
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-muted-foreground">Session ID:</span>
+            <span className="text-xs font-mono truncate">
+              {seat.sessionId?.slice(0, 12) ?? "—"}
+            </span>
+          </div>
+        )}
+
         <div className="flex flex-col gap-1">
           <span className="text-xs text-muted-foreground">Provider:</span>
           <span className="text-sm">
             {seat.providerId ?? "Not assigned"}
           </span>
         </div>
-        <div className="mt-auto pt-2">
+
+        <div className="mt-auto flex flex-col gap-2 pt-2">
+          {!isBound ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onCreateSession?.();
+              }}
+              className="w-full"
+            >
+              <Link className="mr-2 h-3 w-3" />
+              Create Session
+            </Button>
+          ) : (
+            <>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenSession?.();
+                }}
+                className="w-full"
+              >
+                <ExternalLink className="mr-2 h-3 w-3" />
+                Open Session
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onUnbindSession?.();
+                }}
+                className="w-full text-muted-foreground"
+              >
+                <Unlink className="mr-2 h-3 w-3" />
+                Unlink
+              </Button>
+            </>
+          )}
+        </div>
+
+        <div className="pt-2">
           <span className="text-xs text-muted-foreground">Last Update:</span>
           <p className="text-xs">
             {seat.lastUpdate
