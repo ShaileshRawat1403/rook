@@ -40,6 +40,23 @@ export type ColonySession = {
   updatedAt: string;
 };
 
+export type ColonyEventType =
+  | "colony_created"
+  | "seat_linked"
+  | "seat_unlinked"
+  | "active_seat_changed"
+  | "sentinel_mode_changed"
+  | "session_opened";
+
+export type ColonyEvent = {
+  id: string;
+  type: ColonyEventType;
+  seatRole?: ColonyRole;
+  seatLabel?: string;
+  timestamp: string;
+  details?: string;
+};
+
 export type ColonyState = {
   currentColony: ColonySession | null;
   colonies: ColonySession[];

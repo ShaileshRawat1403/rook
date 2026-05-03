@@ -2,10 +2,12 @@ import { useCallback } from "react";
 import { Bot, User, Eye } from "lucide-react";
 import { useColonyStore } from "./colonyStore";
 import { ColonySeatCard } from "./ColonySeatCard";
+import { ColonyTranscript } from "./ColonyTranscript";
 import { useChatSessionStore } from "@/features/chat/stores/chatSessionStore";
 import { useChatStore } from "@/features/chat/stores/chatStore";
 import { useAgentStore } from "@/features/agents/stores/agentStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import type { AppView } from "@/app/AppShell";
 
 const GHOST_ROLES = [
   { role: "planner", label: "Planner", icon: Bot, desc: "Task direction and reasoning" },
@@ -13,7 +15,11 @@ const GHOST_ROLES = [
   { role: "reviewer", label: "Reviewer", icon: Eye, desc: "Inspection and risk surfacing" },
 ] as const;
 
-export function ColonyView() {
+interface ColonyViewProps {
+  onNavigate?: (view: AppView) => void;
+}
+
+export function ColonyView({ onNavigate }: ColonyViewProps) {
   const {
     colonies,
     activeColonyId,
@@ -23,6 +29,7 @@ export function ColonyView() {
     bindSeatToSession,
     unbindSeat,
     setActiveSeat,
+    openSessionForSeat,
   } = useColonyStore();
 
   const sessionStore = useChatSessionStore();
@@ -61,11 +68,17 @@ export function ColonyView() {
   );
 
   const handleOpenSession = useCallback(
-    (sessionId: string) => {
+    (sessionId: string, seatId: string) => {
       sessionStore.setActiveSession(sessionId);
       chatStore.setActiveSession(sessionId);
+      if (activeColonyId) {
+        openSessionForSeat(activeColonyId, seatId);
+      }
+      if (onNavigate) {
+        onNavigate("chat");
+      }
     },
-    [sessionStore, chatStore],
+    [sessionStore, chatStore, activeColonyId, openSessionForSeat, onNavigate],
   );
 
   const handleUnbindSeat = useCallback(
@@ -186,11 +199,15 @@ export function ColonyView() {
                 key={seat.id}
                 seat={seat}
                 onCreateSession={() => handleCreateSessionForSeat(seat.id, seat.label)}
-                onOpenSession={() => seat.sessionId && handleOpenSession(seat.sessionId)}
+                onOpenSession={() => seat.sessionId && handleOpenSession(seat.sessionId, seat.id)}
                 onUnbindSession={() => handleUnbindSeat(seat.id)}
                 onSelect={() => handleSelectSeat(seat.id)}
               />
             ))}
+          </div>
+
+          <div className="mt-4 h-48">
+            <ColonyTranscript />
           </div>
         </div>
       )}

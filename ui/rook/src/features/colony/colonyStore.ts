@@ -1,10 +1,11 @@
 import { create } from "zustand";
-import type { ColonySession, ColonySeat, ColonyRole } from "./types";
+import type { ColonySession, ColonySeat, ColonyRole, ColonyEvent, ColonyEventType } from "./types";
 
 interface ColonyStoreState {
   colonies: ColonySession[];
   activeColonyId: string | null;
   sentinelMode: "off" | "dax_open";
+  events: ColonyEvent[];
 }
 
 type ColonyStore = ColonyStoreState & {
@@ -29,6 +30,8 @@ type ColonyStore = ColonyStoreState & {
     },
   ) => void;
   unbindSeat: (colonyId: string, seatId: string) => void;
+  logEvent: (type: ColonyEventType, seatRole?: ColonyRole, seatLabel?: string, details?: string) => void;
+  openSessionForSeat: (colonyId: string, seatId: string) => void;
 };
 
 const DEFAULT_ROLES: ColonyRole[] = ["planner", "worker", "reviewer"];
@@ -37,6 +40,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
   colonies: [],
   activeColonyId: null,
   sentinelMode: "off",
+  events: [],
 
   getActiveColony: () => {
     const { colonies, activeColonyId } = get();
@@ -67,19 +71,25 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       createdAt: now,
       updatedAt: now,
     };
+    const newEvent: ColonyEvent = {
+      id: crypto.randomUUID(),
+      type: "colony_created",
+      timestamp: now,
+      details: title,
+    };
     set((state) => ({
       colonies: [...state.colonies, colony],
       activeColonyId: id,
+      events: [...state.events, newEvent],
     }));
     return colony;
   },
 
   updateColony: (colonyId, updates) => {
+    const now = new Date().toISOString();
     set((state) => ({
       colonies: state.colonies.map((c) =>
-        c.id === colonyId
-          ? { ...c, ...updates, updatedAt: new Date().toISOString() }
-          : c,
+        c.id === colonyId ? { ...c, ...updates, updatedAt: now } : c,
       ),
     }));
   },
@@ -98,18 +108,27 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
   },
 
   setSentinelMode: (mode) => {
-    const { activeColonyId, colonies } = get();
+    const { activeColonyId, colonies, sentinelMode: oldMode } = get();
     if (!activeColonyId) {
       set({ sentinelMode: mode });
       return;
     }
+    const now = new Date().toISOString();
+    const events = [...get().events];
+    if (mode !== oldMode) {
+      events.push({
+        id: crypto.randomUUID(),
+        type: "sentinel_mode_changed",
+        timestamp: now,
+        details: `${oldMode} → ${mode}`,
+      });
+    }
     set({
       sentinelMode: mode,
       colonies: colonies.map((c) =>
-        c.id === activeColonyId
-          ? { ...c, sentinelMode: mode, updatedAt: new Date().toISOString() }
-          : c,
+        c.id === activeColonyId ? { ...c, sentinelMode: mode, updatedAt: now } : c,
       ),
+      events,
     });
   },
 
@@ -125,25 +144,22 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     };
     set((state) => ({
       colonies: state.colonies.map((c) =>
-        c.id === colonyId
-          ? { ...c, seats: [...c.seats, seat], updatedAt: now }
-          : c,
+        c.id === colonyId ? { ...c, seats: [...c.seats, seat], updatedAt: now } : c,
       ),
     }));
   },
 
   updateSeat: (colonyId, seatId, updates) => {
+    const now = new Date().toISOString();
     set((state) => ({
       colonies: state.colonies.map((c) =>
         c.id === colonyId
           ? {
               ...c,
               seats: c.seats.map((s) =>
-                s.id === seatId
-                  ? { ...s, ...updates, lastUpdate: new Date().toISOString() }
-                  : s,
+                s.id === seatId ? { ...s, ...updates, lastUpdate: now } : s,
               ),
-              updatedAt: new Date().toISOString(),
+              updatedAt: now,
             }
           : c,
       ),
@@ -151,91 +167,155 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
   },
 
   removeSeat: (colonyId, seatId) => {
+    const now = new Date().toISOString();
     set((state) => ({
-      colonies: state.colonies.map((c) =>
-        c.id === colonyId
-          ? {
-              ...c,
-              seats: c.seats.filter((s) => s.id !== seatId),
-              activeSeatId:
-                c.activeSeatId === seatId ? undefined : c.activeSeatId,
-              updatedAt: new Date().toISOString(),
-            }
-          : c,
-      ),
+      colonies: state.colonies.map((c) => {
+        if (c.id !== colonyId) return c;
+        return {
+          ...c,
+          seats: c.seats.filter((s) => s.id !== seatId),
+          activeSeatId: c.activeSeatId === seatId ? undefined : c.activeSeatId,
+          updatedAt: now,
+        };
+      }),
     }));
   },
 
   setActiveSeat: (colonyId, seatId) => {
-    set((state) => ({
-      colonies: state.colonies.map((c) =>
-        c.id === colonyId
-          ? {
-              ...c,
-              activeSeatId: seatId ?? undefined,
-              seats: c.seats.map((s) => ({
-                ...s,
-                binding: s.id === seatId ? "active" : s.binding,
-              })),
-            }
-          : c,
-      ),
-    }));
+    const seat = seatId
+      ? get().colonies
+          .find((c) => c.id === colonyId)
+          ?.seats.find((s) => s.id === seatId)
+      : null;
+    const now = new Date().toISOString();
+    const events = [...get().events];
+    if (seatId && seat) {
+      events.push({
+        id: crypto.randomUUID(),
+        type: "active_seat_changed",
+        seatRole: seat.role,
+        seatLabel: seat.label,
+        timestamp: now,
+      });
+    }
+    set({
+      colonies: get().colonies.map((c) => {
+        if (c.id !== colonyId) return c;
+        return {
+          ...c,
+          activeSeatId: seatId ?? undefined,
+          seats: c.seats.map((s) => ({
+            ...s,
+            binding: s.id === seatId ? "active" : s.binding,
+          })),
+        };
+      }),
+      events,
+    });
   },
 
   bindSeatToSession: (colonyId, seatId, session) => {
+    const seat = get().colonies
+      .find((c) => c.id === colonyId)
+      ?.seats.find((s) => s.id === seatId);
     const now = new Date().toISOString();
-    set((state) => ({
-      colonies: state.colonies.map((c) =>
-        c.id === colonyId
-          ? {
-              ...c,
-              seats: c.seats.map((s) =>
-                s.id === seatId
-                  ? {
-                      ...s,
-                      sessionId: session.sessionId,
-                      acpSessionId: session.acpSessionId,
-                      providerId: session.providerId,
-                      projectId: session.projectId,
-                      binding: "linked",
-                      lastUpdate: now,
-                    }
-                  : s,
-              ),
-              updatedAt: now,
-            }
-          : c,
-      ),
-    }));
+    const events = [...get().events];
+    if (seat) {
+      events.push({
+        id: crypto.randomUUID(),
+        type: "seat_linked",
+        seatRole: seat.role,
+        seatLabel: seat.label,
+        timestamp: now,
+        details: session.sessionId.slice(0, 8),
+      });
+    }
+    set({
+      colonies: get().colonies.map((c) => {
+        if (c.id !== colonyId) return c;
+        return {
+          ...c,
+          seats: c.seats.map((s) =>
+            s.id === seatId
+              ? {
+                  ...s,
+                  sessionId: session.sessionId,
+                  acpSessionId: session.acpSessionId,
+                  providerId: session.providerId,
+                  projectId: session.projectId,
+                  binding: "linked",
+                  lastUpdate: now,
+                }
+              : s,
+          ),
+          updatedAt: now,
+        };
+      }),
+      events,
+    });
   },
 
   unbindSeat: (colonyId, seatId) => {
+    const seat = get().colonies
+      .find((c) => c.id === colonyId)
+      ?.seats.find((s) => s.id === seatId);
     const now = new Date().toISOString();
+    const events = [...get().events];
+    if (seat) {
+      events.push({
+        id: crypto.randomUUID(),
+        type: "seat_unlinked",
+        seatRole: seat.role,
+        seatLabel: seat.label,
+        timestamp: now,
+      });
+    }
+    set({
+      colonies: get().colonies.map((c) => {
+        if (c.id !== colonyId) return c;
+        return {
+          ...c,
+          seats: c.seats.map((s) =>
+            s.id === seatId
+              ? {
+                  ...s,
+                  sessionId: undefined,
+                  acpSessionId: undefined,
+                  providerId: undefined,
+                  projectId: undefined,
+                  binding: "unbound",
+                  lastUpdate: now,
+                }
+              : s,
+          ),
+          activeSeatId: c.activeSeatId === seatId ? undefined : c.activeSeatId,
+          updatedAt: now,
+        };
+      }),
+      events,
+    });
+  },
+
+  logEvent: (type, seatRole, seatLabel, details) => {
+    const event: ColonyEvent = {
+      id: crypto.randomUUID(),
+      type,
+      seatRole,
+      seatLabel,
+      timestamp: new Date().toISOString(),
+      details,
+    };
     set((state) => ({
-      colonies: state.colonies.map((c) =>
-        c.id === colonyId
-          ? {
-              ...c,
-              seats: c.seats.map((s) =>
-                s.id === seatId
-                  ? {
-                      ...s,
-                      sessionId: undefined,
-                      acpSessionId: undefined,
-                      providerId: undefined,
-                      projectId: undefined,
-                      binding: "unbound",
-                      lastUpdate: now,
-                    }
-                  : s,
-              ),
-              activeSeatId:
-                c.activeSeatId === seatId ? undefined : c.activeSeatId,
-              updatedAt: now,
-            }
-          : c,
-      ),
+      events: [...state.events, event],
     }));
+  },
+
+  openSessionForSeat: (colonyId, seatId) => {
+    const seat = get().colonies
+      .find((c) => c.id === colonyId)
+      ?.seats.find((s) => s.id === seatId);
+    if (seat?.sessionId) {
+      get().logEvent("session_opened", seat.role, seat.label, seat.sessionId.slice(0, 8));
+    }
   },
 }));

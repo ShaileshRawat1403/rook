@@ -782,6 +782,7 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
                 createNewTab();
               }}
               onStartChatFromProject={handleStartChatFromProject}
+              onNavigate={handleNavigate}
             />
           )}
         </main>

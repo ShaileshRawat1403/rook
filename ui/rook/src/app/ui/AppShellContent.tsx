@@ -42,6 +42,7 @@ interface AppShellContentProps {
   ) => void;
   onStartNewChat: () => void;
   onStartChatFromProject: (project: ProjectInfo) => void;
+  onNavigate?: (view: AppView) => void;
 }
 
 export function AppShellContent({
@@ -62,6 +63,7 @@ export function AppShellContent({
   onSelectSearchResult,
   onStartNewChat,
   onStartChatFromProject,
+  onNavigate,
 }: AppShellContentProps) {
   switch (activeView) {
     case "skills":
@@ -80,7 +82,7 @@ export function AppShellContent({
         />
       );
     case "colony":
-      return <ColonyView />;
+      return <ColonyView onNavigate={onNavigate} />;
     case "chat":
     case "home":
       return activeSession ? (
