@@ -165,7 +165,7 @@ export function SwarmAssignmentCard({
             disabled={disabled}
             className="rounded border-border"
           />
-          <span className="text-muted-foreground">Enabled</span>
+          <span className="text-muted-foreground">Included</span>
         </label>
       </div>
 
@@ -264,7 +264,7 @@ export function SwarmPlanPreview({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="font-medium">Swarm Plan</h3>
+          <h3 className="font-medium">Swarm Work Items</h3>
           <p className="text-xs text-muted-foreground">{plan.userIntent}</p>
         </div>
         <div className="flex items-center gap-2">
@@ -286,16 +286,24 @@ export function SwarmPlanPreview({
         <div className="rounded-md border border-border bg-muted/30 p-2">
           <p className="mb-2 text-xs font-medium">Changes from recipe</p>
           <ul className="space-y-1">
-            {plan.changesFromRecipe.map((change, index) => (
-              <li
-                key={`${change.field}-${index}`}
-                className="text-xs text-muted-foreground"
-              >
-                <span className="font-medium">{change.field}</span>:{" "}
-                {change.previousValue || "(none)"} → {change.newValue}
-                <span className="text-muted"> ({change.reason})</span>
-              </li>
-            ))}
+            {plan.changesFromRecipe.map((change, index) => {
+              const isPromptChange = change.field === "taskPrompt";
+              const label = isPromptChange
+                ? `${change.field.split(".")[0]} prompt edited`
+                : change.field;
+              const value = isPromptChange
+                ? "prompt modified"
+                : `${change.previousValue || "(none)"} → ${change.newValue}`;
+              return (
+                <li
+                  key={`${change.field}-${index}`}
+                  className="text-xs text-muted-foreground"
+                >
+                  <span className="font-medium">{label}</span>: {value}
+                  <span className="text-muted"> ({change.reason})</span>
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}
@@ -338,8 +346,12 @@ export function SwarmPlanPreview({
       )}
 
       {isCopied && (
-        <div className="rounded-md border border-green-500/30 bg-green-500/10 p-3 text-center text-sm text-green-500">
-          Prompts copied - ready to use
+        <div className="rounded-md border border-blue-500/30 bg-blue-500/10 p-3 text-sm text-blue-500">
+          <p className="font-medium">Prompts copied.</p>
+          <p className="mt-1 text-xs">
+            No handoff was created automatically. Use the Handoffs panel
+            when you are ready to move context.
+          </p>
         </div>
       )}
     </div>

@@ -34,7 +34,7 @@ export function SwarmPanel() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Swarm Recipe</CardTitle>
+        <CardTitle>Swarm Work Items</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {error && (
