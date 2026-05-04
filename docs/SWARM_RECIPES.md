@@ -584,20 +584,6 @@ Recommended handoff:
 - Name the reviewer who should approve this strategy.
 ```
 
-**Technical SEO Auditor Prompt:**
-```
-You are a Technical SEO Auditor. Check site health.
-
-Report:
-1. Core web vitals status
-2. Crawl errors
-3. Sitemap status
-4. Robots.txt findings
-5. Schema markup
-
-Use Lighthouse and Search Console if available.
-```
-
 ### Review Checklist
 
 - [ ] Keyword list is actionable
