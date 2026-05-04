@@ -450,10 +450,22 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
               }}
               onPrepareHandoff={(_workItemId, role, prompt) => {
                 if (!activeColonyId || !activeColony) return;
+                const summary = `Work Item: ${role}
+
+Goal:
+Use this role to complete the assigned work.
+
+Context:
+${prompt}
+
+Do Not:
+- Do not execute commands automatically.
+- Do not modify files outside scope.
+- Do not add work beyond the defined output.`;
                 colonyStore.getState().prepareHandoff({
                   fromSeatId: activeColony.seats[0]?.id,
                   toSeatId: activeColony.seats[1]?.id,
-                  summary: `${role}: ${prompt.slice(0, 100)}`,
+                  summary,
                   prompt,
                 });
               }}
