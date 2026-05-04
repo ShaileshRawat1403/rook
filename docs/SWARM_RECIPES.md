@@ -1037,18 +1037,21 @@ Modify prompt: Make Security Reviewer check for leaked keys first
 
 ## Implementation Notes
 
-### v0.2 Scope (Future)
+### v0.2 Scope (Next)
 
 - Add recipe selection UI in Colony
+- Generate editable Swarm Plans from canonical recipes
+- Allow specialist assignment edits before approval (add, remove, reorder, disable, edit prompts)
 - Show specialist prompts in readable format
 - Allow prompt copying to clipboard
-- Link recipes to existing Colony tasks
+- Record plan changes from the base recipe
+- Link plans to existing Colony tasks
 
 ### v0.3 Scope (Future)
 
-- Add lightweight TypeScript types in `src/colony/swarm/types.ts`
-- Add static recipe data in `src/colony/swarm/recipes.ts`
 - Render recipe preview in Colony UI
+- Show recipe-to-plan diff view
+- Codebase-aware suggestions (e.g., "This is Rust, add Cargo Auditor?")
 
 ### v0.4 Scope (Future) - Not planned yet
 
