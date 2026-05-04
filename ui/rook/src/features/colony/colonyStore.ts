@@ -9,6 +9,7 @@ import type {
   ColonyHandoff,
   ColonyScope,
 } from "./types";
+import { loadPersistedColonyState, persistColonyState } from "./colonyPersistence";
 
 interface ColonyStoreState {
   colonies: ColonySession[];
@@ -98,11 +99,13 @@ unbindSeat: (colonyId: string, seatId: string) => void;
 
 const DEFAULT_ROLES: ColonyRole[] = ["planner", "worker", "reviewer"];
 
+const persisted = loadPersistedColonyState();
+
 export const colonyStore = create<ColonyStore>((set, get) => ({
-  colonies: [],
-  activeColonyId: null,
-  sentinelMode: "off",
-  events: [],
+  colonies: persisted?.colonies ?? [],
+  activeColonyId: persisted?.activeColonyId ?? null,
+  sentinelMode: persisted?.sentinelMode ?? "off",
+  events: persisted?.events ?? [],
   preparedHandoff: null,
 
   getActiveColony: () => {
@@ -112,6 +115,13 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
 
   setActiveColony: (colonyId) => {
     set({ activeColonyId: colonyId });
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
   },
 
   prepareHandoff: (data) => {
@@ -131,6 +141,13 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
           : c,
       ),
     }));
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
   },
 
   clearColonyScope: (colonyId) => {
@@ -142,6 +159,13 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
           : c,
       ),
     }));
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
   },
 
   createColony: (title, intent) => {
@@ -176,6 +200,13 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       colonies: [colony],
       activeColonyId: id,
       events: [newEvent],
+    });
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
     });
     return colony;
   },
@@ -228,6 +259,13 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
           : c,
       ),
       events,
+    });
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
     });
   },
 
@@ -352,6 +390,13 @@ seats: c.seats.map((s) =>
       }),
       events,
     });
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
   },
 
   unbindSeat: (colonyId, seatId) => {
@@ -454,6 +499,13 @@ seats: c.seats.map((s) =>
     set((state) => ({
       events: [...state.events, event],
     }));
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
   },
 
   openSessionForSeat: (colonyId, seatId) => {
@@ -488,6 +540,13 @@ seats: c.seats.map((s) =>
       ),
     }));
     get().logEvent("task_created", undefined, undefined, title, task.id, title);
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
     return task;
   },
 
@@ -650,6 +709,13 @@ seats: c.seats.map((s) =>
       undefined,
       handoff.id,
     );
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
     return handoff;
   },
 
