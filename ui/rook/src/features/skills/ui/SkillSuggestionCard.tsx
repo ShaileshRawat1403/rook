@@ -4,6 +4,7 @@ import type { RookSkill } from "../registry/types";
 interface SkillSuggestionCardProps {
   skill: RookSkill;
   whySuggested: string;
+  status?: "approved" | "skipped";
   onApprove: (skill: RookSkill) => void;
   onSkip: (skill: RookSkill) => void;
 }
@@ -11,6 +12,7 @@ interface SkillSuggestionCardProps {
 export const SkillSuggestionCard: React.FC<SkillSuggestionCardProps> = ({
   skill,
   whySuggested,
+  status,
   onApprove,
   onSkip,
 }) => {
@@ -56,20 +58,32 @@ export const SkillSuggestionCard: React.FC<SkillSuggestionCardProps> = ({
       </div>
 
       <div className="flex justify-end gap-3 mt-4">
-        <button
-          type="button"
-          onClick={() => onSkip(skill)}
-          className="px-4 py-2 rounded text-muted-foreground hover:bg-muted transition-colors"
-        >
-          Skip
-        </button>
-        <button
-          type="button"
-          onClick={() => onApprove(skill)}
-          className="px-4 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-        >
-          Approve
-        </button>
+        {!status ? (
+          <>
+            <button
+              type="button"
+              onClick={() => onSkip(skill)}
+              className="px-4 py-2 rounded text-muted-foreground hover:bg-muted transition-colors"
+            >
+              Skip
+            </button>
+            <button
+              type="button"
+              onClick={() => onApprove(skill)}
+              className="px-4 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Approve
+            </button>
+          </>
+        ) : status === "approved" ? (
+          <span className="text-green-600 dark:text-green-400 font-medium py-2">
+            Approved for this message.
+          </span>
+        ) : (
+          <span className="text-muted-foreground font-medium py-2">
+            Skipped.
+          </span>
+        )}
       </div>
     </div>
   );
