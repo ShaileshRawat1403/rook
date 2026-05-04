@@ -45,6 +45,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     sentinelMode,
     setSentinelMode,
     createColony,
+    setColonyScope,
     bindSeatToSession,
     unbindSeat,
     setActiveSeat,
@@ -333,10 +334,37 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
           </div>
 
           <div className="mb-4 flex items-center gap-4 text-sm">
-            {activeColony.projectId && (
+            {activeColony.scope ? (
               <div className="flex items-center gap-1">
                 <span className="font-medium">Scope:</span>
-                <span className="text-muted-foreground">project</span>
+                <span className="text-muted-foreground">
+                  {activeColony.scope.kind} / {activeColony.scope.label}
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">No scope</span>
+                <select
+                  className="rounded border border-border bg-background px-2 py-1 text-xs"
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (!val || !activeColonyId) return;
+                    const now = new Date().toISOString();
+                    setColonyScope(activeColonyId, {
+                      kind: val as "planning" | "directory",
+                      label: val === "planning" ? "Planning Only" : "Local Directory",
+                      path: val === "directory" ? "/" : undefined,
+                      branch: null,
+                      locked: false,
+                      createdAt: now,
+                      updatedAt: now,
+                    });
+                  }}
+                >
+                  <option value="">Set scope...</option>
+                  <option value="planning">Planning Only</option>
+                  <option value="directory">Directory</option>
+                </select>
               </div>
             )}
             <div className="flex items-center gap-1">
@@ -456,7 +484,10 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
               }}
               onPrepareHandoff={(_workItemId, role, prompt) => {
                 if (!activeColonyId || !activeColony) return;
-                const summary = `Work Item: ${role}
+                const scopeInfo = activeColony.scope
+                  ? `\nScope: ${activeColony.scope.kind} / ${activeColony.scope.label}`
+                  : "\nWarning: No workspace scope set";
+                const summary = `Work Item: ${role}${scopeInfo}
 
 Goal:
 Use this role to complete the assigned work.

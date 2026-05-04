@@ -1,5 +1,18 @@
 export type ColonyRole = "planner" | "worker" | "reviewer";
 
+export type ColonyScopeKind = "planning" | "project" | "directory" | "repo";
+
+export type ColonyScope = {
+  kind: ColonyScopeKind;
+  label: string;
+  projectId?: string;
+  path?: string;
+  branch?: string | null;
+  locked: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type ColonySeatStatus =
   | "idle"
   | "thinking"
@@ -71,6 +84,7 @@ export type ColonySession = {
   title: string;
   intent: string;
   projectId?: string;
+  scope?: ColonyScope;
   seats: ColonySeat[];
   tasks: ColonyTask[];
   handoffs: ColonyHandoff[];
