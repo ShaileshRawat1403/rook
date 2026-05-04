@@ -121,7 +121,6 @@ export function ChatInput({
   const [text, setTextRaw] = useState(initialValue);
   const [suggestedSkills, setSuggestedSkills] = useState<SkillSuggestion[]>([]);
   const [skillStatuses, setSkillStatuses] = useState<Record<string, "approved" | "skipped">>({});
-  
   const setText = useCallback(
     (value: string) => {
       setTextRaw(value);
