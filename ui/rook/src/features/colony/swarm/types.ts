@@ -103,6 +103,17 @@ export interface SwarmPlan {
   changesFromRecipe: SwarmPlanChange[];
 }
 
+export type SwarmPlanEditResult =
+  | {
+      plan: SwarmPlan;
+      change: SwarmPlanChange;
+    }
+  | {
+      plan: SwarmPlan;
+      change: null;
+      error: string;
+    };
+
 export function createSwarmPlan(
   recipe: SwarmRecipe,
   userIntent: string,

@@ -2,7 +2,7 @@ import type {
   SwarmPlan,
   SwarmAssignment,
   SwarmPlanChange,
-  SwarmOutputContract,
+  SwarmPlanEditResult,
   ContextPacket,
 } from "./types";
 
@@ -19,15 +19,39 @@ export function createSwarmPlan(
     userIntent,
     status: "draft",
     editable: true,
-    assignments: specialists,
+    assignments: specialists.map((specialist) => ({
+      ...specialist,
+      id: crypto.randomUUID(),
+      contextPacket: { ...specialist.contextPacket },
+      outputContract: { ...specialist.outputContract },
+    })),
     changesFromRecipe: [],
   };
+}
+
+function isEditable(plan: SwarmPlan): boolean {
+  if (!plan.editable) {
+    return false;
+  }
+  if (plan.status !== "draft") {
+    return false;
+  }
+  return true;
 }
 
 export function disableAssignment(
   plan: SwarmPlan,
   assignmentId: string,
-): { plan: SwarmPlan; change: SwarmPlanChange } {
+): SwarmPlanEditResult {
+  if (!isEditable(plan)) {
+    return { plan, change: null, error: "Plan is not editable" };
+  }
+
+  const assignment = plan.assignments.find((a) => a.id === assignmentId);
+  if (!assignment) {
+    return { plan, change: null, error: "Assignment not found" };
+  }
+
   const assignments = plan.assignments.map((a) => {
     if (a.id === assignmentId) {
       return { ...a, enabled: false };
@@ -35,10 +59,9 @@ export function disableAssignment(
     return a;
   });
 
-  const assignment = plan.assignments.find((a) => a.id === assignmentId);
   const change: SwarmPlanChange = {
     field: "enabled",
-    previousValue: assignment?.enabled === true ? "true" : "false",
+    previousValue: assignment.enabled === true ? "true" : "false",
     newValue: "false",
     reason: "User disabled specialist",
     changedBy: "user",
@@ -57,7 +80,16 @@ export function disableAssignment(
 export function enableAssignment(
   plan: SwarmPlan,
   assignmentId: string,
-): { plan: SwarmPlan; change: SwarmPlanChange } {
+): SwarmPlanEditResult {
+  if (!isEditable(plan)) {
+    return { plan, change: null, error: "Plan is not editable" };
+  }
+
+  const assignment = plan.assignments.find((a) => a.id === assignmentId);
+  if (!assignment) {
+    return { plan, change: null, error: "Assignment not found" };
+  }
+
   const assignments = plan.assignments.map((a) => {
     if (a.id === assignmentId) {
       return { ...a, enabled: true };
@@ -65,10 +97,9 @@ export function enableAssignment(
     return a;
   });
 
-  const assignment = plan.assignments.find((a) => a.id === assignmentId);
   const change: SwarmPlanChange = {
     field: "enabled",
-    previousValue: assignment?.enabled === false ? "false" : "true",
+    previousValue: assignment.enabled === false ? "false" : "true",
     newValue: "true",
     reason: "User enabled specialist",
     changedBy: "user",
@@ -88,10 +119,14 @@ export function updateAssignmentPrompt(
   plan: SwarmPlan,
   assignmentId: string,
   newPrompt: string,
-): { plan: SwarmPlan; change: SwarmPlanChange } {
+): SwarmPlanEditResult {
+  if (!isEditable(plan)) {
+    return { plan, change: null, error: "Plan is not editable" };
+  }
+
   const assignment = plan.assignments.find((a) => a.id === assignmentId);
   if (!assignment) {
-    return { plan, change: {} as SwarmPlanChange };
+    return { plan, change: null, error: "Assignment not found" };
   }
 
   const assignments = plan.assignments.map((a) => {
@@ -122,7 +157,34 @@ export function updateAssignmentPrompt(
 export function reorderAssignments(
   plan: SwarmPlan,
   orderedAssignmentIds: string[],
-): { plan: SwarmPlan; change: SwarmPlanChange } {
+): SwarmPlanEditResult {
+  if (!isEditable(plan)) {
+    return { plan, change: null, error: "Plan is not editable" };
+  }
+
+  const existingIds = new Set(plan.assignments.map((a) => a.id));
+  const requestedIds = new Set(orderedAssignmentIds);
+
+  for (const id of requestedIds) {
+    if (!existingIds.has(id)) {
+      return {
+        plan,
+        change: null,
+        error: `Unknown assignment ID: ${id}`,
+      };
+    }
+  }
+
+  for (const id of existingIds) {
+    if (!requestedIds.has(id)) {
+      return {
+        plan,
+        change: null,
+        error: `Reorder must include all assignments. Missing: ${id}`,
+      };
+    }
+  }
+
   const assignmentMap = new Map(plan.assignments.map((a) => [a.id, a]));
 
   const reorderedAssignments = orderedAssignmentIds
@@ -154,14 +216,23 @@ export function reorderAssignments(
 export function addAssignment(
   plan: SwarmPlan,
   assignment: SwarmAssignment,
-): { plan: SwarmPlan; change: SwarmPlanChange } {
+): SwarmPlanEditResult {
+  if (!isEditable(plan)) {
+    return { plan, change: null, error: "Plan is not editable" };
+  }
+
+  const existingIds = new Set(plan.assignments.map((a) => a.id));
+  if (existingIds.has(assignment.id)) {
+    return { plan, change: null, error: "Assignment ID already exists" };
+  }
+
   const maxOrder = Math.max(...plan.assignments.map((a) => a.order), -1);
   const newAssignment = { ...assignment, order: maxOrder + 1 };
 
   const change: SwarmPlanChange = {
     field: "assignments",
     previousValue: "",
-    newValue: newAssignment.id,
+    newValue: assignment.id,
     reason: "User added specialist",
     changedBy: "user",
   };
@@ -179,10 +250,14 @@ export function addAssignment(
 export function removeAssignment(
   plan: SwarmPlan,
   assignmentId: string,
-): { plan: SwarmPlan; change: SwarmPlanChange } {
+): SwarmPlanEditResult {
+  if (!isEditable(plan)) {
+    return { plan, change: null, error: "Plan is not editable" };
+  }
+
   const assignment = plan.assignments.find((a) => a.id === assignmentId);
   if (!assignment) {
-    return { plan, change: {} as SwarmPlanChange };
+    return { plan, change: null, error: "Assignment not found" };
   }
 
   const change: SwarmPlanChange = {
@@ -224,10 +299,27 @@ export function approvePlan(plan: SwarmPlan): SwarmPlan {
   };
 }
 
-export function markPromptsCopied(plan: SwarmPlan): SwarmPlan {
+export function markPromptsCopied(plan: SwarmPlan): SwarmPlanEditResult {
+  if (plan.status !== "approved") {
+    return {
+      plan,
+      change: null,
+      error: "Plan must be approved before copying prompts",
+    };
+  }
+
   return {
-    ...plan,
-    status: "prompts_copied",
+    plan: {
+      ...plan,
+      status: "prompts_copied",
+    },
+    change: {
+      field: "status",
+      previousValue: "approved",
+      newValue: "prompts_copied",
+      reason: "User copied specialist prompts",
+      changedBy: "user",
+    },
   };
 }
 
@@ -235,7 +327,7 @@ export function createAssignment(
   specialistId: string,
   role: string,
   taskPrompt: string,
-  outputContract: SwarmOutputContract,
+  outputContract: SwarmAssignment["outputContract"],
   contextPacket: ContextPacket,
 ): SwarmAssignment {
   return {
