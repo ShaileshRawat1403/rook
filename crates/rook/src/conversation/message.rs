@@ -198,6 +198,7 @@ pub enum SystemNotificationType {
     ThinkingMessage,
     InlineMessage,
     CreditsExhausted,
+    RateLimit,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ToSchema)]

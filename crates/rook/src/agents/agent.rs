@@ -1676,6 +1676,18 @@ impl Agent {
                             );
                             break;
                         }
+                        Err(ref provider_err @ ProviderError::RateLimitExceeded { details: _, retry_delay: _ }) => {
+                            #[cfg(feature = "telemetry")]
+                            crate::posthog::emit_error(provider_err.telemetry_type(), &provider_err.to_string());
+                            error!("Rate limit: {}", provider_err);
+                            yield AgentEvent::Message(
+                                Message::assistant().with_system_notification(
+                                    SystemNotificationType::RateLimit,
+                                    format!("The selected model is temporarily rate-limited. Rook waited and retried, but the provider still has no capacity. Try again in a moment or switch models.")
+                                )
+                            );
+                            break;
+                        }
                         Err(ref provider_err) => {
                             #[cfg(feature = "telemetry")]
                             crate::posthog::emit_error(provider_err.telemetry_type(), &provider_err.to_string());
