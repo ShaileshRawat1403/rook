@@ -209,17 +209,21 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
     set((state) => ({
       colonies: state.colonies.map((c) => {
         if (c.id !== colonyId) return c;
-        const existing = c.memory?.[section];
+        const memory = c.memory ?? {
+          projectSummary: "",
+          repoNotes: [],
+          decisions: [],
+          constraints: [],
+          risks: [],
+          openQuestions: [],
+          updatedAt: now,
+        };
+        const existing = memory[section];
         if (!Array.isArray(existing)) return c;
         return {
           ...c,
           memory: {
-            projectSummary: c.memory?.projectSummary ?? "",
-            repoNotes: c.memory?.repoNotes ?? [],
-            decisions: c.memory?.decisions ?? [],
-            constraints: c.memory?.constraints ?? [],
-            risks: c.memory?.risks ?? [],
-            openQuestions: c.memory?.openQuestions ?? [],
+            ...memory,
             [section]: [...existing, trimmed],
             updatedAt: now,
           },
@@ -241,18 +245,15 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
     set((state) => ({
       colonies: state.colonies.map((c) => {
         if (c.id !== colonyId) return c;
-        const existing = c.memory?.[section];
+        if (!c.memory) return c;
+        const existing = c.memory[section];
         if (!Array.isArray(existing)) return c;
+        if (index < 0 || index >= existing.length) return c;
         const updated = existing.filter((_, i) => i !== index);
         return {
           ...c,
           memory: {
-            projectSummary: c.memory?.projectSummary ?? "",
-            repoNotes: c.memory?.repoNotes ?? [],
-            decisions: c.memory?.decisions ?? [],
-            constraints: c.memory?.constraints ?? [],
-            risks: c.memory?.risks ?? [],
-            openQuestions: c.memory?.openQuestions ?? [],
+            ...c.memory,
             [section]: updated,
             updatedAt: now,
           },
