@@ -25,6 +25,9 @@ import { ChatInputAttachments } from "./ChatInputAttachments";
 import { ChatInputCommands, type SlashCommandId } from "./ChatInputCommands";
 import { getCatalogEntry } from "@/features/providers/providerCatalog";
 import type { ModelLoadState } from "../stores/chatSessionStore";
+import { suggestSkills, type SkillSuggestion } from "@/features/skills/registry/suggestion";
+import type { RookSkill } from "@/features/skills/registry/types";
+import { SkillSuggestionList } from "@/features/skills/ui/SkillSuggestionList";
 
 export interface ProjectOption {
   id: string;
@@ -116,10 +119,14 @@ export function ChatInput({
 }: ChatInputProps) {
   const { t } = useTranslation("chat");
   const [text, setTextRaw] = useState(initialValue);
+  const [suggestedSkills, setSuggestedSkills] = useState<SkillSuggestion[]>([]);
+  const [skillStatuses, setSkillStatuses] = useState<Record<string, "approved" | "skipped">>({});
+  
   const setText = useCallback(
     (value: string) => {
       setTextRaw(value);
       onDraftChange?.(value);
+      setSuggestedSkills(suggestSkills(value));
     },
     [onDraftChange],
   );
@@ -185,6 +192,14 @@ export function ChatInput({
     textareaRef,
     onPersonaChange,
   });
+
+  const handleApproveSkill = useCallback((skill: RookSkill) => {
+    setSkillStatuses((prev) => ({ ...prev, [skill.id]: "approved" }));
+  }, []);
+
+  const handleSkipSkill = useCallback((skill: RookSkill) => {
+    setSkillStatuses((prev) => ({ ...prev, [skill.id]: "skipped" }));
+  }, []);
 
   useEffect(() => {
     const element = containerRef.current;
@@ -370,6 +385,8 @@ export function ChatInput({
       attachments.length > 0 ? attachments : undefined,
     );
     setText("");
+    setSuggestedSkills([]);
+    setSkillStatuses({});
     clearAttachments();
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
@@ -582,6 +599,13 @@ export function ChatInput({
                 onSelectFile={handleFileMentionSelect}
                 onClose={closeMention}
                 selectedIndex={mentionSelectedIndex}
+              />
+
+              <SkillSuggestionList
+                suggestions={suggestedSkills}
+                skillStatuses={skillStatuses}
+                onApprove={handleApproveSkill}
+                onSkip={handleSkipSkill}
               />
 
               <ChatInputAttachments
