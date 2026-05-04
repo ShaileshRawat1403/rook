@@ -11,8 +11,6 @@ interface SwarmStoreState {
   selectedRecipe: SwarmRecipe | null;
   currentPlan: SwarmPlan | null;
   error: string | null;
-  onCreateTask: ((title: string, description?: string) => void) | null;
-  onPrepareHandoff: ((assignment: SwarmAssignment) => void) | null;
 }
 
 type SwarmStore = SwarmStoreState & {
@@ -27,16 +25,12 @@ type SwarmStore = SwarmStoreState & {
   approve: () => void;
   markCopied: () => void;
   clearError: () => void;
-  setCreateTaskHandler: (handler: (title: string, description?: string) => void) => void;
-  setPrepareHandoffHandler: (handler: (assignment: SwarmAssignment) => void) => void;
 };
 
 export const useSwarmStore = create<SwarmStore>((set, get) => ({
   selectedRecipe: null,
   currentPlan: null,
   error: null,
-  onCreateTask: null,
-  onPrepareHandoff: null,
 
   selectRecipe: (recipe) => set({ selectedRecipe: recipe, error: null }),
 
@@ -176,8 +170,4 @@ export const useSwarmStore = create<SwarmStore>((set, get) => ({
   },
 
   clearError: () => set({ error: null }),
-
-  setCreateTaskHandler: (handler) => set({ onCreateTask: handler }),
-
-  setPrepareHandoffHandler: (handler) => set({ onPrepareHandoff: handler }),
 }));

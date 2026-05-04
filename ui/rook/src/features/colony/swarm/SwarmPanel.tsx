@@ -23,9 +23,6 @@ export function SwarmPanel({
     clearError,
   } = useSwarmStore();
 
-  useSwarmStore.getState().setCreateTaskHandler(() => onCreateTask);
-  useSwarmStore.getState().setPrepareHandoffHandler(() => onPrepareHandoff);
-
   const [userIntent, setUserIntent] = useState("");
 
   const handleSelectRecipe = (recipe: typeof selectedRecipe) => {
