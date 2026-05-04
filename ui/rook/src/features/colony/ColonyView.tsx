@@ -335,11 +335,11 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
           </div>
 
           <div className="mb-4 flex items-center gap-4 text-sm">
-            {activeColony.scope?.kind === "directory" && activeColony.scope?.path ? (
+            {activeColony.scope?.kind === "directory" ? (
               <div className="flex items-center gap-2">
                 <span className="font-medium">Scope:</span>
                 <span className="text-muted-foreground">
-                  {activeColony.scope.kind} / {activeColony.scope.path}
+                  {activeColony.scope.kind} / {activeColony.scope.path || "(no path)"}
                 </span>
                 <button
                   type="button"
@@ -365,7 +365,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
                   type="text"
                   value={scopePathInput}
                   onChange={(e) => setScopePathInput(e.target.value)}
-                  placeholder={activeColony.scope.path}
+                  placeholder={activeColony.scope?.path || "Enter path"}
                   className="rounded border border-border bg-background px-2 py-1 text-xs w-48"
                 />
               </div>
