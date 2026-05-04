@@ -91,6 +91,12 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
 
   const activeColony = colonies.find((c) => c.id === activeColonyId) ?? null;
 
+  const hasColonyState =
+    activeColony &&
+    (activeColony.tasks.length > 0 ||
+      activeColony.handoffs.length > 0 ||
+      activeColony.seats.some((s) => s.binding === "linked"));
+
   const handleCreateColony = useCallback(() => {
     const now = new Date().toISOString();
     const title = `Colony ${new Date(now).toLocaleDateString()}`;
@@ -267,13 +273,15 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
               <option value="dax_open">open</option>
             </select>
           </div>
-          <button
-            type="button"
-            onClick={handleCreateColony}
-            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-foreground hover:bg-accent/90"
-          >
-            Reset Colony
-          </button>
+          {hasColonyState && (
+            <button
+              type="button"
+              onClick={handleCreateColony}
+              className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-foreground hover:bg-accent/90"
+            >
+              New Colony
+            </button>
+          )}
         </div>
       </div>
 
@@ -312,7 +320,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
             onClick={handleCreateColony}
             className="rounded-md bg-accent px-6 py-3 text-base font-medium text-accent-foreground hover:bg-accent/90"
           >
-            Reset Colony
+            New Colony
           </button>
         </div>
       ) : (
