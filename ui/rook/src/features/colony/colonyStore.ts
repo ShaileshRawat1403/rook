@@ -14,6 +14,13 @@ interface ColonyStoreState {
   activeColonyId: string | null;
   sentinelMode: "off" | "dax_open";
   events: ColonyEvent[];
+  preparedHandoff: {
+    fromSeatId?: string;
+    toSeatId?: string;
+    taskId?: string;
+    summary?: string;
+    prompt?: string;
+  } | null;
 }
 
 type ColonyStore = ColonyStoreState & {
@@ -23,6 +30,8 @@ type ColonyStore = ColonyStoreState & {
   updateColony: (colonyId: string, updates: Partial<ColonySession>) => void;
   deleteColony: (colonyId: string) => void;
   setSentinelMode: (mode: "off" | "dax_open") => void;
+  prepareHandoff: (data: { fromSeatId?: string; toSeatId?: string; taskId?: string; summary?: string; prompt?: string }) => void;
+  clearPreparedHandoff: () => void;
   addSeat: (colonyId: string, role: ColonyRole, label: string) => void;
   updateSeat: (
     colonyId: string,
@@ -91,7 +100,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   activeColonyId: null,
   sentinelMode: "off",
   events: [],
-  availableProviders: [],
+  preparedHandoff: null,
 
   getActiveColony: () => {
     const { colonies, activeColonyId } = get();
@@ -100,6 +109,14 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
 
   setActiveColony: (colonyId) => {
     set({ activeColonyId: colonyId });
+  },
+
+  prepareHandoff: (data) => {
+    set({ preparedHandoff: data });
+  },
+
+  clearPreparedHandoff: () => {
+    set({ preparedHandoff: null });
   },
 
   createColony: (title, intent) => {

@@ -1,10 +1,11 @@
 import { ArrowRight, Copy, Trash2, FileText, Check, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { ColonyHandoff, ColonyRole } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Textarea } from "@/shared/ui/textarea";
 import { Badge } from "@/shared/ui/badge";
+import { colonyStore } from "./colonyStore";
 import {
   getContextLoad,
   CONTEXT_LOAD_LABELS,
@@ -97,6 +98,13 @@ interface ColonyHandoffPanelProps {
   seats: { id: string; role: ColonyRole; label: string }[];
   tasks: { id: string; title: string }[];
   handoffsByTaskId: Record<string, ColonyHandoff[]>;
+  prefill: {
+    fromSeatId?: string;
+    toSeatId?: string;
+    taskId?: string;
+    summary?: string;
+    prompt?: string;
+  } | null;
   onCreateHandoff: (
     fromSeatId: string,
     toSeatId: string,
@@ -117,12 +125,25 @@ export function ColonyHandoffPanel({
   seats,
   tasks,
   handoffsByTaskId,
+  prefill,
   onCreateHandoff,
   onMarkCopied,
   onDeleteHandoff,
   onReviewHandoff,
 }: ColonyHandoffPanelProps) {
   const [selectedTemplate, setSelectedTemplate] = useState<string>("");
+
+  const [fromSeat, setFromSeat] = useState(prefill?.fromSeatId ?? "");
+  const [toSeat, setToSeat] = useState(prefill?.toSeatId ?? "");
+  const [task, setTask] = useState(prefill?.taskId ?? "");
+  const [summary, setSummary] = useState(prefill?.summary ?? "");
+
+  useEffect(() => {
+    setFromSeat(prefill?.fromSeatId ?? "");
+    setToSeat(prefill?.toSeatId ?? "");
+    setTask(prefill?.taskId ?? "");
+    setSummary(prefill?.summary ?? "");
+  }, [prefill?.fromSeatId, prefill?.taskId, prefill?.toSeatId, prefill?.summary]);
 
   const getSeatLabel = (seatId: string) => {
     const seat = seats.find((s) => s.id === seatId);
@@ -177,42 +198,32 @@ Do not add scope beyond the assigned task.`;
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const form = e.currentTarget;
-            const fromSeatId = (
-              form.elements.namedItem("fromSeatId") as HTMLSelectElement
-            ).value;
-            const toSeatId = (form.elements.namedItem("toSeatId") as HTMLSelectElement)
-              .value;
-            const taskId = (form.elements.namedItem("taskId") as HTMLSelectElement)
-              .value;
-            let summary = (
-              form.elements.namedItem("summary") as HTMLInputElement
-            ).value.trim();
-
-            if (!fromSeatId || !toSeatId) return;
-            if (fromSeatId === toSeatId) {
+            if (!fromSeat || !toSeat) return;
+            if (fromSeat === toSeat) {
               alert("Choose a different receiving seat.");
               return;
             }
 
+            let finalSummary = summary;
             if (selectedTemplate) {
               const template = HANDOFF_TEMPLATES.find((t) => t.name === selectedTemplate);
-              if (template && !summary) {
-                summary = `Goal: ${template.fields.goal}\n\nDecision Made: ${template.fields.decisionMade}\n\nConstraints: ${template.fields.constraints}\n\nFiles Involved: ${template.fields.filesInvolved}\n\nNext Action: ${template.fields.nextAction}\n\nDo Not Change: ${template.fields.whatNotToChange}`;
+              if (template && !finalSummary) {
+                finalSummary = `Goal: ${template.fields.goal}\n\nDecision Made: ${template.fields.decisionMade}\n\nConstraints: ${template.fields.constraints}\n\nFiles Involved: ${template.fields.filesInvolved}\n\nNext Action: ${template.fields.nextAction}\n\nDo Not Change: ${template.fields.whatNotToChange}`;
               }
             }
 
-            if (!summary) {
+            if (!finalSummary) {
               alert("Summary is required.");
               return;
             }
 
-            onCreateHandoff(fromSeatId, toSeatId, taskId || undefined, summary);
-            (form.elements.namedItem("summary") as HTMLTextAreaElement).value = "";
-            (form.elements.namedItem("fromSeatId") as HTMLSelectElement).value = "";
-            (form.elements.namedItem("toSeatId") as HTMLSelectElement).value = "";
-            (form.elements.namedItem("taskId") as HTMLSelectElement).value = "";
+            onCreateHandoff(fromSeat, toSeat, task || undefined, finalSummary);
+            setFromSeat("");
+            setToSeat("");
+            setTask("");
+            setSummary("");
             setSelectedTemplate("");
+            colonyStore.getState().clearPreparedHandoff();
           }}
           className="flex flex-col gap-2"
         >
@@ -220,8 +231,9 @@ Do not add scope beyond the assigned task.`;
             <select
               name="fromSeatId"
               required
+              value={fromSeat}
+              onChange={(e) => setFromSeat(e.target.value)}
               className="rounded border border-border bg-background px-2 py-1 text-xs flex-1"
-              defaultValue=""
             >
               <option value="" disabled>
                 From seat...
@@ -236,8 +248,9 @@ Do not add scope beyond the assigned task.`;
             <select
               name="toSeatId"
               required
+              value={toSeat}
+              onChange={(e) => setToSeat(e.target.value)}
               className="rounded border border-border bg-background px-2 py-1 text-xs flex-1"
-              defaultValue=""
             >
               <option value="" disabled>
                 To seat...

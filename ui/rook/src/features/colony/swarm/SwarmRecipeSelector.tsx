@@ -261,7 +261,7 @@ export function SwarmAssignmentCard({
                 )}
               >
                 <IconArrowRight className="size-3" />
-                Copy for Handoff
+                Prepare Handoff
               </button>
             )}
           </div>

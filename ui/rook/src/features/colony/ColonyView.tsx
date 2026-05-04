@@ -431,6 +431,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
                 },
                 {} as Record<string, typeof activeColony.handoffs>,
               )}
+              prefill={colonyStore.getState().preparedHandoff}
               onCreateHandoff={handleHandoffCreate}
               onMarkCopied={handleHandoffCopy}
               onDeleteHandoff={handleHandoffDelete}
@@ -447,9 +448,14 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
                 if (!activeColonyId) return;
                 createTask(activeColonyId, title, description);
               }}
-              onPrepareHandoff={(_workItemId, _role, prompt) => {
-                if (!activeColonyId) return;
-                navigator.clipboard.writeText(prompt);
+              onPrepareHandoff={(_workItemId, role, prompt) => {
+                if (!activeColonyId || !activeColony) return;
+                colonyStore.getState().prepareHandoff({
+                  fromSeatId: activeColony.seats[0]?.id,
+                  toSeatId: activeColony.seats[1]?.id,
+                  summary: `${role}: ${prompt.slice(0, 100)}`,
+                  prompt,
+                });
               }}
             />
           </div>
