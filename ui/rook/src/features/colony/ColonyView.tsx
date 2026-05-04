@@ -5,6 +5,7 @@ import { ColonySeatCard } from "./ColonySeatCard";
 import { ColonyTranscript } from "./ColonyTranscript";
 import { ColonyTaskBoard } from "./ColonyTaskBoard";
 import { ColonyHandoffPanel } from "./ColonyHandoffPanel";
+import { SwarmPanel } from "./swarm/SwarmPanel";
 import { useChatSessionStore } from "@/features/chat/stores/chatSessionStore";
 import { useChatStore } from "@/features/chat/stores/chatStore";
 import { useAgentStore } from "@/features/agents/stores/agentStore";
@@ -427,6 +428,13 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
               onDeleteHandoff={handleHandoffDelete}
               onReviewHandoff={handleHandoffReview}
             />
+          </div>
+
+          <div className="mt-4">
+            <h3 className="mb-1 text-sm font-medium text-muted-foreground">
+              Specialist Workflow — Delegation recipes
+            </h3>
+            <SwarmPanel />
           </div>
 
           <div className="mt-4 h-48">
