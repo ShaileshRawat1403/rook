@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Bot, User, Eye } from "lucide-react";
 import { useColonyStore, colonyStore } from "./colonyStore";
 import { ColonySeatCard } from "./ColonySeatCard";
@@ -91,6 +91,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
   );
 
   const activeColony = colonies.find((c) => c.id === activeColonyId) ?? null;
+  const [scopePathInput, setScopePathInput] = useState("");
 
   const hasColonyState =
     activeColony &&
@@ -334,7 +335,41 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
           </div>
 
           <div className="mb-4 flex items-center gap-4 text-sm">
-            {activeColony.scope ? (
+            {activeColony.scope?.kind === "directory" && activeColony.scope?.path ? (
+              <div className="flex items-center gap-2">
+                <span className="font-medium">Scope:</span>
+                <span className="text-muted-foreground">
+                  {activeColony.scope.kind} / {activeColony.scope.path}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!activeColonyId || !activeColony.scope) return;
+                    const now = new Date().toISOString();
+                    setColonyScope(activeColonyId, {
+                      kind: "directory",
+                      label: "Local Directory",
+                      path: scopePathInput || activeColony.scope.path,
+                      branch: null,
+                      locked: false,
+                      createdAt: activeColony.scope.createdAt,
+                      updatedAt: now,
+                    });
+                    setScopePathInput("");
+                  }}
+                  className="rounded border border-border px-2 py-1 text-xs hover:bg-accent"
+                >
+                  Update
+                </button>
+                <input
+                  type="text"
+                  value={scopePathInput}
+                  onChange={(e) => setScopePathInput(e.target.value)}
+                  placeholder={activeColony.scope.path}
+                  className="rounded border border-border bg-background px-2 py-1 text-xs w-48"
+                />
+              </div>
+            ) : activeColony.scope ? (
               <div className="flex items-center gap-1">
                 <span className="font-medium">Scope:</span>
                 <span className="text-muted-foreground">
@@ -353,7 +388,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
                     setColonyScope(activeColonyId, {
                       kind: val as "planning" | "directory",
                       label: val === "planning" ? "Planning Only" : "Local Directory",
-                      path: val === "directory" ? "/" : undefined,
+                      path: val === "directory" ? "" : undefined,
                       branch: null,
                       locked: false,
                       createdAt: now,
