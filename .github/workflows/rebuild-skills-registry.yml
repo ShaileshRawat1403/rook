@@ -1,18 +1,16 @@
-name: Rebuild Skills Marketplace
+name: Rebuild Skills Registry
 
 # This workflow rebuilds the documentation site to pull in new skills
 # from the Agent-Skills repository. It runs:
-# 1. Every hour on a schedule
-# 2. On manual trigger for testing
+# 1. On manual trigger for testing
 
 on:
-  schedule:
-    # Run every hour at minute 15
-    - cron: '15 * * * *'
+  # Scheduled rebuild disabled until the Skills Registry build path is restored.
+  # Keep manual trigger available for future validation.
   workflow_dispatch:
     inputs:
       reason:
-        description: 'Reason for manual rebuild'
+        description: 'Reason for manual registry rebuild'
         required: false
         default: 'Manual trigger'
 
