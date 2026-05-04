@@ -447,17 +447,9 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
                 if (!activeColonyId) return;
                 createTask(activeColonyId, title, description);
               }}
-              onPrepareHandoff={(_workItemId, role, prompt) => {
-                if (!activeColonyId || !activeColony) return;
-                const seats = activeColony.seats;
-                if (seats.length < 2) return;
-                createHandoff(
-                  activeColonyId,
-                  seats[0].id,
-                  seats[1].id,
-                  undefined,
-                  `${role}: ${prompt.slice(0, 100)}`,
-                );
+              onPrepareHandoff={(_workItemId, _role, prompt) => {
+                if (!activeColonyId) return;
+                navigator.clipboard.writeText(prompt);
               }}
             />
           </div>
