@@ -13,6 +13,16 @@ export type ColonyScope = {
   updatedAt: string;
 };
 
+export type ColonyMemory = {
+  projectSummary: string;
+  repoNotes: string[];
+  decisions: string[];
+  constraints: string[];
+  risks: string[];
+  openQuestions: string[];
+  updatedAt: string;
+};
+
 export type ColonySeatStatus =
   | "idle"
   | "thinking"
@@ -85,6 +95,7 @@ export type ColonySession = {
   intent: string;
   projectId?: string;
   scope?: ColonyScope;
+  memory?: ColonyMemory;
   seats: ColonySeat[];
   tasks: ColonyTask[];
   handoffs: ColonyHandoff[];
