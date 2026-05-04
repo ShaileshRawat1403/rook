@@ -126,7 +126,14 @@ export function ChatInput({
     (value: string) => {
       setTextRaw(value);
       onDraftChange?.(value);
-      setSuggestedSkills(suggestSkills(value));
+      const nextSuggestions = suggestSkills(value);
+      setSuggestedSkills(nextSuggestions);
+      setSkillStatuses((prev) => {
+        const nextIds = new Set(nextSuggestions.map(({ skill }) => skill.id));
+        return Object.fromEntries(
+          Object.entries(prev).filter(([skillId]) => nextIds.has(skillId)),
+        );
+      });
     },
     [onDraftChange],
   );
