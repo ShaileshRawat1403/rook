@@ -37,6 +37,7 @@ Swarm v0.1 does not:
 | Evidence | Outputs linked to activity |
 
 v0.1 stops at "Prompts Copied." Everything else is manual.
+In v0.1, evidence is manually attached by the user. Rook does not collect specialist outputs automatically.
 
 ## Recipe Schema
 
@@ -58,6 +59,14 @@ type SwarmRecipe = {
   finalArtifact: SwarmArtifactContract;
   reviewChecklist: string[];
   nonGoals: string[];
+};
+
+type SwarmArtifactContract = {
+  artifactType: "report" | "prd" | "strategy" | "checklist" | "audit";
+  format: "markdown" | "json" | "checklist";
+  requiredSections: string[];
+  evidenceRequired: boolean;
+  reviewerRequired: boolean;
 };
 ```
 
@@ -133,6 +142,19 @@ Report in this format:
 5. Any stale or unmaintained areas
 
 Be thorough. List file paths. Do not skip directories.
+
+End with:
+Evidence:
+- List files, directories, or commands used.
+
+Assumptions:
+- State what you assumed about the codebase.
+
+Uncertainty:
+- State what could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
 ```
 
 **CI/Test Inspector Prompt:**
@@ -147,6 +169,19 @@ Report in this format:
 5. Recommendations
 
 Focus on quality, not just presence.
+
+End with:
+Evidence:
+- List test files, config files, or commands used.
+
+Assumptions:
+- State what you assumed about test setup.
+
+Uncertainty:
+- State what tests could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
 ```
 
 **Security Reviewer Prompt:**
@@ -161,6 +196,22 @@ Report in this format:
 5. Risk level: low/medium/high
 
 Do not fix. Only report.
+
+Do not claim a CVE unless supported by package audit output, advisory data, or dependency metadata.
+If CVE verification is unavailable, mark it as "requires audit."
+
+End with:
+Evidence:
+- List files, audit outputs, or sources used.
+
+Assumptions:
+- State what you assumed about the security context.
+
+Uncertainty:
+- State what could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
 ```
 
 **Product Interpreter Prompt:**
@@ -175,6 +226,19 @@ Report in this format:
 5. How to run it
 
 Write for a new developer joining the team.
+
+End with:
+Evidence:
+- List files, docs, or commands used.
+
+Assumptions:
+- State what you assumed about the product.
+
+Uncertainty:
+- State what could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
 ```
 
 ### Review Checklist
@@ -247,6 +311,104 @@ Format:
 4. Error states
 
 Map the happy path and 2-3 alternate paths.
+
+End with:
+Evidence:
+- List docs, mocks, or sources used.
+
+Assumptions:
+- State what you assumed about user behavior.
+
+Uncertainty:
+- State what flows could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
+```
+
+**Stakeholder Mapper Prompt:**
+```
+You are a Stakeholder Mapper. Your task is to identify users and beneficiaries.
+
+For each stakeholder:
+1. Who are they?
+2. What is their role?
+3. What is their need?
+4. How do they benefit?
+
+Identify primary and secondary stakeholders.
+
+End with:
+Evidence:
+- List user interviews, surveys, or sources used.
+
+Assumptions:
+- State what you assumed about user research.
+
+Uncertainty:
+- State what stakeholders could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
+```
+
+**Acceptance Criteria Reviewer Prompt:**
+```
+You are an Acceptance Criteria Reviewer. Your task is to define done conditions.
+
+For each requirement:
+1. Requirement ID
+2. Clear, testable condition
+3. Pass/fail criteria
+
+Ensure criteria are:
+- Specific
+- Measurable
+- Achievable
+- Relevant
+- Time-bound
+
+End with:
+Evidence:
+- List requirements documents or sources used.
+
+Assumptions:
+- State what you assumed about criteria.
+
+Uncertainty:
+- State what criteria could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
+```
+
+**PRD Synthesizer Prompt:**
+```
+You are a PRD Synthesizer. Your task is to produce the final Product Requirements Document.
+
+Produce a Markdown PRD with:
+1. Executive summary
+2. Problem statement
+3. Stakeholders
+4. Requirements (by priority)
+5. User flows
+6. Acceptance criteria
+7. Out of scope
+8. Assumptions
+9. Risks
+
+End with:
+Evidence:
+- List all specialist outputs used.
+
+Assumptions:
+- State any assumptions made during synthesis.
+
+Uncertainty:
+- State what could not be verified.
+
+Recommended handoff:
+- Name the reviewer who should approve this PRD.
 ```
 
 ### Review Checklist
@@ -294,6 +456,46 @@ Report:
 5. Duplicate content
 
 Prioritize by traffic.
+
+End with:
+Evidence:
+- List pages, tools, or sources used.
+
+Assumptions:
+- State what you assumed about content.
+
+Uncertainty:
+- State what could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
+```
+
+**Technical SEO Auditor Prompt:**
+```
+You are a Technical SEO Auditor. Check site health.
+
+Report:
+1. Core web vitals status
+2. Crawl errors
+3. Sitemap status
+4. Robots.txt findings
+5. Schema markup
+
+Use Lighthouse and Search Console if available.
+
+End with:
+Evidence:
+- List tools, reports, or sources used.
+
+Assumptions:
+- State what you assumed about technical setup.
+
+Uncertainty:
+- State what could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
 ```
 
 **Keyword Researcher Prompt:**
@@ -302,11 +504,84 @@ You are a Keyword Researcher. Identify target keywords.
 
 For each keyword:
 1. Keyword phrase
-2. Estimated monthly volume (low/medium/high)
+2. Estimated monthly volume (low/medium/high) - mark source confidence
 3. Difficulty (easy/medium/hard)
 4. Intent (informational/transactional/navigational)
 
-Find 10 primary and 20 secondary keywords.
+For each keyword, mark source confidence:
+- Verified: from tool/source data
+- Estimated: reasoned approximation
+- Unknown: not enough evidence
+
+Suggest up to 10 primary and up to 20 secondary keywords. Do not invent volume numbers without a source.
+
+End with:
+Evidence:
+- List tools, sources, or data used.
+
+Assumptions:
+- State what you assumed about keyword data.
+
+Uncertainty:
+- State what could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
+```
+
+**Competitor Analyst Prompt:**
+```
+You are a Competitor Analyst. Map competitor presence.
+
+For each competitor:
+1. Competitor name
+2. Key pages
+3. Keyword presence
+4. Content gaps compared to us
+
+Report in this format:
+1. Competitor overview
+2. Keyword overlap
+3. Content opportunities
+
+End with:
+Evidence:
+- List sources or tools used.
+
+Assumptions:
+- State what you assumed about competitor research.
+
+Uncertainty:
+- State what competitors could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
+```
+
+**Strategy Synthesizer Prompt:**
+```
+You are a Strategy Synthesizer. Your task is to produce SEO/GEO recommendations.
+
+Produce a strategy document with:
+1. Priority keywords
+2. Content recommendations
+3. Technical fixes
+4. Timeline
+
+Prioritize by impact and effort.
+
+End with:
+Evidence:
+- List all specialist outputs used.
+
+Assumptions:
+- State any assumptions made.
+
+Uncertainty:
+- State what could not be verified.
+
+Recommended handoff:
+- Name the reviewer who should approve this strategy.
 ```
 
 **Technical SEO Auditor Prompt:**
@@ -360,26 +635,91 @@ Use Lighthouse and Search Console if available.
 ```
 Verify the build passes.
 
-Run:
+If manually approved by the user, run or request the following checks.
+If execution is not available, report the exact commands the user should run.
+Do not execute commands without explicit approval.
+
+Commands to verify:
 1. Production build command
 2. Lint check
 3. Type check
 4. Any custom build scripts
 
 Report pass/fail for each.
+
+End with:
+Evidence:
+- List commands run or suggested.
+
+Assumptions:
+- State what you assumed about the build.
+
+Uncertainty:
+- State what could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
+```
+
+**Test Coverage Reviewer Prompt:**
+```
+You are a Test Coverage Reviewer. Check test coverage.
+
+If manually approved, run or request:
+1. Test coverage report
+2. Failed tests
+3. Skipped tests
+
+Report in this format:
+1. Coverage percentage
+2. Low coverage areas
+3. Critical missing tests
+
+Do not run tests without explicit approval.
+
+End with:
+Evidence:
+- List test reports or sources used.
+
+Assumptions:
+- State what you assumed about test setup.
+
+Uncertainty:
+- State what could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
 ```
 
 **Dependency Auditor Prompt:**
 ```
 Audit dependencies for vulnerabilities.
 
-Run:
+If manually approved, run or request:
 1. npm audit / cargo audit
 2. Check for known CVEs
 3. Check license compliance
 4. Check for unmaintained packages
 
 Report critical items only.
+
+Do not claim a CVE unless supported by package audit output, advisory data, or dependency metadata.
+If CVE verification is unavailable, mark it as "requires audit."
+
+Do not run security scans without explicit approval.
+
+End with:
+Evidence:
+- List audit outputs or sources used.
+
+Assumptions:
+- State what you assumed about dependencies.
+
+Uncertainty:
+- State what could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
 ```
 
 **Changelog Generator Prompt:**
@@ -393,6 +733,48 @@ Format:
 4. Deprecations (breaking)
 
 Group by PR/commit. Be concise.
+
+End with:
+Evidence:
+- List commits or PRs used.
+
+Assumptions:
+- State what you assumed about the changelog.
+
+Uncertainty:
+- State what could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
+```
+
+**Release Approver Prompt:**
+```
+You are a Release Approver. Your task is final sign-off.
+
+Review all specialist outputs and verify:
+1. Build passed
+2. Tests passed
+3. No critical vulnerabilities
+4. Changelog complete
+
+Produce an approval checklist with:
+1. Items verified (Y/N)
+2. Risky items remaining
+3. Final decision: approve / reject / needs work
+
+End with:
+Evidence:
+- List all specialist outputs reviewed.
+
+Assumptions:
+- State what you assumed.
+
+Uncertainty:
+- State any open items.
+
+Recommended handoff:
+- Name the user or reviewer who should make the final call.
 ```
 
 ### Review Checklist
@@ -440,6 +822,19 @@ Check:
 5. Is the badge section accurate?
 
 Score: 1-5 for each. Provide specific fixes.
+
+End with:
+Evidence:
+- List README sections reviewed.
+
+Assumptions:
+- State what you assumed about the docs.
+
+Uncertainty:
+- State what could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
 ```
 
 **API Doc Reviewer Prompt:**
@@ -454,6 +849,68 @@ For each endpoint:
 5. Examples provided?
 
 Mark complete/partial/missing.
+
+End with:
+Evidence:
+- List API docs reviewed.
+
+Assumptions:
+- State what you assumed about API coverage.
+
+Uncertainty:
+- State what endpoints could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
+```
+
+**Tutorial Mapper Prompt:**
+```
+You are a Tutorial Mapper. Map tutorials and guides.
+
+For each tutorial:
+1. Title
+2. Topic
+3. Completeness (complete/partial/outdated)
+4. Working status (verified/needs test/unknown)
+
+End with:
+Evidence:
+- List tutorials reviewed.
+
+Assumptions:
+- State what you assumed about tutorials.
+
+Uncertainty:
+- State what tutorials could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
+```
+
+**Consistency Checker Prompt:**
+```
+You are a Consistency Checker. Check for drift.
+
+Check:
+1. Code vs. docs naming
+2. API vs. documentation
+3. Examples vs. actual behavior
+
+Report inconsistencies found.
+
+End with:
+Evidence:
+- List files or comparisons made.
+
+Assumptions:
+- State what you assumed about consistency.
+
+Uncertainty:
+- State what could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
 ```
 
 **Gap Analyzer Prompt:**
@@ -467,6 +924,19 @@ Check against:
 4. All tutorials working?
 
 List missing items by priority.
+
+End with:
+Evidence:
+- List files or areas audited.
+
+Assumptions:
+- State what you assumed about gaps.
+
+Uncertainty:
+- State what could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.
 ```
 
 ### Review Checklist
