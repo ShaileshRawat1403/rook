@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/shared/lib/cn";
 import {
   IconChevronDown,
@@ -26,7 +26,9 @@ interface SwarmRecipeSelectorProps {
   onSelectRecipe: (recipe: SwarmRecipe) => void;
 }
 
-export function SwarmRecipeSelector({ onSelectRecipe }: SwarmRecipeSelectorProps) {
+export function SwarmRecipeSelector({
+  onSelectRecipe,
+}: SwarmRecipeSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -49,7 +51,7 @@ export function SwarmRecipeSelector({ onSelectRecipe }: SwarmRecipeSelectorProps
         className={cn(
           "flex w-full items-center justify-between gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm",
           "hover:bg-accent hover:text-accent-foreground",
-          selected ? "border-primary" : "text-muted-foreground"
+          selected ? "border-primary" : "text-muted-foreground",
         )}
       >
         <span className="flex items-center gap-2">
@@ -81,7 +83,7 @@ export function SwarmRecipeSelector({ onSelectRecipe }: SwarmRecipeSelectorProps
                 onClick={() => handleSelect(recipe.id)}
                 className={cn(
                   "flex w-full items-center gap-2 px-3 py-2 text-sm hover:bg-accent",
-                  selectedId === recipe.id && "bg-accent"
+                  selectedId === recipe.id && "bg-accent",
                 )}
               >
                 <Icon className="size-4" />
@@ -119,11 +121,20 @@ export function SwarmAssignmentCard({
   const [isEditing, setIsEditing] = useState(false);
   const [editPrompt, setEditPrompt] = useState(assignment.taskPrompt);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(assignment.taskPrompt);
-    setCopied(true);
-    onCopyPrompt();
-    setTimeout(() => setCopied(false), 2000);
+  useEffect(() => {
+    setEditPrompt(assignment.taskPrompt);
+  }, [assignment.taskPrompt]);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(assignment.taskPrompt);
+      setCopied(true);
+      onCopyPrompt();
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Fallback for clipboard failure - silently fail
+      onCopyPrompt();
+    }
   };
 
   const handleSaveEdit = () => {
@@ -137,7 +148,7 @@ export function SwarmAssignmentCard({
         "rounded-md border p-3",
         assignment.enabled
           ? "border-border bg-background"
-          : "border-border/50 bg-muted/30 opacity-60"
+          : "border-border/50 bg-muted/30 opacity-60",
       )}
     >
       <div className="flex items-center justify-between gap-2">
@@ -196,10 +207,14 @@ export function SwarmAssignmentCard({
               className={cn(
                 "flex items-center gap-1 rounded border border-border px-2 py-1 text-xs",
                 "hover:bg-accent",
-                !assignment.enabled && "opacity-50"
+                !assignment.enabled && "opacity-50",
               )}
             >
-              {copied ? <IconCheck className="size-3" /> : <IconCopy className="size-3" />}
+              {copied ? (
+                <IconCheck className="size-3" />
+              ) : (
+                <IconCopy className="size-3" />
+              )}
               {copied ? "Copied" : "Copy"}
             </button>
             <button
@@ -208,7 +223,7 @@ export function SwarmAssignmentCard({
               disabled={!assignment.enabled || disabled}
               className={cn(
                 "rounded border border-border px-2 py-1 text-xs hover:bg-accent",
-                (!assignment.enabled || disabled) && "opacity-50"
+                (!assignment.enabled || disabled) && "opacity-50",
               )}
             >
               Edit
@@ -258,7 +273,8 @@ export function SwarmPlanPreview({
               "rounded-full px-2 py-0.5 text-xs",
               plan.status === "draft" && "bg-yellow-500/20 text-yellow-500",
               plan.status === "approved" && "bg-green-500/20 text-green-500",
-              plan.status === "prompts_copied" && "bg-blue-500/20 text-blue-500"
+              plan.status === "prompts_copied" &&
+                "bg-blue-500/20 text-blue-500",
             )}
           >
             {plan.status}
@@ -270,9 +286,9 @@ export function SwarmPlanPreview({
         <div className="rounded-md border border-border bg-muted/30 p-2">
           <p className="mb-2 text-xs font-medium">Changes from recipe</p>
           <ul className="space-y-1">
-            {plan.changesFromRecipe.map((change) => (
+            {plan.changesFromRecipe.map((change, index) => (
               <li
-                key={`${change.field}-${change.previousValue}`}
+                key={`${change.field}-${index}`}
                 className="text-xs text-muted-foreground"
               >
                 <span className="font-medium">{change.field}</span>:{" "}
@@ -285,7 +301,7 @@ export function SwarmPlanPreview({
       )}
 
       <div className="space-y-2">
-        {plan.assignments
+        {[...plan.assignments]
           .sort((a, b) => a.order - b.order)
           .map((assignment) => (
             <SwarmAssignmentCard
@@ -293,7 +309,9 @@ export function SwarmPlanPreview({
               assignment={assignment}
               onToggle={() => handleToggle(assignment.id, assignment.enabled)}
               onCopyPrompt={() => onCopyPrompt(assignment.id)}
-              onEditPrompt={(newPrompt) => onUpdatePrompt(assignment.id, newPrompt)}
+              onEditPrompt={(newPrompt) =>
+                onUpdatePrompt(assignment.id, newPrompt)
+              }
               disabled={!isEditable}
             />
           ))}
