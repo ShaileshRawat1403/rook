@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
 import {
   Bird1,
   Bird2,
@@ -20,7 +19,7 @@ const birdFrames = [Bird1, Bird2, Bird3, Bird4, Bird5, Bird6];
 
 export function RookBirdSpinner({
   className = "",
-  cycleInterval = 120, // Slightly faster for smoother motion
+  cycleInterval = 150,
   frameSizeClass = "w-7 h-7",
 }: RookBirdSpinnerProps) {
   const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
@@ -36,19 +35,10 @@ export function RookBirdSpinner({
   const CurrentFrame = birdFrames[currentFrameIndex];
 
   return (
-    <div className={`relative flex items-center justify-center ${frameSizeClass} ${className}`}>
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentFrameIndex}
-          initial={{ opacity: 0.8 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0.8 }}
-          transition={{ duration: cycleInterval / 1000 }}
-          className="absolute inset-0 flex items-center justify-center"
-        >
-          <CurrentFrame className={frameSizeClass} />
-        </motion.div>
-      </AnimatePresence>
+    <div
+      className={`relative flex items-center justify-center ${frameSizeClass} ${className}`}
+    >
+      <CurrentFrame className={frameSizeClass} />
     </div>
   );
 }
