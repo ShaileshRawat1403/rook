@@ -1,4 +1,4 @@
-import { RookSkill } from "./types";
+import type { RookSkill } from "./types";
 import { BUILTIN_SKILLS } from "./builtinSkills";
 
 type SkillRules = Record<string, string[]>;

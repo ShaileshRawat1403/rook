@@ -1,5 +1,5 @@
-import React from "react";
-import { RookSkill } from "../registry/types";
+import type React from "react";
+import type { RookSkill } from "../registry/types";
 import { SkillSuggestionCard } from "./SkillSuggestionCard";
 
 interface SkillSuggestionListProps {
@@ -19,8 +19,8 @@ export const SkillSuggestionList: React.FC<SkillSuggestionListProps> = ({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="text-gray-300 font-medium">
-        Rook detected this request may benefit from the following skills. Please review before use.
+      <div className="text-muted-foreground font-medium">
+        Rook can suggest skills for this request. Nothing runs until you approve.
       </div>
       {suggestions.map(({ skill, whySuggested }) => (
         <SkillSuggestionCard

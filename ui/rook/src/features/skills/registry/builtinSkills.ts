@@ -1,4 +1,4 @@
-import { RookSkill } from "./types";
+import type { RookSkill } from "./types";
 
 export const BUILTIN_SKILLS: RookSkill[] = [
   {
