@@ -5,8 +5,8 @@ use std::future::Future;
 use std::time::Duration;
 use tokio::time::sleep;
 
-pub const DEFAULT_MAX_RETRIES: usize = 3;
-pub const DEFAULT_INITIAL_RETRY_INTERVAL_MS: u64 = 1000;
+pub const DEFAULT_MAX_RETRIES: usize = 4;
+pub const DEFAULT_INITIAL_RETRY_INTERVAL_MS: u64 = 1500;
 pub const DEFAULT_BACKOFF_MULTIPLIER: f64 = 2.0;
 pub const DEFAULT_MAX_RETRY_INTERVAL_MS: u64 = 30_000;
 

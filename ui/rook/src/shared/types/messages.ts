@@ -103,7 +103,7 @@ export interface ActionRequiredContent {
 
 export interface SystemNotificationContent {
   type: "systemNotification";
-  notificationType: "compaction" | "info" | "warning" | "error";
+  notificationType: "compaction" | "info" | "warning" | "error" | "rateLimit";
   text: string;
   actions?: SystemNotificationAction[];
 }

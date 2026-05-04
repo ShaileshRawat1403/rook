@@ -264,6 +264,7 @@ function renderContentBlock(
     case "systemNotification": {
       const sn = content as SystemNotificationContent;
       const isError = sn.notificationType === "error";
+      const isRateLimit = sn.notificationType === "rateLimit";
       return (
         <div
           key={`notification-${index}`}
@@ -271,7 +272,9 @@ function renderContentBlock(
             "whitespace-pre-wrap rounded-md border p-2 text-xs",
             isError
               ? "border-danger/30 bg-danger/10 text-danger"
-              : "border-border bg-accent text-muted-foreground",
+              : isRateLimit
+                ? "border-warning/30 bg-warning/10 text-warning"
+                : "border-border bg-accent text-muted-foreground",
           )}
         >
           {sn.text}
