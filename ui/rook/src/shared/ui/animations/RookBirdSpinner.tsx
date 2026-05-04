@@ -35,7 +35,9 @@ export function RookBirdSpinner({
   const CurrentFrame = birdFrames[currentFrameIndex];
 
   return (
-    <div className={`transition-opacity duration-75 ${className}`}>
+    <div
+      className={`relative flex items-center justify-center ${frameSizeClass} ${className}`}
+    >
       <CurrentFrame className={frameSizeClass} />
     </div>
   );
