@@ -32,7 +32,7 @@ export const useSwarmStore = create<SwarmStore>((set, get) => ({
   currentPlan: null,
   error: null,
 
-  selectRecipe: (recipe) => set({ selectedRecipe: recipe, error: null }),
+  selectRecipe: (recipe) => set({ selectedRecipe: recipe, currentPlan: null, error: null }),
 
   clearSelection: () => set({ selectedRecipe: null, currentPlan: null, error: null }),
 
