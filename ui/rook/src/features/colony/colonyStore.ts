@@ -8,6 +8,7 @@ import type {
   ColonyTask,
   ColonyHandoff,
   ColonyScope,
+  ColonyMemory,
 } from "./types";
 import { loadPersistedColonyState, persistColonyState } from "./colonyPersistence";
 
@@ -34,6 +35,9 @@ type ColonyStore = ColonyStoreState & {
   setSentinelMode: (mode: "off" | "dax_open") => void;
   setColonyScope: (colonyId: string, scope: ColonyScope) => void;
   clearColonyScope: (colonyId: string) => void;
+  updateColonyMemory: (colonyId: string, patch: Partial<ColonyMemory>) => void;
+  addMemoryItem: (colonyId: string, section: keyof Omit<ColonyMemory, "updatedAt">, text: string) => void;
+  removeMemoryItem: (colonyId: string, section: keyof Omit<ColonyMemory, "updatedAt">, index: number) => void;
   prepareHandoff: (data: { fromSeatId?: string; toSeatId?: string; taskId?: string; summary?: string; prompt?: string }) => void;
   clearPreparedHandoff: () => void;
   addSeat: (colonyId: string, role: ColonyRole, label: string) => void;
@@ -158,6 +162,103 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
           ? { ...c, scope: undefined, updatedAt: now }
           : c,
       ),
+    }));
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
+  },
+
+  updateColonyMemory: (colonyId, patch) => {
+    const now = new Date().toISOString();
+    set((state) => ({
+      colonies: state.colonies.map((c) =>
+        c.id === colonyId
+          ? {
+              ...c,
+              memory: {
+                projectSummary: patch.projectSummary ?? c.memory?.projectSummary ?? "",
+                repoNotes: patch.repoNotes ?? c.memory?.repoNotes ?? [],
+                decisions: patch.decisions ?? c.memory?.decisions ?? [],
+                constraints: patch.constraints ?? c.memory?.constraints ?? [],
+                risks: patch.risks ?? c.memory?.risks ?? [],
+                openQuestions: patch.openQuestions ?? c.memory?.openQuestions ?? [],
+                updatedAt: now,
+              },
+              updatedAt: now,
+            }
+          : c,
+      ),
+    }));
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
+  },
+
+  addMemoryItem: (colonyId, section, text) => {
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    const now = new Date().toISOString();
+    set((state) => ({
+      colonies: state.colonies.map((c) => {
+        if (c.id !== colonyId) return c;
+        const existing = c.memory?.[section];
+        if (!Array.isArray(existing)) return c;
+        return {
+          ...c,
+          memory: {
+            projectSummary: c.memory?.projectSummary ?? "",
+            repoNotes: c.memory?.repoNotes ?? [],
+            decisions: c.memory?.decisions ?? [],
+            constraints: c.memory?.constraints ?? [],
+            risks: c.memory?.risks ?? [],
+            openQuestions: c.memory?.openQuestions ?? [],
+            [section]: [...existing, trimmed],
+            updatedAt: now,
+          },
+          updatedAt: now,
+        };
+      }),
+    }));
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
+  },
+
+  removeMemoryItem: (colonyId, section, index) => {
+    const now = new Date().toISOString();
+    set((state) => ({
+      colonies: state.colonies.map((c) => {
+        if (c.id !== colonyId) return c;
+        const existing = c.memory?.[section];
+        if (!Array.isArray(existing)) return c;
+        const updated = existing.filter((_, i) => i !== index);
+        return {
+          ...c,
+          memory: {
+            projectSummary: c.memory?.projectSummary ?? "",
+            repoNotes: c.memory?.repoNotes ?? [],
+            decisions: c.memory?.decisions ?? [],
+            constraints: c.memory?.constraints ?? [],
+            risks: c.memory?.risks ?? [],
+            openQuestions: c.memory?.openQuestions ?? [],
+            [section]: updated,
+            updatedAt: now,
+          },
+          updatedAt: now,
+        };
+      }),
     }));
     const state = get();
     persistColonyState({
