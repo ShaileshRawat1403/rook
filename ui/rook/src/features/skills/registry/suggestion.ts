@@ -15,27 +15,37 @@ const SUGGESTION_RULES: SkillRules = {
   "handoff-builder": ["handoff", "reviewer", "leave off", "summary for next"],
 };
 
-export function suggestSkills(userIntent: string): RookSkill[] {
+export interface SkillSuggestion {
+  skill: RookSkill;
+  whySuggested: string;
+}
+
+export function suggestSkills(userIntent: string): SkillSuggestion[] {
   if (!userIntent || userIntent.trim() === "") {
     return [];
   }
 
   const intentLower = userIntent.toLowerCase();
-  const suggestedIds = new Set<string>();
+  const suggestions: SkillSuggestion[] = [];
+  const seenIds = new Set<string>();
 
   for (const [skillId, keywords] of Object.entries(SUGGESTION_RULES)) {
     for (const keyword of keywords) {
       if (intentLower.includes(keyword.toLowerCase())) {
-        suggestedIds.add(skillId);
-        break; // Match found for this skill, move to the next skill
+        if (!seenIds.has(skillId)) {
+          const skill = BUILTIN_SKILLS.find(s => s.id === skillId);
+          if (skill) {
+            seenIds.add(skillId);
+            suggestions.push({
+              skill,
+              whySuggested: `Your request mentions "${keyword}".`,
+            });
+          }
+        }
+        break; // Move to next skill rule
       }
     }
   }
-
-  // Map matched IDs back to full skill objects
-  const suggestions = Array.from(suggestedIds)
-    .map(id => BUILTIN_SKILLS.find(skill => skill.id === id))
-    .filter((skill): skill is RookSkill => skill !== undefined);
 
   // Return up to 3 relevant skills
   return suggestions.slice(0, 3);
