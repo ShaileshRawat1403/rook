@@ -3,7 +3,13 @@ import { useSwarmStore } from "./swarmStore";
 import { SwarmRecipeSelector, SwarmPlanPreview } from "./SwarmRecipeSelector";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 
-export function SwarmPanel() {
+export function SwarmPanel({
+  onCreateTask,
+  onPrepareHandoff,
+}: {
+  onCreateTask?: (title: string, description?: string) => void;
+  onPrepareHandoff?: (workItemId: string, role: string, prompt: string) => void;
+}) {
   const {
     selectedRecipe,
     currentPlan,
@@ -16,6 +22,9 @@ export function SwarmPanel() {
     markCopied,
     clearError,
   } = useSwarmStore();
+
+  useSwarmStore.getState().setCreateTaskHandler(() => onCreateTask);
+  useSwarmStore.getState().setPrepareHandoffHandler(() => onPrepareHandoff);
 
   const [userIntent, setUserIntent] = useState("");
 
@@ -81,6 +90,26 @@ export function SwarmPanel() {
             onCopyPrompt={() => {}}
             onApprove={approve}
             onMarkCopied={markCopied}
+            onCreateTask={
+              onCreateTask
+                ? (id, role, _prompt) => {
+                    const assignment = currentPlan.assignments.find((a) => a.id === id);
+                    if (assignment) {
+                      onCreateTask(`${role}: ${assignment.taskPrompt.slice(0, 50)}`, assignment.taskPrompt);
+                    }
+                  }
+                : undefined
+            }
+            onPrepareHandoff={
+              onPrepareHandoff
+                ? (id, role, _prompt) => {
+                    const assignment = currentPlan.assignments.find((a) => a.id === id);
+                    if (assignment) {
+                      onPrepareHandoff(id, role, assignment.taskPrompt);
+                    }
+                  }
+                : undefined
+            }
           />
         )}
       </CardContent>

@@ -442,7 +442,24 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
             <h3 className="mb-1 text-sm font-medium text-muted-foreground">
               Specialist Workflow — Delegation recipes
             </h3>
-            <SwarmPanel />
+            <SwarmPanel
+              onCreateTask={(title, description) => {
+                if (!activeColonyId) return;
+                createTask(activeColonyId, title, description);
+              }}
+              onPrepareHandoff={(_workItemId, role, prompt) => {
+                if (!activeColonyId || !activeColony) return;
+                const seats = activeColony.seats;
+                if (seats.length < 2) return;
+                createHandoff(
+                  activeColonyId,
+                  seats[0].id,
+                  seats[1].id,
+                  undefined,
+                  `${role}: ${prompt.slice(0, 100)}`,
+                );
+              }}
+            />
           </div>
 
           <div className="mt-4 h-48">

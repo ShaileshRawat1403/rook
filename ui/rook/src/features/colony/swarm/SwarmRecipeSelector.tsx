@@ -10,6 +10,8 @@ import {
   IconFileText,
   IconSearch,
   IconRocket,
+  IconPlus,
+  IconArrowRight,
 } from "@tabler/icons-react";
 import { SWARM_RECIPES, getSwarmRecipe } from "./recipes";
 import type { SwarmRecipe, SwarmPlan } from "./types";
@@ -107,6 +109,8 @@ interface SwarmAssignmentCardProps {
   onToggle: () => void;
   onCopyPrompt: () => void;
   onEditPrompt: (newPrompt: string) => void;
+  onCreateTask?: () => void;
+  onPrepareHandoff?: () => void;
   disabled?: boolean;
 }
 
@@ -115,6 +119,8 @@ export function SwarmAssignmentCard({
   onToggle,
   onCopyPrompt,
   onEditPrompt,
+  onCreateTask,
+  onPrepareHandoff,
   disabled = false,
 }: SwarmAssignmentCardProps) {
   const [copied, setCopied] = useState(false);
@@ -199,7 +205,7 @@ export function SwarmAssignmentCard({
           <p className="line-clamp-4 whitespace-pre-wrap text-xs text-muted-foreground">
             {assignment.taskPrompt}
           </p>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button
               type="button"
               onClick={handleCopy}
@@ -228,6 +234,36 @@ export function SwarmAssignmentCard({
             >
               Edit
             </button>
+            {onCreateTask && (
+              <button
+                type="button"
+                onClick={onCreateTask}
+                disabled={!assignment.enabled}
+                className={cn(
+                  "flex items-center gap-1 rounded border border-border px-2 py-1 text-xs",
+                  "hover:bg-accent",
+                  !assignment.enabled && "opacity-50",
+                )}
+              >
+                <IconPlus className="size-3" />
+                Task
+              </button>
+            )}
+            {onPrepareHandoff && (
+              <button
+                type="button"
+                onClick={onPrepareHandoff}
+                disabled={!assignment.enabled}
+                className={cn(
+                  "flex items-center gap-1 rounded border border-border px-2 py-1 text-xs",
+                  "hover:bg-accent",
+                  !assignment.enabled && "opacity-50",
+                )}
+              >
+                <IconArrowRight className="size-3" />
+                Handoff
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -242,6 +278,8 @@ interface SwarmPlanPreviewProps {
   onCopyPrompt: (assignmentId: string) => void;
   onApprove: () => void;
   onMarkCopied: () => void;
+  onCreateTask?: (assignmentId: string, role: string, prompt: string) => void;
+  onPrepareHandoff?: (assignmentId: string, role: string, prompt: string) => void;
 }
 
 export function SwarmPlanPreview({
@@ -251,6 +289,8 @@ export function SwarmPlanPreview({
   onCopyPrompt,
   onApprove,
   onMarkCopied,
+  onCreateTask,
+  onPrepareHandoff,
 }: SwarmPlanPreviewProps) {
   const handleToggle = (assignmentId: string, currentEnabled: boolean) => {
     onToggleAssignment(assignmentId, !currentEnabled);
@@ -319,6 +359,16 @@ export function SwarmPlanPreview({
               onCopyPrompt={() => onCopyPrompt(assignment.id)}
               onEditPrompt={(newPrompt) =>
                 onUpdatePrompt(assignment.id, newPrompt)
+              }
+              onCreateTask={
+                onCreateTask
+                  ? () => onCreateTask(assignment.id, assignment.role, assignment.taskPrompt)
+                  : undefined
+              }
+              onPrepareHandoff={
+                onPrepareHandoff
+                  ? () => onPrepareHandoff(assignment.id, assignment.role, assignment.taskPrompt)
+                  : undefined
               }
               disabled={!isEditable}
             />
