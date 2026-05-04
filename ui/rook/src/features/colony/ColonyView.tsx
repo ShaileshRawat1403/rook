@@ -333,6 +333,12 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
           </div>
 
           <div className="mb-4 flex items-center gap-4 text-sm">
+            {activeColony.projectId && (
+              <div className="flex items-center gap-1">
+                <span className="font-medium">Scope:</span>
+                <span className="text-muted-foreground">project</span>
+              </div>
+            )}
             <div className="flex items-center gap-1">
               <span className="font-medium">Seats:</span>
               <span className="text-muted-foreground">3</span>

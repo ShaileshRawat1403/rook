@@ -193,6 +193,11 @@ Do not add scope beyond the assigned task.`;
         <p className="text-xs text-muted-foreground">
           Move selected context between roles. No automatic execution.
         </p>
+        {prefill && (
+          <p className="text-xs text-blue-500">
+            Prepared handoff from Swarm Work Item. Review before creating.
+          </p>
+        )}
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         <form
@@ -278,25 +283,33 @@ Do not add scope beyond the assigned task.`;
             </select>
           </div>
           <select
-            name="taskId"
-            className="rounded border border-border bg-background px-2 py-1 text-xs"
-            defaultValue=""
-          >
-            <option value="">No task linked...</option>
-            {tasks.map((task) => (
-              <option key={task.id} value={task.id}>
-                {task.title}
-              </option>
-            ))}
-          </select>
-          <Textarea
-            name="summary"
-            placeholder="Goal: What should this work accomplish?&#10;Decision Made: What decision was made?&#10;Constraints: What are the constraints?&#10;Files Involved: What files were changed?&#10;Next Action: What should happen next?&#10;Do Not Change: What should stay the same?"
-            className="min-h-[120px] resize-none text-xs"
-          />
-          <Button type="submit" size="sm" className="w-full">
-            Create Handoff
-          </Button>
+              name="taskId"
+              value={task}
+              onChange={(e) => setTask(e.target.value)}
+              className="rounded border border-border bg-background px-2 py-1 text-xs"
+            >
+              <option value="">No task linked...</option>
+              {tasks.map((task) => (
+                <option key={task.id} value={task.id}>
+                  {task.title}
+                </option>
+              ))}
+            </select>
+            <Textarea
+              name="summary"
+              value={summary}
+              onChange={(e) => setSummary(e.target.value)}
+              placeholder="Goal: What should this work accomplish?
+Decision Made: What decision was made?
+Constraints: What are the constraints?
+Files Involved: What files were changed?
+Next Action: What should happen next?
+Do Not Change: What should stay the same?"
+              className="min-h-[120px] resize-none text-xs"
+            />
+            <Button type="submit" size="sm" className="w-full">
+              {prefill ? "Create Prepared Handoff" : "Create Handoff"}
+            </Button>
         </form>
 
         {handoffs.length === 0 ? (
