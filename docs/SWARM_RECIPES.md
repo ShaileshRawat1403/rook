@@ -1040,7 +1040,7 @@ Modify prompt: Make Security Reviewer check for leaked keys first
 ### v0.2 Scope (Next)
 
 - Add recipe selection UI in Colony
-- Generate editable Swarm Plans from canonical recipes
+- Generate editable Swarm Plans from canonical recipes (via plan.ts)
 - Allow specialist assignment edits before approval (add, remove, reorder, disable, edit prompts)
 - Show specialist prompts in readable format
 - Allow prompt copying to clipboard
