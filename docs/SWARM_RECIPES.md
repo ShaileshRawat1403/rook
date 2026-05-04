@@ -949,6 +949,106 @@ Recommended handoff:
 
 ---
 
+## Editable Plans, Immutable Recipes
+
+A Swarm Recipe is a versioned, read-only template. A Swarm Plan is the task-specific instance generated from that template.
+
+### Mental Model
+
+| Concept | Analogy | Behavior |
+|---------|--------|--------|
+| Recipe | Cookbook recipe | Canonical, versioned, read-only |
+| Plan | Today's cooking plan | Editable instance generated from a recipe |
+| Assignment | Each cook's job | Editable specialist task inside the plan |
+| Evidence | What actually happened | Output linked to activity |
+
+### Plan Schema
+
+```typescript
+type SwarmPlan = {
+  id: string;
+  recipeId: string;
+  recipeVersion: string;
+  userIntent: string;
+  status: "draft" | "approved" | "tasks_created" | "prompts_copied" | "reviewed";
+  editable: boolean;
+  assignments: SwarmAssignment[];
+  changesFromRecipe: SwarmPlanChange[];
+};
+
+type SwarmAssignment = {
+  id: string;
+  specialistId: string;
+  label: string;
+  role: string;
+  taskPrompt: string;
+  contextPacket: ContextPacket;
+  outputContract: {
+    format: "markdown" | "json" | "checklist";
+    requiredSections: string[];
+    evidenceRequired: boolean;
+    uncertaintyRequired: boolean;
+  };
+  enabled: boolean;
+  order: number;
+};
+
+type SwarmPlanChange = {
+  field: string;
+  previousValue: string;
+  newValue: string;
+  reason?: string;
+  changedBy: "user" | "rook_suggestion";
+};
+```
+
+### Core Rules
+
+1. **Canonical recipes are read-only.** Users edit generated plans, not base recipes.
+2. **Every edit is visible before approval.** No silent mutations.
+3. **Every edit is recorded as a plan change.** Enables diff view.
+4. **Rook may suggest changes, but user approval is required.** No automatic recipe mutation.
+5. **No plan adjustment can execute specialists automatically.**
+
+### Examples of Plan Editing
+
+Generate a plan from "Repo Review" recipe:
+
+```
+Plan:
+  - Repo Explorer
+  - CI/Test Inspector
+  - Security Reviewer
+  - Product Interpreter
+```
+
+User can then edit:
+
+```
+Remove: Product Interpreter
+Add: Rust Dependency Auditor (if Cargo project)
+Rename: Security Reviewer → Supply Chain Reviewer
+Reorder: Move CI/Test before Security
+Modify prompt: Make Security Reviewer check for leaked keys first
+```
+
+### Roadmap: Editable Plans
+
+| Version | Feature |
+|---------|---------|
+| v0.2 | Editable plan after recipe selection |
+| v0.3 | Recipe-to-plan diff view |
+| v0.4 | Codebase-aware suggestions (e.g., "This is Rust, add Cargo Auditor?") |
+| v0.5 | Save custom recipes (fork into personal template) |
+
+### Scope Guardrails
+
+> Rook may suggest plan adjustments, but user approval is required.
+> No recipe adjustment can execute specialists automatically.
+> Canonical recipes are immutable. Plans are editable.
+
+---
+
 ## Implementation Notes
 
 ### v0.2 Scope (Future)
