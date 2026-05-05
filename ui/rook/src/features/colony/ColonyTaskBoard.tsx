@@ -26,6 +26,23 @@ const STATUS_COLORS: Record<ColonyTask["status"], string> = {
   done: "bg-green-500 text-white",
 };
 
+const isKnownStatus = (status: unknown): status is ColonyTask["status"] =>
+  typeof status === "string" && status in STATUS_LABELS;
+
+const getSafeStatus = (status: unknown): ColonyTask["status"] =>
+  isKnownStatus(status) ? status : "todo";
+
+const isRenderableTask = (task: unknown): task is ColonyTask => {
+  if (!task || typeof task !== "object") return false;
+  const candidate = task as Partial<ColonyTask>;
+  return (
+    typeof candidate.id === "string" &&
+    candidate.id.length > 0 &&
+    typeof candidate.title === "string" &&
+    candidate.title.length > 0
+  );
+};
+
 interface ColonyTaskBoardProps {
   tasks: ColonyTask[];
   seats: { id: string; role: ColonyRole; label: string }[];
@@ -55,6 +72,8 @@ export function ColonyTaskBoard({
   onDeleteTask,
   onOpenSwarm,
 }: ColonyTaskBoardProps) {
+  const visibleTasks = tasks.filter(isRenderableTask);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -123,7 +142,7 @@ export function ColonyTaskBoard({
               Turn intent into assignable work. No prompt is sent automatically.
             </p>
           </div>
-          {onOpenSwarm && tasks.length === 0 && (
+          {onOpenSwarm && visibleTasks.length === 0 && (
             <Button
               type="button"
               variant="outline"
@@ -148,87 +167,90 @@ export function ColonyTaskBoard({
           </Button>
         </form>
 
-        {tasks.length === 0 ? (
+        {visibleTasks.length === 0 ? (
           <p className="text-xs text-muted-foreground">
             No work items yet. Create one, assign it to a role, then open that
             role's session to work on it.
           </p>
         ) : (
           <div className="flex flex-col gap-2">
-            {tasks.map((task) => (
-              <div
-                key={task.id}
-                className="flex items-center gap-2 rounded-md border border-border p-2"
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="truncate text-sm font-medium">
-                      {task.title}
-                    </span>
-                    <Badge
-                      variant="secondary"
-                      className={`text-[10px] ${STATUS_COLORS[task.status]}`}
-                    >
-                      {STATUS_LABELS[task.status]}
-                    </Badge>
-                  </div>
-                  {task.description && (
-                    <p className="text-xs text-muted-foreground truncate">
-                      {task.description}
-                    </p>
-                  )}
-                  {task.assignedSeatId && (
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <User className="h-3 w-3" />
-                      <span>{getSeatLabel(task.assignedSeatId)}</span>
+            {visibleTasks.map((task) => {
+              const status = getSafeStatus(task.status);
+              return (
+                <div
+                  key={task.id}
+                  className="flex items-center gap-2 rounded-md border border-border p-2"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="truncate text-sm font-medium">
+                        {task.title}
+                      </span>
+                      <Badge
+                        variant="secondary"
+                        className={`text-[10px] ${STATUS_COLORS[status]}`}
+                      >
+                        {STATUS_LABELS[status]}
+                      </Badge>
                     </div>
-                  )}
-                  {renderContextTrail(task.id)}
+                    {task.description && (
+                      <p className="text-xs text-muted-foreground truncate">
+                        {task.description}
+                      </p>
+                    )}
+                    {task.assignedSeatId && (
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <User className="h-3 w-3" />
+                        <span>{getSeatLabel(task.assignedSeatId)}</span>
+                      </div>
+                    )}
+                    {renderContextTrail(task.id)}
+                  </div>
+
+                  <select
+                    value={task.assignedSeatId ?? ""}
+                    onChange={(e) =>
+                      onAssignTask(task.id, e.target.value || null)
+                    }
+                    className="rounded border border-border bg-background px-1 py-0.5 text-xs"
+                  >
+                    <option value="">Assign...</option>
+                    {seats.map((seat) => (
+                      <option key={seat.id} value={seat.id}>
+                        {seat.label}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={status}
+                    onChange={(e) =>
+                      onUpdateStatus(
+                        task.id,
+                        e.target.value as ColonyTask["status"],
+                      )
+                    }
+                    className="rounded border border-border bg-background px-1 py-0.5 text-xs"
+                  >
+                    <option value="todo">To Do</option>
+                    <option value="assigned">Assigned</option>
+                    <option value="inProgress">In Progress</option>
+                    <option value="blocked">Blocked</option>
+                    <option value="done">Done</option>
+                  </select>
+
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onDeleteTask(task.id)}
+                    className="h-6 w-6 p-0"
+                  >
+                    <Trash2 className="h-3 w-3 text-muted-foreground" />
+                  </Button>
                 </div>
-
-                <select
-                  value={task.assignedSeatId ?? ""}
-                  onChange={(e) =>
-                    onAssignTask(task.id, e.target.value || null)
-                  }
-                  className="rounded border border-border bg-background px-1 py-0.5 text-xs"
-                >
-                  <option value="">Assign...</option>
-                  {seats.map((seat) => (
-                    <option key={seat.id} value={seat.id}>
-                      {seat.label}
-                    </option>
-                  ))}
-                </select>
-
-                <select
-                  value={task.status}
-                  onChange={(e) =>
-                    onUpdateStatus(
-                      task.id,
-                      e.target.value as ColonyTask["status"],
-                    )
-                  }
-                  className="rounded border border-border bg-background px-1 py-0.5 text-xs"
-                >
-                  <option value="todo">To Do</option>
-                  <option value="assigned">Assigned</option>
-                  <option value="inProgress">In Progress</option>
-                  <option value="blocked">Blocked</option>
-                  <option value="done">Done</option>
-                </select>
-
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onDeleteTask(task.id)}
-                  className="h-6 w-6 p-0"
-                >
-                  <Trash2 className="h-3 w-3 text-muted-foreground" />
-                </Button>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </CardContent>

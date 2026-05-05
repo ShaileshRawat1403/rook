@@ -1,7 +1,15 @@
-import { useCallback, useMemo, useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  ClipboardList,
+  FileText,
+  GitBranch,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 import { useColonyStore, colonyStore } from "./colonyStore";
 import { getConfiguredSentinelMode } from "@/shared/api/sentinel";
-import { ColonySeatCard } from "./ColonySeatCard";
 import { ColonyTranscript } from "./ColonyTranscript";
 import { ColonyTaskBoard } from "./ColonyTaskBoard";
 import { ColonyHandoffPanel } from "./ColonyHandoffPanel";
@@ -14,7 +22,7 @@ import { useChatStore } from "@/features/chat/stores/chatStore";
 import { useAgentStore } from "@/features/agents/stores/agentStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import type { AppView } from "@/app/AppShell";
-import type { ChatSessionInfo, ColonyTask } from "./types";
+import type { ColonyTask } from "./types";
 
 export type ColonyPanel =
   | "overview"
@@ -28,12 +36,10 @@ export type ColonyPanel =
 
 const PANELS: { id: ColonyPanel; label: string }[] = [
   { id: "overview", label: "Overview" },
-  { id: "readiness", label: "Readiness" },
-  { id: "context", label: "Project Notes" },
-  { id: "work", label: "Work Items" },
-  { id: "handoffs", label: "Send Context" },
-  { id: "swarm", label: "Plan" },
-  { id: "artifacts", label: "Saved Outputs" },
+  { id: "work", label: "Work" },
+  { id: "handoffs", label: "Context" },
+  { id: "context", label: "Notes" },
+  { id: "artifacts", label: "Outputs" },
   { id: "activity", label: "Audit" },
 ];
 
@@ -64,7 +70,6 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     addMemoryItem,
     removeMemoryItem,
     bindSeatToSession,
-    unbindSeat,
     setActiveSeat,
     openSessionForSeat,
     createTask,
@@ -82,33 +87,6 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
   const sessionStore = useChatSessionStore();
   const chatStore = useChatStore();
   const agentStore = useAgentStore();
-
-  const sessions = sessionStore.sessions;
-
-  const sessionInfoMap = useMemo(() => {
-    const map = new Map<string, ChatSessionInfo>();
-    for (const session of sessions) {
-      map.set(session.id, {
-        id: session.id,
-        title: session.title,
-        providerId: session.providerId,
-        modelName: session.modelName,
-        createdAt: session.createdAt,
-        updatedAt: session.updatedAt,
-        messageCount: session.messageCount,
-        draft: session.draft,
-      });
-    }
-    return map;
-  }, [sessions]);
-
-  const getSessionInfo = useCallback(
-    (sessionId: string | undefined): ChatSessionInfo | undefined => {
-      if (!sessionId) return undefined;
-      return sessionInfoMap.get(sessionId);
-    },
-    [sessionInfoMap],
-  );
 
   const activeColony = colonies.find((c) => c.id === activeColonyId) ?? null;
   const [scopePathInput, setScopePathInput] = useState("");
@@ -153,32 +131,6 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
   const sentinelLabel =
     sentinelMode === "off" ? "Safety: Off" : "Safety: Advisory";
 
-  const handleCreateSessionForSeat = useCallback(
-    (seatId: string, seatLabel: string) => {
-      if (!activeColonyId || !activeColony) return;
-
-      const session = sessionStore.createDraftSession({
-        title: `Colony: ${seatLabel}`,
-        projectId: activeColony.projectId,
-        providerId: agentStore.selectedProvider,
-      });
-
-      bindSeatToSession(activeColonyId, seatId, {
-        sessionId: session.id,
-        acpSessionId: session.acpSessionId,
-        providerId: session.providerId,
-        projectId: session.projectId ?? undefined,
-      });
-    },
-    [
-      activeColonyId,
-      activeColony,
-      sessionStore,
-      agentStore.selectedProvider,
-      bindSeatToSession,
-    ],
-  );
-
   const handleOpenSession = useCallback(
     async (sessionId: string, seatId: string) => {
       await sessionStore.loadSessions();
@@ -192,22 +144,6 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
       }
     },
     [sessionStore, chatStore, activeColonyId, openSessionForSeat, onNavigate],
-  );
-
-  const handleUnbindSeat = useCallback(
-    (seatId: string) => {
-      if (!activeColonyId) return;
-      unbindSeat(activeColonyId, seatId);
-    },
-    [activeColonyId, unbindSeat],
-  );
-
-  const handleUpdateSeatModel = useCallback(
-    (seatId: string, modelName: string) => {
-      if (!activeColonyId) return;
-      colonyStore.getState().updateSeatModel(activeColonyId, seatId, modelName);
-    },
-    [activeColonyId],
   );
 
   const handleSelectSeat = useCallback(
@@ -427,15 +363,106 @@ Do not add scope beyond the assigned task.`;
     [activeColony, chatStore.messagesBySession],
   );
 
-  const getMemoryItemCount = () => {
-    if (!activeColony?.memory) return 0;
-    const m = activeColony.memory;
+  const getScopeSummary = () => {
+    if (!activeColony?.scope) return "No scope selected";
+    if (activeColony.scope.kind === "directory") {
+      return activeColony.scope.path || "Directory scope";
+    }
+    return activeColony.scope.label || "Planning scope";
+  };
+
+  const getLatestEventLabel = () => {
+    const latest = events.at(-1);
+    if (!latest) return "No activity yet";
+    return latest.type.replaceAll("_", " ");
+  };
+
+  const renderRoleStrip = () => {
+    if (!activeColony) return null;
+
     return (
-      (m.repoNotes?.length ?? 0) +
-      (m.decisions?.length ?? 0) +
-      (m.constraints?.length ?? 0) +
-      (m.risks?.length ?? 0) +
-      (m.openQuestions?.length ?? 0)
+      <div className="grid gap-2 lg:grid-cols-3">
+        {activeColony.seats.map((seat) => {
+          const task = seat.currentTask
+            ? activeColony.tasks.find(
+                (candidate) => candidate.id === seat.currentTask,
+              )
+            : null;
+          const linked = seat.binding === "linked";
+          return (
+            <button
+              key={seat.id}
+              type="button"
+              onClick={() => {
+                handleSelectSeat(seat.id);
+                if (seat.sessionId) {
+                  void handleOpenSession(seat.sessionId, seat.id);
+                }
+              }}
+              className={`flex min-h-[76px] items-center justify-between rounded-lg border px-4 py-3 text-left transition-colors ${
+                activeColony.activeSeatId === seat.id
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-border bg-background hover:bg-accent hover:text-accent-foreground"
+              }`}
+            >
+              <div className="min-w-0">
+                <div className="text-sm font-medium">{seat.label}</div>
+                <div className="mt-1 truncate text-xs opacity-70">
+                  {task?.title ?? "No assigned work"}
+                </div>
+              </div>
+              <div
+                className={`shrink-0 rounded-full px-2 py-1 text-[11px] ${
+                  activeColony.activeSeatId === seat.id
+                    ? "bg-background/15"
+                    : "bg-muted text-muted-foreground"
+                }`}
+              >
+                {linked ? "Linked" : "Unlinked"}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const renderWorkspaceBrief = () => {
+    if (!activeColony) return null;
+    const linkedSeats = activeColony.seats.filter(
+      (seat) => seat.binding === "linked",
+    ).length;
+    const openTasks = activeColony.tasks.filter(
+      (task) => task.status !== "done",
+    ).length;
+
+    return (
+      <div className="rounded-2xl border border-border bg-card px-5 py-4 shadow-sm">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-xl font-semibold">{activeColony.title}</h2>
+              <span className="rounded-full bg-muted px-2.5 py-1 text-xs text-muted-foreground">
+                {activeColony.intent}
+              </span>
+            </div>
+            <p className="mt-2 max-w-3xl truncate text-sm text-muted-foreground">
+              {getScopeSummary()}
+            </p>
+          </div>
+          <div className="flex shrink-0 flex-wrap gap-2 text-xs">
+            <span className="rounded-full border border-border px-3 py-1.5">
+              {openTasks} open work
+            </span>
+            <span className="rounded-full border border-border px-3 py-1.5">
+              {linkedSeats}/{activeColony.seats.length} roles linked
+            </span>
+            <span className="rounded-full border border-border px-3 py-1.5">
+              {activeColony.handoffs.length} context packets
+            </span>
+          </div>
+        </div>
+      </div>
     );
   };
 
@@ -445,160 +472,129 @@ Do not add scope beyond the assigned task.`;
     switch (activePanel) {
       case "overview":
         return (
-          <div className="flex flex-1 flex-col gap-4">
-            <div className="grid grid-cols-3 gap-4">
-              <Card className="flex flex-col">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm">Scope</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-1 flex-col gap-2 text-sm">
-                  <span className="text-muted-foreground">
-                    {activeColony.scope?.kind === "directory"
-                      ? `Directory`
-                      : activeColony.scope?.kind === "planning"
-                        ? "Planning Only"
-                        : "No scope"}
-                  </span>
-                  {activeColony.scope?.path && (
-                    <span className="text-xs text-muted-foreground truncate">
-                      {activeColony.scope.path}
-                    </span>
-                  )}
-                  {activeColony.scope && (
-                    <span className="text-xs text-muted-foreground">
-                      {activeColony.scope.locked
-                        ? "Scope locked"
-                        : "Scope editable"}
-                    </span>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setActivePanel("context");
-                    }}
-                    className="mt-auto text-xs text-accent hover:underline"
-                  >
-                    {activeColony.scope ? "Edit Scope" : "Set Scope"}
-                  </button>
-                </CardContent>
-              </Card>
+          <div className="flex flex-1 flex-col gap-5">
+            <section className="grid gap-3 xl:grid-cols-[1.4fr_1fr]">
+              <div className="rounded-2xl border border-border bg-background p-5">
+                <div className="flex items-center gap-2 text-sm font-medium">
+                  <BriefcaseBusiness className="h-4 w-4" />
+                  Workspace Brief
+                </div>
+                <div className="mt-5 grid gap-4 sm:grid-cols-3">
+                  <div>
+                    <div className="text-xs uppercase text-muted-foreground">
+                      Scope
+                    </div>
+                    <div className="mt-1 truncate text-sm font-medium">
+                      {getScopeSummary()}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs uppercase text-muted-foreground">
+                      Current Work
+                    </div>
+                    <div className="mt-1 text-sm font-medium">
+                      {activeColony.tasks.length
+                        ? `${activeColony.tasks.length} work item${
+                            activeColony.tasks.length === 1 ? "" : "s"
+                          }`
+                        : "No work item yet"}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs uppercase text-muted-foreground">
+                      Evidence
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setActivePanel("activity")}
+                      className="mt-1 max-w-full truncate text-left text-sm font-medium hover:underline"
+                    >
+                      {getLatestEventLabel()}
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-              <Card className="flex flex-col">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm">Active Work</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-1 flex-col gap-2 text-sm">
-                  <span className="text-muted-foreground">
-                    {activeColony.tasks.length > 0
-                      ? `${activeColony.tasks.length} task${
-                          activeColony.tasks.length === 1 ? "" : "s"
-                        }`
-                      : "No active task"}
-                  </span>
-                  {activeColony.seats.find((s) => s.currentTask) && (
-                    <span className="text-xs text-muted-foreground">
-                      {activeColony.seats.find((s) => s.currentTask)?.label}
-                    </span>
-                  )}
+              <div className="rounded-2xl border border-border bg-foreground p-5 text-background">
+                <div className="flex items-center gap-2 text-sm font-medium">
+                  <Sparkles className="h-4 w-4" />
+                  Next Step
+                </div>
+                <p className="mt-3 text-sm opacity-75">
+                  Move from intent to reviewed context without sending anything
+                  automatically.
+                </p>
+                <div className="mt-5 grid gap-2">
                   <button
                     type="button"
                     onClick={() => setActivePanel("work")}
-                    className="mt-auto text-xs text-accent hover:underline"
+                    className="flex items-center justify-between rounded-lg bg-background px-3 py-2 text-sm font-medium text-foreground"
                   >
-                    {activeColony.tasks.length > 0
-                      ? "View Tasks"
-                      : "Create Task"}
+                    Create Work Item
+                    <ArrowRight className="h-4 w-4" />
                   </button>
-                </CardContent>
-              </Card>
-
-              <Card className="flex flex-col">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm">Evidence</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-1 flex-col gap-2 text-sm">
-                  <span className="text-muted-foreground">
-                    {events.length > 0
-                      ? events[events.length - 1].type.replace("_", " ")
-                      : "No activity"}
-                  </span>
                   <button
                     type="button"
-                    onClick={() => setActivePanel("activity")}
-                    className="mt-auto text-xs text-accent hover:underline"
+                    onClick={() => setActivePanel("handoffs")}
+                    className="flex items-center justify-between rounded-lg bg-background/10 px-3 py-2 text-sm font-medium"
                   >
-                    View All
+                    Send Context
+                    <ArrowRight className="h-4 w-4" />
                   </button>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
+              </div>
+            </section>
 
-            <div className="grid grid-cols-3 gap-4">
-              <h3 className="col-span-3 mb-1 text-sm font-medium text-muted-foreground">
-                Seats
-              </h3>
-              {activeColony.seats.map((seat) => (
-                <ColonySeatCard
-                  key={seat.id}
-                  seat={seat}
-                  sessionInfo={getSessionInfo(seat.sessionId)}
-                  tasks={activeColony.tasks}
-                  isActive={activeColony.activeSeatId === seat.id}
-                  onCreateSession={() =>
-                    handleCreateSessionForSeat(seat.id, seat.label)
-                  }
-                  onOpenSession={() =>
-                    seat.sessionId && handleOpenSession(seat.sessionId, seat.id)
-                  }
-                  onUnbindSession={() => handleUnbindSeat(seat.id)}
-                  onSelect={() => handleSelectSeat(seat.id)}
-                  onUpdateModel={handleUpdateSeatModel}
-                />
-              ))}
-            </div>
-
-            <div>
-              <h3 className="mb-2 text-sm font-medium text-muted-foreground">
-                Quick Actions
-              </h3>
-              <div className="flex gap-2">
+            <section>
+              <div className="mb-2 flex items-center justify-between">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Role Sessions
+                </h3>
                 <button
                   type="button"
                   onClick={() => setActivePanel("work")}
-                  className="rounded-md border border-border bg-background px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+                  className="text-xs text-muted-foreground hover:text-foreground"
                 >
-                  Create Work Item
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActivePanel("handoffs")}
-                  className="rounded-md border border-border bg-background px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
-                >
-                  Send Context
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActivePanel("context")}
-                  className="rounded-md border border-border bg-background px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
-                >
-                  Project Notes
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActivePanel("swarm")}
-                  className="rounded-md border border-border bg-background px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
-                >
-                  Plan with Swarm
+                  Manage roles
                 </button>
               </div>
-            </div>
+              {renderRoleStrip()}
+            </section>
 
-            <ColonyReadinessPanel
-              colony={activeColony}
-              sentinelMode={sentinelMode}
-              eventCount={events.length}
-              onOpenPanel={setActivePanel}
-            />
+            <section className="grid gap-3 lg:grid-cols-4">
+              <button
+                type="button"
+                onClick={() => setActivePanel("work")}
+                className="flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-3 text-left text-sm hover:bg-accent hover:text-accent-foreground"
+              >
+                <ClipboardList className="h-4 w-4" />
+                Work Items
+              </button>
+              <button
+                type="button"
+                onClick={() => setActivePanel("context")}
+                className="flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-3 text-left text-sm hover:bg-accent hover:text-accent-foreground"
+              >
+                <FileText className="h-4 w-4" />
+                Project Notes
+              </button>
+              <button
+                type="button"
+                onClick={() => setActivePanel("swarm")}
+                className="flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-3 text-left text-sm hover:bg-accent hover:text-accent-foreground"
+              >
+                <GitBranch className="h-4 w-4" />
+                Plan with Swarm
+              </button>
+              <button
+                type="button"
+                onClick={() => setActivePanel("readiness")}
+                className="flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-3 text-left text-sm hover:bg-accent hover:text-accent-foreground"
+              >
+                <ShieldCheck className="h-4 w-4" />
+                Readiness
+              </button>
+            </section>
           </div>
         );
 
@@ -715,28 +711,16 @@ Do not add scope beyond the assigned task.`;
       case "work":
         return (
           <div className="flex flex-1 flex-col gap-4">
-            <div className="grid grid-cols-3 gap-4">
-              <h3 className="col-span-3 mb-1 text-sm font-medium text-muted-foreground">
-                Seats
-              </h3>
-              {activeColony.seats.map((seat) => (
-                <ColonySeatCard
-                  key={seat.id}
-                  seat={seat}
-                  sessionInfo={getSessionInfo(seat.sessionId)}
-                  tasks={activeColony.tasks}
-                  isActive={activeColony.activeSeatId === seat.id}
-                  onCreateSession={() =>
-                    handleCreateSessionForSeat(seat.id, seat.label)
-                  }
-                  onOpenSession={() =>
-                    seat.sessionId && handleOpenSession(seat.sessionId, seat.id)
-                  }
-                  onUnbindSession={() => handleUnbindSeat(seat.id)}
-                  onSelect={() => handleSelectSeat(seat.id)}
-                  onUpdateModel={handleUpdateSeatModel}
-                />
-              ))}
+            <div>
+              <div className="mb-2 flex items-center justify-between">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Role Sessions
+                </h3>
+                <span className="text-xs text-muted-foreground">
+                  Create or open role sessions from context staging.
+                </span>
+              </div>
+              {renderRoleStrip()}
             </div>
 
             <ColonyTaskBoard
@@ -877,7 +861,7 @@ Do Not:
         <div>
           <h1 className="text-2xl font-semibold">Colony Mode</h1>
           <p className="text-sm text-muted-foreground">
-            SDLC context container for AI-assisted work
+            A governed workspace for long-running AI-assisted work.
           </p>
         </div>
         <div className="flex items-center gap-4">
@@ -939,82 +923,17 @@ Do Not:
         </div>
       ) : (
         <div className="flex flex-1 flex-col overflow-hidden">
-          <div className="mb-4 rounded-lg border border-border bg-card p-4 min-h-0">
-            <h2 className="text-lg font-medium">{activeColony.title}</h2>
-            <p className="text-sm text-muted-foreground">
-              {activeColony.intent}
-            </p>
-          </div>
+          <div className="mb-4 shrink-0">{renderWorkspaceBrief()}</div>
 
-          <div className="mb-4 flex items-center gap-4 text-sm shrink-0">
-            {activeColony.scope?.kind === "directory" ? (
-              <div className="flex items-center gap-2">
-                <span className="font-medium">Scope:</span>
-                <span className="text-muted-foreground">
-                  {activeColony.scope.kind} /{" "}
-                  {activeColony.scope.path || "(no path)"}
-                </span>
-              </div>
-            ) : activeColony.scope ? (
-              <div className="flex items-center gap-1">
-                <span className="font-medium">Scope:</span>
-                <span className="text-muted-foreground">
-                  {activeColony.scope.kind} / {activeColony.scope.label}
-                </span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground">No scope</span>
-              </div>
-            )}
-            <div className="flex items-center gap-1">
-              <span className="font-medium">Seats:</span>
-              <span className="text-muted-foreground">3</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="font-medium">Linked:</span>
-              <span className="text-muted-foreground">
-                {
-                  activeColony.seats.filter((s) => s.binding === "linked")
-                    .length
-                }
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="font-medium">Work Items:</span>
-              <span className="text-muted-foreground">
-                {activeColony.tasks.length}
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="font-medium">Context:</span>
-              <span className="text-muted-foreground">
-                {activeColony.handoffs.length}
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="font-medium">Notes:</span>
-              <span className="text-muted-foreground">
-                {getMemoryItemCount()}
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="font-medium">Saved:</span>
-              <span className="text-muted-foreground">
-                {activeColony.artifacts?.length ?? 0}
-              </span>
-            </div>
-          </div>
-
-          <div className="mb-4 flex border-b border-border shrink-0">
+          <div className="mb-4 flex shrink-0 gap-1 rounded-full bg-muted p-1">
             {PANELS.map((panel) => (
               <button
                 key={panel.id}
                 type="button"
                 onClick={() => setActivePanel(panel.id)}
-                className={`px-4 py-2 text-sm ${
+                className={`rounded-full px-4 py-2 text-sm transition-colors ${
                   activePanel === panel.id
-                    ? "border-b-2 border-accent font-medium text-accent"
+                    ? "bg-background font-medium text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
