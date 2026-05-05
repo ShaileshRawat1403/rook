@@ -5,6 +5,7 @@ import { ColonySeatCard } from "./ColonySeatCard";
 import { ColonyTranscript } from "./ColonyTranscript";
 import { ColonyTaskBoard } from "./ColonyTaskBoard";
 import { ColonyHandoffPanel } from "./ColonyHandoffPanel";
+import { ColonyMemoryPanel } from "./ColonyMemoryPanel";
 import { SwarmPanel } from "./swarm/SwarmPanel";
 import { useChatSessionStore } from "@/features/chat/stores/chatSessionStore";
 import { useChatStore } from "@/features/chat/stores/chatStore";
@@ -46,6 +47,9 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     setSentinelMode,
     createColony,
     setColonyScope,
+    updateColonyMemory,
+    addMemoryItem,
+    removeMemoryItem,
     bindSeatToSession,
     unbindSeat,
     setActiveSeat,
@@ -432,6 +436,16 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
               <span className="font-medium">Sentinel:</span>
               <span className="text-muted-foreground">{activeColony.sentinelMode}</span>
             </div>
+          </div>
+
+          <div className="mt-4">
+            <ColonyMemoryPanel
+              colonyId={activeColony.id}
+              memory={activeColony.memory}
+              onUpdateMemory={(patch) => updateColonyMemory(activeColony.id, patch)}
+              onAddItem={(section, text) => addMemoryItem(activeColony.id, section, text)}
+              onRemoveItem={(section, idx) => removeMemoryItem(activeColony.id, section, idx)}
+            />
           </div>
 
           <div className="grid grid-cols-3 gap-4">
