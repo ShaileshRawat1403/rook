@@ -27,6 +27,27 @@ It helps humans stay oriented while AI work moves across roles, sessions, models
 - **Evidence**: Click activity rows for detail panel
 - **Model Control**: Select model per seat; syncs to linked session
 - **Sessions**: Create per seat, open, unbind
+- **Readiness**: Single-colony SDLC gate for scope, seats, work, handoffs, memory, evidence, and Sentinel state
+- **Scope Lock**: Explicitly freezes the selected run boundary before durable handoffs
+
+## Enterprise-Ready Single Colony
+
+The enterprise proof should stay focused on one colony and prove that a long project run can be governed, resumed, and audited without hidden context movement.
+
+Minimum readiness gate:
+
+| Gate | Why it matters |
+|------|----------------|
+| Scope selected | The colony has a known project or directory boundary |
+| Scope locked | Handoffs and artifacts refer to a fixed run boundary |
+| Seats linked | Planner, Worker, and Reviewer each have an explicit session |
+| Work captured | The run is task-backed instead of free-form chat drift |
+| Reviewed handoff | Context transfer has human-visible reviewer approval |
+| Memory captured | Durable project facts, risks, decisions, and constraints are explicit |
+| Evidence trail | Activity and artifacts can explain what happened later |
+| Governance open | Sentinel is visible during governed enterprise pilot runs |
+
+Enterprise non-goals remain unchanged for the single-colony proof: no automatic execution, no hidden transcript transfer, no autonomous loop, and no multi-colony scheduler.
 
 ## Non-Goals
 
@@ -54,6 +75,7 @@ It helps humans stay oriented while AI work moves across roles, sessions, models
 | v1.1 | Evidence view |
 | v1.2 | Model selection |
 | v1.3 | Model sync |
+| v1.4 | Readiness gate + scope lock |
 
 ## Integration Points
 

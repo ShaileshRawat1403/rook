@@ -105,9 +105,7 @@ export function ColonyTaskBoard({
         </div>
         <Badge
           variant="secondary"
-          className={`text-[10px] w-fit ${
-            CONTEXT_LOAD_CLASSES[load]
-          }`}
+          className={`text-[10px] w-fit ${CONTEXT_LOAD_CLASSES[load]}`}
         >
           {CONTEXT_LOAD_LABELS[load]}
         </Badge>
@@ -120,9 +118,9 @@ export function ColonyTaskBoard({
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-base">Tasks</CardTitle>
+            <CardTitle className="text-base">Work Items</CardTitle>
             <p className="text-xs text-muted-foreground">
-              What work exists? Turn intent into assignable work. No prompt is sent automatically.
+              Turn intent into assignable work. No prompt is sent automatically.
             </p>
           </div>
           {onOpenSwarm && tasks.length === 0 && (
@@ -133,7 +131,7 @@ export function ColonyTaskBoard({
               onClick={onOpenSwarm}
               className="text-xs h-8"
             >
-              Auto-Plan with Swarm
+              Plan with Swarm
             </Button>
           )}
         </div>
@@ -142,7 +140,7 @@ export function ColonyTaskBoard({
         <form onSubmit={handleSubmit} className="flex gap-2">
           <Input
             name="title"
-            placeholder="New task title..."
+            placeholder="New work item..."
             className="flex-1"
           />
           <Button type="submit" size="sm">
@@ -152,8 +150,8 @@ export function ColonyTaskBoard({
 
         {tasks.length === 0 ? (
           <p className="text-xs text-muted-foreground">
-            No tasks yet. Create a task, assign it to a seat, then open that seat's
-            session to work on it.
+            No work items yet. Create one, assign it to a role, then open that
+            role's session to work on it.
           </p>
         ) : (
           <div className="flex flex-col gap-2">
@@ -164,7 +162,9 @@ export function ColonyTaskBoard({
               >
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="truncate text-sm font-medium">{task.title}</span>
+                    <span className="truncate text-sm font-medium">
+                      {task.title}
+                    </span>
                     <Badge
                       variant="secondary"
                       className={`text-[10px] ${STATUS_COLORS[task.status]}`}

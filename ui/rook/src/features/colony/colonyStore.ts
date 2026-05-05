@@ -12,7 +12,10 @@ import type {
   ColonyMemory,
   ColonyArtifact,
 } from "./types";
-import { loadPersistedColonyState, persistColonyState } from "./colonyPersistence";
+import {
+  loadPersistedColonyState,
+  persistColonyState,
+} from "./colonyPersistence";
 
 interface ColonyStoreState {
   colonies: ColonySession[];
@@ -35,15 +38,37 @@ type ColonyStore = ColonyStoreState & {
   updateColony: (colonyId: string, updates: Partial<ColonySession>) => void;
   deleteColony: (colonyId: string) => void;
   setSentinelMode: (mode: "off" | "dax_open") => void;
+  syncSentinelMode: (mode: "off" | "dax_open") => void;
   setColonyScope: (colonyId: string, scope: ColonyScope) => void;
   clearColonyScope: (colonyId: string) => void;
   updateColonyMemory: (colonyId: string, patch: Partial<ColonyMemory>) => void;
-  addMemoryItem: (colonyId: string, section: keyof Omit<ColonyMemory, "updatedAt">, text: string) => void;
-  removeMemoryItem: (colonyId: string, section: keyof Omit<ColonyMemory, "updatedAt">, index: number) => void;
-  createArtifact: (colonyId: string, artifact: Omit<ColonyArtifact, "id" | "createdAt" | "updatedAt">) => void;
-  updateArtifact: (colonyId: string, artifactId: string, patch: Partial<Omit<ColonyArtifact, "id" | "createdAt" | "updatedAt">>) => void;
+  addMemoryItem: (
+    colonyId: string,
+    section: keyof Omit<ColonyMemory, "updatedAt">,
+    text: string,
+  ) => void;
+  removeMemoryItem: (
+    colonyId: string,
+    section: keyof Omit<ColonyMemory, "updatedAt">,
+    index: number,
+  ) => void;
+  createArtifact: (
+    colonyId: string,
+    artifact: Omit<ColonyArtifact, "id" | "createdAt" | "updatedAt">,
+  ) => void;
+  updateArtifact: (
+    colonyId: string,
+    artifactId: string,
+    patch: Partial<Omit<ColonyArtifact, "id" | "createdAt" | "updatedAt">>,
+  ) => void;
   deleteArtifact: (colonyId: string, artifactId: string) => void;
-  prepareHandoff: (data: { fromSeatId?: string; toSeatId?: string; taskId?: string; summary?: string; prompt?: string }) => void;
+  prepareHandoff: (data: {
+    fromSeatId?: string;
+    toSeatId?: string;
+    taskId?: string;
+    summary?: string;
+    prompt?: string;
+  }) => void;
   clearPreparedHandoff: () => void;
   addSeat: (colonyId: string, role: ColonyRole, label: string) => void;
   updateSeat: (
@@ -64,8 +89,12 @@ type ColonyStore = ColonyStoreState & {
       projectId?: string;
     },
   ) => void;
-unbindSeat: (colonyId: string, seatId: string) => void;
-  updateSeatModel: (colonyId: string, seatId: string, modelName: string) => void;
+  unbindSeat: (colonyId: string, seatId: string) => void;
+  updateSeatModel: (
+    colonyId: string,
+    seatId: string,
+    modelName: string,
+  ) => void;
   logEvent: (
     type: ColonyEventType,
     seatRole?: ColonyRole,
@@ -76,8 +105,16 @@ unbindSeat: (colonyId: string, seatId: string) => void;
     handoffId?: string,
   ) => void;
   openSessionForSeat: (colonyId: string, seatId: string) => void;
-  createTask: (colonyId: string, title: string, description?: string) => ColonyTask;
-  assignTaskToSeat: (colonyId: string, taskId: string, seatId: string | null) => void;
+  createTask: (
+    colonyId: string,
+    title: string,
+    description?: string,
+  ) => ColonyTask;
+  assignTaskToSeat: (
+    colonyId: string,
+    taskId: string,
+    seatId: string | null,
+  ) => void;
   updateTaskStatus: (
     colonyId: string,
     taskId: string,
@@ -96,6 +133,7 @@ unbindSeat: (colonyId: string, seatId: string) => void;
     handoffId: string,
     updates: Partial<ColonyHandoff>,
   ) => void;
+  markHandoffStaged: (colonyId: string, handoffId: string) => void;
   markHandoffCopied: (colonyId: string, handoffId: string) => void;
   deleteHandoff: (colonyId: string, handoffId: string) => void;
   reviewHandoff: (
@@ -143,12 +181,22 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
 
   setColonyScope: (colonyId, scope) => {
     const now = new Date().toISOString();
+    const details = `${scope.locked ? "locked" : "editable"} ${scope.kind}: ${
+      scope.path || scope.label
+    }`;
     set((state) => ({
       colonies: state.colonies.map((c) =>
-        c.id === colonyId
-          ? { ...c, scope, updatedAt: now }
-          : c,
+        c.id === colonyId ? { ...c, scope, updatedAt: now } : c,
       ),
+      events: [
+        ...state.events,
+        {
+          id: crypto.randomUUID(),
+          type: "scope_updated",
+          timestamp: now,
+          details,
+        },
+      ],
     }));
     const state = get();
     persistColonyState({
@@ -163,10 +211,17 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
     const now = new Date().toISOString();
     set((state) => ({
       colonies: state.colonies.map((c) =>
-        c.id === colonyId
-          ? { ...c, scope: undefined, updatedAt: now }
-          : c,
+        c.id === colonyId ? { ...c, scope: undefined, updatedAt: now } : c,
       ),
+      events: [
+        ...state.events,
+        {
+          id: crypto.randomUUID(),
+          type: "scope_updated",
+          timestamp: now,
+          details: "cleared",
+        },
+      ],
     }));
     const state = get();
     persistColonyState({
@@ -185,12 +240,14 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
           ? {
               ...c,
               memory: {
-                projectSummary: patch.projectSummary ?? c.memory?.projectSummary ?? "",
+                projectSummary:
+                  patch.projectSummary ?? c.memory?.projectSummary ?? "",
                 repoNotes: patch.repoNotes ?? c.memory?.repoNotes ?? [],
                 decisions: patch.decisions ?? c.memory?.decisions ?? [],
                 constraints: patch.constraints ?? c.memory?.constraints ?? [],
                 risks: patch.risks ?? c.memory?.risks ?? [],
-                openQuestions: patch.openQuestions ?? c.memory?.openQuestions ?? [],
+                openQuestions:
+                  patch.openQuestions ?? c.memory?.openQuestions ?? [],
                 updatedAt: now,
               },
               updatedAt: now,
@@ -414,10 +471,12 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
 
   setSentinelMode: (mode) => {
     const { activeColonyId, colonies, sentinelMode: oldMode } = get();
-    
+
+    if (mode === oldMode) return;
+
     // Sync with global sentinel mode
     setConfiguredSentinelMode(mode);
-    
+
     // Dispatch a custom event to sync other components (like SentinelBadge)
     if (typeof window !== "undefined") {
       window.dispatchEvent(new Event("sentinel-mode-changed"));
@@ -447,6 +506,30 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
           : c,
       ),
       events,
+    });
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
+  },
+
+  syncSentinelMode: (mode) => {
+    const { activeColonyId, colonies, sentinelMode: oldMode } = get();
+    if (mode === oldMode) return;
+
+    const now = new Date().toISOString();
+    set({
+      sentinelMode: mode,
+      colonies: activeColonyId
+        ? colonies.map((c) =>
+            c.id === activeColonyId
+              ? { ...c, sentinelMode: mode, updatedAt: now }
+              : c,
+          )
+        : colonies,
     });
     const state = get();
     persistColonyState({
@@ -512,9 +595,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
     const colony = get().colonies.find((c) => c.id === colonyId);
     if (colony?.activeSeatId === seatId) return;
 
-    const seat = seatId
-      ? colony?.seats.find((s) => s.id === seatId)
-      : null;
+    const seat = seatId ? colony?.seats.find((s) => s.id === seatId) : null;
     const now = new Date().toISOString();
     const events = [...get().events];
     if (seatId && seat) {
@@ -559,20 +640,20 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
         if (c.id !== colonyId) return c;
         return {
           ...c,
-seats: c.seats.map((s) =>
-              s.id === seatId
-                ? {
-                    ...s,
-                    sessionId: session.sessionId,
-                    acpSessionId: session.acpSessionId,
-                    providerId: session.providerId,
-                    modelName: session.modelName ?? s.modelName,
-                    projectId: session.projectId,
-                    binding: "linked",
-                    lastUpdate: now,
-                  }
-                : s,
-            ),
+          seats: c.seats.map((s) =>
+            s.id === seatId
+              ? {
+                  ...s,
+                  sessionId: session.sessionId,
+                  acpSessionId: session.acpSessionId,
+                  providerId: session.providerId,
+                  modelName: session.modelName ?? s.modelName,
+                  projectId: session.projectId,
+                  binding: "linked",
+                  lastUpdate: now,
+                }
+              : s,
+          ),
           updatedAt: now,
         };
       }),
@@ -663,16 +744,19 @@ seats: c.seats.map((s) =>
         });
     }
     if (seat) {
-      get().logEvent(
-        "seat_model_changed",
-        seat.role,
-        seat.label,
-        modelName,
-      );
+      get().logEvent("seat_model_changed", seat.role, seat.label, modelName);
     }
   },
 
-  logEvent: (type, seatRole, seatLabel, details, taskId, taskTitle, handoffId) => {
+  logEvent: (
+    type,
+    seatRole,
+    seatLabel,
+    details,
+    taskId,
+    taskTitle,
+    handoffId,
+  ) => {
     const event: ColonyEvent = {
       id: crypto.randomUUID(),
       type,
@@ -763,7 +847,12 @@ seats: c.seats.map((s) =>
                     t.status !== "inProgress" &&
                     t.status !== "blocked"
                   ) {
-                    return { ...t, assignedSeatId: undefined, status: "todo", updatedAt: now };
+                    return {
+                      ...t,
+                      assignedSeatId: undefined,
+                      status: "todo",
+                      updatedAt: now,
+                    };
                   }
                   return t;
                 }
@@ -937,6 +1026,39 @@ seats: c.seats.map((s) =>
     );
   },
 
+  markHandoffStaged: (colonyId, handoffId) => {
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    const handoff = colony?.handoffs.find((h) => h.id === handoffId);
+    const toSeat = colony?.seats.find((s) => s.id === handoff?.toSeatId);
+    if (!handoff || !colony) return;
+
+    const now = new Date().toISOString();
+    set((state) => ({
+      colonies: state.colonies.map((c) =>
+        c.id !== colonyId
+          ? c
+          : {
+              ...c,
+              handoffs: c.handoffs.map((h) =>
+                h.id !== handoffId
+                  ? h
+                  : { ...h, status: "copied" as const, updatedAt: now },
+              ),
+              updatedAt: now,
+            },
+      ),
+    }));
+    get().logEvent(
+      "handoff_staged",
+      toSeat?.role,
+      toSeat?.label,
+      "draft staged in chat input",
+      handoff.taskId,
+      undefined,
+      handoff.id,
+    );
+  },
+
   markHandoffCopied: (colonyId, handoffId) => {
     const colony = get().colonies.find((c) => c.id === colonyId);
     const handoff = colony?.handoffs.find((h) => h.id === handoffId);
@@ -997,12 +1119,7 @@ seats: c.seats.map((s) =>
     );
   },
 
-  reviewHandoff: (
-    colonyId,
-    handoffId,
-    reviewStatus,
-    reviewNote,
-  ) => {
+  reviewHandoff: (colonyId, handoffId, reviewStatus, reviewNote) => {
     set((state) => ({
       colonies: state.colonies.map((c) =>
         c.id !== colonyId

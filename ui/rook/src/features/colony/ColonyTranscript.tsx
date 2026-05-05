@@ -12,6 +12,7 @@ const ROLE_ICONS = {
 
 const EVENT_TYPE_LABELS: Record<ColonyEventType, string> = {
   colony_created: "Colony created",
+  scope_updated: "Scope updated",
   seat_linked: "Session linked",
   seat_unlinked: "Session unlinked",
   seat_model_changed: "Model changed",
@@ -24,6 +25,7 @@ const EVENT_TYPE_LABELS: Record<ColonyEventType, string> = {
   task_deleted: "Task deleted",
   handoff_created: "Handoff created",
   handoff_updated: "Handoff updated",
+  handoff_staged: "Handoff staged",
   handoff_copied: "Handoff copied",
   handoff_deleted: "Handoff deleted",
 };
@@ -97,7 +99,7 @@ export function ColonyTranscript({ maxEntries = 20 }: ColonyTranscriptProps) {
 
   const displayEvents = events.slice(-maxEntries).reverse();
   const selectedEvent = selectedEventId
-    ? events.find((e) => e.id === selectedEventId) ?? null
+    ? (events.find((e) => e.id === selectedEventId) ?? null)
     : null;
 
   if (displayEvents.length === 0) {
@@ -108,7 +110,8 @@ export function ColonyTranscript({ maxEntries = 20 }: ColonyTranscriptProps) {
           Colony Activity
         </div>
         <p className="text-xs text-muted-foreground mb-2">
-          Activity logs coordination events only. It does not include chat messages.
+          Activity logs coordination events only. It does not include chat
+          messages.
         </p>
         <p className="text-sm text-muted-foreground">
           No activity yet. Create a task to start coordinating.

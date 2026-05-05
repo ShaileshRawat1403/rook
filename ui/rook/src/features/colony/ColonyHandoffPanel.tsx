@@ -145,7 +145,12 @@ export function ColonyHandoffPanel({
     setToSeat(prefill?.toSeatId ?? "");
     setTask(prefill?.taskId ?? "");
     setSummary(prefill?.summary ?? "");
-  }, [prefill?.fromSeatId, prefill?.taskId, prefill?.toSeatId, prefill?.summary]);
+  }, [
+    prefill?.fromSeatId,
+    prefill?.taskId,
+    prefill?.toSeatId,
+    prefill?.summary,
+  ]);
 
   const getSeatLabel = (seatId: string) => {
     const seat = seats.find((s) => s.id === seatId);
@@ -191,13 +196,14 @@ Do not add scope beyond the assigned task.`;
   return (
     <Card className="flex flex-col">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">Handoffs</CardTitle>
+        <CardTitle className="text-base">Send Context</CardTitle>
         <p className="text-xs text-muted-foreground">
-          Move selected context between roles. No automatic execution.
+          Stage context into a role session for human review. No prompt is sent
+          automatically.
         </p>
         {prefill && (
           <p className="text-xs text-blue-500">
-            Prepared handoff from Swarm Work Item. Review before creating.
+            Prepared context from a planning work item. Review before creating.
           </p>
         )}
       </CardHeader>
@@ -213,7 +219,9 @@ Do not add scope beyond the assigned task.`;
 
             let finalSummary = summary;
             if (selectedTemplate) {
-              const template = HANDOFF_TEMPLATES.find((t) => t.name === selectedTemplate);
+              const template = HANDOFF_TEMPLATES.find(
+                (t) => t.name === selectedTemplate,
+              );
               if (template && !finalSummary) {
                 finalSummary = `Goal: ${template.fields.goal}\n\nDecision Made: ${template.fields.decisionMade}\n\nConstraints: ${template.fields.constraints}\n\nFiles Involved: ${template.fields.filesInvolved}\n\nNext Action: ${template.fields.nextAction}\n\nDo Not Change: ${template.fields.whatNotToChange}`;
               }
@@ -243,7 +251,7 @@ Do not add scope beyond the assigned task.`;
               className="rounded border border-border bg-background px-2 py-1 text-xs flex-1"
             >
               <option value="" disabled>
-                From seat...
+                From role...
               </option>
               {seats.map((seat) => (
                 <option key={seat.id} value={seat.id}>
@@ -260,7 +268,7 @@ Do not add scope beyond the assigned task.`;
               className="rounded border border-border bg-background px-2 py-1 text-xs flex-1"
             >
               <option value="" disabled>
-                To seat...
+                To role...
               </option>
               {seats.map((seat) => (
                 <option key={seat.id} value={seat.id}>
@@ -276,7 +284,7 @@ Do not add scope beyond the assigned task.`;
               onChange={(e) => setSelectedTemplate(e.target.value)}
               className="rounded border border-border bg-background px-2 py-1 text-xs flex-1"
             >
-              <option value="">Choose handoff shape...</option>
+              <option value="">Choose context shape...</option>
               {HANDOFF_TEMPLATES.map((template) => (
                 <option key={template.name} value={template.name}>
                   {template.name}
@@ -285,38 +293,39 @@ Do not add scope beyond the assigned task.`;
             </select>
           </div>
           <select
-              name="taskId"
-              value={task}
-              onChange={(e) => setTask(e.target.value)}
-              className="rounded border border-border bg-background px-2 py-1 text-xs"
-            >
-              <option value="">No task linked...</option>
-              {tasks.map((task) => (
-                <option key={task.id} value={task.id}>
-                  {task.title}
-                </option>
-              ))}
-            </select>
-            <Textarea
-              name="summary"
-              value={summary}
-              onChange={(e) => setSummary(e.target.value)}
-              placeholder="Goal: What should this work accomplish?
+            name="taskId"
+            value={task}
+            onChange={(e) => setTask(e.target.value)}
+            className="rounded border border-border bg-background px-2 py-1 text-xs"
+          >
+            <option value="">No work item linked...</option>
+            {tasks.map((task) => (
+              <option key={task.id} value={task.id}>
+                {task.title}
+              </option>
+            ))}
+          </select>
+          <Textarea
+            name="summary"
+            value={summary}
+            onChange={(e) => setSummary(e.target.value)}
+            placeholder="Goal: What should this work accomplish?
 Decision Made: What decision was made?
 Constraints: What are the constraints?
 Files Involved: What files were changed?
 Next Action: What should happen next?
 Do Not Change: What should stay the same?"
-              className="min-h-[120px] resize-none text-xs"
-            />
-            <Button type="submit" size="sm" className="w-full">
-              {prefill ? "Create Prepared Handoff" : "Create Handoff"}
-            </Button>
+            className="min-h-[120px] resize-none text-xs"
+          />
+          <Button type="submit" size="sm" className="w-full">
+            {prefill ? "Create Prepared Context" : "Create Context Packet"}
+          </Button>
         </form>
 
         {handoffs.length === 0 ? (
           <p className="text-xs text-muted-foreground">
-            No handoffs yet. Create one to transfer context between seats.
+            No context packets yet. Create one to transfer context between
+            roles.
           </p>
         ) : (
           <div className="flex flex-col gap-2">
@@ -341,7 +350,7 @@ Do Not Change: What should stay the same?"
                   </Badge>
                   {(() => {
                     const taskHandoffs = handoff.taskId
-                      ? handoffsByTaskId[handoff.taskId] ?? []
+                      ? (handoffsByTaskId[handoff.taskId] ?? [])
                       : [];
                     const load = getContextLoad(handoff, taskHandoffs);
                     return (
@@ -399,7 +408,9 @@ Do Not Change: What should stay the same?"
                 </div>
                 {isReviewerHandoff(handoff) && handoff.status === "copied" && (
                   <div className="flex flex-col gap-2 border-t border-border pt-2 mt-1">
-                    <span className="text-xs text-muted-foreground">Review:</span>
+                    <span className="text-xs text-muted-foreground">
+                      Review:
+                    </span>
                     {handoff.reviewStatus ? (
                       <>
                         <Badge

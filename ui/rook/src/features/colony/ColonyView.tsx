@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useState, useEffect } from "react";
-import { Bot, User, Eye } from "lucide-react";
 import { useColonyStore, colonyStore } from "./colonyStore";
 import { getConfiguredSentinelMode } from "@/shared/api/sentinel";
 import { ColonySeatCard } from "./ColonySeatCard";
@@ -8,6 +7,7 @@ import { ColonyTaskBoard } from "./ColonyTaskBoard";
 import { ColonyHandoffPanel } from "./ColonyHandoffPanel";
 import { ColonyMemoryPanel } from "./ColonyMemoryPanel";
 import { ColonyArtifactPanel } from "./ColonyArtifactPanel";
+import { ColonyReadinessPanel } from "./ColonyReadinessPanel";
 import { SwarmPanel } from "./swarm/SwarmPanel";
 import { useChatSessionStore } from "@/features/chat/stores/chatSessionStore";
 import { useChatStore } from "@/features/chat/stores/chatStore";
@@ -18,6 +18,7 @@ import type { ChatSessionInfo, ColonyTask } from "./types";
 
 export type ColonyPanel =
   | "overview"
+  | "readiness"
   | "context"
   | "work"
   | "handoffs"
@@ -27,33 +28,20 @@ export type ColonyPanel =
 
 const PANELS: { id: ColonyPanel; label: string }[] = [
   { id: "overview", label: "Overview" },
-  { id: "context", label: "Context" },
-  { id: "work", label: "Work" },
-  { id: "handoffs", label: "Handoffs" },
-  { id: "swarm", label: "Swarm" },
-  { id: "artifacts", label: "Artifacts" },
-  { id: "activity", label: "Activity" },
+  { id: "readiness", label: "Readiness" },
+  { id: "context", label: "Project Notes" },
+  { id: "work", label: "Work Items" },
+  { id: "handoffs", label: "Send Context" },
+  { id: "swarm", label: "Plan" },
+  { id: "artifacts", label: "Saved Outputs" },
+  { id: "activity", label: "Audit" },
 ];
 
-const GHOST_ROLES = [
-  {
-    role: "planner",
-    label: "Planner",
-    icon: Bot,
-    desc: "Task direction and reasoning",
-  },
-  {
-    role: "worker",
-    label: "Worker",
-    icon: User,
-    desc: "Task execution and output",
-  },
-  {
-    role: "reviewer",
-    label: "Reviewer",
-    icon: Eye,
-    desc: "Inspection and risk surfacing",
-  },
+const START_OPTIONS = [
+  { label: "Start with a task", intent: "Task-focused Colony" },
+  { label: "Review this repo", intent: "Repo review Colony" },
+  { label: "Plan work", intent: "Planning Colony" },
+  { label: "Advanced Colony", intent: "Advanced Colony" },
 ] as const;
 
 interface ColonyViewProps {
@@ -67,7 +55,9 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     colonies,
     activeColonyId,
     sentinelMode,
+    events,
     setSentinelMode,
+    syncSentinelMode,
     createColony,
     setColonyScope,
     updateColonyMemory,
@@ -83,6 +73,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     deleteTask,
     createHandoff,
     markHandoffCopied,
+    markHandoffStaged,
     deleteHandoff,
     createArtifact,
     deleteArtifact,
@@ -127,10 +118,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     const fetchMode = () => {
       void getConfiguredSentinelMode().then((nextMode) => {
         if (!cancelled && nextMode !== sentinelMode) {
-          // Temporarily skip the global sync inside setSentinelMode
-          // by setting it directly to avoid infinite loops, but since
-          // setSentinelMode syncs global state which matches nextMode, it's fine.
-          setSentinelMode(nextMode);
+          syncSentinelMode(nextMode);
         }
       });
     };
@@ -145,7 +133,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
         window.removeEventListener("sentinel-mode-changed", listener);
       }
     };
-  }, [sentinelMode, setSentinelMode]);
+  }, [sentinelMode, syncSentinelMode]);
 
   const hasColonyState =
     activeColony &&
@@ -153,13 +141,17 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
       activeColony.handoffs.length > 0 ||
       activeColony.seats.some((s) => s.binding === "linked"));
 
-  const handleCreateColony = useCallback(() => {
-    const now = new Date().toISOString();
-    const title = `Colony ${new Date(now).toLocaleDateString()}`;
-    createColony(title, "New colony intent");
-  }, [createColony]);
+  const handleCreateColony = useCallback(
+    (intent = "New Colony") => {
+      const now = new Date().toISOString();
+      const title = `Colony ${new Date(now).toLocaleDateString()}`;
+      createColony(title, intent);
+    },
+    [createColony],
+  );
 
-  const sentinelLabel = sentinelMode === "off" ? "Sentinel: off" : "Sentinel: open";
+  const sentinelLabel =
+    sentinelMode === "off" ? "Safety: Off" : "Safety: Advisory";
 
   const handleCreateSessionForSeat = useCallback(
     (seatId: string, seatLabel: string) => {
@@ -294,12 +286,9 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
       reviewNote?: string,
     ) => {
       if (!activeColonyId) return;
-      colonyStore.getState().reviewHandoff(
-        activeColonyId,
-        handoffId,
-        reviewStatus,
-        reviewNote,
-      );
+      colonyStore
+        .getState()
+        .reviewHandoff(activeColonyId, handoffId, reviewStatus, reviewNote);
     },
     [activeColonyId],
   );
@@ -311,12 +300,11 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
       if (!handoff) return;
 
       const toSeat = activeColony.seats.find((s) => s.id === handoff.toSeatId);
-      if (!toSeat?.sessionId) {
-        alert("Receiving seat has no linked session. Link a session first.");
-        return;
-      }
+      if (!toSeat) return;
 
-      const fromSeat = activeColony.seats.find((s) => s.id === handoff.fromSeatId);
+      const fromSeat = activeColony.seats.find(
+        (s) => s.id === handoff.fromSeatId,
+      );
       const task = activeColony.tasks.find((t) => t.id === handoff.taskId);
 
       const prompt = `You are the ${toSeat.label} seat in Rook Colony.
@@ -328,18 +316,47 @@ ${handoff.summary.trim()}
 Use this context to continue the work.
 Do not add scope beyond the assigned task.`;
 
-      // Stage the prompt as a draft in the target session
-      chatStore.setDraft(toSeat.sessionId, prompt);
-      
-      // Navigate to the session
-      await handleOpenSession(toSeat.sessionId, toSeat.id);
-      
-      // Mark as copied/staged
+      let sessionId = toSeat.sessionId;
+      if (!sessionId) {
+        const session = sessionStore.createDraftSession({
+          title: `Colony: ${toSeat.label}`,
+          projectId: activeColony.projectId,
+          providerId: agentStore.selectedProvider,
+        });
+        sessionId = session.id;
+        if (activeColonyId) {
+          bindSeatToSession(activeColonyId, toSeat.id, {
+            sessionId: session.id,
+            acpSessionId: session.acpSessionId,
+            providerId: session.providerId,
+            projectId: session.projectId ?? undefined,
+          });
+        }
+      }
+
+      chatStore.setDraft(sessionId, prompt);
+      sessionStore.setActiveSession(sessionId);
+      chatStore.setActiveSession(sessionId);
+
       if (activeColonyId) {
-        markHandoffCopied(activeColonyId, handoffId);
+        openSessionForSeat(activeColonyId, toSeat.id);
+        markHandoffStaged(activeColonyId, handoffId);
+      }
+      if (onNavigate) {
+        onNavigate("chat");
       }
     },
-    [activeColony, activeColonyId, chatStore, handleOpenSession, markHandoffCopied],
+    [
+      activeColony,
+      activeColonyId,
+      agentStore.selectedProvider,
+      bindSeatToSession,
+      chatStore,
+      markHandoffStaged,
+      onNavigate,
+      openSessionForSeat,
+      sessionStore,
+    ],
   );
 
   const handleScopeSet = useCallback(
@@ -360,7 +377,9 @@ Do not add scope beyond the assigned task.`;
   );
 
   const handleScopeUpdate = useCallback(() => {
-    if (!activeColonyId || !activeColony?.scope) return;
+    if (!activeColonyId || !activeColony?.scope || activeColony.scope.locked) {
+      return;
+    }
     const now = new Date().toISOString();
     setColonyScope(activeColonyId, {
       ...activeColony.scope,
@@ -369,6 +388,16 @@ Do not add scope beyond the assigned task.`;
     });
     setScopePathInput("");
   }, [activeColonyId, activeColony?.scope, scopePathInput, setColonyScope]);
+
+  const handleScopeLockToggle = useCallback(() => {
+    if (!activeColonyId || !activeColony?.scope) return;
+    const now = new Date().toISOString();
+    setColonyScope(activeColonyId, {
+      ...activeColony.scope,
+      locked: !activeColony.scope.locked,
+      updatedAt: now,
+    });
+  }, [activeColonyId, activeColony?.scope, setColonyScope]);
 
   const handleExtractFromSeat = useCallback(
     (seatId: string) => {
@@ -435,6 +464,13 @@ Do not add scope beyond the assigned task.`;
                       {activeColony.scope.path}
                     </span>
                   )}
+                  {activeColony.scope && (
+                    <span className="text-xs text-muted-foreground">
+                      {activeColony.scope.locked
+                        ? "Scope locked"
+                        : "Scope editable"}
+                    </span>
+                  )}
                   <button
                     type="button"
                     onClick={() => {
@@ -469,7 +505,9 @@ Do not add scope beyond the assigned task.`;
                     onClick={() => setActivePanel("work")}
                     className="mt-auto text-xs text-accent hover:underline"
                   >
-                    {activeColony.tasks.length > 0 ? "View Tasks" : "Create Task"}
+                    {activeColony.tasks.length > 0
+                      ? "View Tasks"
+                      : "Create Task"}
                   </button>
                 </CardContent>
               </Card>
@@ -480,10 +518,8 @@ Do not add scope beyond the assigned task.`;
                 </CardHeader>
                 <CardContent className="flex flex-1 flex-col gap-2 text-sm">
                   <span className="text-muted-foreground">
-                    {colonyStore.getState().events.length > 0
-                      ? colonyStore.getState().events[
-                          colonyStore.getState().events.length - 1
-                        ].type.replace("_", " ")
+                    {events.length > 0
+                      ? events[events.length - 1].type.replace("_", " ")
                       : "No activity"}
                   </span>
                   <button
@@ -531,32 +567,49 @@ Do not add scope beyond the assigned task.`;
                   onClick={() => setActivePanel("work")}
                   className="rounded-md border border-border bg-background px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
                 >
-                  Create Task
+                  Create Work Item
                 </button>
                 <button
                   type="button"
                   onClick={() => setActivePanel("handoffs")}
                   className="rounded-md border border-border bg-background px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
                 >
-                  Prepare Handoff
+                  Send Context
                 </button>
                 <button
                   type="button"
                   onClick={() => setActivePanel("context")}
                   className="rounded-md border border-border bg-background px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
                 >
-                  Open Memory
+                  Project Notes
                 </button>
                 <button
                   type="button"
                   onClick={() => setActivePanel("swarm")}
                   className="rounded-md border border-border bg-background px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
                 >
-                  Use Swarm
+                  Plan with Swarm
                 </button>
               </div>
             </div>
+
+            <ColonyReadinessPanel
+              colony={activeColony}
+              sentinelMode={sentinelMode}
+              eventCount={events.length}
+              onOpenPanel={setActivePanel}
+            />
           </div>
+        );
+
+      case "readiness":
+        return (
+          <ColonyReadinessPanel
+            colony={activeColony}
+            sentinelMode={sentinelMode}
+            eventCount={events.length}
+            onOpenPanel={setActivePanel}
+          />
         );
 
       case "context":
@@ -570,7 +623,9 @@ Do not add scope beyond the assigned task.`;
                 {activeColony.scope?.kind === "directory" ? (
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">Kind:</span>
-                    <span className="text-sm text-muted-foreground">Directory</span>
+                    <span className="text-sm text-muted-foreground">
+                      Directory
+                    </span>
                   </div>
                 ) : activeColony.scope ? (
                   <div className="flex items-center gap-2">
@@ -604,6 +659,14 @@ Do not add scope beyond the assigned task.`;
                 )}
                 {activeColony.scope && (
                   <>
+                    <label className="flex items-center gap-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={activeColony.scope.locked}
+                        onChange={handleScopeLockToggle}
+                      />
+                      Lock scope for this colony run
+                    </label>
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium">Path:</span>
                       <span className="text-sm text-muted-foreground">
@@ -616,11 +679,13 @@ Do not add scope beyond the assigned task.`;
                         value={scopePathInput}
                         onChange={(e) => setScopePathInput(e.target.value)}
                         placeholder={activeColony.scope.path || "Enter path"}
+                        disabled={activeColony.scope.locked}
                         className="rounded border border-border bg-background px-2 py-1 text-sm"
                       />
                       <button
                         type="button"
                         onClick={handleScopeUpdate}
+                        disabled={activeColony.scope.locked}
                         className="rounded-md bg-accent px-3 py-1 text-sm text-accent-foreground"
                       >
                         Update
@@ -703,7 +768,10 @@ Do not add scope beyond the assigned task.`;
           <ColonyHandoffPanel
             handoffs={activeColony.handoffs}
             seats={activeColony.seats}
-            tasks={activeColony.tasks.map((t) => ({ id: t.id, title: t.title }))}
+            tasks={activeColony.tasks.map((t) => ({
+              id: t.id,
+              title: t.title,
+            }))}
             handoffsByTaskId={
               activeColony.handoffs.reduce(
                 (acc, h) => {
@@ -765,9 +833,18 @@ Do Not:
           <ColonyArtifactPanel
             colonyId={activeColony.id}
             artifacts={activeColony.artifacts ?? []}
-            tasks={activeColony.tasks.map((t) => ({ id: t.id, title: t.title }))}
-            handoffs={activeColony.handoffs.map((h) => ({ id: h.id, summary: h.summary }))}
-            seats={activeColony.seats.map((s) => ({ id: s.id, label: s.label }))}
+            tasks={activeColony.tasks.map((t) => ({
+              id: t.id,
+              title: t.title,
+            }))}
+            handoffs={activeColony.handoffs.map((h) => ({
+              id: h.id,
+              summary: h.summary,
+            }))}
+            seats={activeColony.seats.map((s) => ({
+              id: s.id,
+              label: s.label,
+            }))}
             onCreate={(artifact) => {
               if (!activeColonyId) return;
               createArtifact(activeColonyId, artifact);
@@ -778,7 +855,9 @@ Do Not:
             }}
             onUpdate={(artifactId, patch) => {
               if (!activeColonyId) return;
-              colonyStore.getState().updateArtifact(activeColonyId, artifactId, patch);
+              colonyStore
+                .getState()
+                .updateArtifact(activeColonyId, artifactId, patch);
             }}
             onExtractFromSeat={handleExtractFromSeat}
           />
@@ -803,7 +882,9 @@ Do Not:
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">{sentinelLabel}</span>
+            <span className="text-sm text-muted-foreground">
+              {sentinelLabel}
+            </span>
             <select
               value={sentinelMode}
               onChange={(e) =>
@@ -811,14 +892,14 @@ Do Not:
               }
               className="rounded-md border border-border bg-background px-2 py-1 text-sm"
             >
-              <option value="off">off</option>
-              <option value="dax_open">open</option>
+              <option value="off">Off</option>
+              <option value="dax_open">Advisory</option>
             </select>
           </div>
           {hasColonyState && (
             <button
               type="button"
-              onClick={handleCreateColony}
+              onClick={() => handleCreateColony()}
               className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-foreground hover:bg-accent/90"
             >
               New Colony
@@ -829,41 +910,32 @@ Do Not:
 
       {!activeColony ? (
         <div className="flex flex-1 flex-col items-center justify-center max-w-2xl mx-auto text-center">
-          <div className="mb-8">
-            <h2 className="text-xl font-medium mb-2">Initialize Orchestration Workspace</h2>
+          <div className="mb-6">
+            <h2 className="mb-2 text-xl font-medium">
+              Start a governed AI workspace
+            </h2>
             <p className="text-muted-foreground">
-              Colony is an advanced framework for managing complex, multi-agent pipelines with observability and auditability.
+              Use Colony when a task needs memory, handoffs, review, or
+              repo-scale context.
             </p>
           </div>
 
-          <div className="mb-10 grid grid-cols-3 gap-6">
-            {GHOST_ROLES.map((ghost) => (
-              <div key={ghost.role} className="flex flex-col items-center gap-3">
-                <div className="rounded-full bg-muted/50 p-4 border border-border/50">
-                  <ghost.icon className="h-6 w-6 text-muted-foreground" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-medium">{ghost.label}</h3>
-                  <p className="text-[11px] text-muted-foreground mt-1 px-2 leading-relaxed">
-                    {ghost.desc}
-                  </p>
-                </div>
-              </div>
+          <div className="grid w-full grid-cols-2 gap-3">
+            {START_OPTIONS.map((option) => (
+              <button
+                key={option.intent}
+                type="button"
+                onClick={() => handleCreateColony(option.intent)}
+                className="rounded-md border border-border bg-background px-4 py-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+              >
+                {option.label}
+              </button>
             ))}
           </div>
 
-          <div className="flex flex-col items-center gap-4">
-            <button
-              type="button"
-              onClick={handleCreateColony}
-              className="rounded-md bg-accent px-8 py-3 text-base font-medium text-accent-foreground hover:bg-accent/90 transition-colors shadow-sm"
-            >
-              Start New Colony
-            </button>
-            <p className="text-xs text-muted-foreground">
-              Initializes a workspace with persistent memory and 3 context-isolated seats.
-            </p>
-          </div>
+          <p className="mt-4 text-xs text-muted-foreground">
+            Creates Planner, Worker, and Reviewer roles behind the workspace.
+          </p>
         </div>
       ) : (
         <div className="flex flex-1 flex-col overflow-hidden">
@@ -879,7 +951,8 @@ Do Not:
               <div className="flex items-center gap-2">
                 <span className="font-medium">Scope:</span>
                 <span className="text-muted-foreground">
-                  {activeColony.scope.kind} / {activeColony.scope.path || "(no path)"}
+                  {activeColony.scope.kind} /{" "}
+                  {activeColony.scope.path || "(no path)"}
                 </span>
               </div>
             ) : activeColony.scope ? (
@@ -901,27 +974,32 @@ Do Not:
             <div className="flex items-center gap-1">
               <span className="font-medium">Linked:</span>
               <span className="text-muted-foreground">
-                {activeColony.seats.filter((s) => s.binding === "linked").length}
+                {
+                  activeColony.seats.filter((s) => s.binding === "linked")
+                    .length
+                }
               </span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="font-medium">Tasks:</span>
+              <span className="font-medium">Work Items:</span>
               <span className="text-muted-foreground">
                 {activeColony.tasks.length}
               </span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="font-medium">Handoffs:</span>
+              <span className="font-medium">Context:</span>
               <span className="text-muted-foreground">
                 {activeColony.handoffs.length}
               </span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="font-medium">Memory:</span>
-              <span className="text-muted-foreground">{getMemoryItemCount()}</span>
+              <span className="font-medium">Notes:</span>
+              <span className="text-muted-foreground">
+                {getMemoryItemCount()}
+              </span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="font-medium">Artifacts:</span>
+              <span className="font-medium">Saved:</span>
               <span className="text-muted-foreground">
                 {activeColony.artifacts?.length ?? 0}
               </span>

@@ -55,7 +55,12 @@ export type ColonySeatStatus =
 
 export type ColonySeatBinding = "unbound" | "linked";
 
-export type ColonyTaskStatus = "todo" | "assigned" | "inProgress" | "blocked" | "done";
+export type ColonyTaskStatus =
+  | "todo"
+  | "assigned"
+  | "inProgress"
+  | "blocked"
+  | "done";
 
 export type ColonyTask = {
   id: string;
@@ -129,6 +134,7 @@ export type ColonySession = {
 
 export type ColonyEventType =
   | "colony_created"
+  | "scope_updated"
   | "seat_linked"
   | "seat_unlinked"
   | "seat_model_changed"
@@ -141,6 +147,7 @@ export type ColonyEventType =
   | "task_deleted"
   | "handoff_created"
   | "handoff_updated"
+  | "handoff_staged"
   | "handoff_copied"
   | "handoff_deleted";
 

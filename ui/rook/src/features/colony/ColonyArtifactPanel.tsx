@@ -1,11 +1,18 @@
 import { useState } from "react";
-import type {
-  ColonyArtifact,
-  ColonyArtifactKind,
-} from "./types";
+import type { ColonyArtifact, ColonyArtifactKind } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
-import { Plus, X, FileText, FolderOpen, CheckCircle, BookOpen, Gavel, AlertTriangle, File } from "lucide-react";
+import {
+  Plus,
+  X,
+  FileText,
+  FolderOpen,
+  CheckCircle,
+  BookOpen,
+  Gavel,
+  AlertTriangle,
+  File,
+} from "lucide-react";
 
 const ARTIFACT_KINDS: { value: ColonyArtifactKind; label: string }[] = [
   { value: "note", label: "Note" },
@@ -33,9 +40,14 @@ interface ColonyArtifactPanelProps {
   tasks: { id: string; title: string }[];
   handoffs: { id: string; summary: string }[];
   seats: { id: string; label: string }[];
-  onCreate: (artifact: Omit<ColonyArtifact, "id" | "createdAt" | "updatedAt">) => void;
+  onCreate: (
+    artifact: Omit<ColonyArtifact, "id" | "createdAt" | "updatedAt">,
+  ) => void;
   onDelete: (artifactId: string) => void;
-  onUpdate: (artifactId: string, patch: Partial<Omit<ColonyArtifact, "id" | "createdAt" | "updatedAt">>) => void;
+  onUpdate: (
+    artifactId: string,
+    patch: Partial<Omit<ColonyArtifact, "id" | "createdAt" | "updatedAt">>,
+  ) => void;
   onExtractFromSeat?: (seatId: string) => string | null;
 }
 
@@ -75,7 +87,7 @@ export function ColonyArtifactPanel({
     setShowForm(false);
   };
 
-  const handleAutoExtract = () => {
+  const handleFillFromSeat = () => {
     if (!sourceSeatId) {
       alert("Please select a Source Seat to extract from.");
       return;
@@ -85,7 +97,9 @@ export function ColonyArtifactPanel({
       if (extractedContent) {
         setContent(extractedContent);
         if (!title) {
-          setTitle(`Extracted from ${seats.find(s => s.id === sourceSeatId)?.label}`);
+          setTitle(
+            `Extracted from ${seats.find((s) => s.id === sourceSeatId)?.label}`,
+          );
         }
       } else {
         alert("No recent assistant message found for this seat.");
@@ -97,37 +111,49 @@ export function ColonyArtifactPanel({
     <div className="flex flex-1 flex-col gap-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-medium">Artifacts</h2>
+          <h2 className="text-lg font-medium">Saved Outputs</h2>
           <p className="text-sm text-muted-foreground">
-            Artifact capture. Extract from linked seats or create manually.
+            Create artifacts manually or fill content from a linked seat output.
           </p>
         </div>
 
         <Button onClick={() => setShowForm(!showForm)} type="button" size="sm">
           <Plus className="mr-1 h-3 w-3" />
-          Add Artifact
+          Add Saved Output
         </Button>
       </div>
 
       {showForm && (
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">New Artifact</CardTitle>
+            <CardTitle className="text-base">New Saved Output</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
             <div>
-              <label className="text-sm font-medium">Title</label>
+              <label
+                htmlFor="colony-artifact-title"
+                className="text-sm font-medium"
+              >
+                Title
+              </label>
               <input
+                id="colony-artifact-title"
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Artifact title"
+                placeholder="Saved output title"
                 className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-sm"
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Kind</label>
+              <label
+                htmlFor="colony-artifact-kind"
+                className="text-sm font-medium"
+              >
+                Kind
+              </label>
               <select
+                id="colony-artifact-kind"
                 value={kind}
                 onChange={(e) => setKind(e.target.value as ColonyArtifactKind)}
                 className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-sm"
@@ -140,19 +166,31 @@ export function ColonyArtifactPanel({
               </select>
             </div>
             <div>
-              <label className="text-sm font-medium">Content</label>
+              <label
+                htmlFor="colony-artifact-content"
+                className="text-sm font-medium"
+              >
+                Content
+              </label>
               <textarea
+                id="colony-artifact-content"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="Artifact content..."
+                placeholder="Saved output content..."
                 rows={4}
                 className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-sm resize-none"
               />
             </div>
             <div className="grid grid-cols-3 gap-2">
               <div>
-                <label className="text-xs font-medium">Source Task</label>
+                <label
+                  htmlFor="colony-artifact-source-task"
+                  className="text-xs font-medium"
+                >
+                  Source Task
+                </label>
                 <select
+                  id="colony-artifact-source-task"
                   value={sourceTaskId}
                   onChange={(e) => setSourceTaskId(e.target.value)}
                   className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-xs"
@@ -166,8 +204,14 @@ export function ColonyArtifactPanel({
                 </select>
               </div>
               <div>
-                <label className="text-xs font-medium">Source Handoff</label>
+                <label
+                  htmlFor="colony-artifact-source-handoff"
+                  className="text-xs font-medium"
+                >
+                  Source Handoff
+                </label>
                 <select
+                  id="colony-artifact-source-handoff"
                   value={sourceHandoffId}
                   onChange={(e) => setSourceHandoffId(e.target.value)}
                   className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-xs"
@@ -181,9 +225,15 @@ export function ColonyArtifactPanel({
                 </select>
               </div>
               <div>
-                <label className="text-xs font-medium">Source Seat</label>
+                <label
+                  htmlFor="colony-artifact-source-seat"
+                  className="text-xs font-medium"
+                >
+                  Source Seat
+                </label>
                 <div className="flex items-center gap-2 mt-1">
                   <select
+                    id="colony-artifact-source-seat"
                     value={sourceSeatId}
                     onChange={(e) => setSourceSeatId(e.target.value)}
                     className="w-full rounded border border-border bg-background px-2 py-1 text-xs flex-1"
@@ -196,14 +246,14 @@ export function ColonyArtifactPanel({
                     ))}
                   </select>
                   {onExtractFromSeat && (
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={handleAutoExtract}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleFillFromSeat}
                       className="text-[10px] h-6 px-2 whitespace-nowrap"
                     >
-                      Extract Output
+                      Fill from Seat Output
                     </Button>
                   )}
                 </div>
@@ -232,7 +282,9 @@ export function ColonyArtifactPanel({
       )}
 
       {artifacts.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No artifacts yet. Create one manually.</p>
+        <p className="text-sm text-muted-foreground">
+          No saved outputs yet. Create one manually.
+        </p>
       ) : (
         <div className="space-y-2">
           {artifacts.map((artifact) => {
@@ -243,7 +295,9 @@ export function ColonyArtifactPanel({
                   <div className="flex items-start gap-2">
                     <Icon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium truncate">{artifact.title}</p>
+                      <p className="text-sm font-medium truncate">
+                        {artifact.title}
+                      </p>
                       <p className="text-xs text-muted-foreground capitalize">
                         {artifact.kind.replace("_", " ")}
                       </p>
