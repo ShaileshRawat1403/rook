@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ColonyMemory } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Textarea } from "@/shared/ui/textarea";
@@ -38,10 +38,15 @@ export function ColonyMemoryPanel({
   onRemoveItem,
 }: ColonyMemoryPanelProps) {
   const [newItems, setNewItems] = useState<Partial<Record<MemoryListSection, string>>>({});
+  const [summaryDraft, setSummaryDraft] = useState(memory?.projectSummary ?? "");
 
   const handleSaveSummary = () => {
-    onUpdateMemory({ projectSummary: memory?.projectSummary ?? "" });
+    onUpdateMemory({ projectSummary: summaryDraft });
   };
+
+  useEffect(() => {
+    setSummaryDraft(memory?.projectSummary ?? "");
+  }, [memory?.projectSummary]);
 
   const handleAddItem = (section: MemoryListSection) => {
     const text = newItems[section]?.trim();
@@ -72,12 +77,18 @@ export function ColonyMemoryPanel({
         <div>
           <label className="text-sm font-medium">Project Summary</label>
           <Textarea
-            value={memory?.projectSummary ?? ""}
-            onChange={(e) => onUpdateMemory({ projectSummary: e.target.value })}
+            value={summaryDraft}
+            onChange={(e) => setSummaryDraft(e.target.value)}
             placeholder="What is this project about?"
             className="min-h-[80px] resize-none text-sm mt-1"
           />
-          <Button type="button" size="sm" onClick={handleSaveSummary} className="mt-2">
+          <Button
+            type="button"
+            size="sm"
+            onClick={handleSaveSummary}
+            disabled={summaryDraft === (memory?.projectSummary ?? "")}
+            className="mt-2"
+          >
             Save Summary
           </Button>
         </div>
