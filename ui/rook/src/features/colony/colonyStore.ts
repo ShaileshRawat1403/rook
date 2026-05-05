@@ -10,7 +10,6 @@ import type {
   ColonyScope,
   ColonyMemory,
   ColonyArtifact,
-  ColonyArtifactKind,
 } from "./types";
 import { loadPersistedColonyState, persistColonyState } from "./colonyPersistence";
 
