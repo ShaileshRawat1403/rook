@@ -23,6 +23,27 @@ export type ColonyMemory = {
   updatedAt: string;
 };
 
+export type ColonyArtifactKind =
+  | "note"
+  | "handoff_packet"
+  | "review"
+  | "repo_summary"
+  | "decision"
+  | "risk"
+  | "doc";
+
+export type ColonyArtifact = {
+  id: string;
+  title: string;
+  kind: ColonyArtifactKind;
+  content: string;
+  sourceTaskId?: string;
+  sourceHandoffId?: string;
+  sourceSeatId?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type ColonySeatStatus =
   | "idle"
   | "thinking"
@@ -96,6 +117,7 @@ export type ColonySession = {
   projectId?: string;
   scope?: ColonyScope;
   memory?: ColonyMemory;
+  artifacts?: ColonyArtifact[];
   seats: ColonySeat[];
   tasks: ColonyTask[];
   handoffs: ColonyHandoff[];

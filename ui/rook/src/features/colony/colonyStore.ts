@@ -9,6 +9,8 @@ import type {
   ColonyHandoff,
   ColonyScope,
   ColonyMemory,
+  ColonyArtifact,
+  ColonyArtifactKind,
 } from "./types";
 import { loadPersistedColonyState, persistColonyState } from "./colonyPersistence";
 
@@ -38,6 +40,9 @@ type ColonyStore = ColonyStoreState & {
   updateColonyMemory: (colonyId: string, patch: Partial<ColonyMemory>) => void;
   addMemoryItem: (colonyId: string, section: keyof Omit<ColonyMemory, "updatedAt">, text: string) => void;
   removeMemoryItem: (colonyId: string, section: keyof Omit<ColonyMemory, "updatedAt">, index: number) => void;
+  createArtifact: (colonyId: string, artifact: Omit<ColonyArtifact, "id" | "createdAt" | "updatedAt">) => void;
+  updateArtifact: (colonyId: string, artifactId: string, patch: Partial<Omit<ColonyArtifact, "id" | "createdAt" | "updatedAt">>) => void;
+  deleteArtifact: (colonyId: string, artifactId: string) => void;
   prepareHandoff: (data: { fromSeatId?: string; toSeatId?: string; taskId?: string; summary?: string; prompt?: string }) => void;
   clearPreparedHandoff: () => void;
   addSeat: (colonyId: string, role: ColonyRole, label: string) => void;
@@ -257,6 +262,78 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
             [section]: updated,
             updatedAt: now,
           },
+          updatedAt: now,
+        };
+      }),
+    }));
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
+  },
+
+  createArtifact: (colonyId, artifact) => {
+    const id = crypto.randomUUID();
+    const now = new Date().toISOString();
+    const newArtifact: ColonyArtifact = {
+      ...artifact,
+      id,
+      createdAt: now,
+      updatedAt: now,
+    };
+    set((state) => ({
+      colonies: state.colonies.map((c) => {
+        if (c.id !== colonyId) return c;
+        return {
+          ...c,
+          artifacts: [...(c.artifacts ?? []), newArtifact],
+          updatedAt: now,
+        };
+      }),
+    }));
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
+  },
+
+  updateArtifact: (colonyId, artifactId, patch) => {
+    const now = new Date().toISOString();
+    set((state) => ({
+      colonies: state.colonies.map((c) => {
+        if (c.id !== colonyId) return c;
+        return {
+          ...c,
+          artifacts: (c.artifacts ?? []).map((a) =>
+            a.id === artifactId ? { ...a, ...patch, updatedAt: now } : a,
+          ),
+          updatedAt: now,
+        };
+      }),
+    }));
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
+  },
+
+  deleteArtifact: (colonyId, artifactId) => {
+    const now = new Date().toISOString();
+    set((state) => ({
+      colonies: state.colonies.map((c) => {
+        if (c.id !== colonyId) return c;
+        return {
+          ...c,
+          artifacts: (c.artifacts ?? []).filter((a) => a.id !== artifactId),
           updatedAt: now,
         };
       }),
