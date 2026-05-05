@@ -6,6 +6,7 @@ import { ColonyTranscript } from "./ColonyTranscript";
 import { ColonyTaskBoard } from "./ColonyTaskBoard";
 import { ColonyHandoffPanel } from "./ColonyHandoffPanel";
 import { ColonyMemoryPanel } from "./ColonyMemoryPanel";
+import { ColonyArtifactPanel } from "./ColonyArtifactPanel";
 import { SwarmPanel } from "./swarm/SwarmPanel";
 import { useChatSessionStore } from "@/features/chat/stores/chatSessionStore";
 import { useChatStore } from "@/features/chat/stores/chatStore";
@@ -20,6 +21,7 @@ export type ColonyPanel =
   | "work"
   | "handoffs"
   | "swarm"
+  | "artifacts"
   | "activity";
 
 const PANELS: { id: ColonyPanel; label: string }[] = [
@@ -28,6 +30,7 @@ const PANELS: { id: ColonyPanel; label: string }[] = [
   { id: "work", label: "Work" },
   { id: "handoffs", label: "Handoffs" },
   { id: "swarm", label: "Swarm" },
+  { id: "artifacts", label: "Artifacts" },
   { id: "activity", label: "Activity" },
 ];
 
@@ -80,6 +83,8 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     createHandoff,
     markHandoffCopied,
     deleteHandoff,
+    createArtifact,
+    deleteArtifact,
   } = useColonyStore();
 
   const sessionStore = useChatSessionStore();
@@ -661,6 +666,28 @@ Do Not:
           />
         );
 
+      case "artifacts":
+        return (
+          <ColonyArtifactPanel
+            colonyId={activeColony.id}
+            artifacts={activeColony.artifacts ?? []}
+            tasks={activeColony.tasks.map((t) => ({ id: t.id, title: t.title }))}
+            seats={activeColony.seats.map((s) => ({ id: s.id, label: s.label }))}
+            onCreate={(artifact) => {
+              if (!activeColonyId) return;
+              createArtifact(activeColonyId, artifact);
+            }}
+            onDelete={(artifactId) => {
+              if (!activeColonyId) return;
+              deleteArtifact(activeColonyId, artifactId);
+            }}
+            onUpdate={(artifactId, patch) => {
+              if (!activeColonyId) return;
+              colonyStore.getState().updateArtifact(activeColonyId, artifactId, patch);
+            }}
+          />
+        );
+
       case "activity":
         return <ColonyTranscript />;
 
@@ -671,7 +698,7 @@ Do Not:
 
   return (
     <div className="flex h-full flex-col overflow-hidden p-6">
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between shrink-0">
         <div>
           <h1 className="text-2xl font-semibold">Colony Mode</h1>
           <p className="text-sm text-muted-foreground">
@@ -736,14 +763,14 @@ Do Not:
         </div>
       ) : (
         <div className="flex flex-1 flex-col overflow-hidden">
-          <div className="mb-4 rounded-lg border border-border bg-card p-4">
+          <div className="mb-4 rounded-lg border border-border bg-card p-4 min-h-0">
             <h2 className="text-lg font-medium">{activeColony.title}</h2>
             <p className="text-sm text-muted-foreground">
               {activeColony.intent}
             </p>
           </div>
 
-          <div className="mb-4 flex items-center gap-4 text-sm">
+          <div className="mb-4 flex items-center gap-4 text-sm shrink-0">
             {activeColony.scope?.kind === "directory" ? (
               <div className="flex items-center gap-2">
                 <span className="font-medium">Scope:</span>
@@ -791,7 +818,7 @@ Do Not:
             </div>
           </div>
 
-          <div className="mb-4 flex border-b border-border">
+          <div className="mb-4 flex border-b border-border shrink-0">
             {PANELS.map((panel) => (
               <button
                 key={panel.id}
