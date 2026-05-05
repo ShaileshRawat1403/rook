@@ -15,8 +15,10 @@ import { useChatSessionStore } from "@/features/chat/stores/chatSessionStore";
 import { isSessionRunning } from "@/features/chat/lib/sessionActivity";
 import { useAgentStore } from "@/features/agents/stores/agentStore";
 import { useProjectStore } from "@/features/projects/stores/projectStore";
+import { useColonyStore } from "@/features/colony/colonyStore";
 import { Button } from "@/shared/ui/button";
 import { useSessionSearch } from "@/features/sessions/hooks/useSessionSearch";
+import { SidebarColonySection } from "./SidebarColonySection";
 import { SidebarProjectsSection } from "./SidebarProjectsSection";
 import { SidebarSearchResults } from "./SidebarSearchResults";
 import { useSidebarHighlight } from "./useSidebarHighlight";
@@ -178,6 +180,7 @@ export function Sidebar({
 
   const agentStoreState = useAgentStore();
   const projectStoreState = useProjectStore();
+  const activeColony = useColonyStore((state) => state.getActiveColony());
 
   const sidebarResolvers = {
     getPersonaName: (personaId: string) =>
@@ -520,31 +523,49 @@ export function Sidebar({
                 )}
               </div>
             ) : (
-              <SidebarProjectsSection
-                projects={projects}
-                projectSessions={projectSessions}
-                expandedProjects={expandedProjects}
-                toggleProject={toggleProject}
-                collapsed={collapsed}
-                labelTransition={labelTransition}
-                labelVisible={labelVisible}
-                activeSessionId={activeSessionId}
-                activeProjectId={activeProjectId}
-                onNavigate={onNavigate}
-                onSelectSession={onSelectSession}
-                onNewChatInProject={onNewChatInProject}
-                onNewChat={onNewChat}
-                onCreateProject={onCreateProject}
-                onEditProject={onEditProject}
-                onArchiveProject={onArchiveProject}
-                onArchiveChat={onArchiveChat}
-                onRenameChat={onRenameChat}
-                onMoveToProject={onMoveToProject}
-                onReorderProject={onReorderProject}
-                onItemMouseEnter={onItemMouseEnter}
-                activeSessionRefCallback={activeSessionRefCallback}
-                activeProjectRefCallback={activeProjectRefCallback}
-              />
+              <>
+                <SidebarColonySection
+                  colony={activeColony}
+                  collapsed={collapsed}
+                  activeSessionId={activeSessionId}
+                  getRuntime={(sessionId) => {
+                    const runtime = chatStore.getSessionRuntime(sessionId);
+                    return {
+                      isRunning: isSessionRunning(runtime.chatState),
+                      hasUnread: runtime.hasUnread,
+                    };
+                  }}
+                  onNavigate={() => onNavigate?.("colony")}
+                  onSelectSession={onSelectSession}
+                  onItemMouseEnter={onItemMouseEnter}
+                  activeSessionRefCallback={activeSessionRefCallback}
+                />
+                <SidebarProjectsSection
+                  projects={projects}
+                  projectSessions={projectSessions}
+                  expandedProjects={expandedProjects}
+                  toggleProject={toggleProject}
+                  collapsed={collapsed}
+                  labelTransition={labelTransition}
+                  labelVisible={labelVisible}
+                  activeSessionId={activeSessionId}
+                  activeProjectId={activeProjectId}
+                  onNavigate={onNavigate}
+                  onSelectSession={onSelectSession}
+                  onNewChatInProject={onNewChatInProject}
+                  onNewChat={onNewChat}
+                  onCreateProject={onCreateProject}
+                  onEditProject={onEditProject}
+                  onArchiveProject={onArchiveProject}
+                  onArchiveChat={onArchiveChat}
+                  onRenameChat={onRenameChat}
+                  onMoveToProject={onMoveToProject}
+                  onReorderProject={onReorderProject}
+                  onItemMouseEnter={onItemMouseEnter}
+                  activeSessionRefCallback={activeSessionRefCallback}
+                  activeProjectRefCallback={activeProjectRefCallback}
+                />
+              </>
             ))}
         </nav>
       </div>

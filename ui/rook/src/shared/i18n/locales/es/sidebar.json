@@ -12,6 +12,7 @@
   },
   "navigation": {
     "agents": "Personas",
+    "colony": "Colonia",
     "home": "Inicio",
     "sessionHistory": "Historial de sesiones",
     "skills": "Habilidades"
@@ -21,7 +22,11 @@
     "placeholder": "Buscar conversaciones",
     "searching": "Buscando chats..."
   },
+  "colony": {
+    "notLinked": "Sin enlazar"
+  },
   "sections": {
+    "colony": "Colonia",
     "projects": "Proyectos",
     "recents": "Recientes"
   },

@@ -22,7 +22,11 @@
     "placeholder": "Search conversations",
     "searching": "Searching chats..."
   },
+  "colony": {
+    "notLinked": "Not linked"
+  },
   "sections": {
+    "colony": "Colony",
     "projects": "Projects",
     "recents": "Recents"
   },
