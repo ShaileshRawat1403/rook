@@ -118,6 +118,7 @@ interface ColonyHandoffPanelProps {
     reviewStatus: "approved" | "rejected",
     reviewNote?: string,
   ) => void;
+  onStageHandoff?: (handoffId: string) => void;
 }
 
 export function ColonyHandoffPanel({
@@ -130,6 +131,7 @@ export function ColonyHandoffPanel({
   onMarkCopied,
   onDeleteHandoff,
   onReviewHandoff,
+  onStageHandoff,
 }: ColonyHandoffPanelProps) {
   const [selectedTemplate, setSelectedTemplate] = useState<string>("");
 
@@ -368,16 +370,29 @@ Do Not Change: What should stay the same?"
                     variant="outline"
                     size="sm"
                     onClick={() => handleCopy(handoff)}
-                    className="flex-1"
+                    className="flex-1 text-[10px] h-7 px-2"
                   >
                     <Copy className="mr-1 h-3 w-3" />
                     Copy Prompt
                   </Button>
+                  {onStageHandoff && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onStageHandoff(handoff.id)}
+                      className="flex-1 text-[10px] h-7 px-2"
+                    >
+                      <ArrowRight className="mr-1 h-3 w-3" />
+                      Stage in Session
+                    </Button>
+                  )}
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
                     onClick={() => onDeleteHandoff(handoff.id)}
+                    className="h-7 w-7 p-0"
                   >
                     <Trash2 className="h-3 w-3" />
                   </Button>

@@ -1,6 +1,7 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { Bot, User, Eye } from "lucide-react";
 import { useColonyStore, colonyStore } from "./colonyStore";
+import { getConfiguredSentinelMode } from "@/shared/api/sentinel";
 import { ColonySeatCard } from "./ColonySeatCard";
 import { ColonyTranscript } from "./ColonyTranscript";
 import { ColonyTaskBoard } from "./ColonyTaskBoard";
@@ -120,6 +121,31 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
 
   const activeColony = colonies.find((c) => c.id === activeColonyId) ?? null;
   const [scopePathInput, setScopePathInput] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    const fetchMode = () => {
+      void getConfiguredSentinelMode().then((nextMode) => {
+        if (!cancelled && nextMode !== sentinelMode) {
+          // Temporarily skip the global sync inside setSentinelMode
+          // by setting it directly to avoid infinite loops, but since
+          // setSentinelMode syncs global state which matches nextMode, it's fine.
+          setSentinelMode(nextMode);
+        }
+      });
+    };
+
+    const listener = () => fetchMode();
+    if (typeof window !== "undefined") {
+      window.addEventListener("sentinel-mode-changed", listener);
+    }
+    return () => {
+      cancelled = true;
+      if (typeof window !== "undefined") {
+        window.removeEventListener("sentinel-mode-changed", listener);
+      }
+    };
+  }, [sentinelMode, setSentinelMode]);
 
   const hasColonyState =
     activeColony &&
@@ -278,6 +304,44 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     [activeColonyId],
   );
 
+  const handleStageHandoff = useCallback(
+    async (handoffId: string) => {
+      if (!activeColony) return;
+      const handoff = activeColony.handoffs.find((h) => h.id === handoffId);
+      if (!handoff) return;
+
+      const toSeat = activeColony.seats.find((s) => s.id === handoff.toSeatId);
+      if (!toSeat?.sessionId) {
+        alert("Receiving seat has no linked session. Link a session first.");
+        return;
+      }
+
+      const fromSeat = activeColony.seats.find((s) => s.id === handoff.fromSeatId);
+      const task = activeColony.tasks.find((t) => t.id === handoff.taskId);
+
+      const prompt = `You are the ${toSeat.label} seat in Rook Colony.
+
+Context from ${fromSeat?.label ?? "Unknown"}${task ? `\nTask: ${task.title}` : ""}
+
+${handoff.summary.trim()}
+
+Use this context to continue the work.
+Do not add scope beyond the assigned task.`;
+
+      // Stage the prompt as a draft in the target session
+      chatStore.setDraft(toSeat.sessionId, prompt);
+      
+      // Navigate to the session
+      await handleOpenSession(toSeat.sessionId, toSeat.id);
+      
+      // Mark as copied/staged
+      if (activeColonyId) {
+        markHandoffCopied(activeColonyId, handoffId);
+      }
+    },
+    [activeColony, activeColonyId, chatStore, handleOpenSession, markHandoffCopied],
+  );
+
   const handleScopeSet = useCallback(
     (kind: "planning" | "directory") => {
       if (!activeColonyId) return;
@@ -305,6 +369,34 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     });
     setScopePathInput("");
   }, [activeColonyId, activeColony?.scope, scopePathInput, setColonyScope]);
+
+  const handleExtractFromSeat = useCallback(
+    (seatId: string) => {
+      if (!activeColony) return null;
+      const seat = activeColony.seats.find((s) => s.id === seatId);
+      if (!seat?.sessionId) return null;
+
+      const messages = chatStore.messagesBySession[seat.sessionId];
+      if (!messages || messages.length === 0) return null;
+
+      // Find the last assistant message
+      for (let i = messages.length - 1; i >= 0; i--) {
+        const msg = messages[i];
+        if (msg.role === "assistant") {
+          // Extract text from content blocks
+          const textContent = msg.content
+            .filter((c) => c.type === "text")
+            .map((c) => c.text)
+            .join("\n");
+          if (textContent.trim()) {
+            return textContent.trim();
+          }
+        }
+      }
+      return null;
+    },
+    [activeColony, chatStore.messagesBySession],
+  );
 
   const getMemoryItemCount = () => {
     if (!activeColony?.memory) return 0;
@@ -601,6 +693,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
               onAssignTask={handleTaskAssign}
               onUpdateStatus={handleTaskStatus}
               onDeleteTask={handleTaskDelete}
+              onOpenSwarm={() => setActivePanel("swarm")}
             />
           </div>
         );
@@ -628,6 +721,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
             onMarkCopied={handleHandoffCopy}
             onDeleteHandoff={handleHandoffDelete}
             onReviewHandoff={handleHandoffReview}
+            onStageHandoff={handleStageHandoff}
           />
         );
 
@@ -686,6 +780,7 @@ Do Not:
               if (!activeColonyId) return;
               colonyStore.getState().updateArtifact(activeColonyId, artifactId, patch);
             }}
+            onExtractFromSeat={handleExtractFromSeat}
           />
         );
 
@@ -733,34 +828,42 @@ Do Not:
       </div>
 
       {!activeColony ? (
-        <div className="flex flex-1 flex-col items-center justify-center">
-          <p className="mb-6 text-center text-muted-foreground">
-            No colony active. Each colony starts with three seats:
-          </p>
+        <div className="flex flex-1 flex-col items-center justify-center max-w-2xl mx-auto text-center">
+          <div className="mb-8">
+            <h2 className="text-xl font-medium mb-2">Initialize Orchestration Workspace</h2>
+            <p className="text-muted-foreground">
+              Colony is an advanced framework for managing complex, multi-agent pipelines with observability and auditability.
+            </p>
+          </div>
 
-          <div className="mb-6 grid grid-cols-3 gap-4">
+          <div className="mb-10 grid grid-cols-3 gap-6">
             {GHOST_ROLES.map((ghost) => (
-              <Card key={ghost.role} className="border-dashed opacity-50">
-                <CardHeader className="flex flex-row items-center gap-3 space-y-0 pb-2">
-                  <div className="rounded-full bg-muted p-2">
-                    <ghost.icon className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                  <CardTitle className="text-base">{ghost.label}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-xs text-muted-foreground">{ghost.desc}</p>
-                </CardContent>
-              </Card>
+              <div key={ghost.role} className="flex flex-col items-center gap-3">
+                <div className="rounded-full bg-muted/50 p-4 border border-border/50">
+                  <ghost.icon className="h-6 w-6 text-muted-foreground" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">{ghost.label}</h3>
+                  <p className="text-[11px] text-muted-foreground mt-1 px-2 leading-relaxed">
+                    {ghost.desc}
+                  </p>
+                </div>
+              </div>
             ))}
           </div>
 
-          <button
-            type="button"
-            onClick={handleCreateColony}
-            className="rounded-md bg-accent px-6 py-3 text-base font-medium text-accent-foreground hover:bg-accent/90"
-          >
-            New Colony
-          </button>
+          <div className="flex flex-col items-center gap-4">
+            <button
+              type="button"
+              onClick={handleCreateColony}
+              className="rounded-md bg-accent px-8 py-3 text-base font-medium text-accent-foreground hover:bg-accent/90 transition-colors shadow-sm"
+            >
+              Start New Colony
+            </button>
+            <p className="text-xs text-muted-foreground">
+              Initializes a workspace with persistent memory and 3 context-isolated seats.
+            </p>
+          </div>
         </div>
       ) : (
         <div className="flex flex-1 flex-col overflow-hidden">

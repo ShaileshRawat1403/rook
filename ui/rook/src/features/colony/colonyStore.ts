@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { setConfiguredSentinelMode } from "@/shared/api/sentinel";
 import type {
   ColonySession,
   ColonySeat,
@@ -413,6 +414,15 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
 
   setSentinelMode: (mode) => {
     const { activeColonyId, colonies, sentinelMode: oldMode } = get();
+    
+    // Sync with global sentinel mode
+    setConfiguredSentinelMode(mode);
+    
+    // Dispatch a custom event to sync other components (like SentinelBadge)
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("sentinel-mode-changed"));
+    }
+
     if (!activeColonyId) {
       set({ sentinelMode: mode });
       return;

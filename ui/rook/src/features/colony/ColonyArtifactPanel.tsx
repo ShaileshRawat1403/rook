@@ -36,6 +36,7 @@ interface ColonyArtifactPanelProps {
   onCreate: (artifact: Omit<ColonyArtifact, "id" | "createdAt" | "updatedAt">) => void;
   onDelete: (artifactId: string) => void;
   onUpdate: (artifactId: string, patch: Partial<Omit<ColonyArtifact, "id" | "createdAt" | "updatedAt">>) => void;
+  onExtractFromSeat?: (seatId: string) => string | null;
 }
 
 export function ColonyArtifactPanel({
@@ -45,6 +46,7 @@ export function ColonyArtifactPanel({
   seats,
   onCreate,
   onDelete,
+  onExtractFromSeat,
 }: ColonyArtifactPanelProps) {
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState("");
@@ -73,15 +75,34 @@ export function ColonyArtifactPanel({
     setShowForm(false);
   };
 
+  const handleAutoExtract = () => {
+    if (!sourceSeatId) {
+      alert("Please select a Source Seat to extract from.");
+      return;
+    }
+    if (onExtractFromSeat) {
+      const extractedContent = onExtractFromSeat(sourceSeatId);
+      if (extractedContent) {
+        setContent(extractedContent);
+        if (!title) {
+          setTitle(`Extracted from ${seats.find(s => s.id === sourceSeatId)?.label}`);
+        }
+      } else {
+        alert("No recent assistant message found for this seat.");
+      }
+    }
+  };
+
   return (
     <div className="flex flex-1 flex-col gap-4">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-medium">Artifacts</h2>
           <p className="text-sm text-muted-foreground">
-            Manual artifact capture. No automatic creation.
+            Artifact capture. Extract from linked seats or create manually.
           </p>
         </div>
+
         <Button onClick={() => setShowForm(!showForm)} type="button" size="sm">
           <Plus className="mr-1 h-3 w-3" />
           Add Artifact
@@ -161,18 +182,31 @@ export function ColonyArtifactPanel({
               </div>
               <div>
                 <label className="text-xs font-medium">Source Seat</label>
-                <select
-                  value={sourceSeatId}
-                  onChange={(e) => setSourceSeatId(e.target.value)}
-                  className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-xs"
-                >
-                  <option value="">None</option>
-                  {seats.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.label}
-                    </option>
-                  ))}
-                </select>
+                <div className="flex items-center gap-2 mt-1">
+                  <select
+                    value={sourceSeatId}
+                    onChange={(e) => setSourceSeatId(e.target.value)}
+                    className="w-full rounded border border-border bg-background px-2 py-1 text-xs flex-1"
+                  >
+                    <option value="">None</option>
+                    {seats.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.label}
+                      </option>
+                    ))}
+                  </select>
+                  {onExtractFromSeat && (
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={handleAutoExtract}
+                      className="text-[10px] h-6 px-2 whitespace-nowrap"
+                    >
+                      Extract Output
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex gap-2">

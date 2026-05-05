@@ -34,6 +34,7 @@ interface ColonyTaskBoardProps {
   onAssignTask: (taskId: string, seatId: string | null) => void;
   onUpdateStatus: (taskId: string, status: ColonyTask["status"]) => void;
   onDeleteTask: (taskId: string) => void;
+  onOpenSwarm?: () => void;
 }
 
 const getSeatLabelFromId = (
@@ -52,6 +53,7 @@ export function ColonyTaskBoard({
   onAssignTask,
   onUpdateStatus,
   onDeleteTask,
+  onOpenSwarm,
 }: ColonyTaskBoardProps) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -116,10 +118,25 @@ export function ColonyTaskBoard({
   return (
     <Card className="flex flex-col">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">Tasks</CardTitle>
-        <p className="text-xs text-muted-foreground">
-          What work exists? Turn intent into assignable work. No prompt is sent automatically.
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-base">Tasks</CardTitle>
+            <p className="text-xs text-muted-foreground">
+              What work exists? Turn intent into assignable work. No prompt is sent automatically.
+            </p>
+          </div>
+          {onOpenSwarm && tasks.length === 0 && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={onOpenSwarm}
+              className="text-xs h-8"
+            >
+              Auto-Plan with Swarm
+            </Button>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         <form onSubmit={handleSubmit} className="flex gap-2">
