@@ -31,6 +31,7 @@ interface ColonyArtifactPanelProps {
   colonyId: string;
   artifacts: ColonyArtifact[];
   tasks: { id: string; title: string }[];
+  handoffs: { id: string; summary: string }[];
   seats: { id: string; label: string }[];
   onCreate: (artifact: Omit<ColonyArtifact, "id" | "createdAt" | "updatedAt">) => void;
   onDelete: (artifactId: string) => void;
@@ -40,6 +41,7 @@ interface ColonyArtifactPanelProps {
 export function ColonyArtifactPanel({
   artifacts,
   tasks,
+  handoffs,
   seats,
   onCreate,
   onDelete,
@@ -150,6 +152,11 @@ export function ColonyArtifactPanel({
                   className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-xs"
                 >
                   <option value="">None</option>
+                  {handoffs.map((h) => (
+                    <option key={h.id} value={h.id}>
+                      {h.summary.slice(0, 30)}...
+                    </option>
+                  ))}
                 </select>
               </div>
               <div>

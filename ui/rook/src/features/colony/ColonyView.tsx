@@ -672,6 +672,7 @@ Do Not:
             colonyId={activeColony.id}
             artifacts={activeColony.artifacts ?? []}
             tasks={activeColony.tasks.map((t) => ({ id: t.id, title: t.title }))}
+            handoffs={activeColony.handoffs.map((h) => ({ id: h.id, summary: h.summary }))}
             seats={activeColony.seats.map((s) => ({ id: s.id, label: s.label }))}
             onCreate={(artifact) => {
               if (!activeColonyId) return;
@@ -815,6 +816,12 @@ Do Not:
             <div className="flex items-center gap-1">
               <span className="font-medium">Memory:</span>
               <span className="text-muted-foreground">{getMemoryItemCount()}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="font-medium">Artifacts:</span>
+              <span className="text-muted-foreground">
+                {activeColony.artifacts?.length ?? 0}
+              </span>
             </div>
           </div>
 
