@@ -8,20 +8,20 @@ use crate::providers::formats::openai_responses::responses_api_to_streaming_mess
 use crate::providers::openai_compatible::handle_status_openai_compat;
 use crate::providers::retry::ProviderRetry;
 use crate::session_context::SESSION_ID_HEADER;
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use async_stream::try_stream;
 use async_trait::async_trait;
-use axum::{extract::Query, response::Html, routing::get, Router};
+use axum::{Router, extract::Query, response::Html, routing::get};
 use base64::Engine;
 use chrono::{DateTime, Utc};
 use futures::future::BoxFuture;
 use futures::{StreamExt, TryStreamExt};
 use jsonwebtoken::jwk::JwkSet;
-use jsonwebtoken::{decode, decode_header, DecodingKey, Validation};
+use jsonwebtoken::{DecodingKey, Validation, decode, decode_header};
 use reqwest::header::{HeaderName, HeaderValue};
 use rmcp::model::{RawContent, Role, Tool};
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use sha2::Digest;
 use std::io;
 use std::net::SocketAddr;
@@ -29,7 +29,7 @@ use std::ops::Deref;
 use std::path::PathBuf;
 use std::sync::{Arc, LazyLock};
 use tokio::pin;
-use tokio::sync::{oneshot, Mutex as TokioMutex};
+use tokio::sync::{Mutex as TokioMutex, oneshot};
 use tokio_util::codec::{FramedRead, LinesCodec};
 use tokio_util::io::StreamReader;
 
@@ -1304,6 +1304,7 @@ mod tests {
     }
 
     #[test_case("unknown-model", &["medium", "high"]; "unknown model gets default reasoning levels")]
+    #[test_case("gpt-5.5", &["low", "medium", "high", "xhigh"]; "gpt 5.5 gets full reasoning levels")]
     fn test_reasoning_levels_for_model(model: &str, expected: &[&str]) {
         assert_eq!(reasoning_levels_for_model(model), expected);
     }

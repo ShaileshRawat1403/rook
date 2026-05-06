@@ -11,18 +11,18 @@ const GEMINI_OAUTH_DEFAULT_FAST_MODEL: &str = "gemini-2.5-flash-lite";
 use crate::providers::retry::ProviderRetry;
 use crate::providers::utils::RequestLog;
 use crate::session_context::SESSION_ID_HEADER;
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use async_stream::try_stream;
 use async_trait::async_trait;
-use axum::{extract::Query, response::Html, routing::get, Router};
+use axum::{Router, extract::Query, response::Html, routing::get};
 use base64::Engine;
 use chrono::{DateTime, Utc};
-use futures::future::BoxFuture;
 use futures::TryStreamExt;
+use futures::future::BoxFuture;
 use reqwest::header::{HeaderName, HeaderValue};
 use rmcp::model::Tool;
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use sha2::Digest;
 use std::io;
 use std::net::SocketAddr;
@@ -30,7 +30,7 @@ use std::path::PathBuf;
 use std::sync::{Arc, LazyLock};
 use std::time::Duration;
 use tokio::pin;
-use tokio::sync::{oneshot, Mutex as TokioMutex};
+use tokio::sync::{Mutex as TokioMutex, oneshot};
 use tokio_stream::StreamExt;
 use tokio_util::codec::{FramedRead, LinesCodec};
 use tokio_util::io::StreamReader;
@@ -93,6 +93,8 @@ const GEMINI_OAUTH_PROVIDER_NAME: &str = "gemini_oauth";
 
 // Models available through the Code Assist API
 const GEMINI_OAUTH_KNOWN_MODELS: &[&str] = &[
+    "gemini-3.1-pro-preview",
+    "gemini-3.1-pro-preview-customtools",
     "gemini-3-pro-preview",
     "gemini-3-flash-preview",
     "gemini-2.5-pro",
@@ -1046,6 +1048,12 @@ mod tests {
         assert!(!pkce.verifier.is_empty());
         assert!(!pkce.challenge.is_empty());
         assert_ne!(pkce.verifier, pkce.challenge);
+    }
+
+    #[test]
+    fn known_models_include_gemini_3_1() {
+        assert!(GEMINI_OAUTH_KNOWN_MODELS.contains(&"gemini-3.1-pro-preview"));
+        assert!(GEMINI_OAUTH_KNOWN_MODELS.contains(&"gemini-3.1-pro-preview-customtools"));
     }
 
     #[test]

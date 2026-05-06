@@ -1,6 +1,6 @@
 use anyhow::Result;
 use async_trait::async_trait;
-use base64::{engine::general_purpose::STANDARD as BASE64, Engine as _};
+use base64::{Engine as _, engine::general_purpose::STANDARD as BASE64};
 use futures::future::BoxFuture;
 use serde_json::json;
 use std::collections::HashMap;
@@ -15,7 +15,7 @@ use super::base::{
     ConfigKey, MessageStream, Provider, ProviderDef, ProviderMetadata, ProviderUsage, Usage,
 };
 use super::errors::ProviderError;
-use super::utils::{filter_extensions_from_system_prompt, RequestLog};
+use super::utils::{RequestLog, filter_extensions_from_system_prompt};
 use crate::config::base::{CodexCommand, CodexReasoningEffort, CodexSkipGitCheck};
 use crate::config::paths::Paths;
 use crate::config::search_path::SearchPaths;
@@ -29,6 +29,9 @@ use rmcp::model::Tool;
 const CODEX_PROVIDER_NAME: &str = "codex";
 pub const CODEX_DEFAULT_MODEL: &str = "gpt-5.2-codex";
 pub const CODEX_KNOWN_MODELS: &[&str] = &[
+    "gpt-5.5",
+    "gpt-5.4",
+    "gpt-5.3-codex",
     "gpt-5.2-codex",
     "gpt-5.2",
     "gpt-5.1-codex-max",
@@ -755,10 +758,12 @@ mod tests {
         assert_eq!(metadata.default_model, CODEX_DEFAULT_MODEL);
         assert!(!metadata.known_models.is_empty());
         // Check that the default model is in the known models
-        assert!(metadata
-            .known_models
-            .iter()
-            .any(|m| m.name == CODEX_DEFAULT_MODEL));
+        assert!(
+            metadata
+                .known_models
+                .iter()
+                .any(|m| m.name == CODEX_DEFAULT_MODEL)
+        );
     }
 
     #[test_case(
@@ -857,9 +862,11 @@ mod tests {
     #[test_case("image/jpeg", ".jpg" ; "jpeg image")]
     fn test_prepare_input_image(mime: &str, expected_ext: &str) {
         let dir = tempfile::tempdir().unwrap();
-        let messages = vec![Message::user()
-            .with_text("Describe")
-            .with_image(TEST_IMAGE_B64, mime)];
+        let messages = vec![
+            Message::user()
+                .with_text("Describe")
+                .with_image(TEST_IMAGE_B64, mime),
+        ];
         let (_prompt, temp_files) = prepare_input("", &messages, dir.path()).unwrap();
         assert_eq!(temp_files.len(), 1);
         let path = temp_files[0].path();
@@ -875,9 +882,11 @@ mod tests {
     #[test_case("image/svg+xml" ; "svg")]
     fn test_prepare_input_image_unsupported(mime: &str) {
         let dir = tempfile::tempdir().unwrap();
-        let messages = vec![Message::user()
-            .with_text("Describe")
-            .with_image(TEST_IMAGE_B64, mime)];
+        let messages = vec![
+            Message::user()
+                .with_text("Describe")
+                .with_image(TEST_IMAGE_B64, mime),
+        ];
         let err = prepare_input("", &messages, dir.path()).unwrap_err();
         assert!(
             err.to_string().contains("Unsupported image MIME type"),
@@ -1014,6 +1023,9 @@ mod tests {
 
     #[test]
     fn test_known_models() {
+        assert!(CODEX_KNOWN_MODELS.contains(&"gpt-5.5"));
+        assert!(CODEX_KNOWN_MODELS.contains(&"gpt-5.4"));
+        assert!(CODEX_KNOWN_MODELS.contains(&"gpt-5.3-codex"));
         assert!(CODEX_KNOWN_MODELS.contains(&"gpt-5.2-codex"));
         assert!(CODEX_KNOWN_MODELS.contains(&"gpt-5.2"));
         assert!(CODEX_KNOWN_MODELS.contains(&"gpt-5.1-codex-max"));

@@ -1,11 +1,12 @@
 use super::api_client::{ApiClient, AuthMethod};
 use super::base::{ConfigKey, ModelInfo, Provider, ProviderDef, ProviderMetadata};
+use super::canonical::{CanonicalModelRegistry, Modality, map_to_canonical_model};
 use super::embedding::{EmbeddingCapable, EmbeddingRequest, EmbeddingResponse};
 use super::errors::ProviderError;
 use super::formats::openai::{create_request, get_usage, response_to_message};
 use super::formats::openai_responses::{
-    create_responses_request, get_responses_usage, responses_api_to_message,
-    responses_api_to_streaming_message, ResponsesApiResponse,
+    ResponsesApiResponse, create_responses_request, get_responses_usage, responses_api_to_message,
+    responses_api_to_streaming_message,
 };
 use super::openai_compatible::{
     handle_response_openai_compat, handle_status_openai_compat, stream_openai_compat,
@@ -38,6 +39,11 @@ const OPEN_AI_DEFAULT_MODELS_PATH: &str = "v1/models";
 pub const OPEN_AI_DEFAULT_MODEL: &str = "gpt-4o";
 pub const OPEN_AI_DEFAULT_FAST_MODEL: &str = "gpt-4o-mini";
 pub const OPEN_AI_KNOWN_MODELS: &[(&str, usize)] = &[
+    ("gpt-5.5", 400_000),
+    ("gpt-5.4", 400_000),
+    ("gpt-5.3-codex", 400_000),
+    ("gpt-5.2-codex", 400_000),
+    ("gpt-5.2", 400_000),
     ("gpt-4o", 128_000),
     ("gpt-4o-mini", 128_000),
     ("gpt-4.1", 128_000),
@@ -51,6 +57,7 @@ pub const OPEN_AI_KNOWN_MODELS: &[(&str, usize)] = &[
     ("gpt-5.1-codex", 400_000),
     ("gpt-5-codex", 400_000),
 ];
+const OPEN_AI_UNMAPPED_RECOMMENDED_MODELS: &[&str] = &["gpt-5.5"];
 
 pub const OPEN_AI_DOC_URL: &str = "https://platform.openai.com/docs/models";
 
@@ -264,6 +271,7 @@ impl OpenAiProvider {
         (normalized_model.starts_with("gpt-5") && normalized_model.contains("codex"))
             || normalized_model.starts_with("gpt-5.2-pro")
             || normalized_model.starts_with("gpt-5.4")
+            || normalized_model.starts_with("gpt-5.5")
     }
 
     fn should_use_responses_api(model_name: &str, base_path: &str) -> bool {
@@ -280,6 +288,21 @@ impl OpenAiProvider {
         }
 
         Self::is_responses_model(model_name)
+    }
+
+    fn include_unmapped_recommended_models(
+        all_models: &[String],
+        recommended_models: &mut Vec<String>,
+    ) {
+        for model in OPEN_AI_UNMAPPED_RECOMMENDED_MODELS.iter().rev() {
+            if all_models.iter().any(|candidate| candidate == model)
+                && !recommended_models
+                    .iter()
+                    .any(|candidate| candidate == model)
+            {
+                recommended_models.insert(0, (*model).to_string());
+            }
+        }
     }
 
     /// Providers known to reject `max_completion_tokens` and require
@@ -450,6 +473,53 @@ impl Provider for OpenAiProvider {
         }
 
         self.fetch_models_from_api().await
+    }
+
+    async fn fetch_recommended_models(&self) -> Result<Vec<String>, ProviderError> {
+        let all_models = self.fetch_supported_models().await?;
+
+        let registry = CanonicalModelRegistry::bundled().map_err(|e| {
+            ProviderError::ExecutionError(format!("Failed to load canonical registry: {}", e))
+        })?;
+
+        let mut models_with_dates: Vec<(String, Option<String>)> = all_models
+            .iter()
+            .filter_map(|model| {
+                let canonical_id = map_to_canonical_model(self.get_name(), model, registry)?;
+                let (provider, model_name) = canonical_id.split_once('/')?;
+                let canonical_model = registry.get(provider, model_name)?;
+
+                if !canonical_model.modalities.input.contains(&Modality::Text) {
+                    return None;
+                }
+
+                if !canonical_model.tool_call && !self.model.toolshim {
+                    return None;
+                }
+
+                Some((model.clone(), canonical_model.release_date.clone()))
+            })
+            .collect();
+
+        models_with_dates.sort_by(|a, b| match (&a.1, &b.1) {
+            (Some(date_a), Some(date_b)) => date_b.cmp(date_a),
+            (Some(_), None) => std::cmp::Ordering::Less,
+            (None, Some(_)) => std::cmp::Ordering::Greater,
+            (None, None) => a.0.cmp(&b.0),
+        });
+
+        let mut recommended_models: Vec<String> = models_with_dates
+            .into_iter()
+            .map(|(name, _)| name)
+            .collect();
+
+        Self::include_unmapped_recommended_models(&all_models, &mut recommended_models);
+
+        if recommended_models.is_empty() {
+            Ok(all_models)
+        } else {
+            Ok(recommended_models)
+        }
     }
 
     fn supports_embeddings(&self) -> bool {
@@ -804,6 +874,34 @@ mod tests {
             "gpt-5.4-2026-03-01",
             "v1/chat/completions"
         ));
+    }
+
+    #[test]
+    fn gpt_5_5_uses_responses_when_base_path_is_default() {
+        assert!(OpenAiProvider::should_use_responses_api(
+            "gpt-5.5",
+            "v1/chat/completions"
+        ));
+    }
+
+    #[test]
+    fn unmapped_recommended_models_are_promoted_when_available() {
+        let all_models = vec!["gpt-4o".to_string(), "gpt-5.5".to_string()];
+        let mut recommended_models = vec!["gpt-4o".to_string()];
+
+        OpenAiProvider::include_unmapped_recommended_models(&all_models, &mut recommended_models);
+
+        assert_eq!(recommended_models[0], "gpt-5.5");
+    }
+
+    #[test]
+    fn unmapped_recommended_models_are_not_added_when_unavailable() {
+        let all_models = vec!["gpt-4o".to_string()];
+        let mut recommended_models = vec!["gpt-4o".to_string()];
+
+        OpenAiProvider::include_unmapped_recommended_models(&all_models, &mut recommended_models);
+
+        assert_eq!(recommended_models, vec!["gpt-4o".to_string()]);
     }
 
     #[test]

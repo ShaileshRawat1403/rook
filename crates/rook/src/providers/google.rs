@@ -12,8 +12,8 @@ use crate::providers::formats::google::{create_request, response_to_streaming_me
 use anyhow::Result;
 use async_stream::try_stream;
 use async_trait::async_trait;
-use futures::future::BoxFuture;
 use futures::TryStreamExt;
+use futures::future::BoxFuture;
 use rmcp::model::Tool;
 use serde_json::Value;
 use std::io;
@@ -27,6 +27,9 @@ pub const GOOGLE_API_HOST: &str = "https://generativelanguage.googleapis.com";
 pub const GOOGLE_DEFAULT_MODEL: &str = "gemini-2.5-pro";
 pub const GOOGLE_DEFAULT_FAST_MODEL: &str = "gemini-2.5-flash";
 pub const GOOGLE_KNOWN_MODELS: &[&str] = &[
+    // Gemini 3.1 models
+    "gemini-3.1-pro-preview",
+    "gemini-3.1-pro-preview-customtools",
     // Gemini 3 models
     "gemini-3-pro-preview",
     "gemini-3-pro-image-preview",
@@ -211,5 +214,16 @@ impl Provider for GoogleProvider {
                 yield (message, usage);
             }
         }))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn known_models_include_gemini_3_1() {
+        assert!(GOOGLE_KNOWN_MODELS.contains(&"gemini-3.1-pro-preview"));
+        assert!(GOOGLE_KNOWN_MODELS.contains(&"gemini-3.1-pro-preview-customtools"));
     }
 }

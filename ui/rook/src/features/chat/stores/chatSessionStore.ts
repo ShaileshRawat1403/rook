@@ -114,7 +114,7 @@ interface ChatSessionStoreActions {
 
 export type ChatSessionStore = ChatSessionStoreState & ChatSessionStoreActions;
 
-const MODEL_CACHE_STORAGE_KEY = "rook:model-cache";
+const MODEL_CACHE_STORAGE_KEY = "rook:model-cache:v2";
 const LEGACY_OPENAI_FALLBACK_MODEL_IDS = [
   "gpt-4o",
   "gpt-4o-mini",
