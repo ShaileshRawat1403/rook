@@ -48,6 +48,7 @@ type ColonyStore = ColonyStoreState & {
     recipeId: string;
     acceptanceCriteria?: AcceptanceCriterion[];
   }) => ColonySession;
+  closeColony: (colonyId: string, reason?: string) => void;
   updateColony: (colonyId: string, updates: Partial<ColonySession>) => void;
   deleteColony: (colonyId: string) => void;
   setSentinelMode: (mode: "off" | "dax_open") => void;
@@ -159,6 +160,13 @@ type ColonyStore = ColonyStoreState & {
 
 const DEFAULT_ROLES: ColonyRole[] = ["planner", "worker", "reviewer"];
 
+export function isColonyClosed(colony?: ColonySession | null): boolean {
+  return (
+    colony?.lifecycleStatus === "closed" ||
+    colony?.lifecycleStatus === "archived"
+  );
+}
+
 const persisted = loadPersistedColonyState();
 
 export const colonyStore = create<ColonyStore>((set, get) => ({
@@ -193,6 +201,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   setColonyScope: (colonyId, scope) => {
+    if (isColonyClosed(get().colonies.find((c) => c.id === colonyId))) return;
     const now = new Date().toISOString();
     const details = `${scope.locked ? "locked" : "editable"} ${scope.kind}: ${
       scope.path || scope.label
@@ -221,6 +230,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   clearColonyScope: (colonyId) => {
+    if (isColonyClosed(get().colonies.find((c) => c.id === colonyId))) return;
     const now = new Date().toISOString();
     set((state) => ({
       colonies: state.colonies.map((c) =>
@@ -246,6 +256,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   updateColonyMemory: (colonyId, patch) => {
+    if (isColonyClosed(get().colonies.find((c) => c.id === colonyId))) return;
     const now = new Date().toISOString();
     set((state) => ({
       colonies: state.colonies.map((c) =>
@@ -278,6 +289,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   addMemoryItem: (colonyId, section, text) => {
+    if (isColonyClosed(get().colonies.find((c) => c.id === colonyId))) return;
     const trimmed = text.trim();
     if (!trimmed) return;
     const now = new Date().toISOString();
@@ -316,6 +328,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   removeMemoryItem: (colonyId, section, index) => {
+    if (isColonyClosed(get().colonies.find((c) => c.id === colonyId))) return;
     const now = new Date().toISOString();
     set((state) => ({
       colonies: state.colonies.map((c) => {
@@ -346,6 +359,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   createArtifact: (colonyId, artifact) => {
+    if (isColonyClosed(get().colonies.find((c) => c.id === colonyId))) return;
     const id = crypto.randomUUID();
     const now = new Date().toISOString();
     const newArtifact: ColonyArtifact = {
@@ -374,6 +388,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   updateArtifact: (colonyId, artifactId, patch) => {
+    if (isColonyClosed(get().colonies.find((c) => c.id === colonyId))) return;
     const now = new Date().toISOString();
     set((state) => ({
       colonies: state.colonies.map((c) => {
@@ -397,6 +412,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   deleteArtifact: (colonyId, artifactId) => {
+    if (isColonyClosed(get().colonies.find((c) => c.id === colonyId))) return;
     const now = new Date().toISOString();
     set((state) => ({
       colonies: state.colonies.map((c) => {
@@ -433,6 +449,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       title,
       intent,
       workItemId,
+      lifecycleStatus: "active",
       seats,
       tasks: [],
       handoffs: [],
@@ -505,6 +522,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       workItemId,
       recipeId: recipe.id,
       recipeVersion: recipe.version,
+      lifecycleStatus: "active",
       seats,
       tasks,
       handoffs: [],
@@ -531,6 +549,41 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       events: state.events,
     });
     return colony;
+  },
+
+  closeColony: (colonyId, reason) => {
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    if (!colony || isColonyClosed(colony)) return;
+    const now = new Date().toISOString();
+    set((state) => ({
+      colonies: state.colonies.map((c) =>
+        c.id !== colonyId
+          ? c
+          : {
+              ...c,
+              lifecycleStatus: "closed" as const,
+              closedAt: now,
+              closedReason: reason,
+              updatedAt: now,
+            },
+      ),
+      events: [
+        ...state.events,
+        {
+          id: crypto.randomUUID(),
+          type: "colony_closed",
+          timestamp: now,
+          details: reason ?? colony.title,
+        },
+      ],
+    }));
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
   },
 
   updateColony: (colonyId, updates) => {
@@ -627,6 +680,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   addSeat: (colonyId, role, label) => {
+    if (isColonyClosed(get().colonies.find((c) => c.id === colonyId))) return;
     const now = new Date().toISOString();
     const seat: ColonySeat = {
       id: crypto.randomUUID(),
@@ -646,6 +700,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   updateSeat: (colonyId, seatId, updates) => {
+    if (isColonyClosed(get().colonies.find((c) => c.id === colonyId))) return;
     const now = new Date().toISOString();
     set((state) => ({
       colonies: state.colonies.map((c) =>
@@ -663,6 +718,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   removeSeat: (colonyId, seatId) => {
+    if (isColonyClosed(get().colonies.find((c) => c.id === colonyId))) return;
     const now = new Date().toISOString();
     set((state) => ({
       colonies: state.colonies.map((c) => {
@@ -706,9 +762,9 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   bindSeatToSession: (colonyId, seatId, session) => {
-    const seat = get()
-      .colonies.find((c) => c.id === colonyId)
-      ?.seats.find((s) => s.id === seatId);
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    if (isColonyClosed(colony)) return;
+    const seat = colony?.seats.find((s) => s.id === seatId);
     const now = new Date().toISOString();
     const events = [...get().events];
     if (seat) {
@@ -755,9 +811,9 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   unbindSeat: (colonyId, seatId) => {
-    const seat = get()
-      .colonies.find((c) => c.id === colonyId)
-      ?.seats.find((s) => s.id === seatId);
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    if (isColonyClosed(colony)) return;
+    const seat = colony?.seats.find((s) => s.id === seatId);
     const now = new Date().toISOString();
     const events = [...get().events];
     if (seat) {
@@ -798,6 +854,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   updateSeatModel: (colonyId, seatId, modelName) => {
     if (!modelName) return;
     const colony = get().colonies.find((c) => c.id === colonyId);
+    if (isColonyClosed(colony)) return;
     const seat = colony?.seats.find((s) => s.id === seatId);
     set((state) => ({
       colonies: state.colonies.map((c) =>
@@ -881,6 +938,10 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   createTask: (colonyId, title, description) => {
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    if (isColonyClosed(colony)) {
+      throw new Error("Cannot create task: Colony is closed");
+    }
     const now = new Date().toISOString();
     const task: ColonyTask = {
       id: crypto.randomUUID(),
@@ -910,6 +971,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
 
   assignTaskToSeat: (colonyId, taskId, seatId) => {
     const colony = get().colonies.find((c) => c.id === colonyId);
+    if (isColonyClosed(colony)) return;
     const task = colony?.tasks.find((t) => t.id === taskId);
     const seat = seatId ? colony?.seats.find((s) => s.id === seatId) : null;
     if (!task || !colony) return;
@@ -983,6 +1045,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
 
   updateTaskStatus: (colonyId, taskId, status) => {
     const colony = get().colonies.find((c) => c.id === colonyId);
+    if (isColonyClosed(colony)) return;
     const task = colony?.tasks.find((t) => t.id === taskId);
     if (!task) return;
 
@@ -1011,9 +1074,9 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   deleteTask: (colonyId, taskId) => {
-    const task = get()
-      .colonies.find((c) => c.id === colonyId)
-      ?.tasks.find((t) => t.id === taskId);
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    if (isColonyClosed(colony)) return;
+    const task = colony?.tasks.find((t) => t.id === taskId);
     if (!task) return;
 
     set((state) => ({
@@ -1039,6 +1102,9 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
 
   createHandoff: (colonyId, fromSeatId, toSeatId, taskId, summary = "") => {
     const colony = get().colonies.find((c) => c.id === colonyId);
+    if (isColonyClosed(colony)) {
+      throw new Error("Cannot create handoff: Colony is closed");
+    }
     const fromSeat = colony?.seats.find((s) => s.id === fromSeatId);
     const toSeat = colony?.seats.find((s) => s.id === toSeatId);
     if (!colony || !fromSeat || !toSeat) {
@@ -1084,6 +1150,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
 
   updateHandoff: (colonyId, handoffId, updates) => {
     const colony = get().colonies.find((c) => c.id === colonyId);
+    if (isColonyClosed(colony)) return;
     const handoff = colony?.handoffs.find((h) => h.id === handoffId);
     if (!handoff || !colony) return;
 
@@ -1114,6 +1181,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
 
   markHandoffStaged: (colonyId, handoffId) => {
     const colony = get().colonies.find((c) => c.id === colonyId);
+    if (isColonyClosed(colony)) return;
     const handoff = colony?.handoffs.find((h) => h.id === handoffId);
     const toSeat = colony?.seats.find((s) => s.id === handoff?.toSeatId);
     if (!handoff || !colony) return;
@@ -1147,6 +1215,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
 
   markHandoffCopied: (colonyId, handoffId) => {
     const colony = get().colonies.find((c) => c.id === colonyId);
+    if (isColonyClosed(colony)) return;
     const handoff = colony?.handoffs.find((h) => h.id === handoffId);
     const fromSeat = colony?.seats.find((s) => s.id === handoff?.fromSeatId);
     if (!handoff || !colony) return;
@@ -1179,9 +1248,9 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   deleteHandoff: (colonyId, handoffId) => {
-    const handoff = get()
-      .colonies.find((c) => c.id === colonyId)
-      ?.handoffs.find((h) => h.id === handoffId);
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    if (isColonyClosed(colony)) return;
+    const handoff = colony?.handoffs.find((h) => h.id === handoffId);
     if (!handoff) return;
 
     set((state) => ({
@@ -1206,6 +1275,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   reviewHandoff: (colonyId, handoffId, reviewStatus, reviewNote) => {
+    if (isColonyClosed(get().colonies.find((c) => c.id === colonyId))) return;
     set((state) => ({
       colonies: state.colonies.map((c) =>
         c.id !== colonyId

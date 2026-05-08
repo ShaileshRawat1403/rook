@@ -1,5 +1,13 @@
 export type ColonyRole = "planner" | "worker" | "reviewer";
 
+export type ColonyLifecycleStatus =
+  | "draft"
+  | "active"
+  | "blocked"
+  | "reviewing"
+  | "closed"
+  | "archived";
+
 export type ColonyScopeKind = "planning" | "project" | "directory" | "repo";
 
 export type ColonyScope = {
@@ -123,6 +131,9 @@ export type ColonySession = {
   workItemId?: string;
   recipeId?: string;
   recipeVersion?: string;
+  lifecycleStatus?: ColonyLifecycleStatus;
+  closedAt?: string;
+  closedReason?: string;
   projectId?: string;
   scope?: ColonyScope;
   memory?: ColonyMemory;
@@ -138,6 +149,7 @@ export type ColonySession = {
 
 export type ColonyEventType =
   | "colony_created"
+  | "colony_closed"
   | "scope_updated"
   | "seat_linked"
   | "seat_unlinked"

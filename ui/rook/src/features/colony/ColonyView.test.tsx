@@ -199,4 +199,26 @@ describe("ColonyView adoption workflow", () => {
         .events.some((event) => event.type === "handoff_staged"),
     ).toBe(false);
   });
+
+  it("clicking Close Colony reveals the closed state in the UI", async () => {
+    const user = userEvent.setup();
+    colonyStore.getState().createColony("Active Colony", "Task-focused Colony");
+
+    render(<ColonyView />);
+
+    const closeButton = await screen.findByRole("button", {
+      name: /Close Colony/i,
+    });
+    await user.click(closeButton);
+
+    expect(
+      screen.getByRole("status", { name: /Colony closed notice/i }),
+    ).toHaveTextContent(/preserved for review/i);
+    expect(
+      screen.getByLabelText(/Colony status/i, { selector: "span" }),
+    ).toHaveTextContent(/Closed/i);
+    expect(
+      screen.queryByRole("button", { name: /Close Colony/i }),
+    ).not.toBeInTheDocument();
+  });
 });

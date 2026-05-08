@@ -8,7 +8,7 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
-import { useColonyStore, colonyStore } from "./colonyStore";
+import { useColonyStore, colonyStore, isColonyClosed } from "./colonyStore";
 import { getConfiguredSentinelMode } from "@/shared/api/sentinel";
 import { ColonyTranscript } from "./ColonyTranscript";
 import { ColonyRecipeEntry } from "./ColonyRecipeEntry";
@@ -66,6 +66,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     setSentinelMode,
     syncSentinelMode,
     createColony,
+    closeColony,
     setColonyScope,
     updateColonyMemory,
     addMemoryItem,
@@ -128,6 +129,13 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     },
     [createColony],
   );
+
+  const handleCloseColony = useCallback(() => {
+    if (!activeColonyId) return;
+    closeColony(activeColonyId);
+  }, [activeColonyId, closeColony]);
+
+  const colonyClosed = isColonyClosed(activeColony);
 
   const sentinelLabel =
     sentinelMode === "off" ? "Safety: Off" : "Safety: Advisory";
@@ -452,6 +460,14 @@ Do not add scope beyond the assigned task.`;
             </p>
           </div>
           <div className="flex shrink-0 flex-wrap gap-2 text-xs">
+            {colonyClosed && (
+              <span
+                aria-label="Colony status"
+                className="rounded-full border border-border bg-muted px-3 py-1.5 font-medium"
+              >
+                Closed
+              </span>
+            )}
             <span className="rounded-full border border-border px-3 py-1.5">
               {openTasks} open work
             </span>
@@ -881,6 +897,15 @@ Do Not:
               <option value="dax_open">Advisory</option>
             </select>
           </div>
+          {activeColony && !colonyClosed && (
+            <button
+              type="button"
+              onClick={handleCloseColony}
+              className="rounded-md border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+            >
+              Close Colony
+            </button>
+          )}
           {hasColonyState && (
             <button
               type="button"
@@ -926,6 +951,16 @@ Do Not:
         </div>
       ) : (
         <div className="flex flex-1 flex-col overflow-hidden">
+          {colonyClosed && (
+            <div
+              role="status"
+              aria-label="Colony closed notice"
+              className="mb-4 shrink-0 rounded-lg border border-border bg-muted px-4 py-3 text-sm"
+            >
+              This Colony is closed. Work items, handoffs, and artifacts are
+              preserved for review.
+            </div>
+          )}
           <div className="mb-4 shrink-0">{renderWorkspaceBrief()}</div>
 
           <div className="mb-4 flex shrink-0 gap-1 rounded-full bg-muted p-1">
