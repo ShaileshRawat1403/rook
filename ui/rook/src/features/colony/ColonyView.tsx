@@ -11,6 +11,7 @@ import {
 import { useColonyStore, colonyStore } from "./colonyStore";
 import { getConfiguredSentinelMode } from "@/shared/api/sentinel";
 import { ColonyTranscript } from "./ColonyTranscript";
+import { ColonyRecipeEntry } from "./ColonyRecipeEntry";
 import { ColonyTaskBoard } from "./ColonyTaskBoard";
 import { ColonyHandoffPanel } from "./ColonyHandoffPanel";
 import { ColonyMemoryPanel } from "./ColonyMemoryPanel";
@@ -920,6 +921,8 @@ Do Not:
           <p className="mt-4 text-xs text-muted-foreground">
             Creates Planner, Worker, and Reviewer roles behind the workspace.
           </p>
+
+          <ColonyRecipeEntry />
         </div>
       ) : (
         <div className="flex flex-1 flex-col overflow-hidden">
