@@ -119,6 +119,7 @@ export type ColonySession = {
   id: string;
   title: string;
   intent: string;
+  workItemId?: string;
   projectId?: string;
   scope?: ColonyScope;
   memory?: ColonyMemory;

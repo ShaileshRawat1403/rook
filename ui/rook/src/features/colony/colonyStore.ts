@@ -34,7 +34,11 @@ interface ColonyStoreState {
 type ColonyStore = ColonyStoreState & {
   getActiveColony: () => ColonySession | null;
   setActiveColony: (colonyId: string | null) => void;
-  createColony: (title: string, intent: string) => ColonySession;
+  createColony: (
+    title: string,
+    intent: string,
+    workItemId?: string,
+  ) => ColonySession;
   updateColony: (colonyId: string, updates: Partial<ColonySession>) => void;
   deleteColony: (colonyId: string) => void;
   setSentinelMode: (mode: "off" | "dax_open") => void;
@@ -404,7 +408,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
     });
   },
 
-  createColony: (title, intent) => {
+  createColony: (title, intent, workItemId) => {
     const id = crypto.randomUUID();
     const now = new Date().toISOString();
     const seats: ColonySeat[] = DEFAULT_ROLES.map((role) => ({
@@ -419,6 +423,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       id,
       title,
       intent,
+      workItemId,
       seats,
       tasks: [],
       handoffs: [],
