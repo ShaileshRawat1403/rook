@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { setConfiguredSentinelMode } from "@/shared/api/sentinel";
+import type { AcceptanceCriterion } from "@/features/work-items/types";
 import type {
   ColonySession,
   ColonySeat,
@@ -16,6 +17,7 @@ import {
   loadPersistedColonyState,
   persistColonyState,
 } from "./colonyPersistence";
+import { getSwarmRecipe } from "./swarm/recipes";
 
 interface ColonyStoreState {
   colonies: ColonySession[];
@@ -39,6 +41,13 @@ type ColonyStore = ColonyStoreState & {
     intent: string,
     workItemId?: string,
   ) => ColonySession;
+  createColonyFromRecipe: (args: {
+    title: string;
+    intent: string;
+    workItemId: string;
+    recipeId: string;
+    acceptanceCriteria?: AcceptanceCriterion[];
+  }) => ColonySession;
   updateColony: (colonyId: string, updates: Partial<ColonySession>) => void;
   deleteColony: (colonyId: string) => void;
   setSentinelMode: (mode: "off" | "dax_open") => void;
@@ -436,6 +445,78 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       type: "colony_created",
       timestamp: now,
       details: title,
+    };
+    set({
+      colonies: [colony],
+      activeColonyId: id,
+      events: [newEvent],
+    });
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
+    return colony;
+  },
+
+  createColonyFromRecipe: ({
+    title,
+    intent,
+    workItemId,
+    recipeId,
+    acceptanceCriteria,
+  }) => {
+    const recipe = getSwarmRecipe(recipeId);
+    if (!recipe) {
+      throw new Error(`Unknown recipe: ${recipeId}`);
+    }
+    const id = crypto.randomUUID();
+    const now = new Date().toISOString();
+    const specialistCount = recipe.specialists.length;
+    const seats: ColonySeat[] = recipe.specialists.map((specialist, index) => {
+      let role: ColonyRole = "worker";
+      if (specialistCount > 1) {
+        if (index === 0) role = "planner";
+        else if (index === specialistCount - 1) role = "reviewer";
+      }
+      return {
+        id: crypto.randomUUID(),
+        role,
+        label: specialist.role,
+        binding: "unbound",
+        status: "idle",
+        lastUpdate: now,
+      };
+    });
+    const tasks: ColonyTask[] = (acceptanceCriteria ?? []).map((ac) => ({
+      id: crypto.randomUUID(),
+      title: ac.text,
+      status: "todo",
+      sourceAcceptanceCriterionId: ac.id,
+      createdAt: now,
+      updatedAt: now,
+    }));
+    const colony: ColonySession = {
+      id,
+      title,
+      intent,
+      workItemId,
+      recipeId: recipe.id,
+      recipeVersion: recipe.version,
+      seats,
+      tasks,
+      handoffs: [],
+      sentinelMode: "off",
+      createdAt: now,
+      updatedAt: now,
+    };
+    const newEvent: ColonyEvent = {
+      id: crypto.randomUUID(),
+      type: "colony_created",
+      timestamp: now,
+      details: `${title} (${recipe.id} v${recipe.version})`,
     };
     set({
       colonies: [colony],

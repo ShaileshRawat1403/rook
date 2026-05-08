@@ -68,6 +68,7 @@ export type ColonyTask = {
   description?: string;
   status: ColonyTaskStatus;
   assignedSeatId?: string;
+  sourceAcceptanceCriterionId?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -120,6 +121,8 @@ export type ColonySession = {
   title: string;
   intent: string;
   workItemId?: string;
+  recipeId?: string;
+  recipeVersion?: string;
   projectId?: string;
   scope?: ColonyScope;
   memory?: ColonyMemory;
