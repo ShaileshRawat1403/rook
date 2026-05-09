@@ -2,7 +2,12 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { AcceptanceCriterion } from "@/features/work-items/types";
 import { colonyStore } from "./colonyStore";
 import type { PersistedColonyState } from "./colonyPersistence";
-import { REPO_REVIEW_RECIPE } from "./swarm/recipes";
+import {
+  DOCS_AUDIT_RECIPE,
+  RELEASE_READINESS_RECIPE,
+  REPO_REVIEW_RECIPE,
+} from "./swarm/recipes";
+import type { ColonyOutputContract } from "./types";
 
 vi.mock("@/shared/api/sentinel", () => ({
   getConfiguredSentinelMode: vi.fn().mockResolvedValue("off"),
@@ -354,5 +359,133 @@ describe("colonyStore — lifecycle and close (v0.5 F7)", () => {
     const storedTask = stored?.tasks.find((t) => t.id === task.id);
     expect(storedTask?.status).toBe("todo");
     expect(stored?.artifacts ?? []).toHaveLength(0);
+  });
+});
+
+describe("colonyStore — additional recipe contract validation (v0.7)", () => {
+  const SUPPORTED_ARTIFACT_TYPES: ColonyOutputContract["artifactType"][] = [
+    "report",
+    "prd",
+    "strategy",
+    "checklist",
+    "audit",
+  ];
+  const SUPPORTED_FORMATS: ColonyOutputContract["format"][] = [
+    "markdown",
+    "json",
+    "checklist",
+  ];
+
+  beforeEach(() => {
+    resetStore();
+    if (typeof window !== "undefined") {
+      window.localStorage.clear();
+    }
+  });
+
+  it("Release Readiness recipe is shaped to become a v0.6 ColonyOutputContract", () => {
+    const recipe = RELEASE_READINESS_RECIPE;
+
+    expect(recipe.id).toBe("release-readiness");
+    expect(typeof recipe.version).toBe("string");
+    expect(recipe.version.length).toBeGreaterThan(0);
+    expect(SUPPORTED_ARTIFACT_TYPES).toContain(recipe.finalArtifact.artifactType);
+    expect(SUPPORTED_FORMATS).toContain(recipe.finalArtifact.format);
+    expect(recipe.finalArtifact.requiredSections.length).toBeGreaterThan(0);
+    expect(typeof recipe.finalArtifact.evidenceRequired).toBe("boolean");
+    expect(typeof recipe.finalArtifact.reviewerRequired).toBe("boolean");
+  });
+
+  it("Docs Audit recipe is shaped to become a v0.6 ColonyOutputContract", () => {
+    const recipe = DOCS_AUDIT_RECIPE;
+
+    expect(recipe.id).toBe("docs-audit");
+    expect(typeof recipe.version).toBe("string");
+    expect(recipe.version.length).toBeGreaterThan(0);
+    expect(SUPPORTED_ARTIFACT_TYPES).toContain(recipe.finalArtifact.artifactType);
+    expect(SUPPORTED_FORMATS).toContain(recipe.finalArtifact.format);
+    expect(recipe.finalArtifact.requiredSections.length).toBeGreaterThan(0);
+    expect(typeof recipe.finalArtifact.evidenceRequired).toBe("boolean");
+    expect(typeof recipe.finalArtifact.reviewerRequired).toBe("boolean");
+  });
+
+  it("createColonyFromRecipe persists the Release Readiness output contract end-to-end", () => {
+    const acceptanceCriteria: AcceptanceCriterion[] = [
+      { id: "ac-1", text: "Build passes" },
+      { id: "ac-2", text: "Changelog generated" },
+    ];
+
+    const colony = colonyStore.getState().createColonyFromRecipe({
+      title: "Release Readiness",
+      intent: "Release Readiness",
+      workItemId: "wi-rel-1",
+      recipeId: RELEASE_READINESS_RECIPE.id,
+      acceptanceCriteria,
+    });
+
+    expect(colony.recipeId).toBe(RELEASE_READINESS_RECIPE.id);
+    expect(colony.recipeVersion).toBe(RELEASE_READINESS_RECIPE.version);
+    expect(colony.outputContract?.artifactType).toBe(
+      RELEASE_READINESS_RECIPE.finalArtifact.artifactType,
+    );
+    expect(colony.outputContract?.format).toBe(
+      RELEASE_READINESS_RECIPE.finalArtifact.format,
+    );
+    expect(colony.outputContract?.requiredSections).toEqual(
+      RELEASE_READINESS_RECIPE.finalArtifact.requiredSections,
+    );
+    expect(colony.outputContract?.evidenceRequired).toBe(
+      RELEASE_READINESS_RECIPE.finalArtifact.evidenceRequired,
+    );
+    expect(colony.outputContract?.reviewerRequired).toBe(
+      RELEASE_READINESS_RECIPE.finalArtifact.reviewerRequired,
+    );
+    expect(colony.tasks.map((t) => t.title)).toEqual([
+      "Build passes",
+      "Changelog generated",
+    ]);
+    expect(colony.seats).toHaveLength(
+      RELEASE_READINESS_RECIPE.specialists.length,
+    );
+  });
+
+  it("createColonyFromRecipe persists the Docs Audit output contract end-to-end", () => {
+    const acceptanceCriteria: AcceptanceCriterion[] = [
+      { id: "ac-1", text: "README is current" },
+      { id: "ac-2", text: "API docs cover public surface" },
+      { id: "ac-3", text: "No drift from code" },
+    ];
+
+    const colony = colonyStore.getState().createColonyFromRecipe({
+      title: "Docs Audit",
+      intent: "Docs Audit",
+      workItemId: "wi-docs-1",
+      recipeId: DOCS_AUDIT_RECIPE.id,
+      acceptanceCriteria,
+    });
+
+    expect(colony.recipeId).toBe(DOCS_AUDIT_RECIPE.id);
+    expect(colony.recipeVersion).toBe(DOCS_AUDIT_RECIPE.version);
+    expect(colony.outputContract?.artifactType).toBe(
+      DOCS_AUDIT_RECIPE.finalArtifact.artifactType,
+    );
+    expect(colony.outputContract?.format).toBe(
+      DOCS_AUDIT_RECIPE.finalArtifact.format,
+    );
+    expect(colony.outputContract?.requiredSections).toEqual(
+      DOCS_AUDIT_RECIPE.finalArtifact.requiredSections,
+    );
+    expect(colony.outputContract?.evidenceRequired).toBe(
+      DOCS_AUDIT_RECIPE.finalArtifact.evidenceRequired,
+    );
+    expect(colony.outputContract?.reviewerRequired).toBe(
+      DOCS_AUDIT_RECIPE.finalArtifact.reviewerRequired,
+    );
+    expect(colony.tasks.map((t) => t.title)).toEqual([
+      "README is current",
+      "API docs cover public surface",
+      "No drift from code",
+    ]);
+    expect(colony.seats).toHaveLength(DOCS_AUDIT_RECIPE.specialists.length);
   });
 });
