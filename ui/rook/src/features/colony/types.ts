@@ -124,6 +124,17 @@ export type ColonySeat = {
   lastUpdate?: string;
 };
 
+export type ColonyOutputContract = {
+  source: "recipe";
+  recipeId: string;
+  recipeVersion: string;
+  artifactType: "report" | "prd" | "strategy" | "checklist" | "audit";
+  format: "markdown" | "json" | "checklist";
+  requiredSections: string[];
+  evidenceRequired: boolean;
+  reviewerRequired: boolean;
+};
+
 export type ColonySession = {
   id: string;
   title: string;
@@ -131,6 +142,7 @@ export type ColonySession = {
   workItemId?: string;
   recipeId?: string;
   recipeVersion?: string;
+  outputContract?: ColonyOutputContract;
   lifecycleStatus?: ColonyLifecycleStatus;
   closedAt?: string;
   closedReason?: string;

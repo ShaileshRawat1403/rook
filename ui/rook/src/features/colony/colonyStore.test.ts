@@ -189,6 +189,68 @@ describe("colonyStore — WorkItem anchoring (v0.5 F1)", () => {
     expect(loaded).toHaveLength(1);
     expect(loaded[0]?.id).toBe("legacy-1");
     expect(loaded[0]?.workItemId).toBeUndefined();
+    expect(loaded[0]?.outputContract).toBeUndefined();
+  });
+});
+
+describe("colonyStore — output contract persistence (v0.6)", () => {
+  beforeEach(() => {
+    resetStore();
+    if (typeof window !== "undefined") {
+      window.localStorage.clear();
+    }
+  });
+
+  it("createColonyFromRecipe stores recipe.finalArtifact as the Colony output contract", () => {
+    const colony = colonyStore.getState().createColonyFromRecipe({
+      title: "Repo Review",
+      intent: "Repo Review",
+      workItemId: "wi-1",
+      recipeId: REPO_REVIEW_RECIPE.id,
+    });
+
+    expect(colony.outputContract).toBeDefined();
+    expect(colony.outputContract?.source).toBe("recipe");
+    expect(colony.outputContract?.recipeId).toBe(REPO_REVIEW_RECIPE.id);
+    expect(colony.outputContract?.recipeVersion).toBe(
+      REPO_REVIEW_RECIPE.version,
+    );
+    expect(colony.outputContract?.artifactType).toBe(
+      REPO_REVIEW_RECIPE.finalArtifact.artifactType,
+    );
+    expect(colony.outputContract?.format).toBe(
+      REPO_REVIEW_RECIPE.finalArtifact.format,
+    );
+    expect(colony.outputContract?.requiredSections).toEqual(
+      REPO_REVIEW_RECIPE.finalArtifact.requiredSections,
+    );
+    expect(colony.outputContract?.evidenceRequired).toBe(
+      REPO_REVIEW_RECIPE.finalArtifact.evidenceRequired,
+    );
+    expect(colony.outputContract?.reviewerRequired).toBe(
+      REPO_REVIEW_RECIPE.finalArtifact.reviewerRequired,
+    );
+  });
+
+  it("stores a copy of requiredSections, not a reference to recipe.finalArtifact", () => {
+    const colony = colonyStore.getState().createColonyFromRecipe({
+      title: "Repo Review",
+      intent: "Repo Review",
+      workItemId: "wi-1",
+      recipeId: REPO_REVIEW_RECIPE.id,
+    });
+
+    expect(colony.outputContract?.requiredSections).not.toBe(
+      REPO_REVIEW_RECIPE.finalArtifact.requiredSections,
+    );
+  });
+
+  it("legacy createColony does not assign an output contract", () => {
+    const colony = colonyStore
+      .getState()
+      .createColony("Generic Colony", "Task-focused Colony");
+
+    expect(colony.outputContract).toBeUndefined();
   });
 });
 

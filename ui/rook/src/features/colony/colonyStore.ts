@@ -12,6 +12,7 @@ import type {
   ColonyScope,
   ColonyMemory,
   ColonyArtifact,
+  ColonyOutputContract,
 } from "./types";
 import {
   loadPersistedColonyState,
@@ -515,6 +516,16 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       createdAt: now,
       updatedAt: now,
     }));
+    const outputContract: ColonyOutputContract = {
+      source: "recipe",
+      recipeId: recipe.id,
+      recipeVersion: recipe.version,
+      artifactType: recipe.finalArtifact.artifactType,
+      format: recipe.finalArtifact.format,
+      requiredSections: [...recipe.finalArtifact.requiredSections],
+      evidenceRequired: recipe.finalArtifact.evidenceRequired,
+      reviewerRequired: recipe.finalArtifact.reviewerRequired,
+    };
     const colony: ColonySession = {
       id,
       title,
@@ -522,6 +533,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       workItemId,
       recipeId: recipe.id,
       recipeVersion: recipe.version,
+      outputContract,
       lifecycleStatus: "active",
       seats,
       tasks,
