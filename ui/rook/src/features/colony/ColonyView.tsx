@@ -16,6 +16,7 @@ import { ColonyTaskBoard } from "./ColonyTaskBoard";
 import { ColonyHandoffPanel } from "./ColonyHandoffPanel";
 import { ColonyMemoryPanel } from "./ColonyMemoryPanel";
 import { ColonyArtifactPanel } from "./ColonyArtifactPanel";
+import { ColonyOutputReadinessPanel } from "./ColonyOutputReadinessPanel";
 import { ColonyReadinessPanel } from "./ColonyReadinessPanel";
 import { SwarmPanel } from "./swarm/SwarmPanel";
 import { useChatSessionStore } from "@/features/chat/stores/chatSessionStore";
@@ -831,37 +832,40 @@ Do Not:
 
       case "artifacts":
         return (
-          <ColonyArtifactPanel
-            colonyId={activeColony.id}
-            artifacts={activeColony.artifacts ?? []}
-            tasks={activeColony.tasks.map((t) => ({
-              id: t.id,
-              title: t.title,
-            }))}
-            handoffs={activeColony.handoffs.map((h) => ({
-              id: h.id,
-              summary: h.summary,
-            }))}
-            seats={activeColony.seats.map((s) => ({
-              id: s.id,
-              label: s.label,
-            }))}
-            onCreate={(artifact) => {
-              if (!activeColonyId) return;
-              createArtifact(activeColonyId, artifact);
-            }}
-            onDelete={(artifactId) => {
-              if (!activeColonyId) return;
-              deleteArtifact(activeColonyId, artifactId);
-            }}
-            onUpdate={(artifactId, patch) => {
-              if (!activeColonyId) return;
-              colonyStore
-                .getState()
-                .updateArtifact(activeColonyId, artifactId, patch);
-            }}
-            onExtractFromSeat={handleExtractFromSeat}
-          />
+          <div className="flex flex-1 flex-col gap-4">
+            <ColonyOutputReadinessPanel colony={activeColony} />
+            <ColonyArtifactPanel
+              colonyId={activeColony.id}
+              artifacts={activeColony.artifacts ?? []}
+              tasks={activeColony.tasks.map((t) => ({
+                id: t.id,
+                title: t.title,
+              }))}
+              handoffs={activeColony.handoffs.map((h) => ({
+                id: h.id,
+                summary: h.summary,
+              }))}
+              seats={activeColony.seats.map((s) => ({
+                id: s.id,
+                label: s.label,
+              }))}
+              onCreate={(artifact) => {
+                if (!activeColonyId) return;
+                createArtifact(activeColonyId, artifact);
+              }}
+              onDelete={(artifactId) => {
+                if (!activeColonyId) return;
+                deleteArtifact(activeColonyId, artifactId);
+              }}
+              onUpdate={(artifactId, patch) => {
+                if (!activeColonyId) return;
+                colonyStore
+                  .getState()
+                  .updateArtifact(activeColonyId, artifactId, patch);
+              }}
+              onExtractFromSeat={handleExtractFromSeat}
+            />
+          </div>
         );
 
       case "activity":
