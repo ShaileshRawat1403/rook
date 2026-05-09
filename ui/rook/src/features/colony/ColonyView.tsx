@@ -9,6 +9,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useColonyStore, colonyStore, isColonyClosed } from "./colonyStore";
+import { getColonyOutputReadiness } from "./outputReadiness";
 import { getConfiguredSentinelMode } from "@/shared/api/sentinel";
 import { ColonyTranscript } from "./ColonyTranscript";
 import { ColonyRecipeEntry } from "./ColonyRecipeEntry";
@@ -131,10 +132,35 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     [createColony],
   );
 
+  const [showIncompleteWarning, setShowIncompleteWarning] = useState(false);
+
+  useEffect(() => {
+    setShowIncompleteWarning(false);
+  }, [activeColonyId]);
+
   const handleCloseColony = useCallback(() => {
-    if (!activeColonyId) return;
-    closeColony(activeColonyId);
-  }, [activeColonyId, closeColony]);
+    if (!activeColony || !activeColonyId) return;
+    const readiness = getColonyOutputReadiness(activeColony);
+    if (readiness.status === "ready") {
+      closeColony(activeColonyId);
+      return;
+    }
+    setShowIncompleteWarning(true);
+  }, [activeColony, activeColonyId, closeColony]);
+
+  const handleConfirmClose = useCallback(() => {
+    if (!activeColony || !activeColonyId) return;
+    const readiness = getColonyOutputReadiness(activeColony);
+    closeColony(
+      activeColonyId,
+      `Closed with incomplete output contract: ${readiness.status}`,
+    );
+    setShowIncompleteWarning(false);
+  }, [activeColony, activeColonyId, closeColony]);
+
+  const handleCancelClose = useCallback(() => {
+    setShowIncompleteWarning(false);
+  }, []);
 
   const colonyClosed = isColonyClosed(activeColony);
 
@@ -963,6 +989,66 @@ Do Not:
             >
               This Colony is closed. Work items, handoffs, and artifacts are
               preserved for review.
+            </div>
+          )}
+          {showIncompleteWarning && !colonyClosed && activeColony && (
+            <div
+              role="alertdialog"
+              aria-label="Incomplete output contract warning"
+              className="mb-4 shrink-0 rounded-lg border border-border bg-card px-5 py-4 text-sm"
+            >
+              <p className="font-medium">
+                This Colony does not fully satisfy its output contract.
+              </p>
+              <p className="mt-1 text-muted-foreground">
+                You can still close it, but the audit trail will record that it
+                was closed with unresolved output items.
+              </p>
+              {(() => {
+                const readiness = getColonyOutputReadiness(activeColony);
+                const statusLabel =
+                  readiness.status === "not_ready"
+                    ? "Not ready"
+                    : "Partially ready";
+                const missingSections = readiness.requiredSections.filter(
+                  (s) => !s.present,
+                ).length;
+                return (
+                  <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+                    <dt className="text-muted-foreground">Readiness</dt>
+                    <dd className="font-medium">{statusLabel}</dd>
+                    <dt className="text-muted-foreground">Tasks</dt>
+                    <dd className="font-medium">
+                      {readiness.taskCompletion.done} /{" "}
+                      {readiness.taskCompletion.total} done
+                    </dd>
+                    {readiness.requiredSections.length > 0 && (
+                      <>
+                        <dt className="text-muted-foreground">
+                          Missing sections
+                        </dt>
+                        <dd className="font-medium">{missingSections}</dd>
+                      </>
+                    )}
+                  </dl>
+                );
+              })()}
+              <div className="mt-4 flex flex-wrap justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={handleCancelClose}
+                  className="rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmClose}
+                  className="rounded-md bg-foreground px-3 py-1.5 text-sm font-medium text-background hover:bg-foreground/90"
+                >
+                  Close Anyway
+                </button>
+              </div>
             </div>
           )}
           <div className="mb-4 shrink-0">{renderWorkspaceBrief()}</div>

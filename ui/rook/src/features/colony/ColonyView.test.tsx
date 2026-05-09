@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAgentStore } from "@/features/agents/stores/agentStore";
@@ -200,9 +200,11 @@ describe("ColonyView adoption workflow", () => {
     ).toBe(false);
   });
 
-  it("clicking Close Colony reveals the closed state in the UI", async () => {
+  it("warns and then closes when an incomplete Colony is closed via Close Anyway", async () => {
     const user = userEvent.setup();
-    colonyStore.getState().createColony("Active Colony", "Task-focused Colony");
+    const colony = colonyStore
+      .getState()
+      .createColony("Active Colony", "Task-focused Colony");
 
     render(<ColonyView />);
 
@@ -211,14 +213,114 @@ describe("ColonyView adoption workflow", () => {
     });
     await user.click(closeButton);
 
+    const warning = await screen.findByRole("alertdialog", {
+      name: /Incomplete output contract warning/i,
+    });
+    expect(warning).toHaveTextContent(
+      /does not fully satisfy its output contract/i,
+    );
+    expect(within(warning).getByRole("button", { name: /Cancel/i }));
+    const closeAnyway = within(warning).getByRole("button", {
+      name: /Close Anyway/i,
+    });
+
+    await user.click(closeAnyway);
+
     expect(
       screen.getByRole("status", { name: /Colony closed notice/i }),
     ).toHaveTextContent(/preserved for review/i);
     expect(
       screen.getByLabelText(/Colony status/i, { selector: "span" }),
     ).toHaveTextContent(/Closed/i);
+
+    const stored = colonyStore
+      .getState()
+      .colonies.find((c) => c.id === colony.id);
+    expect(stored?.lifecycleStatus).toBe("closed");
+    expect(stored?.closedReason).toMatch(/incomplete output contract/i);
     expect(
-      screen.queryByRole("button", { name: /Close Colony/i }),
+      colonyStore.getState().events.some((e) => e.type === "colony_closed"),
+    ).toBe(true);
+  });
+
+  it("Cancel on the incomplete warning leaves the Colony active", async () => {
+    const user = userEvent.setup();
+    const colony = colonyStore
+      .getState()
+      .createColony("Active Colony", "Task-focused Colony");
+
+    render(<ColonyView />);
+
+    await user.click(
+      await screen.findByRole("button", { name: /Close Colony/i }),
+    );
+    const warning = await screen.findByRole("alertdialog", {
+      name: /Incomplete output contract warning/i,
+    });
+    await user.click(within(warning).getByRole("button", { name: /Cancel/i }));
+
+    expect(
+      screen.queryByRole("alertdialog", {
+        name: /Incomplete output contract warning/i,
+      }),
     ).not.toBeInTheDocument();
+    const stored = colonyStore
+      .getState()
+      .colonies.find((c) => c.id === colony.id);
+    expect(stored?.lifecycleStatus).toBe("active");
+    expect(stored?.closedAt).toBeUndefined();
+  });
+
+  it("Ready Colonies close directly without showing the incomplete warning", async () => {
+    const user = userEvent.setup();
+    const colony = colonyStore
+      .getState()
+      .createColony("Ready Colony", "Task-focused Colony");
+    colonyStore.setState((state) => ({
+      colonies: state.colonies.map((c) =>
+        c.id !== colony.id
+          ? c
+          : {
+              ...c,
+              outputContract: {
+                source: "recipe",
+                recipeId: "repo-review",
+                recipeVersion: "1.0.0",
+                artifactType: "report",
+                format: "markdown",
+                requiredSections: [],
+                evidenceRequired: false,
+                reviewerRequired: false,
+              },
+              artifacts: [
+                {
+                  id: "a-1",
+                  title: "Summary",
+                  kind: "review",
+                  content: "All good.",
+                  createdAt: "2026-01-01T00:00:00.000Z",
+                  updatedAt: "2026-01-01T00:00:00.000Z",
+                },
+              ],
+            },
+      ),
+    }));
+
+    render(<ColonyView />);
+
+    await user.click(
+      await screen.findByRole("button", { name: /Close Colony/i }),
+    );
+
+    expect(
+      screen.queryByRole("alertdialog", {
+        name: /Incomplete output contract warning/i,
+      }),
+    ).not.toBeInTheDocument();
+    const stored = colonyStore
+      .getState()
+      .colonies.find((c) => c.id === colony.id);
+    expect(stored?.lifecycleStatus).toBe("closed");
+    expect(stored?.closedReason).toBeUndefined();
   });
 });
