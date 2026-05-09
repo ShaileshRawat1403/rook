@@ -135,6 +135,27 @@ export type ColonyOutputContract = {
   reviewerRequired: boolean;
 };
 
+export type ColonyOutputReadinessStatus =
+  | "not_ready"
+  | "partially_ready"
+  | "ready";
+
+export type ColonyOutputReadiness = {
+  hasOutputContract: boolean;
+  requiredArtifactPresent: boolean;
+  requiredSections: {
+    section: string;
+    present: boolean;
+  }[];
+  evidenceSatisfied: boolean;
+  reviewerSatisfied: boolean;
+  taskCompletion: {
+    total: number;
+    done: number;
+  };
+  status: ColonyOutputReadinessStatus;
+};
+
 export type ColonySession = {
   id: string;
   title: string;
