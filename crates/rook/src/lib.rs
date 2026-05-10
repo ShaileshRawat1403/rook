@@ -34,6 +34,7 @@ pub mod recipe_deeplink;
 pub mod rook_apps;
 pub mod scheduler;
 pub mod scheduler_trait;
+pub mod sdlc;
 pub mod security;
 pub mod session;
 pub mod session_context;
