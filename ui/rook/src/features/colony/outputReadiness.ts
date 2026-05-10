@@ -33,10 +33,7 @@ function matchesArtifactType(
   return ARTIFACT_TYPE_TO_KINDS[artifactType].includes(artifact.kind);
 }
 
-function sectionPresent(
-  section: string,
-  artifacts: ColonyArtifact[],
-): boolean {
+function sectionPresent(section: string, artifacts: ColonyArtifact[]): boolean {
   const needle = section.toLowerCase();
   return artifacts.some((a) => a.content.toLowerCase().includes(needle));
 }
@@ -48,8 +45,18 @@ function evidencePresent(artifacts: ColonyArtifact[]): boolean {
   });
 }
 
-function reviewerApproved(colony: ColonySession): boolean {
+function hasApprovedHandoff(colony: ColonySession): boolean {
   return colony.handoffs.some((h) => h.reviewStatus === "approved");
+}
+
+function reviewerApproved(colony: ColonySession): boolean {
+  if (colony.outputReview?.status === "changes_requested") {
+    return false;
+  }
+
+  return (
+    colony.outputReview?.status === "approved" || hasApprovedHandoff(colony)
+  );
 }
 
 export function getColonyOutputReadiness(

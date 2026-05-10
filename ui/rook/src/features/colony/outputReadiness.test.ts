@@ -206,4 +206,65 @@ describe("getColonyOutputReadiness (v0.6)", () => {
 
     expect(r.reviewerSatisfied).toBe(true);
   });
+
+  it("treats an approved output review as a reviewer-satisfied signal", () => {
+    const colony = makeColony({
+      outputContract: makeContract({ reviewerRequired: true }),
+      outputReview: {
+        status: "approved",
+        reviewedAt: "2026-01-01T00:00:00.000Z",
+      },
+    });
+
+    const r = getColonyOutputReadiness(colony);
+
+    expect(r.reviewerSatisfied).toBe(true);
+  });
+
+  it("preserves approved handoff compatibility without output review", () => {
+    const approvedHandoff: ColonyHandoff = {
+      id: "h-1",
+      fromSeatId: "s-1",
+      toSeatId: "s-2",
+      summary: "x",
+      status: "ready",
+      reviewStatus: "approved",
+      createdAt: "2026-01-01T00:00:00.000Z",
+      updatedAt: "2026-01-01T00:00:00.000Z",
+    };
+    const colony = makeColony({
+      outputContract: makeContract({ reviewerRequired: true }),
+      handoffs: [approvedHandoff],
+    });
+
+    const r = getColonyOutputReadiness(colony);
+
+    expect(r.reviewerSatisfied).toBe(true);
+  });
+
+  it("lets changes_requested output review override an approved handoff", () => {
+    const approvedHandoff: ColonyHandoff = {
+      id: "h-1",
+      fromSeatId: "s-1",
+      toSeatId: "s-2",
+      summary: "x",
+      status: "ready",
+      reviewStatus: "approved",
+      createdAt: "2026-01-01T00:00:00.000Z",
+      updatedAt: "2026-01-01T00:00:00.000Z",
+    };
+    const colony = makeColony({
+      outputContract: makeContract({ reviewerRequired: true }),
+      outputReview: {
+        status: "changes_requested",
+        reviewedAt: "2026-01-01T00:00:00.000Z",
+      },
+      handoffs: [approvedHandoff],
+    });
+
+    const r = getColonyOutputReadiness(colony);
+
+    expect(r.reviewerSatisfied).toBe(false);
+    expect(r.status).not.toBe("ready");
+  });
 });
