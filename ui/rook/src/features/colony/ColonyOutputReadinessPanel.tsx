@@ -1,7 +1,7 @@
-import type {
-  ColonyOutputReadinessStatus,
-  ColonySession,
-} from "./types";
+import { Check, RotateCcw } from "lucide-react";
+import { Button } from "@/shared/ui/button";
+import { isColonyClosed, useColonyStore } from "./colonyStore";
+import type { ColonyOutputReadinessStatus, ColonySession } from "./types";
 import { getColonyOutputReadiness } from "./outputReadiness";
 
 interface ColonyOutputReadinessPanelProps {
@@ -26,6 +26,16 @@ export function ColonyOutputReadinessPanel({
 }: ColonyOutputReadinessPanelProps) {
   const readiness = getColonyOutputReadiness(colony);
   const contract = colony.outputContract;
+  const markOutputReviewed = useColonyStore(
+    (state) => state.markOutputReviewed,
+  );
+  const requestOutputChanges = useColonyStore(
+    (state) => state.requestOutputChanges,
+  );
+  const outputReview = colony.outputReview;
+  const colonyClosed = isColonyClosed(colony);
+  const showReviewActions =
+    contract?.reviewerRequired && !outputReview && !colonyClosed;
 
   return (
     <section
@@ -56,6 +66,44 @@ export function ColonyOutputReadinessPanel({
             </dd>
           </dl>
 
+          {contract.reviewerRequired && (
+            <div className="mt-4 border-t border-border pt-3 text-sm">
+              <p className="font-medium">Reviewer approval required.</p>
+              {outputReview?.status === "approved" && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Output reviewed.
+                </p>
+              )}
+              {outputReview?.status === "changes_requested" && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Changes requested.
+                </p>
+              )}
+              {showReviewActions && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => markOutputReviewed(colony.id)}
+                    leftIcon={<Check />}
+                  >
+                    Mark Output Reviewed
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => requestOutputChanges(colony.id)}
+                    leftIcon={<RotateCcw />}
+                  >
+                    Request Changes
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+
           {readiness.requiredSections.length > 0 && (
             <div className="mt-4">
               <div className="text-xs uppercase tracking-wide text-muted-foreground">
@@ -69,9 +117,7 @@ export function ColonyOutputReadinessPanel({
                     data-section-present={s.present ? "true" : "false"}
                   >
                     <span aria-hidden="true">{s.present ? "✓" : "○"}</span>
-                    <span
-                      className={s.present ? "" : "text-muted-foreground"}
-                    >
+                    <span className={s.present ? "" : "text-muted-foreground"}>
                       {s.section}
                     </span>
                     <span className="sr-only">
@@ -88,6 +134,7 @@ export function ColonyOutputReadinessPanel({
       <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-border pt-3 text-sm">
         <span
           aria-label="Readiness status"
+          role="status"
           className="rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium"
         >
           {STATUS_LABELS[readiness.status]}
