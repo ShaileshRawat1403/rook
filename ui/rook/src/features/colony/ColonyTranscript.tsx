@@ -13,6 +13,8 @@ const ROLE_ICONS = {
 const EVENT_TYPE_LABELS: Record<ColonyEventType, string> = {
   colony_created: "Colony created",
   colony_closed: "Colony closed",
+  output_reviewed: "Output reviewed",
+  output_changes_requested: "Output changes requested",
   scope_updated: "Scope updated",
   seat_linked: "Session linked",
   seat_unlinked: "Session unlinked",

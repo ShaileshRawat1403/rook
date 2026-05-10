@@ -13,6 +13,7 @@ import type {
   ColonyMemory,
   ColonyArtifact,
   ColonyOutputContract,
+  ColonyOutputReview,
 } from "./types";
 import {
   loadPersistedColonyState,
@@ -50,6 +51,8 @@ type ColonyStore = ColonyStoreState & {
     acceptanceCriteria?: AcceptanceCriterion[];
   }) => ColonySession;
   closeColony: (colonyId: string, reason?: string) => void;
+  markOutputReviewed: (colonyId: string, note?: string) => void;
+  requestOutputChanges: (colonyId: string, note?: string) => void;
   updateColony: (colonyId: string, updates: Partial<ColonySession>) => void;
   deleteColony: (colonyId: string) => void;
   setSentinelMode: (mode: "off" | "dax_open") => void;
@@ -586,6 +589,74 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
           type: "colony_closed",
           timestamp: now,
           details: reason ?? colony.title,
+        },
+      ],
+    }));
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
+  },
+
+  markOutputReviewed: (colonyId, note) => {
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    if (!colony || isColonyClosed(colony)) return;
+    const now = new Date().toISOString();
+    const review: ColonyOutputReview = {
+      status: "approved",
+      reviewedAt: now,
+      note,
+    };
+    set((state) => ({
+      colonies: state.colonies.map((c) =>
+        c.id !== colonyId
+          ? c
+          : { ...c, outputReview: review, updatedAt: now },
+      ),
+      events: [
+        ...state.events,
+        {
+          id: crypto.randomUUID(),
+          type: "output_reviewed",
+          timestamp: now,
+          details: note ?? colony.title,
+        },
+      ],
+    }));
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
+  },
+
+  requestOutputChanges: (colonyId, note) => {
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    if (!colony || isColonyClosed(colony)) return;
+    const now = new Date().toISOString();
+    const review: ColonyOutputReview = {
+      status: "changes_requested",
+      reviewedAt: now,
+      note,
+    };
+    set((state) => ({
+      colonies: state.colonies.map((c) =>
+        c.id !== colonyId
+          ? c
+          : { ...c, outputReview: review, updatedAt: now },
+      ),
+      events: [
+        ...state.events,
+        {
+          id: crypto.randomUUID(),
+          type: "output_changes_requested",
+          timestamp: now,
+          details: note ?? colony.title,
         },
       ],
     }));

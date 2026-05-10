@@ -135,6 +135,14 @@ export type ColonyOutputContract = {
   reviewerRequired: boolean;
 };
 
+export type ColonyOutputReviewStatus = "approved" | "changes_requested";
+
+export type ColonyOutputReview = {
+  status: ColonyOutputReviewStatus;
+  reviewedAt: string;
+  note?: string;
+};
+
 export type ColonyOutputReadinessStatus =
   | "not_ready"
   | "partially_ready"
@@ -164,6 +172,7 @@ export type ColonySession = {
   recipeId?: string;
   recipeVersion?: string;
   outputContract?: ColonyOutputContract;
+  outputReview?: ColonyOutputReview;
   lifecycleStatus?: ColonyLifecycleStatus;
   closedAt?: string;
   closedReason?: string;
@@ -183,6 +192,8 @@ export type ColonySession = {
 export type ColonyEventType =
   | "colony_created"
   | "colony_closed"
+  | "output_reviewed"
+  | "output_changes_requested"
   | "scope_updated"
   | "seat_linked"
   | "seat_unlinked"

@@ -489,3 +489,140 @@ describe("colonyStore — additional recipe contract validation (v0.7)", () => {
     expect(colony.seats).toHaveLength(DOCS_AUDIT_RECIPE.specialists.length);
   });
 });
+
+describe("colonyStore — output review state (v0.8)", () => {
+  beforeEach(() => {
+    resetStore();
+    if (typeof window !== "undefined") {
+      window.localStorage.clear();
+    }
+  });
+
+  it("markOutputReviewed stores an approved outputReview", () => {
+    const colony = colonyStore.getState().createColony("c", "Task");
+    colonyStore.getState().markOutputReviewed(colony.id);
+
+    const stored = colonyStore
+      .getState()
+      .colonies.find((c) => c.id === colony.id);
+    expect(stored?.outputReview?.status).toBe("approved");
+    expect(stored?.outputReview?.reviewedAt).toBeTruthy();
+  });
+
+  it("markOutputReviewed persists an optional note", () => {
+    const colony = colonyStore.getState().createColony("c", "Task");
+    colonyStore.getState().markOutputReviewed(colony.id, "lgtm");
+
+    const stored = colonyStore
+      .getState()
+      .colonies.find((c) => c.id === colony.id);
+    expect(stored?.outputReview?.note).toBe("lgtm");
+  });
+
+  it("markOutputReviewed appends an output_reviewed audit event", () => {
+    const colony = colonyStore.getState().createColony("c", "Task");
+    colonyStore.getState().markOutputReviewed(colony.id);
+
+    const types = colonyStore.getState().events.map((e) => e.type);
+    expect(types).toContain("output_reviewed");
+  });
+
+  it("requestOutputChanges stores a changes_requested outputReview", () => {
+    const colony = colonyStore.getState().createColony("c", "Task");
+    colonyStore.getState().requestOutputChanges(colony.id);
+
+    const stored = colonyStore
+      .getState()
+      .colonies.find((c) => c.id === colony.id);
+    expect(stored?.outputReview?.status).toBe("changes_requested");
+    expect(stored?.outputReview?.reviewedAt).toBeTruthy();
+  });
+
+  it("requestOutputChanges persists an optional note", () => {
+    const colony = colonyStore.getState().createColony("c", "Task");
+    colonyStore.getState().requestOutputChanges(colony.id, "missing risks");
+
+    const stored = colonyStore
+      .getState()
+      .colonies.find((c) => c.id === colony.id);
+    expect(stored?.outputReview?.note).toBe("missing risks");
+  });
+
+  it("requestOutputChanges appends an output_changes_requested audit event", () => {
+    const colony = colonyStore.getState().createColony("c", "Task");
+    colonyStore.getState().requestOutputChanges(colony.id);
+
+    const types = colonyStore.getState().events.map((e) => e.type);
+    expect(types).toContain("output_changes_requested");
+  });
+
+  it("closed Colony does not allow markOutputReviewed", () => {
+    const colony = colonyStore.getState().createColony("c", "Task");
+    colonyStore.getState().closeColony(colony.id);
+
+    colonyStore.getState().markOutputReviewed(colony.id, "should not apply");
+
+    const stored = colonyStore
+      .getState()
+      .colonies.find((c) => c.id === colony.id);
+    expect(stored?.outputReview).toBeUndefined();
+    expect(
+      colonyStore.getState().events.some((e) => e.type === "output_reviewed"),
+    ).toBe(false);
+  });
+
+  it("closed Colony does not allow requestOutputChanges", () => {
+    const colony = colonyStore.getState().createColony("c", "Task");
+    colonyStore.getState().closeColony(colony.id);
+
+    colonyStore
+      .getState()
+      .requestOutputChanges(colony.id, "should not apply");
+
+    const stored = colonyStore
+      .getState()
+      .colonies.find((c) => c.id === colony.id);
+    expect(stored?.outputReview).toBeUndefined();
+    expect(
+      colonyStore
+        .getState()
+        .events.some((e) => e.type === "output_changes_requested"),
+    ).toBe(false);
+  });
+
+  it("loads pre-v0.8 persisted Colonies (no outputReview field) without dropping them", () => {
+    const legacyState: PersistedColonyState = {
+      colonies: [
+        {
+          id: "legacy-no-review",
+          title: "Pre-v0.8 Colony",
+          intent: "task",
+          seats: [],
+          tasks: [],
+          handoffs: [],
+          sentinelMode: "off",
+          createdAt: "2025-01-01T00:00:00.000Z",
+          updatedAt: "2025-01-01T00:00:00.000Z",
+        },
+      ],
+      activeColonyId: "legacy-no-review",
+      sentinelMode: "off",
+      events: [],
+    };
+
+    colonyStore.setState({
+      colonies: legacyState.colonies,
+      activeColonyId: legacyState.activeColonyId,
+      sentinelMode: legacyState.sentinelMode,
+      events: legacyState.events,
+      preparedHandoff: null,
+    });
+
+    const loaded = colonyStore.getState().colonies;
+    expect(loaded).toHaveLength(1);
+    expect(loaded[0]?.outputReview).toBeUndefined();
+    expect(() =>
+      colonyStore.getState().markOutputReviewed("legacy-no-review"),
+    ).not.toThrow();
+  });
+});
