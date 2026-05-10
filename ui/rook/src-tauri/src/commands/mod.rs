@@ -12,6 +12,7 @@ pub mod notifications;
 pub mod open_actions;
 pub mod path_resolver;
 pub mod projects;
+pub mod sdlc;
 pub mod sentinel;
 pub mod skills;
 pub mod system;

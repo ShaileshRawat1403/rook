@@ -182,6 +182,7 @@ pub fn run() {
             commands::agent_setup::authenticate_agent,
             commands::sentinel::get_sentinel_mode,
             commands::sentinel::sentinel_evaluate,
+            commands::sdlc::verify_sdlc_repo,
             commands::path_resolver::resolve_path,
             commands::system::get_home_dir,
             commands::system::save_exported_session_file,
