@@ -5,6 +5,12 @@ use rook_core::sdlc::{verify_repo, VerificationReport};
 pub(crate) async fn verify_sdlc_repo_inner(
     repo_root: PathBuf,
 ) -> anyhow::Result<VerificationReport> {
+    let repo_root = repo_root.canonicalize()?;
+
+    if !repo_root.is_dir() {
+        anyhow::bail!("repository path must be a directory");
+    }
+
     verify_repo(&repo_root).await
 }
 
@@ -55,6 +61,21 @@ mod tests {
             .expect_err("invalid path should fail");
 
         assert!(error.starts_with("Unable to verify SDLC repository: "));
+        assert!(!error.contains("command"));
+    }
+
+    #[tokio::test]
+    async fn file_path_returns_safe_error() {
+        let temp_dir = tempfile::tempdir().expect("tempdir");
+        let file_path = temp_dir.path().join("Cargo.toml");
+        fs::write(&file_path, "[workspace]\nmembers = []\n").expect("write Cargo.toml");
+
+        let error = verify_sdlc_repo(file_path.display().to_string())
+            .await
+            .expect_err("file path should fail");
+
+        assert!(error.starts_with("Unable to verify SDLC repository: "));
+        assert!(error.contains("repository path must be a directory"));
         assert!(!error.contains("command"));
     }
 }
