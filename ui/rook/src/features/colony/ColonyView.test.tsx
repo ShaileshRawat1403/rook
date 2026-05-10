@@ -4,8 +4,14 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAgentStore } from "@/features/agents/stores/agentStore";
 import { useChatSessionStore } from "@/features/chat/stores/chatSessionStore";
 import { useChatStore } from "@/features/chat/stores/chatStore";
+import { useWorkItemStore } from "@/features/work-items/stores/workItemStore";
+import type { WorkItem } from "@/features/work-items/types";
 import { ColonyView } from "./ColonyView";
 import { colonyStore } from "./colonyStore";
+import {
+  DOCS_AUDIT_RECIPE,
+  RELEASE_READINESS_RECIPE,
+} from "./swarm/recipes";
 
 vi.mock("@/shared/api/sentinel", () => ({
   getConfiguredSentinelMode: vi.fn().mockResolvedValue("off"),
@@ -42,6 +48,33 @@ function resetStores() {
     scrollTargetMessageBySession: {},
   });
   useAgentStore.setState({ selectedProvider: "rook" });
+  useWorkItemStore.setState({
+    items: [],
+    isLoading: false,
+    error: null,
+    fetchAll: async () => {},
+  });
+}
+
+function seedWorkItem(overrides: Partial<WorkItem> = {}): WorkItem {
+  const workItem: WorkItem = {
+    id: "wi-int-1",
+    key: "JIRA-900",
+    title: "Integration test work item",
+    source: "manual",
+    acceptanceCriteria: [
+      { id: "ac-1", text: "First criterion" },
+      { id: "ac-2", text: "Second criterion" },
+    ],
+    createdAt: "2026-05-10T00:00:00.000Z",
+    updatedAt: "2026-05-10T00:00:00.000Z",
+    ...overrides,
+  };
+  useWorkItemStore.setState({
+    items: [workItem],
+    fetchAll: async () => {},
+  });
+  return workItem;
 }
 
 function seedHandoff({ linkWorker = false }: { linkWorker?: boolean } = {}) {
@@ -322,5 +355,71 @@ describe("ColonyView adoption workflow", () => {
       .colonies.find((c) => c.id === colony.id);
     expect(stored?.lifecycleStatus).toBe("closed");
     expect(stored?.closedReason).toBeUndefined();
+  });
+
+  it("creates a Documentation Audit Colony from the empty state through ColonyView (v0.7)", async () => {
+    const user = userEvent.setup();
+    const workItem = seedWorkItem({
+      id: "wi-docs-int",
+      title: "Refresh API docs",
+      acceptanceCriteria: [
+        { id: "ac-1", text: "README is current" },
+        { id: "ac-2", text: "API docs cover public surface" },
+      ],
+    });
+
+    render(<ColonyView />);
+
+    await user.click(
+      await screen.findByRole("radio", {
+        name: new RegExp(DOCS_AUDIT_RECIPE.name, "i"),
+      }),
+    );
+    await user.click(screen.getByRole("button", { name: /Create Colony/i }));
+
+    const state = colonyStore.getState();
+    const colony = state.colonies.find((c) => c.id === state.activeColonyId);
+    expect(colony?.workItemId).toBe(workItem.id);
+    expect(colony?.recipeId).toBe(DOCS_AUDIT_RECIPE.id);
+    expect(colony?.outputContract?.artifactType).toBe("audit");
+    expect(colony?.tasks.map((t) => t.title)).toEqual([
+      "README is current",
+      "API docs cover public surface",
+    ]);
+    expect(colony?.seats).toHaveLength(DOCS_AUDIT_RECIPE.specialists.length);
+  });
+
+  it("creates a Release Readiness Colony from the empty state through ColonyView (v0.7)", async () => {
+    const user = userEvent.setup();
+    const workItem = seedWorkItem({
+      id: "wi-rel-int",
+      title: "Cut release 4.3",
+      acceptanceCriteria: [
+        { id: "ac-1", text: "Build passes" },
+        { id: "ac-2", text: "Changelog generated" },
+      ],
+    });
+
+    render(<ColonyView />);
+
+    await user.click(
+      await screen.findByRole("radio", {
+        name: new RegExp(RELEASE_READINESS_RECIPE.name, "i"),
+      }),
+    );
+    await user.click(screen.getByRole("button", { name: /Create Colony/i }));
+
+    const state = colonyStore.getState();
+    const colony = state.colonies.find((c) => c.id === state.activeColonyId);
+    expect(colony?.workItemId).toBe(workItem.id);
+    expect(colony?.recipeId).toBe(RELEASE_READINESS_RECIPE.id);
+    expect(colony?.outputContract?.artifactType).toBe("checklist");
+    expect(colony?.tasks.map((t) => t.title)).toEqual([
+      "Build passes",
+      "Changelog generated",
+    ]);
+    expect(colony?.seats).toHaveLength(
+      RELEASE_READINESS_RECIPE.specialists.length,
+    );
   });
 });
