@@ -131,10 +131,15 @@
     "appearance": "Appearance",
     "chats": "Chats",
     "doctor": "Doctor",
+    "verification": "Verification",
     "general": "General",
     "projects": "Projects",
     "extensions": "Extensions",
     "providers": "Providers"
+  },
+  "verification": {
+    "description": "Run explicit local SDLC checks and inspect the returned evidence report.",
+    "title": "SDLC Verification"
   },
   "projects": {
     "description": "Manage your projects.",

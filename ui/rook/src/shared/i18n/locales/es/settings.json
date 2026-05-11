@@ -131,10 +131,15 @@
     "appearance": "Apariencia",
     "chats": "Chats",
     "doctor": "Diagnóstico",
+    "verification": "Verificación",
     "general": "General",
     "projects": "Proyectos",
     "extensions": "Extensiones",
     "providers": "Proveedores"
+  },
+  "verification": {
+    "description": "Ejecuta comprobaciones SDLC locales explícitas e inspecciona el informe de evidencia devuelto.",
+    "title": "Verificación SDLC"
   },
   "projects": {
     "description": "Administra tus proyectos.",

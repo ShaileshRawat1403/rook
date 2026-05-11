@@ -26,6 +26,7 @@ import {
   FolderKanban,
   Info,
   MessageSquare,
+  ShieldCheck,
   Stethoscope,
   X,
 } from "lucide-react";
@@ -34,6 +35,7 @@ import { AppearanceSettings } from "./AppearanceSettings";
 import { DoctorSettings } from "./DoctorSettings";
 import { ProvidersSettings } from "./ProvidersSettings";
 import { ExtensionsSettings } from "@/features/extensions/ui/ExtensionsSettings";
+import { SdlcVerificationPanel } from "@/features/sdlc/SdlcVerificationPanel";
 import {
   listArchivedProjects,
   restoreProject,
@@ -54,6 +56,7 @@ const NAV_ITEMS = [
   { id: "projects", labelKey: "nav.projects", icon: FolderKanban },
   { id: "chats", labelKey: "nav.chats", icon: MessageSquare },
   { id: "doctor", labelKey: "nav.doctor", icon: Stethoscope },
+  { id: "verification", labelKey: "nav.verification", icon: ShieldCheck },
   { id: "about", labelKey: "nav.about", icon: Info },
 ] as const;
 
@@ -242,6 +245,19 @@ export function SettingsModal({
               {activeSection === "providers" && <ProvidersSettings />}
               {activeSection === "extensions" && <ExtensionsSettings />}
               {activeSection === "doctor" && <DoctorSettings />}
+              {activeSection === "verification" && (
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-semibold font-display tracking-tight">
+                      {t("verification.title")}
+                    </h3>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {t("verification.description")}
+                    </p>
+                  </div>
+                  <SdlcVerificationPanel />
+                </div>
+              )}
               {activeSection === "general" && (
                 <div className="space-y-6">
                   <div>
