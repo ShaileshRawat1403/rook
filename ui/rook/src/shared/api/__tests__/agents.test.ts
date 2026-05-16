@@ -1,12 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { invoke } from "@tauri-apps/api/core";
+import { invokeTauri } from "../tauri";
 import { exportPersona, importPersonas, refreshPersonas } from "../agents";
 
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
+vi.mock("../tauri", () => ({
+  invokeTauri: vi.fn(),
+  isTauriRuntimeAvailable: vi.fn(() => true),
 }));
 
-const mockedInvoke = vi.mocked(invoke);
+const mockedInvoke = vi.mocked(invokeTauri);
 
 describe("agents API", () => {
   beforeEach(() => {
