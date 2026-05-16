@@ -16,8 +16,15 @@ export type ModuleBaseline = {
   reviewerApprovalRate: number;
   evidenceSatisfiedRate: number;
   outputContractPassRate: number;
+  // Instance counts: how many times each class/reason was logged across
+  // all runs. A single run can contribute more than one instance.
   exceptionsByClass: Partial<Record<WorkflowExceptionClass, number>>;
   interventionsByReason: Partial<Record<WorkflowInterventionReason, number>>;
+  // Prevalence counts: how many distinct runs contained at least one of
+  // each class/reason. Bounded by `total`. Use these for "X of N runs"
+  // wording in UI; instance counts are wrong for that.
+  exceptionRunsByClass: Partial<Record<WorkflowExceptionClass, number>>;
+  interventionRunsByReason: Partial<Record<WorkflowInterventionReason, number>>;
   avgInterventionsPerRun: number;
   avgExceptionsPerRun: number;
 };
@@ -109,6 +116,8 @@ export function aggregateModuleBaseline(
       outputContractPassRate: 0,
       exceptionsByClass: {},
       interventionsByReason: {},
+      exceptionRunsByClass: {},
+      interventionRunsByReason: {},
       avgInterventionsPerRun: 0,
       avgExceptionsPerRun: 0,
     };
@@ -134,20 +143,36 @@ export function aggregateModuleBaseline(
   ).length;
 
   const exceptionsByClass: Partial<Record<WorkflowExceptionClass, number>> = {};
+  const exceptionRunsByClass: Partial<Record<WorkflowExceptionClass, number>> =
+    {};
   for (const run of matching) {
+    const classesInRun = new Set<WorkflowExceptionClass>();
     for (const exception of run.exceptions) {
       exceptionsByClass[exception.class] =
         (exceptionsByClass[exception.class] ?? 0) + 1;
+      classesInRun.add(exception.class);
+    }
+    for (const cls of classesInRun) {
+      exceptionRunsByClass[cls] = (exceptionRunsByClass[cls] ?? 0) + 1;
     }
   }
 
   const interventionsByReason: Partial<
     Record<WorkflowInterventionReason, number>
   > = {};
+  const interventionRunsByReason: Partial<
+    Record<WorkflowInterventionReason, number>
+  > = {};
   for (const run of matching) {
+    const reasonsInRun = new Set<WorkflowInterventionReason>();
     for (const intervention of run.interventions) {
       interventionsByReason[intervention.reason] =
         (interventionsByReason[intervention.reason] ?? 0) + 1;
+      reasonsInRun.add(intervention.reason);
+    }
+    for (const reason of reasonsInRun) {
+      interventionRunsByReason[reason] =
+        (interventionRunsByReason[reason] ?? 0) + 1;
     }
   }
 
@@ -172,6 +197,8 @@ export function aggregateModuleBaseline(
     outputContractPassRate: contractSatisfied / matching.length,
     exceptionsByClass,
     interventionsByReason,
+    exceptionRunsByClass,
+    interventionRunsByReason,
     avgInterventionsPerRun: totalInterventions / matching.length,
     avgExceptionsPerRun: totalExceptions / matching.length,
   };

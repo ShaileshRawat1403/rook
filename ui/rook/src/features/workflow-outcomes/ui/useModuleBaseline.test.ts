@@ -39,6 +39,8 @@ function makeBaseline(total: number): ModuleBaseline {
     outputContractPassRate: 0,
     exceptionsByClass: {},
     interventionsByReason: {},
+    exceptionRunsByClass: {},
+    interventionRunsByReason: {},
     avgInterventionsPerRun: 0,
     avgExceptionsPerRun: 0,
   };

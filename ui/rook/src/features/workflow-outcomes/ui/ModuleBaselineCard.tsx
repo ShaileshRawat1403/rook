@@ -12,11 +12,15 @@ interface TopException {
   count: number;
 }
 
+// Pick by prevalence (distinct runs affected), not instance count. Two
+// runs each logging review_exception once = prevalence 2; one run logging
+// review_exception twice = prevalence 1 (instance count 2). The card says
+// "X of N runs" which is prevalence wording.
 function pickTopException(
-  exceptionsByClass: ModuleBaseline["exceptionsByClass"],
+  exceptionRunsByClass: ModuleBaseline["exceptionRunsByClass"],
 ): TopException | null {
   let top: TopException | null = null;
-  for (const [exceptionClass, count] of Object.entries(exceptionsByClass)) {
+  for (const [exceptionClass, count] of Object.entries(exceptionRunsByClass)) {
     if (count === undefined) continue;
     if (top === null || count > top.count) {
       top = {
@@ -71,7 +75,7 @@ export function ModuleBaselineCard({
   }
 
   const { baseline } = state;
-  const topException = pickTopException(baseline.exceptionsByClass);
+  const topException = pickTopException(baseline.exceptionRunsByClass);
 
   return (
     <div className="mt-1 space-y-0.5 text-[11px] text-muted-foreground">

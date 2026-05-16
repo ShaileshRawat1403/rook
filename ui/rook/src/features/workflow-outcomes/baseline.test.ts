@@ -232,6 +232,19 @@ describe("aggregateModuleBaseline", () => {
       adjust_scope: 1,
     });
 
+    // Prevalence: each class appears at most once per run in this corpus,
+    // so prevalence equals instance count here. The two metrics diverge
+    // only when a run logs the same class twice.
+    expect(baseline.exceptionRunsByClass).toEqual({
+      review_exception: 3,
+      evidence_exception: 4,
+    });
+    expect(baseline.interventionRunsByReason).toEqual({
+      approve_final_output: 2,
+      request_output_changes: 3,
+      adjust_scope: 1,
+    });
+
     expect(baseline.avgInterventionsPerRun).toBeCloseTo(1.2, 5);
     expect(baseline.avgExceptionsPerRun).toBeCloseTo(1.4, 5);
 
@@ -271,6 +284,45 @@ describe("aggregateModuleBaseline", () => {
 
     expect(warn).not.toHaveBeenCalled();
     warn.mockRestore();
+  });
+
+  it("counts prevalence as distinct runs, not exception instances", () => {
+    // Two runs, each with two evidence_exceptions. Instance count = 4;
+    // prevalence = 2 of 2 runs. The UI uses prevalence for "X of N runs".
+    const runs = [
+      makeRun({
+        runId: "double-1",
+        endState: "changes_requested",
+        durationMs: 1000,
+        reviewerApproved: false,
+        evidenceSatisfied: false,
+        outputContractSatisfied: false,
+        exceptions: [
+          makeException("d1-1", "evidence_exception"),
+          makeException("d1-2", "evidence_exception"),
+        ],
+        interventions: [],
+      }),
+      makeRun({
+        runId: "double-2",
+        endState: "changes_requested",
+        durationMs: 1000,
+        reviewerApproved: false,
+        evidenceSatisfied: false,
+        outputContractSatisfied: false,
+        exceptions: [
+          makeException("d2-1", "evidence_exception"),
+          makeException("d2-2", "evidence_exception"),
+        ],
+        interventions: [],
+      }),
+    ];
+
+    const baseline = aggregateModuleBaseline("repo-review", "1.0.0", runs);
+
+    expect(baseline.total).toBe(2);
+    expect(baseline.exceptionsByClass.evidence_exception).toBe(4);
+    expect(baseline.exceptionRunsByClass.evidence_exception).toBe(2);
   });
 
   it("filters valid-but-malformed JSON without crashing the aggregator", () => {

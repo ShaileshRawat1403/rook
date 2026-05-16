@@ -30,6 +30,8 @@ function makeBaseline(overrides: Partial<ModuleBaseline> = {}): ModuleBaseline {
     outputContractPassRate: 0,
     exceptionsByClass: {},
     interventionsByReason: {},
+    exceptionRunsByClass: {},
+    interventionRunsByReason: {},
     avgInterventionsPerRun: 0,
     avgExceptionsPerRun: 0,
     ...overrides,
@@ -79,6 +81,10 @@ describe("ModuleBaselineCard", () => {
           review_exception: 3,
           evidence_exception: 4,
         },
+        exceptionRunsByClass: {
+          review_exception: 3,
+          evidence_exception: 4,
+        },
       }),
     });
 
@@ -89,6 +95,35 @@ describe("ModuleBaselineCard", () => {
     expect(screen.getByText(/10\.6s median/)).toBeInTheDocument();
     expect(screen.getByText("evidence_exception")).toBeInTheDocument();
     expect(screen.getByText(/4 of 5/)).toBeInTheDocument();
+  });
+
+  it("uses prevalence (not instance count) for the top concern", () => {
+    // One run logging two evidence_exceptions: instance count = 2 but
+    // prevalence = 1 of 1 run. The card must say "1 of 1", not "2 of 1".
+    mockUseModuleBaseline.mockReturnValue({
+      status: "ready",
+      baseline: makeBaseline({
+        total: 1,
+        reviewerApprovalRate: 0,
+        medianDurationMs: 1000,
+        byEndState: {
+          succeeded: 0,
+          partially_succeeded: 0,
+          changes_requested: 1,
+          blocked: 0,
+          aborted: 0,
+          failed: 0,
+        },
+        exceptionsByClass: { evidence_exception: 2 },
+        exceptionRunsByClass: { evidence_exception: 1 },
+      }),
+    });
+
+    render(<ModuleBaselineCard moduleId="repo-review" moduleVersion="1.0.0" />);
+
+    expect(screen.getByText("evidence_exception")).toBeInTheDocument();
+    expect(screen.getByText(/1 of 1/)).toBeInTheDocument();
+    expect(screen.queryByText(/2 of 1/)).toBeNull();
   });
 
   it("renders 'No exceptions logged' when populated but exceptions are empty", () => {
