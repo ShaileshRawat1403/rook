@@ -5,6 +5,7 @@ import { appendRookEvent, listRookEvents } from "@/features/events";
 import type { RookEvent } from "@/features/events";
 import type {
   WorkflowEndState,
+  WorkflowException,
   WorkflowRunTelemetry,
 } from "./types";
 import { writeWorkflowTelemetry } from "./api/workflowOutcomes";
@@ -60,6 +61,49 @@ function getColonyForRun(runId: string): ModuleBackedColony {
   return colony as ModuleBackedColony;
 }
 
+// Derive trust posture from facts the recorder already has. No new schema,
+// no DAX call, no new event — purely a function of exceptions + quality.
+// Until DAX trust is wired in v0.2, this gives consumers a useful signal
+// instead of every run being "open". Exported for direct unit testing.
+export function deriveTrust(
+  exceptions: WorkflowException[],
+  quality: WorkflowRunTelemetry["quality"],
+): WorkflowRunTelemetry["trust"] {
+  const reasons: string[] = [];
+
+  const hasCriticalPolicy = exceptions.some(
+    (exception) =>
+      exception.class === "policy_exception" && exception.severity === "high",
+  );
+  const hasAnyException = exceptions.length > 0;
+  const evidenceMissing = quality.evidenceSatisfied === false;
+  const reviewerApproved = quality.reviewerApproved === true;
+  const evidenceOk = quality.evidenceSatisfied === true;
+
+  if (hasCriticalPolicy) {
+    reasons.push("policy denied a critical action");
+    return { posture: "blocked", reasons };
+  }
+
+  if (hasAnyException) {
+    const classes = Array.from(new Set(exceptions.map((e) => e.class))).sort();
+    reasons.push(`exceptions present: ${classes.join(", ")}`);
+    return { posture: "guarded", reasons };
+  }
+
+  if (reviewerApproved && evidenceOk) {
+    reasons.push("reviewer approved, evidence satisfied");
+    return { posture: "verified", reasons };
+  }
+
+  if (evidenceMissing) {
+    reasons.push("required evidence not satisfied");
+    return { posture: "guarded", reasons };
+  }
+
+  return { posture: "open", reasons: [] };
+}
+
 function buildTelemetry(
   colony: ModuleBackedColony,
   events: RookEvent[],
@@ -70,6 +114,11 @@ function buildTelemetry(
     (colony.lifecycleStatus === "blocked" ? colony.updatedAt : undefined);
   const exceptions = classifyWorkflowExceptions(colony, events);
   const interventions = classifyWorkflowInterventions(events, colony);
+  const quality = {
+    outputContractSatisfied: readiness.status === "ready",
+    evidenceSatisfied: readiness.evidenceSatisfied,
+    reviewerApproved: readiness.reviewerSatisfied,
+  };
 
   return {
     schemaVersion: "0.1.0",
@@ -91,15 +140,8 @@ function buildTelemetry(
       exceptionsRaised: exceptions.length,
       artifactsCreated: colony.artifacts?.length ?? 0,
     },
-    quality: {
-      outputContractSatisfied: readiness.status === "ready",
-      evidenceSatisfied: readiness.evidenceSatisfied,
-      reviewerApproved: readiness.reviewerSatisfied,
-    },
-    trust: {
-      posture: "open",
-      reasons: [],
-    },
+    quality,
+    trust: deriveTrust(exceptions, quality),
     exceptions,
     interventions,
   };
