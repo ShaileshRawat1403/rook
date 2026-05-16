@@ -260,7 +260,29 @@ The `ModuleBaseline` type is whatever the function returns — it's a view objec
 
 ### Step 8 (gate to UI work)
 
-Only after Step 7 is green, the next layer of work is UI: surfacing baselines at Step 3 (module selection) of the operating model flow. That work is **out of scope for this doc** and gets its own scope lock.
+Only after Step 7 is green, the next layer of work is UI: surfacing baselines at Step 3 (module selection) of the operating model flow. That work is **out of scope for this doc** and gets its own scope lock — see `OUTCOMES_BASELINE_DISPLAY_V0_1.md`.
+
+## Field notes from Step 6
+
+These observations came out of inspecting the five live `repo-review` telemetry files produced during the schema-readability gate. They are not bugs; they are clarifications that future readers should know.
+
+### F1 — `adjust_scope` only fires on edits, not initial selection
+
+`operator.intervened` with `reason: "adjust_scope"` is emitted by `setColonyScope` / `clearColonyScope` when the scope is **changed**, not when the scope is **first set**. Initial scope selection at Colony creation is setup, not intervention, so it correctly produces no intervention.
+
+**How this shows up in baselines:** a run that starts with a scope and never changes it will have zero `adjust_scope` interventions. Only a re-scoped run produces one.
+
+### F2 — `outputContractSatisfied` is a conflated boolean
+
+`quality.outputContractSatisfied` is a single bool computed by `getColonyOutputReadiness`. It can be `false` while `evidenceSatisfied` and `reviewerApproved` are both `true` — the failure may be incomplete tasks (`tasksCompleted < tasksTotal`), missing required sections, or another readiness criterion.
+
+**How to read it:** when `outputContractSatisfied: false`, triangulate using `evidenceSatisfied`, `reviewerApproved`, and the `counts.tasksCompleted / counts.tasksTotal` ratio to identify which subcondition failed. A decomposition into named booleans is a v0.2 candidate.
+
+### F3 — `approvalRequests: 0` is expected for no-model sessions
+
+`counts.approvalRequests` counts `permission.requested` events emitted by ACP when an agent asks to perform a tool action. Manual/no-model Colony sessions (where no agent is actually running) will produce zero for this count. That is not a wiring bug.
+
+**How to read it:** zero `approvalRequests` across an entire corpus indicates either no model-backed agent activity, or the Sentinel seam isn't firing — check by attempting one model-backed run before treating it as a defect.
 
 ## Out of scope for v0.1
 
@@ -294,3 +316,4 @@ Only after Step 7 is green, the next layer of work is UI: surfacing baselines at
 ## Changelog
 
 - **v0.1 (2026-05-16):** Initial outcomes layer scope lock. MVP schema, six exception classes, six intervention reasons, per-run JSON storage, derived baselines, no UI. Establishes the rule that telemetry stores facts only; judgment-laden derivatives are out of scope.
+- **v0.1.1 (2026-05-16):** Added "Field notes from Step 6" (F1/F2/F3) capturing semantic clarifications from the schema-readability gate: `adjust_scope` fires on edits not initial selection, `outputContractSatisfied` is a conflated boolean, `approvalRequests: 0` is expected in no-model sessions. Added forward reference to `OUTCOMES_BASELINE_DISPLAY_V0_1.md` for the UI scope lock.
