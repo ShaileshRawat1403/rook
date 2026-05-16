@@ -15,6 +15,7 @@ import {
 } from "@tabler/icons-react";
 import { SWARM_RECIPES, getSwarmRecipe } from "./recipes";
 import type { SwarmRecipe, SwarmPlan } from "./types";
+import { ModuleBaselineCard } from "@/features/workflow-outcomes/ui/ModuleBaselineCard";
 
 const RICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   "repo-review": IconSearch,
@@ -84,16 +85,22 @@ export function SwarmRecipeSelector({
                 type="button"
                 onClick={() => handleSelect(recipe.id)}
                 className={cn(
-                  "flex w-full items-center gap-2 px-3 py-2 text-sm hover:bg-accent",
+                  "flex w-full items-start gap-2 px-3 py-2 text-left text-sm hover:bg-accent",
                   selectedId === recipe.id && "bg-accent",
                 )}
               >
-                <Icon className="size-4" />
-                <div className="flex flex-col items-start">
+                <Icon className="mt-0.5 size-4 shrink-0" />
+                <div className="flex flex-1 flex-col items-start">
                   <span>{recipe.name}</span>
                   <span className="text-xs text-muted-foreground">
                     {recipe.purpose}
                   </span>
+                  {recipe.version ? (
+                    <ModuleBaselineCard
+                      moduleId={recipe.id}
+                      moduleVersion={recipe.version}
+                    />
+                  ) : null}
                 </div>
               </button>
             );
