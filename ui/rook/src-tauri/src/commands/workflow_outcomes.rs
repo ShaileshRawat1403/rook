@@ -244,7 +244,7 @@ mod tests {
                 true,
                 false,
                 &[],
-                &[("approve_final_output", "human_operator")],
+                &[("approve_final_output", "reviewer")],
             ),
             full_telemetry(
                 "f46f81da",
@@ -264,7 +264,7 @@ mod tests {
                 false,
                 false,
                 &[("evidence_exception", "rook")],
-                &[("approve_final_output", "human_operator")],
+                &[("approve_final_output", "reviewer")],
             ),
             full_telemetry(
                 "a0cdf772",
