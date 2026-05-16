@@ -749,12 +749,20 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       ),
     }));
 
+    const state = get();
+    persistColonyState({
+      colonies: state.colonies,
+      activeColonyId: state.activeColonyId,
+      sentinelMode: state.sentinelMode,
+      events: state.events,
+    });
+
     if (
       colony &&
       colony.lifecycleStatus !== "blocked" &&
       updates.lifecycleStatus === "blocked"
     ) {
-      const nextColony = get().colonies.find((c) => c.id === colonyId);
+      const nextColony = state.colonies.find((c) => c.id === colonyId);
       if (nextColony) {
         recordTerminalWorkflowOutcome(nextColony);
       }
