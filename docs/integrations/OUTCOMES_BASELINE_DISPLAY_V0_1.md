@@ -46,7 +46,7 @@ Required data points (mapped to `ModuleBaseline` fields):
 | Total runs | `total` | If 0: render "No runs yet" pill; hide the rest |
 | Reviewer approval rate | `reviewerApprovalRate` | "—" if `total === 0` |
 | Median duration | `medianDurationMs` | "—" if null |
-| Top exception class | `exceptionsByClass` max | "No exceptions logged" if empty |
+| Top exception class | `exceptionRunsByClass` max | "No exceptions logged" if empty |
 
 **What is NOT visible in v0.1:**
 
@@ -98,7 +98,7 @@ function useModuleBaseline(
 - Fetches via `getModuleBaseline` on mount.
 - Caches per `moduleId@version` in module-level state to avoid refetch when toggling between recipes.
 - Re-fetches on `moduleId@version` change.
-- Does **not** poll. A run completion does not auto-refresh — user revisits the selector to see updated stats. Polling is v0.2.
+- Does **not** poll. When the recorder successfully writes a new outcome, it invalidates the matching `moduleId@version` cache key so the next mount re-fetches updated stats. No background refresh loop is introduced.
 
 ### Component contract
 
@@ -134,7 +134,7 @@ function useModuleBaseline(
 - [ ] Populated state shows total, reviewer-approval rate, median duration, top exception.
 - [ ] Error state is silent (no toast, no console error beyond the existing source-event warn).
 - [ ] No new npm dependency added.
-- [ ] No changes to baselines/recorder/classifiers — UI only consumes existing exports.
+- [ ] No changes to classifier taxonomy or telemetry schema. The UI consumes derived baseline exports only.
 - [ ] Component test covers all four states.
 
 ## Out of scope (do not add in this slice)
@@ -152,10 +152,15 @@ function useModuleBaseline(
 
 ## Open questions (deferred to v0.2)
 
-1. **Refresh trigger.** Should the card auto-refresh when a Colony in the same module closes? For v0.1, no — refresh on remount only. Reconsider when natural usage shows users expecting live updates.
-2. **Densest layout.** If a future selector lists many modules, the inline card may feel heavy. Defer condensed/popover variants until that pressure exists.
-3. **Color coding.** Should low reviewer-approval rates render in a warning color? Risk of falsely flagging modules that have few runs. Skip for v0.1; revisit when sample sizes are larger.
+1. **Densest layout.** If a future selector lists many modules, the inline card may feel heavy. Defer condensed/popover variants until that pressure exists.
+2. **Color coding.** Should low reviewer-approval rates render in a warning color? Risk of falsely flagging modules that have few runs. Skip for v0.1; revisit when sample sizes are larger.
+
+## Resolved after initial ship
+
+1. **Refresh trigger.** v0.1.1 hardening resolved this without polling: after a successful recorder write, the matching baseline cache entry is invalidated, so the next mount fetches fresh stats. The card remains read-only and non-blocking.
+2. **Top concern denominator.** The card renders run prevalence (`exceptionRunsByClass`), not raw instance counts (`exceptionsByClass`), so `"X of N runs"` remains truthful even when one run logs the same exception class more than once.
 
 ## Changelog
 
 - **v0.1 (2026-05-16):** Initial scope lock for the outcomes baseline display. One surface (`SwarmRecipeSelector`), read-only, four states (loading/empty/ready/error), four data points (total / reviewer-approval rate / median duration / top exception). No charts, no polling, no drill-down. Opens Step 8 of `WORKFLOW_OUTCOMES_V0_1.md`.
+- **v0.1.1 (2026-05-16):** Synced the scope lock to shipped hardening: top concern uses per-run prevalence, and successful recorder writes invalidate the matching cache key so the next mount reads fresh stats without polling.
