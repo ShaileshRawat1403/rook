@@ -15,6 +15,7 @@ export type RookEventType =
   | "evidence.attached"
   | "run.completed"
   | "run.failed"
+  | "workflow_outcome_recorded"
   | (string & {});
 
 export type JsonValue =
