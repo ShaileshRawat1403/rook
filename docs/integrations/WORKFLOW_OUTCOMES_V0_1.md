@@ -162,6 +162,16 @@ Payload:
 
 One file per run. Atomic write. No mutation after `completedAt` is set.
 
+### Retention
+
+**v0.1 / v0.1.1 policy:** no automatic cleanup. Telemetry files persist in `~/.rook/runs/<runId>/` indefinitely. At ~5KB per run, 10,000 runs is ~50MB — acceptable for the early-adopter scale this layer targets.
+
+**v0.2 candidate policy:** a rolling window. For each `moduleId@version`, keep the most recent N=200 runs **or** all runs from the last 90 days, whichever produces the larger set. The window is sized to keep baselines statistically meaningful (large enough sample) while bounding disk growth. An operator setting will allow disabling retention entirely.
+
+**What never gets cleaned:** runs whose Colony is still open. Cleanup only considers runs whose `telemetry.json` has `completedAt` set. The immutability rule continues to apply.
+
+**Cleanup never runs implicitly during a recorder write.** Retention is a separate scheduled or operator-triggered action — it must not introduce I/O pressure on the close path.
+
 ## File layout (Rook)
 
 ```text
@@ -316,4 +326,4 @@ These observations came out of inspecting the five live `repo-review` telemetry 
 ## Changelog
 
 - **v0.1 (2026-05-16):** Initial outcomes layer scope lock. MVP schema, six exception classes, six intervention reasons, per-run JSON storage, derived baselines, no UI. Establishes the rule that telemetry stores facts only; judgment-laden derivatives are out of scope.
-- **v0.1.1 (2026-05-16):** Added "Field notes from Step 6" (F1/F2/F3) capturing semantic clarifications from the schema-readability gate: `adjust_scope` fires on edits not initial selection, `outputContractSatisfied` is a conflated boolean, `approvalRequests: 0` is expected in no-model sessions. Added forward reference to `OUTCOMES_BASELINE_DISPLAY_V0_1.md` for the UI scope lock.
+- **v0.1.1 (2026-05-16):** Added "Field notes from Step 6" (F1/F2/F3) capturing semantic clarifications from the schema-readability gate: `adjust_scope` fires on edits not initial selection, `outputContractSatisfied` is a conflated boolean, `approvalRequests: 0` is expected in no-model sessions. Added forward reference to `OUTCOMES_BASELINE_DISPLAY_V0_1.md` for the UI scope lock. Added "Retention" subsection documenting the v0.1.1 policy (no automatic cleanup) and the v0.2 candidate rolling window per `HARDENING_V0_1_1.md` § H5.
