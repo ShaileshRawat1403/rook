@@ -17,4 +17,5 @@ pub mod sentinel;
 pub mod skills;
 pub mod system;
 pub mod work_items;
+pub mod workflow_outcomes;
 pub mod workspace_manifest;

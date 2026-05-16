@@ -200,6 +200,7 @@ pub fn run() {
             commands::work_items::create_work_item,
             commands::work_items::update_work_item,
             commands::work_items::delete_work_item,
+            commands::workflow_outcomes::write_workflow_telemetry,
             commands::notifications::request_notification_permission,
             commands::notifications::send_notification,
             commands::notifications::send_approval_notification,
