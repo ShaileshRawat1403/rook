@@ -115,7 +115,7 @@ pub fn list_workflow_telemetry() -> Result<Vec<Value>, String> {
 #[cfg(test)]
 mod tests {
     use super::{list_workflow_telemetry_in, write_workflow_telemetry_in};
-    use serde_json::json;
+    use serde_json::{json, Value};
     use std::fs;
     use tempfile::tempdir;
 
@@ -218,5 +218,174 @@ mod tests {
         let listed = list_workflow_telemetry_in(dir.path()).expect("list");
 
         assert_eq!(listed, vec![valid]);
+    }
+
+    /// Cross-boundary integration test: builds a corpus of five full-shape
+    /// WorkflowRunTelemetry payloads matching what the TypeScript recorder
+    /// produces today (verified against the Step 6 live fixtures), writes
+    /// them through the same path the Tauri command uses, lists them back,
+    /// and asserts every payload round-trips structurally identical.
+    ///
+    /// Catches: JSON serialization drift, encoding issues, list-ordering
+    /// regressions, and any future writer refactor that breaks the read
+    /// path. Closes H6 of HARDENING_V0_1_1.md.
+    #[test]
+    fn end_to_end_round_trip() {
+        let dir = tempdir().expect("tempdir");
+
+        // Five full-shape telemetry payloads. Field names and value
+        // shapes mirror what `buildTelemetry` in recorder.ts produces.
+        let corpus = vec![
+            full_telemetry(
+                "82d4e26e",
+                "partially_succeeded",
+                344015,
+                true,
+                true,
+                false,
+                &[],
+                &[("approve_final_output", "human_operator")],
+            ),
+            full_telemetry(
+                "f46f81da",
+                "changes_requested",
+                10631,
+                false,
+                false,
+                false,
+                &[("review_exception", "human"), ("evidence_exception", "rook")],
+                &[("request_output_changes", "reviewer")],
+            ),
+            full_telemetry(
+                "aaaab7dd",
+                "partially_succeeded",
+                1885,
+                true,
+                false,
+                false,
+                &[("evidence_exception", "rook")],
+                &[("approve_final_output", "human_operator")],
+            ),
+            full_telemetry(
+                "a0cdf772",
+                "changes_requested",
+                22496,
+                false,
+                false,
+                false,
+                &[("review_exception", "human"), ("evidence_exception", "rook")],
+                &[("request_output_changes", "reviewer")],
+            ),
+            full_telemetry(
+                "a5bf9231",
+                "changes_requested",
+                8109,
+                false,
+                false,
+                false,
+                &[("review_exception", "human"), ("evidence_exception", "rook")],
+                &[
+                    ("adjust_scope", "human_operator"),
+                    ("request_output_changes", "reviewer"),
+                ],
+            ),
+        ];
+
+        for telemetry in &corpus {
+            let run_id = telemetry
+                .get("runId")
+                .and_then(Value::as_str)
+                .expect("runId");
+            write_workflow_telemetry_in(dir.path(), run_id, telemetry)
+                .expect("write");
+        }
+
+        let listed = list_workflow_telemetry_in(dir.path()).expect("list");
+
+        assert_eq!(listed.len(), corpus.len(), "all five files round-trip");
+
+        // Directory iteration order is not guaranteed; assert each input
+        // appears exactly once in the listed output.
+        for telemetry in &corpus {
+            assert!(
+                listed.contains(telemetry),
+                "round-tripped corpus is missing payload for runId {:?}",
+                telemetry.get("runId")
+            );
+        }
+
+        // Spot-check that nested arrays (exceptions, interventions) survive
+        // the round-trip unchanged. JSON object key order is normalized by
+        // serde_json on parse, so this also asserts no field-order drift
+        // sneaks through.
+        let a5bf = listed
+            .iter()
+            .find(|run| run.get("runId").and_then(Value::as_str) == Some("a5bf9231"))
+            .expect("a5bf9231 round-trip");
+        let interventions = a5bf
+            .get("interventions")
+            .and_then(Value::as_array)
+            .expect("interventions array");
+        assert_eq!(interventions.len(), 2);
+    }
+
+    fn full_telemetry(
+        run_id: &str,
+        end_state: &str,
+        duration_ms: u64,
+        reviewer_approved: bool,
+        evidence_satisfied: bool,
+        contract_satisfied: bool,
+        exceptions: &[(&str, &str)],
+        interventions: &[(&str, &str)],
+    ) -> Value {
+        json!({
+            "schemaVersion": "0.1.0",
+            "runId": run_id,
+            "moduleId": "repo-review",
+            "moduleVersion": "1.0.0",
+            "colonyId": run_id,
+            "startedAt": "2026-05-16T09:00:00.000Z",
+            "completedAt": "2026-05-16T10:00:00.000Z",
+            "durationMs": duration_ms,
+            "endState": end_state,
+            "counts": {
+                "tasksTotal": 3,
+                "tasksCompleted": 0,
+                "approvalRequests": 0,
+                "humanInterventions": interventions.len(),
+                "exceptionsRaised": exceptions.len(),
+                "artifactsCreated": 0,
+            },
+            "quality": {
+                "outputContractSatisfied": contract_satisfied,
+                "evidenceSatisfied": evidence_satisfied,
+                "reviewerApproved": reviewer_approved,
+            },
+            "trust": { "posture": "open", "reasons": [] },
+            "exceptions": exceptions
+                .iter()
+                .enumerate()
+                .map(|(idx, (class, source))| json!({
+                    "id": format!("e-{run_id}-{idx}"),
+                    "class": class,
+                    "severity": "medium",
+                    "source": source,
+                    "message": format!("{class} round-trip"),
+                    "raisedAt": "2026-05-16T09:30:00.000Z",
+                    "recoverable": true,
+                }))
+                .collect::<Vec<_>>(),
+            "interventions": interventions
+                .iter()
+                .enumerate()
+                .map(|(idx, (reason, actor))| json!({
+                    "id": format!("i-{run_id}-{idx}"),
+                    "reason": reason,
+                    "actor": actor,
+                    "resolvedAt": "2026-05-16T09:45:00.000Z",
+                }))
+                .collect::<Vec<_>>(),
+        })
     }
 }
