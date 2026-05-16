@@ -10,3 +10,7 @@ export async function writeWorkflowTelemetry(
     telemetry,
   });
 }
+
+export async function listWorkflowTelemetry(): Promise<WorkflowRunTelemetry[]> {
+  return invokeTauri<WorkflowRunTelemetry[]>("list_workflow_telemetry");
+}

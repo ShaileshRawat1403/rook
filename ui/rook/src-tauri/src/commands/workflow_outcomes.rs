@@ -72,9 +72,49 @@ pub fn write_workflow_telemetry(run_id: String, telemetry: Value) -> Result<Stri
     Ok(display_telemetry_path(&run_id))
 }
 
+fn list_workflow_telemetry_in(base: &Path) -> Result<Vec<Value>, String> {
+    let mut results = Vec::new();
+
+    if !base.exists() {
+        return Ok(results);
+    }
+
+    let entries = fs::read_dir(base)
+        .map_err(|error| format!("Failed to read workflow runs dir: {error}"))?;
+
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if !path.is_dir() {
+            continue;
+        }
+
+        let telemetry_path = path.join("telemetry.json");
+        if !telemetry_path.exists() {
+            continue;
+        }
+
+        let Ok(contents) = fs::read_to_string(&telemetry_path) else {
+            continue;
+        };
+        let Ok(value) = serde_json::from_str::<Value>(&contents) else {
+            continue;
+        };
+
+        results.push(value);
+    }
+
+    Ok(results)
+}
+
+#[tauri::command]
+pub fn list_workflow_telemetry() -> Result<Vec<Value>, String> {
+    let base = workflow_runs_dir()?;
+    list_workflow_telemetry_in(&base)
+}
+
 #[cfg(test)]
 mod tests {
-    use super::write_workflow_telemetry_in;
+    use super::{list_workflow_telemetry_in, write_workflow_telemetry_in};
     use serde_json::json;
     use std::fs;
     use tempfile::tempdir;
@@ -117,5 +157,66 @@ mod tests {
         let parsed: serde_json::Value = serde_json::from_str(&body).expect("valid json");
 
         assert_eq!(parsed, first);
+    }
+
+    #[test]
+    fn list_returns_empty_when_base_missing() {
+        let dir = tempdir().expect("tempdir");
+        let missing = dir.path().join("does-not-exist");
+
+        let listed = list_workflow_telemetry_in(&missing).expect("list");
+
+        assert!(listed.is_empty());
+    }
+
+    #[test]
+    fn list_collects_valid_telemetry_files() {
+        let dir = tempdir().expect("tempdir");
+        let alpha = json!({
+            "schemaVersion": "0.1.0",
+            "runId": "run-1",
+            "moduleId": "repo-review",
+            "moduleVersion": "1.0.0",
+            "endState": "succeeded",
+        });
+        let beta = json!({
+            "schemaVersion": "0.1.0",
+            "runId": "run-2",
+            "moduleId": "repo-review",
+            "moduleVersion": "1.0.0",
+            "endState": "changes_requested",
+        });
+        write_workflow_telemetry_in(dir.path(), "run-1", &alpha).expect("alpha");
+        write_workflow_telemetry_in(dir.path(), "run-2", &beta).expect("beta");
+
+        let listed = list_workflow_telemetry_in(dir.path()).expect("list");
+
+        assert_eq!(listed.len(), 2);
+        assert!(listed.contains(&alpha));
+        assert!(listed.contains(&beta));
+    }
+
+    #[test]
+    fn list_skips_invalid_and_unrelated_entries() {
+        let dir = tempdir().expect("tempdir");
+        let valid = json!({
+            "schemaVersion": "0.1.0",
+            "runId": "run-1",
+            "endState": "succeeded",
+        });
+        write_workflow_telemetry_in(dir.path(), "run-1", &valid).expect("valid");
+
+        let corrupt_dir = dir.path().join("run-2");
+        fs::create_dir_all(&corrupt_dir).expect("corrupt dir");
+        fs::write(corrupt_dir.join("telemetry.json"), "not-json").expect("corrupt write");
+
+        let no_telemetry_dir = dir.path().join("run-3");
+        fs::create_dir_all(&no_telemetry_dir).expect("empty dir");
+
+        fs::write(dir.path().join("loose-file"), "ignored").expect("loose");
+
+        let listed = list_workflow_telemetry_in(dir.path()).expect("list");
+
+        assert_eq!(listed, vec![valid]);
     }
 }
