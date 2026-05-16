@@ -272,4 +272,43 @@ describe("aggregateModuleBaseline", () => {
     expect(warn).not.toHaveBeenCalled();
     warn.mockRestore();
   });
+
+  it("filters valid-but-malformed JSON without crashing the aggregator", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const malformed: unknown[] = [
+      {}, // empty object
+      { schemaVersion: "0.1.0" }, // schema-correct but otherwise empty
+      {
+        // missing quality / counts / trust objects
+        schemaVersion: "0.1.0",
+        runId: "x",
+        moduleId: "repo-review",
+        moduleVersion: "1.0.0",
+        endState: "succeeded",
+      },
+      {
+        // missing arrays for exceptions/interventions
+        schemaVersion: "0.1.0",
+        runId: "y",
+        moduleId: "repo-review",
+        moduleVersion: "1.0.0",
+        endState: "succeeded",
+        quality: {},
+        counts: {},
+        trust: {},
+        exceptions: null,
+        interventions: null,
+      },
+      null,
+      "not-an-object",
+    ];
+
+    const mixed: unknown[] = [...FIVE_REPO_REVIEW_RUNS, ...malformed];
+    const baseline = aggregateModuleBaseline("repo-review", "1.0.0", mixed);
+
+    expect(baseline.total).toBe(5);
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0][0]).toContain(`skipped ${malformed.length}`);
+    warn.mockRestore();
+  });
 });

@@ -49,22 +49,49 @@ function average(values: number[]): number | null {
 
 const SUPPORTED_SCHEMA_VERSION = "0.1.0";
 
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+// Runtime guard for telemetry records crossing the Tauri boundary. Files in
+// ~/.rook/runs/<id>/telemetry.json can be valid JSON but wrong shape (empty
+// objects, partially populated, schema-drifted). The aggregator dereferences
+// nested fields, so a shape-invalid input would crash the baseline path.
+// Filter such records out and warn — a partial baseline is better than no
+// baseline.
+function isValidTelemetry(value: unknown): value is WorkflowRunTelemetry {
+  if (!isObject(value)) return false;
+  if (value.schemaVersion !== SUPPORTED_SCHEMA_VERSION) return false;
+
+  if (typeof value.runId !== "string") return false;
+  if (typeof value.moduleId !== "string") return false;
+  if (typeof value.moduleVersion !== "string") return false;
+  if (typeof value.endState !== "string") return false;
+
+  if (!isObject(value.quality)) return false;
+  if (!isObject(value.counts)) return false;
+  if (!isObject(value.trust)) return false;
+
+  if (!Array.isArray(value.exceptions)) return false;
+  if (!Array.isArray(value.interventions)) return false;
+
+  return true;
+}
+
 export function aggregateModuleBaseline(
   moduleId: string,
   moduleVersion: string,
-  runs: WorkflowRunTelemetry[],
+  runs: readonly unknown[],
 ): ModuleBaseline {
-  const versioned = runs.filter(
-    (run) => run.schemaVersion === SUPPORTED_SCHEMA_VERSION,
-  );
-  const skipped = runs.length - versioned.length;
+  const valid: WorkflowRunTelemetry[] = runs.filter(isValidTelemetry);
+  const skipped = runs.length - valid.length;
   if (skipped > 0) {
     console.warn(
-      `[workflow-outcomes] skipped ${skipped} telemetry record(s) with unsupported schemaVersion; expected "${SUPPORTED_SCHEMA_VERSION}"`,
+      `[workflow-outcomes] skipped ${skipped} telemetry record(s) with invalid shape or unsupported schemaVersion (expected "${SUPPORTED_SCHEMA_VERSION}")`,
     );
   }
 
-  const matching = versioned.filter(
+  const matching = valid.filter(
     (run) =>
       run.moduleId === moduleId && run.moduleVersion === moduleVersion,
   );
