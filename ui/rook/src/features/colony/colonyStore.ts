@@ -168,11 +168,21 @@ const DEFAULT_ROLES: ColonyRole[] = ["planner", "worker", "reviewer"];
 function recordTerminalWorkflowOutcome(colony: ColonySession): void {
   if (!colony.recipeId || !colony.recipeVersion) return;
 
-  void import("@/features/workflow-outcomes/recorder")
-    .then(({ recordWorkflowOutcome }) => recordWorkflowOutcome(colony.id))
-    .catch((error) => {
-      console.warn("[workflow-outcomes] recorder failed:", error);
-    });
+  // Flush in-flight source-event writes before invoking the recorder so the
+  // event store contains every fact emitted up to the terminal transition.
+  // Both modules are imported lazily to avoid colonyStore → recorder cycles.
+  void (async () => {
+    const { flushPendingSourceEvents } = await import(
+      "@/features/workflow-outcomes/sourceEvents"
+    );
+    await flushPendingSourceEvents();
+    const { recordWorkflowOutcome } = await import(
+      "@/features/workflow-outcomes/recorder"
+    );
+    await recordWorkflowOutcome(colony.id);
+  })().catch((error) => {
+    console.warn("[workflow-outcomes] recorder failed:", error);
+  });
 }
 
 export function isColonyClosed(colony?: ColonySession | null): boolean {
