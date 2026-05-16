@@ -35,6 +35,7 @@ function governanceExceptions(events: RookEvent[]): WorkflowException[] {
     const approvalResolution = stringField(data, "approvalResolution");
     const denied =
       decision === "deny" ||
+      // v0.2: reserved for the future human approval-resolution flow.
       (decision === "needs_approval" && approvalResolution === "denied");
 
     if (!denied) return [];

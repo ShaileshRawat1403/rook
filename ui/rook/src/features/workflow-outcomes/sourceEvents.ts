@@ -5,5 +5,7 @@ import { isTauriRuntimeAvailable } from "@/shared/api/tauri";
 export function recordWorkflowSourceEvent(input: RookEventInput): void {
   if (!isTauriRuntimeAvailable()) return;
 
-  void appendRookEvent(input).catch(() => {});
+  void appendRookEvent(input).catch((error) => {
+    console.warn("[workflow-outcomes] failed to record source event:", error);
+  });
 }
