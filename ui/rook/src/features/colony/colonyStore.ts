@@ -748,6 +748,23 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
         note: note ?? null,
       },
     });
+
+    // Record telemetry for the changes_requested attempt so it is visible
+    // before any subsequent close. `completedAt` stays undefined here
+    // because the Colony is not closed and not blocked — which means a
+    // later `closeColony` (after fix + approval) will overwrite this
+    // record with the final endState. Net effect:
+    //   - request changes, then walk away → telemetry preserves
+    //     changes_requested as the captured outcome.
+    //   - request changes, fix, approve, close → close overwrites with
+    //     the final endState; changes_requested is not separately
+    //     captured.
+    // True per-attempt history requires v0.2 runAttemptId; this is the
+    // best v0.1 can do without breaking the immutability rule.
+    const requestedColony = state.colonies.find((c) => c.id === colonyId);
+    if (requestedColony) {
+      recordTerminalWorkflowOutcome(requestedColony);
+    }
   },
 
   updateColony: (colonyId, updates) => {
