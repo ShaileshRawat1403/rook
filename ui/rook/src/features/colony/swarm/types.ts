@@ -37,7 +37,13 @@ export type SwarmSpecialist = {
 };
 
 export type SwarmArtifactContract = {
-  artifactType: "report" | "prd" | "strategy" | "checklist" | "audit";
+  artifactType:
+    | "report"
+    | "prd"
+    | "strategy"
+    | "checklist"
+    | "audit"
+    | "sow";
   format: SwarmOutputFormat;
   requiredSections: string[];
   evidenceRequired: boolean;

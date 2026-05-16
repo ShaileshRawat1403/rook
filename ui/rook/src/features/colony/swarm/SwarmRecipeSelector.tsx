@@ -23,6 +23,7 @@ const RICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   "seo-strategy": IconSearch,
   "release-readiness": IconRocket,
   "docs-audit": IconBooks,
+  "sow-builder": IconFileText,
 };
 
 interface SwarmRecipeSelectorProps {

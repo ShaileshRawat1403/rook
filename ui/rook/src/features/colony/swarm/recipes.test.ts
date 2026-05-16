@@ -6,6 +6,7 @@ import {
   SEO_STRATEGY_RECIPE,
   RELEASE_READINESS_RECIPE,
   DOCS_AUDIT_RECIPE,
+  SOW_BUILDER_RECIPE,
 } from "./recipes";
 
 describe("Swarm Recipe Validation", () => {
@@ -111,6 +112,13 @@ describe("Swarm Recipe Validation", () => {
         expect(specialist.taskPrompt.length).toBeGreaterThan(100);
       });
     });
+
+    it("SOW Builder specialists have prompts", () => {
+      SOW_BUILDER_RECIPE.specialists.forEach((specialist) => {
+        expect(specialist.taskPrompt).toBeDefined();
+        expect(specialist.taskPrompt.length).toBeGreaterThan(100);
+      });
+    });
   });
 
   describe("Every prompt requires evidence", () => {
@@ -165,8 +173,8 @@ describe("Swarm Recipe Validation", () => {
   });
 
   describe("Recipe count", () => {
-    it("has exactly 5 recipes", () => {
-      expect(SWARM_RECIPES.length).toBe(5);
+    it("has exactly 6 recipes", () => {
+      expect(SWARM_RECIPES.length).toBe(6);
     });
   });
 });

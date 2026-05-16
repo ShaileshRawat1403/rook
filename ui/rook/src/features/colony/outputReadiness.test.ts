@@ -107,6 +107,17 @@ describe("getColonyOutputReadiness (v0.6)", () => {
     );
   });
 
+  it("accepts documentation artifacts for SOW outputs", () => {
+    const colony = makeColony({
+      outputContract: makeContract({ artifactType: "sow" }),
+      artifacts: [makeArtifact("doc", "## Purpose\n## Scope")],
+    });
+
+    expect(getColonyOutputReadiness(colony).requiredArtifactPresent).toBe(
+      true,
+    );
+  });
+
   it("matches required sections case-insensitively across artifact content", () => {
     const colony = makeColony({
       outputContract: makeContract({

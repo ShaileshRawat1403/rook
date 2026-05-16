@@ -4,6 +4,7 @@ import {
   DOCS_AUDIT_RECIPE,
   RELEASE_READINESS_RECIPE,
   REPO_REVIEW_RECIPE,
+  SOW_BUILDER_RECIPE,
 } from "./swarm/recipes";
 import type { SwarmRecipe } from "./swarm/types";
 import { useWorkItemStore } from "@/features/work-items/stores/workItemStore";
@@ -12,6 +13,7 @@ const VALIDATED_RECIPES: readonly SwarmRecipe[] = [
   REPO_REVIEW_RECIPE,
   RELEASE_READINESS_RECIPE,
   DOCS_AUDIT_RECIPE,
+  SOW_BUILDER_RECIPE,
 ];
 
 export function ColonyRecipeEntry() {

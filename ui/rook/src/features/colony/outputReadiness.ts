@@ -16,6 +16,7 @@ const ARTIFACT_TYPE_TO_KINDS: Record<
   checklist: ["review", "doc", "note"],
   prd: ["doc"],
   strategy: ["doc", "note"],
+  sow: ["doc", "review", "note"],
 };
 
 const EVIDENCE_KEYWORDS = [

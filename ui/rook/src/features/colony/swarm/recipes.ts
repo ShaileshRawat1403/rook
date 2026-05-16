@@ -704,6 +704,199 @@ Recommended handoff:
   ],
 };
 
+export const SOW_BUILDER_RECIPE: SwarmRecipe = {
+  id: "sow-builder",
+  name: "Agile SOW Builder",
+  version: "1.0.0",
+  purpose:
+    "Turn an initiative into scoped delivery roles, a sprint roadmap, and a governed Statement of Work.",
+  triggerExamples: [
+    "Create a statement of work",
+    "Scope this initiative",
+    "Turn this idea into an Agile delivery plan",
+  ],
+  riskLevel: "low",
+  colonyMapping: {
+    taskType: "planning",
+    seats: ["Planner", "Worker", "Reviewer"],
+    handoffs: ["context"],
+    evidenceRequired: true,
+  },
+  specialists: [
+    {
+      id: "business-analyst",
+      label: "Business Analyst",
+      role: "Business Analyst",
+      skills: ["requirements", "scope-definition", "business-analysis"],
+      allowedContext: ["user-intent", "work-item", "existing-docs"],
+      disallowedContext: ["secrets", "credentials"],
+      taskPrompt: `You are the Business Analyst. Your task is to define the work before delivery begins.
+
+Produce:
+1. Problem statement
+2. Objectives
+3. In-scope capabilities
+4. Out-of-scope boundaries
+5. Acceptance criteria
+6. Risks, assumptions, and open questions
+
+Anchor the work to a clear user or business outcome. Convert vague requests into bounded, testable work.
+
+End with:
+Evidence:
+- List the source material, interviews, or documents used.
+
+Assumptions:
+- State what you assumed about the business intent.
+
+Uncertainty:
+- State what could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.`,
+      outputContract: {
+        format: "markdown",
+        requiredSections: [
+          "Problem",
+          "Objectives",
+          "Scope",
+          "Acceptance criteria",
+        ],
+        evidenceRequired: true,
+        uncertaintyRequired: true,
+      },
+    },
+    {
+      id: "developer",
+      label: "Developer",
+      role: "Developer",
+      skills: ["technical-planning", "estimation", "implementation"],
+      allowedContext: ["scope", "acceptance-criteria", "architecture"],
+      disallowedContext: ["secrets", "credentials"],
+      taskPrompt: `You are the Developer. Your task is to turn scoped work into an implementable delivery shape.
+
+Produce:
+1. Proposed technical approach
+2. Major implementation slices
+3. Dependencies
+4. Risks and unknowns
+5. Verification strategy
+6. Rough sizing or sequencing guidance
+
+Keep the plan grounded in working increments, tests, evidence, and delivery constraints.
+
+End with:
+Evidence:
+- List the code, docs, or architecture references used.
+
+Assumptions:
+- State what you assumed about the implementation environment.
+
+Uncertainty:
+- State what could not be verified.
+
+Recommended handoff:
+- Name the next specialist who should review this output.`,
+      outputContract: {
+        format: "markdown",
+        requiredSections: [
+          "Approach",
+          "Slices",
+          "Dependencies",
+          "Verification",
+        ],
+        evidenceRequired: true,
+        uncertaintyRequired: true,
+      },
+    },
+    {
+      id: "project-manager",
+      label: "Project Manager",
+      role: "Project Manager",
+      skills: ["roadmapping", "delivery-governance", "sow-writing"],
+      allowedContext: ["scope", "technical-plan", "constraints"],
+      disallowedContext: ["secrets", "credentials"],
+      taskPrompt: `You are the Project Manager. Your task is to convert the BA scope and Developer delivery shape into a governed Agile Statement of Work.
+
+Produce a concise Markdown SOW with:
+1. Purpose
+2. Background
+3. Objectives
+4. Scope
+5. Out of scope
+6. Delivery roles
+7. Agile delivery model
+8. Sprint plan
+9. Deliverables
+10. Acceptance criteria
+11. Governance and review
+12. Risks and assumptions
+13. Change control
+14. Timeline
+15. Success metrics
+
+Frame the delivery model as:
+BA defines the work.
+PM sequences and governs delivery.
+Dev implements scoped slices.
+Rook captures modules, runs, telemetry, and reusable knowledge.
+
+End with:
+Evidence:
+- List the BA and Developer outputs plus any supporting material used.
+
+Assumptions:
+- State what you assumed about delivery cadence or staffing.
+
+Uncertainty:
+- State what could not be verified.
+
+Recommended handoff:
+- Name the reviewer who should approve this SOW.`,
+      outputContract: {
+        format: "markdown",
+        requiredSections: [
+          "Purpose",
+          "Scope",
+          "Sprint plan",
+          "Deliverables",
+          "Acceptance criteria",
+        ],
+        evidenceRequired: true,
+        uncertaintyRequired: true,
+      },
+    },
+  ],
+  finalArtifact: {
+    artifactType: "sow",
+    format: "markdown",
+    requiredSections: [
+      "Purpose",
+      "Scope",
+      "Delivery roles",
+      "Sprint plan",
+      "Deliverables",
+      "Acceptance criteria",
+      "Change control",
+    ],
+    evidenceRequired: true,
+    reviewerRequired: true,
+  },
+  reviewChecklist: [
+    "The business intent is explicit and bounded",
+    "BA, PM, and Dev responsibilities are distinct",
+    "Scope and out-of-scope statements do not conflict",
+    "Sprint plan sequences delivery into inspectable increments",
+    "Acceptance criteria are testable",
+    "Change control is explicit",
+  ],
+  nonGoals: [
+    "Execute implementation automatically",
+    "Replace stakeholder approval",
+    "Create an unbounded roadmap",
+  ],
+};
+
 export const RELEASE_READINESS_RECIPE: SwarmRecipe = {
   id: "release-readiness",
   name: "Release Readiness",
@@ -1161,6 +1354,7 @@ export const SWARM_RECIPES: SwarmRecipe[] = [
   SEO_STRATEGY_RECIPE,
   RELEASE_READINESS_RECIPE,
   DOCS_AUDIT_RECIPE,
+  SOW_BUILDER_RECIPE,
 ];
 
 export function getSwarmRecipe(id: string): SwarmRecipe | undefined {

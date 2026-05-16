@@ -9,6 +9,7 @@ import {
   DOCS_AUDIT_RECIPE,
   RELEASE_READINESS_RECIPE,
   REPO_REVIEW_RECIPE,
+  SOW_BUILDER_RECIPE,
 } from "./swarm/recipes";
 
 vi.mock("@/shared/api/sentinel", () => ({
@@ -73,7 +74,7 @@ describe("ColonyRecipeEntry", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("exposes exactly the three validated recipes", () => {
+  it("exposes exactly the four validated recipes", () => {
     seedWorkItem();
     render(<ColonyRecipeEntry />);
 
@@ -83,6 +84,9 @@ describe("ColonyRecipeEntry", () => {
       within(fieldset).getByLabelText(/Release Readiness/i),
     ).toBeInTheDocument();
     expect(within(fieldset).getByLabelText(new RegExp(DOCS_AUDIT_RECIPE.name, "i"))).toBeInTheDocument();
+    expect(
+      within(fieldset).getByLabelText(new RegExp(SOW_BUILDER_RECIPE.name, "i")),
+    ).toBeInTheDocument();
 
     expect(within(fieldset).queryByLabelText(/PRD Builder/i)).toBeNull();
     expect(within(fieldset).queryByLabelText(/SEO Strategy/i)).toBeNull();
@@ -193,5 +197,39 @@ describe("ColonyRecipeEntry", () => {
       "API docs cover public surface",
     ]);
     expect(colony?.seats).toHaveLength(DOCS_AUDIT_RECIPE.specialists.length);
+  });
+
+  it("creates an Agile SOW Builder Colony when that recipe is selected", async () => {
+    const user = userEvent.setup();
+    const workItem = seedWorkItem(
+      makeWorkItem({
+        id: "wi-sow",
+        title: "Define governed SDLC engagement",
+        acceptanceCriteria: [
+          { id: "ac-1", text: "Scope is bounded" },
+          { id: "ac-2", text: "Sprint plan is sequenced" },
+        ],
+      }),
+    );
+    render(<ColonyRecipeEntry />);
+
+    await user.click(
+      screen.getByRole("radio", {
+        name: new RegExp(SOW_BUILDER_RECIPE.name, "i"),
+      }),
+    );
+    await user.click(
+      await screen.findByRole("button", { name: /Create Colony/i }),
+    );
+
+    const colony = colonyStore.getState().colonies[0];
+    expect(colony?.workItemId).toBe(workItem.id);
+    expect(colony?.recipeId).toBe(SOW_BUILDER_RECIPE.id);
+    expect(colony?.outputContract?.artifactType).toBe("sow");
+    expect(colony?.seats.map((seat) => seat.label)).toEqual([
+      "Business Analyst",
+      "Developer",
+      "Project Manager",
+    ]);
   });
 });
