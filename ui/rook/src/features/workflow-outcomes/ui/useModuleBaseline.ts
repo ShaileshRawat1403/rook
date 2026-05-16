@@ -60,6 +60,16 @@ export function useModuleBaseline(
   return state;
 }
 
+// Drops the cached baseline for one module version so the next mount
+// re-fetches. Called by the recorder after a run is persisted, so the
+// selector card no longer shows stale stats once a Colony closes.
+export function invalidateModuleBaseline(
+  moduleId: string,
+  moduleVersion: string,
+): void {
+  cache.delete(cacheKey(moduleId, moduleVersion));
+}
+
 // Test-only export: lets unit tests reset the per-process cache between cases.
 export function __resetModuleBaselineCache(): void {
   cache.clear();

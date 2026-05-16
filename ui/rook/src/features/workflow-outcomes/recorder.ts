@@ -11,6 +11,7 @@ import { writeWorkflowTelemetry } from "./api/workflowOutcomes";
 import { classifyWorkflowExceptions } from "./classifiers/exceptions";
 import { classifyWorkflowInterventions } from "./classifiers/interventions";
 import type { WorkflowOutcomeRecordedEventData } from "./eventTypes";
+import { invalidateModuleBaseline } from "./ui/useModuleBaseline";
 
 function countEvents(events: RookEvent[], type: RookEvent["type"]): number {
   return events.filter((event) => event.type === type).length;
@@ -125,4 +126,6 @@ export async function recordWorkflowOutcome(runId: string): Promise<void> {
     source: "rook",
     data,
   });
+
+  invalidateModuleBaseline(telemetry.moduleId, telemetry.moduleVersion);
 }
