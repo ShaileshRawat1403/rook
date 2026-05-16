@@ -6,7 +6,7 @@ The workflow outcomes layer turns governed workflow runs into comparable evidenc
 
 ## Final state
 
-As of `origin/main@0c2f36b7`, the v0.1 outcomes plan is complete.
+The v0.1 outcomes plan is complete through v0.1.3.
 
 | Slice | Final state |
 | --- | --- |
@@ -16,6 +16,7 @@ As of `origin/main@0c2f36b7`, the v0.1 outcomes plan is complete.
 | Step 8 | First UI consumer shipped at module selection; the scope lock now matches the hardened implementation. |
 | v0.1.1 hardening | Recorder visibility, cache invalidation, schema guard, retention policy, CI repair, and cross-boundary round-trip test shipped. |
 | v0.1.2 review fixes | Runtime telemetry shape guard plus prevalence-vs-instance correction shipped. |
+| v0.1.3 review-gap pass | Eager telemetry on `requestOutputChanges` (G1), trust posture derived from facts (G3), `updateColony` persistence (G4), source-event flush before terminal recording (G5). G2 was already addressed; G5 the only one where reviewer flagged it as defer-worthy. |
 
 ## What landed on `origin/main`
 
@@ -67,6 +68,8 @@ These are the details that only became obvious once telemetry met live runs and 
 
 1. **Decompose `outputContractSatisfied`.** The current boolean is readable only by triangulation. The moment operators compare many runs, named subconditions (`tasksComplete`, `requiredSectionsPresent`, `evidenceSatisfied`, `reviewerSatisfied`) will save diagnosis time.
 2. **Validate live policy/tool seams from real agent runs.** Unit coverage exists for `policy_exception` and `tool_exception`, but the first naturally model-backed run that emits `permission.requested`, `governance.evaluated`, or failed `tool.executed` events should be inspected as a runtime hardening pass.
+3. **Introduce `runAttemptId` for multi-attempt runs.** v0.1.3 made `requestOutputChanges` write telemetry so review-then-abandon is visible, but a close-after-fix still overwrites the intermediate `changes_requested` record. Once operators routinely iterate (request changes → fix → review → close), per-attempt history needs to be its own telemetry record keyed by `runAttemptId`, with `colonyId` as the parent. Schema change; defer until a real iteration pattern exists.
+4. **DAX trust contribution.** v0.1.3 derives trust posture from local facts. When DAX trust audit is real, the derivation either becomes a fallback when DAX is silent, or gets replaced entirely.
 
 ### Will hurt eventually
 
