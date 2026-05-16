@@ -8,6 +8,11 @@ dist/
 /target/
 src-tauri/target/
 
+# Tauri generated schemas — regenerated on every `cargo tauri` invocation.
+# Gitignored per the Tauri v2 template; mobile gen dirs (e.g. gen/android) are
+# intentionally NOT ignored and should be committed when present.
+src-tauri/gen/schemas/
+
 # Environment files
 .env
 .env.*
