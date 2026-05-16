@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { aggregateModuleBaseline } from "./baseline";
 import type {
   WorkflowException,
@@ -241,5 +241,35 @@ describe("aggregateModuleBaseline", () => {
       "[baseline] repo-review@1.0.0:",
       JSON.stringify(baseline, null, 2),
     );
+  });
+
+  it("skips runs with unsupported schemaVersion and warns once", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const valid = FIVE_REPO_REVIEW_RUNS[0];
+    const future: WorkflowRunTelemetry = {
+      ...valid,
+      runId: "future-1",
+      schemaVersion: "0.2.0" as WorkflowRunTelemetry["schemaVersion"],
+    };
+
+    const baseline = aggregateModuleBaseline(
+      "repo-review",
+      "1.0.0",
+      [valid, future],
+    );
+
+    expect(baseline.total).toBe(1);
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0][0]).toContain("skipped 1 telemetry record");
+    warn.mockRestore();
+  });
+
+  it("does not warn when every run is on the supported schemaVersion", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    aggregateModuleBaseline("repo-review", "1.0.0", FIVE_REPO_REVIEW_RUNS);
+
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
   });
 });

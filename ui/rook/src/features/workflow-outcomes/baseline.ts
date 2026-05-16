@@ -47,12 +47,24 @@ function average(values: number[]): number | null {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
+const SUPPORTED_SCHEMA_VERSION = "0.1.0";
+
 export function aggregateModuleBaseline(
   moduleId: string,
   moduleVersion: string,
   runs: WorkflowRunTelemetry[],
 ): ModuleBaseline {
-  const matching = runs.filter(
+  const versioned = runs.filter(
+    (run) => run.schemaVersion === SUPPORTED_SCHEMA_VERSION,
+  );
+  const skipped = runs.length - versioned.length;
+  if (skipped > 0) {
+    console.warn(
+      `[workflow-outcomes] skipped ${skipped} telemetry record(s) with unsupported schemaVersion; expected "${SUPPORTED_SCHEMA_VERSION}"`,
+    );
+  }
+
+  const matching = versioned.filter(
     (run) =>
       run.moduleId === moduleId && run.moduleVersion === moduleVersion,
   );
