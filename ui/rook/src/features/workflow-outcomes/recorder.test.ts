@@ -32,7 +32,7 @@ function quality(
 }
 
 describe("deriveTrust", () => {
-  it("returns blocked when a critical policy_exception is present", () => {
+  it("returns blocked when a high policy_exception is present", () => {
     const trust = deriveTrust(
       [makeException("policy_exception", "high")],
       quality({ reviewerApproved: true, evidenceSatisfied: true }),
@@ -84,7 +84,7 @@ describe("deriveTrust", () => {
 
   it("critical policy beats reviewer approval", () => {
     const trust = deriveTrust(
-      [makeException("policy_exception", "high")],
+      [makeException("policy_exception", "critical")],
       quality({ reviewerApproved: true, evidenceSatisfied: true }),
     );
 

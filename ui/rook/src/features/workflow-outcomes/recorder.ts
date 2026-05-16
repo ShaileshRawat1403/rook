@@ -71,16 +71,17 @@ export function deriveTrust(
 ): WorkflowRunTelemetry["trust"] {
   const reasons: string[] = [];
 
-  const hasCriticalPolicy = exceptions.some(
+  const hasBlockingPolicy = exceptions.some(
     (exception) =>
-      exception.class === "policy_exception" && exception.severity === "high",
+      exception.class === "policy_exception" &&
+      (exception.severity === "high" || exception.severity === "critical"),
   );
   const hasAnyException = exceptions.length > 0;
   const evidenceMissing = quality.evidenceSatisfied === false;
   const reviewerApproved = quality.reviewerApproved === true;
   const evidenceOk = quality.evidenceSatisfied === true;
 
-  if (hasCriticalPolicy) {
+  if (hasBlockingPolicy) {
     reasons.push("policy denied a critical action");
     return { posture: "blocked", reasons };
   }
