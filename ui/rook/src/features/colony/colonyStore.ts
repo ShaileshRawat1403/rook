@@ -170,7 +170,9 @@ function recordTerminalWorkflowOutcome(colony: ColonySession): void {
 
   void import("@/features/workflow-outcomes/recorder")
     .then(({ recordWorkflowOutcome }) => recordWorkflowOutcome(colony.id))
-    .catch(() => {});
+    .catch((error) => {
+      console.warn("[workflow-outcomes] recorder failed:", error);
+    });
 }
 
 export function isColonyClosed(colony?: ColonySession | null): boolean {
