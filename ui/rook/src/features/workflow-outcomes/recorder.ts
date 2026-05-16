@@ -8,6 +8,8 @@ import type {
   WorkflowRunTelemetry,
 } from "./types";
 import { writeWorkflowTelemetry } from "./api/workflowOutcomes";
+import { classifyWorkflowExceptions } from "./classifiers/exceptions";
+import { classifyWorkflowInterventions } from "./classifiers/interventions";
 import type { WorkflowOutcomeRecordedEventData } from "./eventTypes";
 
 function countEvents(events: RookEvent[], type: RookEvent["type"]): number {
@@ -62,7 +64,11 @@ function buildTelemetry(
   events: RookEvent[],
 ): WorkflowRunTelemetry {
   const readiness = getColonyOutputReadiness(colony);
-  const completedAt = colony.closedAt;
+  const completedAt =
+    colony.closedAt ??
+    (colony.lifecycleStatus === "blocked" ? colony.updatedAt : undefined);
+  const exceptions = classifyWorkflowExceptions(colony, events);
+  const interventions = classifyWorkflowInterventions(events, colony);
 
   return {
     schemaVersion: "0.1.0",
@@ -80,8 +86,8 @@ function buildTelemetry(
       tasksCompleted: colony.tasks.filter((task) => task.status === "done")
         .length,
       approvalRequests: countEvents(events, "permission.requested"),
-      humanInterventions: countEvents(events, "operator.intervened"),
-      exceptionsRaised: 0,
+      humanInterventions: interventions.length,
+      exceptionsRaised: exceptions.length,
       artifactsCreated: colony.artifacts?.length ?? 0,
     },
     quality: {
@@ -93,8 +99,8 @@ function buildTelemetry(
       posture: "open",
       reasons: [],
     },
-    exceptions: [],
-    interventions: [],
+    exceptions,
+    interventions,
   };
 }
 

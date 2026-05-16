@@ -14,6 +14,8 @@ import {
   decisionToResponse,
   toProposedAction,
 } from "./sentinel/permissionMapper";
+import { findColonyForSessionId } from "@/features/workflow-outcomes/runContext";
+import { recordWorkflowSourceEvent } from "@/features/workflow-outcomes/sourceEvents";
 
 let notificationHandler: AcpNotificationHandler | null = null;
 
@@ -43,15 +45,44 @@ function createClientCallbacks(): () => Client {
     requestPermission: async (
       args: RequestPermissionRequest,
     ): Promise<RequestPermissionResponse> => {
+      const action = toProposedAction(args);
+      const colony = findColonyForSessionId(args.sessionId);
+      if (colony) {
+        recordWorkflowSourceEvent({
+          runId: colony.id,
+          projectId: colony.projectId,
+          type: "permission.requested",
+          source: "agent",
+          data: {
+            actionId: action.id,
+            tool: action.tool,
+            target: action.target ?? null,
+          },
+        });
+      }
+
       const sentinel = await getSentinel();
       if (sentinel.mode === "off") {
         const optionId = args.options?.[0]?.optionId ?? "approve";
         return { outcome: { outcome: "selected", optionId } };
       }
 
-      const action = toProposedAction(args);
       try {
         const decision = await sentinel.judge(action);
+        if (colony) {
+          recordWorkflowSourceEvent({
+            runId: colony.id,
+            projectId: colony.projectId,
+            type: "governance.evaluated",
+            source: "dax",
+            data: {
+              actionId: decision.actionId,
+              decision: decision.decision,
+              risk: decision.risk,
+              reason: decision.reason,
+            },
+          });
+        }
         return decisionToResponse(decision, args);
       } catch (err) {
         console.warn(

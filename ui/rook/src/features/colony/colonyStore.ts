@@ -20,6 +20,7 @@ import {
   persistColonyState,
 } from "./colonyPersistence";
 import { getSwarmRecipe } from "./swarm/recipes";
+import { recordWorkflowSourceEvent } from "@/features/workflow-outcomes/sourceEvents";
 
 interface ColonyStoreState {
   colonies: ColonySession[];
@@ -164,6 +165,14 @@ type ColonyStore = ColonyStoreState & {
 
 const DEFAULT_ROLES: ColonyRole[] = ["planner", "worker", "reviewer"];
 
+function recordTerminalWorkflowOutcome(colony: ColonySession): void {
+  if (!colony.recipeId || !colony.recipeVersion) return;
+
+  void import("@/features/workflow-outcomes/recorder")
+    .then(({ recordWorkflowOutcome }) => recordWorkflowOutcome(colony.id))
+    .catch(() => {});
+}
+
 export function isColonyClosed(colony?: ColonySession | null): boolean {
   return (
     colony?.lifecycleStatus === "closed" ||
@@ -205,7 +214,8 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   },
 
   setColonyScope: (colonyId, scope) => {
-    if (isColonyClosed(get().colonies.find((c) => c.id === colonyId))) return;
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    if (isColonyClosed(colony)) return;
     const now = new Date().toISOString();
     const details = `${scope.locked ? "locked" : "editable"} ${scope.kind}: ${
       scope.path || scope.label
@@ -231,10 +241,25 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       sentinelMode: state.sentinelMode,
       events: state.events,
     });
+
+    if (colony?.scope) {
+      recordWorkflowSourceEvent({
+        runId: colonyId,
+        projectId: colony.projectId,
+        type: "operator.intervened",
+        source: "operator",
+        timestamp: now,
+        data: {
+          reason: "adjust_scope",
+          actor: "human_operator",
+        },
+      });
+    }
   },
 
   clearColonyScope: (colonyId) => {
-    if (isColonyClosed(get().colonies.find((c) => c.id === colonyId))) return;
+    const colony = get().colonies.find((c) => c.id === colonyId);
+    if (isColonyClosed(colony)) return;
     const now = new Date().toISOString();
     set((state) => ({
       colonies: state.colonies.map((c) =>
@@ -257,6 +282,20 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       sentinelMode: state.sentinelMode,
       events: state.events,
     });
+
+    if (colony?.scope) {
+      recordWorkflowSourceEvent({
+        runId: colonyId,
+        projectId: colony.projectId,
+        type: "operator.intervened",
+        source: "operator",
+        timestamp: now,
+        data: {
+          reason: "adjust_scope",
+          actor: "human_operator",
+        },
+      });
+    }
   },
 
   updateColonyMemory: (colonyId, patch) => {
@@ -599,6 +638,10 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       sentinelMode: state.sentinelMode,
       events: state.events,
     });
+
+    const closedColony =
+      state.colonies.find((candidate) => candidate.id === colonyId) ?? colony;
+    recordTerminalWorkflowOutcome(closedColony);
   },
 
   markOutputReviewed: (colonyId, note) => {
@@ -632,6 +675,19 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       activeColonyId: state.activeColonyId,
       sentinelMode: state.sentinelMode,
       events: state.events,
+    });
+
+    recordWorkflowSourceEvent({
+      runId: colonyId,
+      projectId: colony.projectId,
+      type: "operator.intervened",
+      source: "operator",
+      timestamp: now,
+      data: {
+        reason: "approve_final_output",
+        actor: "reviewer",
+        note: note ?? null,
+      },
     });
   },
 
@@ -667,15 +723,40 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
       sentinelMode: state.sentinelMode,
       events: state.events,
     });
+
+    recordWorkflowSourceEvent({
+      runId: colonyId,
+      projectId: colony.projectId,
+      type: "operator.intervened",
+      source: "operator",
+      timestamp: now,
+      data: {
+        reason: "request_output_changes",
+        actor: "reviewer",
+        note: note ?? null,
+      },
+    });
   },
 
   updateColony: (colonyId, updates) => {
+    const colony = get().colonies.find((c) => c.id === colonyId);
     const now = new Date().toISOString();
     set((state) => ({
       colonies: state.colonies.map((c) =>
         c.id === colonyId ? { ...c, ...updates, updatedAt: now } : c,
       ),
     }));
+
+    if (
+      colony &&
+      colony.lifecycleStatus !== "blocked" &&
+      updates.lifecycleStatus === "blocked"
+    ) {
+      const nextColony = get().colonies.find((c) => c.id === colonyId);
+      if (nextColony) {
+        recordTerminalWorkflowOutcome(nextColony);
+      }
+    }
   },
 
   deleteColony: (colonyId) => {

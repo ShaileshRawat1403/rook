@@ -20,6 +20,8 @@ import {
   subscribeToSessionRegistration,
 } from "./acpSessionTracker";
 import { perfLog } from "@/shared/lib/perfLog";
+import { findColonyForSessionId } from "@/features/workflow-outcomes/runContext";
+import { recordWorkflowSourceEvent } from "@/features/workflow-outcomes/sourceEvents";
 
 // Pre-set message ID for the next live stream per rook session
 const presetMessageIds = new Map<string, string>();
@@ -389,6 +391,24 @@ function handleLive(
         };
         store.setStreamingMessageId(sessionId, messageId);
         store.appendToStreamingMessage(sessionId, toolResponse);
+
+        if (update.status === "failed") {
+          const colony = findColonyForSessionId(sessionId);
+          if (colony) {
+            recordWorkflowSourceEvent({
+              runId: colony.id,
+              projectId: colony.projectId,
+              type: "tool.executed",
+              source: "tool",
+              data: {
+                status: "failed",
+                toolCallId: update.toolCallId,
+                toolName: toolRequest?.name ?? "",
+                isError: true,
+              },
+            });
+          }
+        }
       }
       break;
     }
