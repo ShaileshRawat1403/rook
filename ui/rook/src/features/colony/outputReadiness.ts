@@ -35,8 +35,17 @@ function matchesArtifactType(
 }
 
 function sectionPresent(section: string, artifacts: ColonyArtifact[]): boolean {
-  const needle = section.toLowerCase();
-  return artifacts.some((a) => a.content.toLowerCase().includes(needle));
+  const needle = section.trim().toLowerCase();
+  return artifacts.some((artifact) =>
+    artifact.content.split(/\r?\n/).some((line) => {
+      const trimmed = line.trim();
+      const markdownHeading = trimmed.match(/^#{1,6}\s+(.+?)\s*#*\s*$/);
+      const colonHeading = trimmed.match(/^(.+?)\s*:\s*$/);
+      const heading = markdownHeading?.[1] ?? colonHeading?.[1];
+
+      return heading?.trim().replace(/:$/, "").toLowerCase() === needle;
+    }),
+  );
 }
 
 function evidencePresent(artifacts: ColonyArtifact[]): boolean {
@@ -120,5 +129,47 @@ export function getColonyOutputReadiness(
     reviewerSatisfied,
     taskCompletion,
     status,
+  };
+}
+
+export type ColonyOutputReviewability = {
+  canApprove: boolean;
+  canRequestChanges: boolean;
+  reasons: string[];
+};
+
+export function getColonyOutputReviewability(
+  colony: ColonySession,
+): ColonyOutputReviewability {
+  const readiness = getColonyOutputReadiness(colony);
+  const artifacts = colony.artifacts ?? [];
+  const missingSections = readiness.requiredSections
+    .filter((section) => !section.present)
+    .map((section) => section.section);
+  const allTasksDone =
+    readiness.taskCompletion.total === readiness.taskCompletion.done;
+  const reasons: string[] = [];
+
+  if (!readiness.hasOutputContract) reasons.push("output contract missing");
+  if (!readiness.requiredArtifactPresent) {
+    reasons.push("required artifact missing");
+  }
+  if (missingSections.length > 0) {
+    reasons.push(`required sections missing: ${missingSections.join(", ")}`);
+  }
+  if (!readiness.evidenceSatisfied) {
+    reasons.push("required evidence not satisfied");
+  }
+  if (!allTasksDone) reasons.push("required tasks incomplete");
+
+  return {
+    canApprove:
+      readiness.hasOutputContract &&
+      readiness.requiredArtifactPresent &&
+      missingSections.length === 0 &&
+      readiness.evidenceSatisfied &&
+      allTasksDone,
+    canRequestChanges: artifacts.length > 0,
+    reasons,
   };
 }

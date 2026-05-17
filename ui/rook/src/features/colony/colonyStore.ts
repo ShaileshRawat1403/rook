@@ -21,6 +21,7 @@ import {
 } from "./colonyPersistence";
 import { getSwarmRecipe } from "./swarm/recipes";
 import { recordWorkflowSourceEvent } from "@/features/workflow-outcomes/sourceEvents";
+import { getColonyOutputReviewability } from "./outputReadiness";
 
 interface ColonyStoreState {
   colonies: ColonySession[];
@@ -660,6 +661,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   markOutputReviewed: (colonyId, note) => {
     const colony = get().colonies.find((c) => c.id === colonyId);
     if (!colony || isColonyClosed(colony)) return;
+    if (!getColonyOutputReviewability(colony).canApprove) return;
     const now = new Date().toISOString();
     const review: ColonyOutputReview = {
       status: "approved",
@@ -705,6 +707,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
   requestOutputChanges: (colonyId, note) => {
     const colony = get().colonies.find((c) => c.id === colonyId);
     if (!colony || isColonyClosed(colony)) return;
+    if (!getColonyOutputReviewability(colony).canRequestChanges) return;
     const now = new Date().toISOString();
     const review: ColonyOutputReview = {
       status: "changes_requested",

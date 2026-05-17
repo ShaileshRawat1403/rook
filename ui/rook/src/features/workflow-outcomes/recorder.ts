@@ -83,6 +83,7 @@ export function deriveTrust(
   const evidenceMissing = quality.evidenceSatisfied === false;
   const reviewerApproved = quality.reviewerApproved === true;
   const evidenceOk = quality.evidenceSatisfied === true;
+  const outputContractSatisfied = quality.outputContractSatisfied === true;
 
   if (hasBlockingPolicy) {
     reasons.push("policy denied a critical action");
@@ -95,9 +96,16 @@ export function deriveTrust(
     return { posture: "guarded", reasons };
   }
 
-  if (reviewerApproved && evidenceOk) {
-    reasons.push("reviewer approved, evidence satisfied");
+  if (reviewerApproved && evidenceOk && outputContractSatisfied) {
+    reasons.push(
+      "output contract satisfied, reviewer approved, evidence satisfied",
+    );
     return { posture: "verified", reasons };
+  }
+
+  if (reviewerApproved && evidenceOk && !outputContractSatisfied) {
+    reasons.push("output contract not satisfied");
+    return { posture: "guarded", reasons };
   }
 
   if (evidenceMissing) {

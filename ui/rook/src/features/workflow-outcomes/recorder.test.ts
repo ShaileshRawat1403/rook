@@ -57,13 +57,31 @@ describe("deriveTrust", () => {
     expect(trust.reasons[0]).toContain("evidence");
   });
 
-  it("returns verified when reviewer approved and evidence satisfied with no exceptions", () => {
+  it("returns verified when the output contract is satisfied, reviewer approved, and evidence is satisfied", () => {
     const trust = deriveTrust(
       [],
-      quality({ reviewerApproved: true, evidenceSatisfied: true }),
+      quality({
+        outputContractSatisfied: true,
+        reviewerApproved: true,
+        evidenceSatisfied: true,
+      }),
     );
 
     expect(trust.posture).toBe("verified");
+  });
+
+  it("returns guarded when reviewer approved and evidence satisfied but the output contract is not", () => {
+    const trust = deriveTrust(
+      [],
+      quality({
+        outputContractSatisfied: false,
+        reviewerApproved: true,
+        evidenceSatisfied: true,
+      }),
+    );
+
+    expect(trust.posture).toBe("guarded");
+    expect(trust.reasons).toContain("output contract not satisfied");
   });
 
   it("returns open when no exceptions and no positive signals either", () => {

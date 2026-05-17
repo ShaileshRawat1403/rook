@@ -24,6 +24,31 @@ function resetStore() {
   });
 }
 
+function createReviewableColony() {
+  const colony = colonyStore.getState().createColonyFromRecipe({
+    title: "Repo Review",
+    intent: "Review repo",
+    workItemId: "wi-review",
+    recipeId: REPO_REVIEW_RECIPE.id,
+    acceptanceCriteria: [{ id: "ac-1", text: "Review is complete" }],
+  });
+  const task = colony.tasks[0];
+  if (!task) throw new Error("expected review task");
+  colonyStore.getState().updateTaskStatus(colony.id, task.id, "done");
+  colonyStore.getState().createArtifact(colony.id, {
+    title: "Review",
+    kind: "review",
+    content: [
+      "# Executive summary",
+      "# Findings",
+      "# Recommendations",
+      "Evidence: inspected files",
+    ].join("\n"),
+  });
+
+  return colony;
+}
+
 describe("colonyStore — WorkItem anchoring (v0.5 F1)", () => {
   beforeEach(() => {
     resetStore();
@@ -508,7 +533,7 @@ describe("colonyStore — output review state (v0.8)", () => {
   });
 
   it("markOutputReviewed stores an approved outputReview", () => {
-    const colony = colonyStore.getState().createColony("c", "Task");
+    const colony = createReviewableColony();
     colonyStore.getState().markOutputReviewed(colony.id);
 
     const stored = colonyStore
@@ -519,7 +544,7 @@ describe("colonyStore — output review state (v0.8)", () => {
   });
 
   it("markOutputReviewed persists an optional note", () => {
-    const colony = colonyStore.getState().createColony("c", "Task");
+    const colony = createReviewableColony();
     colonyStore.getState().markOutputReviewed(colony.id, "lgtm");
 
     const stored = colonyStore
@@ -529,7 +554,7 @@ describe("colonyStore — output review state (v0.8)", () => {
   });
 
   it("markOutputReviewed appends an output_reviewed audit event", () => {
-    const colony = colonyStore.getState().createColony("c", "Task");
+    const colony = createReviewableColony();
     colonyStore.getState().markOutputReviewed(colony.id);
 
     const types = colonyStore.getState().events.map((e) => e.type);
@@ -538,6 +563,11 @@ describe("colonyStore — output review state (v0.8)", () => {
 
   it("requestOutputChanges stores a changes_requested outputReview", () => {
     const colony = colonyStore.getState().createColony("c", "Task");
+    colonyStore.getState().createArtifact(colony.id, {
+      title: "Draft",
+      kind: "doc",
+      content: "rough draft",
+    });
     colonyStore.getState().requestOutputChanges(colony.id);
 
     const stored = colonyStore
@@ -549,6 +579,11 @@ describe("colonyStore — output review state (v0.8)", () => {
 
   it("requestOutputChanges persists an optional note", () => {
     const colony = colonyStore.getState().createColony("c", "Task");
+    colonyStore.getState().createArtifact(colony.id, {
+      title: "Draft",
+      kind: "doc",
+      content: "rough draft",
+    });
     colonyStore.getState().requestOutputChanges(colony.id, "missing risks");
 
     const stored = colonyStore
@@ -559,6 +594,11 @@ describe("colonyStore — output review state (v0.8)", () => {
 
   it("requestOutputChanges appends an output_changes_requested audit event", () => {
     const colony = colonyStore.getState().createColony("c", "Task");
+    colonyStore.getState().createArtifact(colony.id, {
+      title: "Draft",
+      kind: "doc",
+      content: "rough draft",
+    });
     colonyStore.getState().requestOutputChanges(colony.id);
 
     const types = colonyStore.getState().events.map((e) => e.type);
@@ -566,7 +606,7 @@ describe("colonyStore — output review state (v0.8)", () => {
   });
 
   it("closed Colony does not allow markOutputReviewed", () => {
-    const colony = colonyStore.getState().createColony("c", "Task");
+    const colony = createReviewableColony();
     colonyStore.getState().closeColony(colony.id);
 
     colonyStore.getState().markOutputReviewed(colony.id, "should not apply");
@@ -582,6 +622,11 @@ describe("colonyStore — output review state (v0.8)", () => {
 
   it("closed Colony does not allow requestOutputChanges", () => {
     const colony = colonyStore.getState().createColony("c", "Task");
+    colonyStore.getState().createArtifact(colony.id, {
+      title: "Draft",
+      kind: "doc",
+      content: "rough draft",
+    });
     colonyStore.getState().closeColony(colony.id);
 
     colonyStore.getState().requestOutputChanges(colony.id, "should not apply");
@@ -631,5 +676,57 @@ describe("colonyStore — output review state (v0.8)", () => {
     expect(() =>
       colonyStore.getState().markOutputReviewed("legacy-no-review"),
     ).not.toThrow();
+  });
+
+  it("does not mark output reviewed before an artifact exists", () => {
+    const colony = colonyStore.getState().createColonyFromRecipe({
+      title: "Repo Review",
+      intent: "Review repo",
+      workItemId: "wi-review",
+      recipeId: REPO_REVIEW_RECIPE.id,
+    });
+
+    colonyStore.getState().markOutputReviewed(colony.id);
+
+    const stored = colonyStore
+      .getState()
+      .colonies.find((candidate) => candidate.id === colony.id);
+    expect(stored?.outputReview).toBeUndefined();
+  });
+
+  it("does not mark output reviewed when required sections are missing", () => {
+    const colony = colonyStore.getState().createColonyFromRecipe({
+      title: "Repo Review",
+      intent: "Review repo",
+      workItemId: "wi-review",
+      recipeId: REPO_REVIEW_RECIPE.id,
+      acceptanceCriteria: [{ id: "ac-1", text: "Review is complete" }],
+    });
+    const task = colony.tasks[0];
+    if (!task) throw new Error("expected review task");
+    colonyStore.getState().updateTaskStatus(colony.id, task.id, "done");
+    colonyStore.getState().createArtifact(colony.id, {
+      title: "Review",
+      kind: "review",
+      content: "# Executive summary\nEvidence: inspected files",
+    });
+
+    colonyStore.getState().markOutputReviewed(colony.id);
+
+    const stored = colonyStore
+      .getState()
+      .colonies.find((candidate) => candidate.id === colony.id);
+    expect(stored?.outputReview).toBeUndefined();
+  });
+
+  it("does not request output changes before an artifact exists", () => {
+    const colony = colonyStore.getState().createColony("c", "Task");
+
+    colonyStore.getState().requestOutputChanges(colony.id);
+
+    const stored = colonyStore
+      .getState()
+      .colonies.find((candidate) => candidate.id === colony.id);
+    expect(stored?.outputReview).toBeUndefined();
   });
 });

@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { getColonyOutputReadiness } from "./outputReadiness";
+import {
+  getColonyOutputReadiness,
+  getColonyOutputReviewability,
+} from "./outputReadiness";
 import type {
   ColonyArtifact,
   ColonyArtifactKind,
@@ -116,7 +119,7 @@ describe("getColonyOutputReadiness (v0.6)", () => {
     expect(getColonyOutputReadiness(colony).requiredArtifactPresent).toBe(true);
   });
 
-  it("matches required sections case-insensitively across artifact content", () => {
+  it("matches required sections case-insensitively from markdown headings", () => {
     const colony = makeColony({
       outputContract: makeContract({
         requiredSections: ["Summary", "Risks"],
@@ -129,6 +132,39 @@ describe("getColonyOutputReadiness (v0.6)", () => {
     expect(r.requiredSections).toEqual([
       { section: "Summary", present: true },
       { section: "Risks", present: false },
+    ]);
+  });
+
+  it("matches required sections from trailing-colon headings", () => {
+    const colony = makeColony({
+      outputContract: makeContract({
+        requiredSections: ["Purpose"],
+      }),
+      artifacts: [makeArtifact("review", "Purpose:\nDescribe the intent")],
+    });
+
+    const r = getColonyOutputReadiness(colony);
+
+    expect(r.requiredSections).toEqual([{ section: "Purpose", present: true }]);
+  });
+
+  it("does not match required sections from prose mentions", () => {
+    const colony = makeColony({
+      outputContract: makeContract({
+        requiredSections: ["Acceptance criteria"],
+      }),
+      artifacts: [
+        makeArtifact(
+          "review",
+          "This SOW includes purpose, scope, and acceptance criteria.",
+        ),
+      ],
+    });
+
+    const r = getColonyOutputReadiness(colony);
+
+    expect(r.requiredSections).toEqual([
+      { section: "Acceptance criteria", present: false },
     ]);
   });
 
@@ -169,6 +205,35 @@ describe("getColonyOutputReadiness (v0.6)", () => {
     expect(r.evidenceSatisfied).toBe(true);
     expect(r.reviewerSatisfied).toBe(true);
     expect(r.status).toBe("ready");
+  });
+
+  it("keeps SOW output not ready when a required heading is only mentioned in prose", () => {
+    const colony = makeColony({
+      outputContract: makeContract({
+        artifactType: "sow",
+        requiredSections: ["Purpose", "Acceptance criteria"],
+        evidenceRequired: true,
+      }),
+      tasks: [makeTask("done")],
+      artifacts: [
+        makeArtifact(
+          "doc",
+          [
+            "# Purpose",
+            "This SOW includes acceptance criteria.",
+            "Evidence: planning notes",
+          ].join("\n"),
+        ),
+      ],
+    });
+
+    const r = getColonyOutputReadiness(colony);
+
+    expect(r.requiredSections).toEqual([
+      { section: "Purpose", present: true },
+      { section: "Acceptance criteria", present: false },
+    ]);
+    expect(r.status).toBe("partially_ready");
   });
 
   it("keeps reviewerSatisfied=false when reviewerRequired=true and no approved handoff exists", () => {
@@ -275,5 +340,40 @@ describe("getColonyOutputReadiness (v0.6)", () => {
 
     expect(r.reviewerSatisfied).toBe(false);
     expect(r.status).not.toBe("ready");
+  });
+});
+
+describe("getColonyOutputReviewability", () => {
+  it("allows approval only after the declared output is reviewable", () => {
+    const colony = makeColony({
+      outputContract: makeContract({
+        requiredSections: ["Summary"],
+        evidenceRequired: true,
+      }),
+      tasks: [makeTask("done")],
+      artifacts: [
+        makeArtifact("review", "## Summary\nEvidence: inspected source files"),
+      ],
+    });
+
+    const reviewability = getColonyOutputReviewability(colony);
+
+    expect(reviewability.canApprove).toBe(true);
+    expect(reviewability.reasons).toEqual([]);
+  });
+
+  it("allows requesting changes for incomplete drafts", () => {
+    const colony = makeColony({
+      outputContract: makeContract({
+        requiredSections: ["Summary", "Risks"],
+        evidenceRequired: true,
+      }),
+      artifacts: [makeArtifact("review", "## Summary")],
+    });
+
+    const reviewability = getColonyOutputReviewability(colony);
+
+    expect(reviewability.canApprove).toBe(false);
+    expect(reviewability.canRequestChanges).toBe(true);
   });
 });
