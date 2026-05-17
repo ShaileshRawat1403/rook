@@ -26,3 +26,5 @@ export {
 
 export type { WorkflowPreflightFacts } from "./runPreflight";
 export { runPreflightFromFacts } from "./runPreflight";
+
+export { PreflightBanner } from "./ui/PreflightBanner";
