@@ -16,18 +16,24 @@ Read alongside:
 ## Core position
 
 ```text
-Rook is a governed agentic workspace for modular business workflows.
+Rook is a governed workflow execution workbench.
 ```
 
 Long form:
 
 ```text
-Rook turns repeatable work into reusable workflow modules, assigns bounded steps to specialist agents, keeps humans in review and approval loops, and records outcomes as evidence-backed operational knowledge.
+Rook turns structured work into reusable workflow modules, executes them through specialist agents, manages state transitions, keeps humans in review and approval loops, and records artifacts, evidence, and outcomes as operational knowledge.
 ```
 
-Rook is not primarily a coding assistant.
+Shorthand:
 
-Coding is one workflow category inside Rook. The product center is broader:
+```text
+If work can be modeled as a workflow, Rook should be able to execute it.
+```
+
+Rook is not primarily a coding assistant, and it is not limited to business workflows.
+
+The product center is workflow execution:
 
 ```text
 Work Item
@@ -45,7 +51,7 @@ Work Item
 
 Rook is:
 
-- a **workflow-first workspace** for repeatable business execution;
+- a **workflow-first workspace** for repeatable knowledge-work execution;
 - a **human-governed coordination layer** where agents do bounded work rather than act as an unbounded swarm;
 - a **module system** where successful work patterns become reusable, versioned methods;
 - a **visible execution surface** where artifacts, evidence, review, and trust posture remain inspectable;
@@ -103,6 +109,53 @@ The product grammar is:
 
 This model is intentionally domain-general. Repo review is one module. A Statement of Work is another. The system should not need a new architecture every time the artifact stops being code.
 
+## State management
+
+Rook is not only a module selector or agent runner. Rook manages workflow state.
+
+A workflow becomes executable when Rook can track:
+
+- a **subject**: `Work Item`;
+- a **method**: `Workflow Module`;
+- an **execution space**: `Colony`;
+- **actors**: humans, agents, Sentinel;
+- **states**: what is true now;
+- **transitions**: what is allowed next;
+- **outputs**: artifacts;
+- **proof**: evidence;
+- **memory**: telemetry and outcome history.
+
+The current codebase already contains several concrete state layers:
+
+| Layer | Current code reality |
+| --- | --- |
+| **Colony** | `draft`, `active`, `blocked`, `reviewing`, `closed`, `archived` |
+| **Task** | `todo`, `assigned`, `inProgress`, `blocked`, `done` |
+| **Review** | `approved`, `changes_requested` |
+| **Output readiness** | `not_ready`, `partially_ready`, `ready` |
+| **Run outcome** | `succeeded`, `partially_succeeded`, `changes_requested`, `blocked`, `aborted`, `failed` |
+
+The codebase is therefore already **stateful**, but it is not yet fully **state-explicit**:
+
+- `WorkItem` does not yet carry a workflow lifecycle state.
+- Workflow modules are versioned recipes, not entities with their own released/deprecated lifecycle.
+- Artifact lifecycle is inferred from readiness rather than modeled directly.
+- Allowed transitions live across store methods and UI behavior rather than in one reusable transition grammar.
+- Multi-attempt execution is still lossy because there is no `runAttemptId`.
+
+This is the next important distinction:
+
+```text
+Without state, Rook is orchestration.
+With explicit state and controlled transitions, Rook becomes a workflow execution workbench.
+```
+
+Canonical equation:
+
+```text
+Workflow = State + Steps + Roles + Rules + Artifacts + Evidence + Transitions
+```
+
 ## Why the SOW Builder matters
 
 `sow-builder@1.0.0` is the first explicit proof that Rook is already broader than coding-agent software.
@@ -145,16 +198,19 @@ is technically true but strategically too small.
 The newer category:
 
 ```text
-governed business workflow workbench
+workflow execution workbench for agent-assisted knowledge work
 ```
 
 better explains the system being built:
 
 - repo workflows;
+- business workflows;
 - planning workflows;
 - discovery workflows;
 - proposal workflows;
-- client-delivery workflows;
+- delivery workflows;
+- research workflows;
+- governance workflows;
 - later, any repeatable knowledge work that benefits from specialist agents, human review, and recorded outcomes.
 
 ## Module ladder
@@ -213,13 +269,13 @@ Premature extraction would turn one good module into an abstraction tax.
 Preferred one-line description:
 
 ```text
-Rook is a governed agentic workspace for modular business workflows.
+Rook is a governed workflow execution workbench.
 ```
 
 Preferred README paragraph:
 
 ```text
-Rook is a workflow-first agentic workspace for business execution. It turns repeatable work into modular workflows, assigns bounded steps to specialist agents, keeps humans in review and approval loops, and records outcomes as reusable knowledge.
+Rook is a workflow-first agentic workspace for governed execution. It turns structured work into reusable workflow modules, executes them through specialist agents, manages state transitions, keeps humans in review and approval loops, and records artifacts, evidence, and outcomes as reusable knowledge.
 ```
 
 Supporting sentence:
@@ -230,13 +286,14 @@ Rook can support coding and repo workflows, but its core model is broader: Work 
 
 ## Product principles
 
-1. **Coding is a module category, not the product center.**
-2. **Every repeatable workflow should be expressible as a versioned module.**
-3. **Agents execute bounded steps; humans retain judgment and approval.**
-4. **Artifacts matter more than chat transcripts.**
-5. **Evidence and outcomes are part of the product, not afterthoughts.**
-6. **Reusable knowledge should emerge from runs, not from speculative abstractions.**
-7. **Rook coordinates visible work; DAX contributes governance, evidence, and trust.**
+1. **Workflow execution is the product.**
+2. **Business execution is one market; coding is one workflow type.**
+3. **Every repeatable workflow should be expressible as a versioned module.**
+4. **Agents execute bounded steps; humans retain judgment and approval.**
+5. **Artifacts matter more than chat transcripts.**
+6. **Evidence and outcomes are part of the product, not afterthoughts.**
+7. **Reusable knowledge should emerge from runs, not from speculative abstractions.**
+8. **Rook coordinates visible work; DAX contributes governance, evidence, and trust.**
 
 ## Near-term implications
 
@@ -249,17 +306,18 @@ Rook can support coding and repo workflows, but its core model is broader: Work 
 
 ### Next
 
-1. Run `sow-builder@1.0.0` in real use and inspect the produced SOW artifact, review loop, and telemetry.
+1. Run `sow-builder@1.0.0` in real use and inspect the produced SOW artifact, review loop, telemetry, and transition path.
 2. Build one upstream business module next, preferably `discovery-brief@0.1.0`.
-3. Reassess reusable role extraction only after multiple business modules expose the same stable role grammar.
-4. Update the README once the positioning has survived at least one more business module, so public language follows demonstrated product reality rather than aspiration.
+3. Treat explicit state management as a design thread for the next operating-model revision: Work Item lifecycle, module lifecycle, artifact lifecycle, allowed transitions, and `runAttemptId`.
+4. Reassess reusable role extraction only after multiple business modules expose the same stable role grammar.
+5. Update the README once the positioning has survived at least one more non-coding workflow module, so public language follows demonstrated product reality rather than aspiration.
 
 ## North star
 
 ```text
 Rook is not a coding assistant.
 
-Rook is a governed business workflow workbench.
+Rook is a governed workflow execution workbench.
 
 It turns repeatable work into modules.
 Modules create specialist agent tasks.
@@ -268,6 +326,7 @@ Humans review decisions.
 Evidence and outcomes are recorded.
 Successful patterns become reusable workflows.
 
-Coding is one module.
-Business execution is the product.
+Workflow execution is the product.
+Business execution is one market.
+Coding is one workflow type.
 ```
