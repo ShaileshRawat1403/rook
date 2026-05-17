@@ -23,3 +23,6 @@ export {
   checkProviderRuntime,
   checkRequiredInputs,
 } from "./checks";
+
+export type { WorkflowPreflightFacts } from "./runPreflight";
+export { runPreflightFromFacts } from "./runPreflight";
