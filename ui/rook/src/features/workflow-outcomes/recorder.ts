@@ -18,7 +18,10 @@ function countEvents(events: RookEvent[], type: RookEvent["type"]): number {
   return events.filter((event) => event.type === type).length;
 }
 
-function durationMs(startedAt: string, completedAt?: string): number | undefined {
+function durationMs(
+  startedAt: string,
+  completedAt?: string,
+): number | undefined {
   if (!completedAt) return undefined;
 
   const duration = Date.parse(completedAt) - Date.parse(startedAt);

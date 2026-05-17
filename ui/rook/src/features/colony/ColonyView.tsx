@@ -132,11 +132,10 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
     [createColony],
   );
 
-  const [showIncompleteWarning, setShowIncompleteWarning] = useState(false);
-
-  useEffect(() => {
-    setShowIncompleteWarning(false);
-  }, [activeColonyId]);
+  const [incompleteWarningColonyId, setIncompleteWarningColonyId] = useState<
+    string | null
+  >(null);
+  const showIncompleteWarning = incompleteWarningColonyId === activeColonyId;
 
   const handleCloseColony = useCallback(() => {
     if (!activeColony || !activeColonyId) return;
@@ -145,7 +144,7 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
       closeColony(activeColonyId);
       return;
     }
-    setShowIncompleteWarning(true);
+    setIncompleteWarningColonyId(activeColonyId);
   }, [activeColony, activeColonyId, closeColony]);
 
   const handleConfirmClose = useCallback(() => {
@@ -155,11 +154,11 @@ export function ColonyView({ onNavigate }: ColonyViewProps) {
       activeColonyId,
       `Closed with incomplete output contract: ${readiness.status}`,
     );
-    setShowIncompleteWarning(false);
+    setIncompleteWarningColonyId(null);
   }, [activeColony, activeColonyId, closeColony]);
 
   const handleCancelClose = useCallback(() => {
-    setShowIncompleteWarning(false);
+    setIncompleteWarningColonyId(null);
   }, []);
 
   const colonyClosed = isColonyClosed(activeColony);
@@ -489,6 +488,7 @@ Do not add scope beyond the assigned task.`;
           <div className="flex shrink-0 flex-wrap gap-2 text-xs">
             {colonyClosed && (
               <span
+                role="status"
                 aria-label="Colony status"
                 className="rounded-full border border-border bg-muted px-3 py-1.5 font-medium"
               >

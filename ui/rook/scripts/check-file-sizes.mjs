@@ -71,9 +71,29 @@ const EXCEPTIONS = {
       "Complete provider catalog with all model providers including Gemini OAuth/CLI and agent providers.",
   },
   "src/features/chat/ui/ChatInput.tsx": {
-    limit: 700,
+    limit: 730,
     justification:
       "Composer hosts mention autocomplete, slash command surface, attachment drop targets, queue UI, sticky persona chip, and toolbar wiring all in one keyboard-driven control surface.",
+  },
+  "src/features/colony/ColonyView.tsx": {
+    limit: 1100,
+    justification:
+      "Colony still composes the six-tab governed workspace, close-warning flow, seat/task/handoff actions, and adoption bridge UI in one transitional surface.",
+  },
+  "src/features/colony/colonyStore.ts": {
+    limit: 1520,
+    justification:
+      "Colony state, lifecycle actions, audit events, persistence, and workflow-outcome integration remain centralized until the store is split by domain.",
+  },
+  "src/features/colony/colonyStore.test.ts": {
+    limit: 650,
+    justification:
+      "Colony lifecycle, persistence, readiness, review, and closed-state regressions currently live in one broad store suite.",
+  },
+  "src/features/colony/swarm/recipes.ts": {
+    limit: 1400,
+    justification:
+      "Versioned swarm module definitions are intentionally colocated while the recipe catalog remains hand-authored data rather than split resources.",
   },
   "src-tauri/src/commands/work_items.rs": {
     limit: 560,

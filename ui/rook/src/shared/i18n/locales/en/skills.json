@@ -13,6 +13,19 @@
     "newTitle": "New Skill",
     "saving": "Saving..."
   },
+  "suggestions": {
+    "approvalRequired": "Approval Required",
+    "approve": "Approve",
+    "approvedForMessage": "Approved for this message.",
+    "contextUsed": "Context used",
+    "intro": "Rook can suggest skills for this request. Nothing runs until you approve.",
+    "output": "Output",
+    "risk": "Risk",
+    "skip": "Skip",
+    "skipped": "Skipped.",
+    "suggestedSkill": "Suggested Skill",
+    "whySuggested": "Why suggested"
+  },
   "view": {
     "deleteDescription": "Are you sure you want to delete \"{{name}}\"? This cannot be undone.",
     "deleteTitle": "Delete skill?",

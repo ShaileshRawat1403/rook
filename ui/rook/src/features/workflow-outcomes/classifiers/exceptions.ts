@@ -60,8 +60,7 @@ function toolExceptions(events: RookEvent[]): WorkflowException[] {
 
     const data = asRecord(event.data);
     const failed =
-      stringField(data, "status") === "failed" ||
-      booleanField(data, "isError");
+      stringField(data, "status") === "failed" || booleanField(data, "isError");
 
     if (!failed) return [];
 

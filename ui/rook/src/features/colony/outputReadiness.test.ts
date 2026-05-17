@@ -113,9 +113,7 @@ describe("getColonyOutputReadiness (v0.6)", () => {
       artifacts: [makeArtifact("doc", "## Purpose\n## Scope")],
     });
 
-    expect(getColonyOutputReadiness(colony).requiredArtifactPresent).toBe(
-      true,
-    );
+    expect(getColonyOutputReadiness(colony).requiredArtifactPresent).toBe(true);
   });
 
   it("matches required sections case-insensitively across artifact content", () => {

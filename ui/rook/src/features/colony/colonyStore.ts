@@ -362,6 +362,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
         };
         const existing = memory[section];
         if (!Array.isArray(existing)) return c;
+        if (existing.includes(trimmed)) return c;
         return {
           ...c,
           memory: {
@@ -667,9 +668,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
     };
     set((state) => ({
       colonies: state.colonies.map((c) =>
-        c.id !== colonyId
-          ? c
-          : { ...c, outputReview: review, updatedAt: now },
+        c.id !== colonyId ? c : { ...c, outputReview: review, updatedAt: now },
       ),
       events: [
         ...state.events,
@@ -714,9 +713,7 @@ export const colonyStore = create<ColonyStore>((set, get) => ({
     };
     set((state) => ({
       colonies: state.colonies.map((c) =>
-        c.id !== colonyId
-          ? c
-          : { ...c, outputReview: review, updatedAt: now },
+        c.id !== colonyId ? c : { ...c, outputReview: review, updatedAt: now },
       ),
       events: [
         ...state.events,

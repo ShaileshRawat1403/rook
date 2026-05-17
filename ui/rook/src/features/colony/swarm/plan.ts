@@ -39,6 +39,15 @@ function isEditable(plan: SwarmPlan): boolean {
   return true;
 }
 
+function createPlanChange(
+  change: Omit<SwarmPlanChange, "id">,
+): SwarmPlanChange {
+  return {
+    id: crypto.randomUUID(),
+    ...change,
+  };
+}
+
 export function disableAssignment(
   plan: SwarmPlan,
   assignmentId: string,
@@ -59,13 +68,13 @@ export function disableAssignment(
     return a;
   });
 
-  const change: SwarmPlanChange = {
+  const change = createPlanChange({
     field: "enabled",
     previousValue: assignment.enabled === true ? "true" : "false",
     newValue: "false",
     reason: "User disabled specialist",
     changedBy: "user",
-  };
+  });
 
   return {
     plan: {
@@ -97,13 +106,13 @@ export function enableAssignment(
     return a;
   });
 
-  const change: SwarmPlanChange = {
+  const change = createPlanChange({
     field: "enabled",
     previousValue: assignment.enabled === false ? "false" : "true",
     newValue: "true",
     reason: "User enabled specialist",
     changedBy: "user",
-  };
+  });
 
   return {
     plan: {
@@ -136,13 +145,13 @@ export function updateAssignmentPrompt(
     return a;
   });
 
-  const change: SwarmPlanChange = {
+  const change = createPlanChange({
     field: "taskPrompt",
     previousValue: assignment.taskPrompt,
     newValue: newPrompt,
     reason: "User edited specialist prompt",
     changedBy: "user",
-  };
+  });
 
   return {
     plan: {
@@ -195,13 +204,13 @@ export function reorderAssignments(
     })
     .filter((a): a is SwarmAssignment => a !== null);
 
-  const change: SwarmPlanChange = {
+  const change = createPlanChange({
     field: "order",
     previousValue: plan.assignments.map((a) => a.id).join(","),
     newValue: orderedAssignmentIds.join(","),
     reason: "User reordered specialists",
     changedBy: "user",
-  };
+  });
 
   return {
     plan: {
@@ -229,13 +238,13 @@ export function addAssignment(
   const maxOrder = Math.max(...plan.assignments.map((a) => a.order), -1);
   const newAssignment = { ...assignment, order: maxOrder + 1 };
 
-  const change: SwarmPlanChange = {
+  const change = createPlanChange({
     field: "assignments",
     previousValue: "",
     newValue: assignment.id,
     reason: "User added specialist",
     changedBy: "user",
-  };
+  });
 
   return {
     plan: {
@@ -260,13 +269,13 @@ export function removeAssignment(
     return { plan, change: null, error: "Assignment not found" };
   }
 
-  const change: SwarmPlanChange = {
+  const change = createPlanChange({
     field: "assignments",
     previousValue: assignment.id,
     newValue: "",
     reason: "User removed specialist",
     changedBy: "user",
-  };
+  });
 
   return {
     plan: {
@@ -313,13 +322,13 @@ export function markPromptsCopied(plan: SwarmPlan): SwarmPlanEditResult {
       ...plan,
       status: "prompts_copied",
     },
-    change: {
+    change: createPlanChange({
       field: "status",
       previousValue: "approved",
       newValue: "prompts_copied",
       reason: "User copied specialist prompts",
       changedBy: "user",
-    },
+    }),
   };
 }
 

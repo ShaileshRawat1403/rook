@@ -35,22 +35,22 @@ export function SentinelBadge() {
 
   useEffect(() => {
     let cancelled = false;
-    
+
     const fetchMode = () => {
       void getConfiguredSentinelMode().then((nextMode) => {
         if (!cancelled) setMode(nextMode);
       });
     };
-    
+
     fetchMode();
-    
+
     const listener = () => fetchMode();
     if (typeof window !== "undefined") {
       window.addEventListener("sentinel-mode-changed", listener);
       // Also listen to storage events to sync across tabs if needed
       window.addEventListener("storage", listener);
     }
-    
+
     return () => {
       cancelled = true;
       if (typeof window !== "undefined") {

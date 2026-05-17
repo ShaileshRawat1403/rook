@@ -90,9 +90,14 @@ export function SwarmPanel({
             onCreateTask={
               onCreateTask
                 ? (id, role, _prompt) => {
-                    const assignment = currentPlan.assignments.find((a) => a.id === id);
+                    const assignment = currentPlan.assignments.find(
+                      (a) => a.id === id,
+                    );
                     if (assignment) {
-                      onCreateTask(`${role}: ${assignment.taskPrompt.slice(0, 50)}`, assignment.taskPrompt);
+                      onCreateTask(
+                        `${role}: ${assignment.taskPrompt.slice(0, 50)}`,
+                        assignment.taskPrompt,
+                      );
                     }
                   }
                 : undefined
@@ -100,7 +105,9 @@ export function SwarmPanel({
             onPrepareHandoff={
               onPrepareHandoff
                 ? (id, role, _prompt) => {
-                    const assignment = currentPlan.assignments.find((a) => a.id === id);
+                    const assignment = currentPlan.assignments.find(
+                      (a) => a.id === id,
+                    );
                     if (assignment) {
                       onPrepareHandoff(id, role, assignment.taskPrompt);
                     }

@@ -25,7 +25,10 @@ import { ChatInputAttachments } from "./ChatInputAttachments";
 import { ChatInputCommands, type SlashCommandId } from "./ChatInputCommands";
 import { getCatalogEntry } from "@/features/providers/providerCatalog";
 import type { ModelLoadState } from "../stores/chatSessionStore";
-import { suggestSkills, type SkillSuggestion } from "@/features/skills/registry/suggestion";
+import {
+  suggestSkills,
+  type SkillSuggestion,
+} from "@/features/skills/registry/suggestion";
 import type { RookSkill } from "@/features/skills/registry/types";
 import { SkillSuggestionList } from "@/features/skills/ui/SkillSuggestionList";
 
@@ -120,7 +123,9 @@ export function ChatInput({
   const { t } = useTranslation("chat");
   const [text, setTextRaw] = useState(initialValue);
   const [suggestedSkills, setSuggestedSkills] = useState<SkillSuggestion[]>([]);
-  const [skillStatuses, setSkillStatuses] = useState<Record<string, "approved" | "skipped">>({});
+  const [skillStatuses, setSkillStatuses] = useState<
+    Record<string, "approved" | "skipped">
+  >({});
   const setText = useCallback(
     (value: string) => {
       setTextRaw(value);

@@ -83,7 +83,9 @@ describe("ColonyRecipeEntry", () => {
     expect(
       within(fieldset).getByLabelText(/Release Readiness/i),
     ).toBeInTheDocument();
-    expect(within(fieldset).getByLabelText(new RegExp(DOCS_AUDIT_RECIPE.name, "i"))).toBeInTheDocument();
+    expect(
+      within(fieldset).getByLabelText(new RegExp(DOCS_AUDIT_RECIPE.name, "i")),
+    ).toBeInTheDocument();
     expect(
       within(fieldset).getByLabelText(new RegExp(SOW_BUILDER_RECIPE.name, "i")),
     ).toBeInTheDocument();
@@ -105,7 +107,11 @@ describe("ColonyRecipeEntry", () => {
       String(RELEASE_READINESS_RECIPE.finalArtifact.requiredSections.length),
     );
 
-    await user.click(screen.getByRole("radio", { name: new RegExp(DOCS_AUDIT_RECIPE.name, "i") }));
+    await user.click(
+      screen.getByRole("radio", {
+        name: new RegExp(DOCS_AUDIT_RECIPE.name, "i"),
+      }),
+    );
     expectedOutputDt = screen.getByText("Expected output");
     requiredSectionsDt = screen.getByText("Required sections");
     expect(expectedOutputDt.nextElementSibling).toHaveTextContent("audit");
@@ -183,7 +189,11 @@ describe("ColonyRecipeEntry", () => {
     );
     render(<ColonyRecipeEntry />);
 
-    await user.click(screen.getByRole("radio", { name: new RegExp(DOCS_AUDIT_RECIPE.name, "i") }));
+    await user.click(
+      screen.getByRole("radio", {
+        name: new RegExp(DOCS_AUDIT_RECIPE.name, "i"),
+      }),
+    );
     await user.click(
       await screen.findByRole("button", { name: /Create Colony/i }),
     );

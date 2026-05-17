@@ -4,7 +4,9 @@ import { ModuleBaselineCard } from "./ModuleBaselineCard";
 import type { ModuleBaselineState } from "./useModuleBaseline";
 import type { ModuleBaseline } from "../baseline";
 
-const mockUseModuleBaseline = vi.hoisted(() => vi.fn<() => ModuleBaselineState>());
+const mockUseModuleBaseline = vi.hoisted(() =>
+  vi.fn<() => ModuleBaselineState>(),
+);
 
 vi.mock("./useModuleBaseline", () => ({
   useModuleBaseline: mockUseModuleBaseline,

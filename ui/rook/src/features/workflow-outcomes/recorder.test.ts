@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { deriveTrust } from "./recorder";
-import type {
-  WorkflowException,
-  WorkflowRunTelemetry,
-} from "./types";
+import type { WorkflowException, WorkflowRunTelemetry } from "./types";
 
 function makeException(
   exceptionClass: WorkflowException["class"],

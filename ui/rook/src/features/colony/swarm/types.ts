@@ -37,13 +37,7 @@ export type SwarmSpecialist = {
 };
 
 export type SwarmArtifactContract = {
-  artifactType:
-    | "report"
-    | "prd"
-    | "strategy"
-    | "checklist"
-    | "audit"
-    | "sow";
+  artifactType: "report" | "prd" | "strategy" | "checklist" | "audit" | "sow";
   format: SwarmOutputFormat;
   requiredSections: string[];
   evidenceRequired: boolean;
@@ -79,6 +73,7 @@ export interface SwarmRecipe {
 }
 
 export interface SwarmPlanChange {
+  id: string;
   field: string;
   previousValue: string;
   newValue: string;

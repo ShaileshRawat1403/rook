@@ -15,6 +15,7 @@ const VALIDATED_RECIPES: readonly SwarmRecipe[] = [
   DOCS_AUDIT_RECIPE,
   SOW_BUILDER_RECIPE,
 ];
+const DEFAULT_VALIDATED_RECIPE = REPO_REVIEW_RECIPE;
 
 export function ColonyRecipeEntry() {
   const items = useWorkItemStore((s) => s.items);
@@ -27,7 +28,7 @@ export function ColonyRecipeEntry() {
     null,
   );
   const [selectedRecipeId, setSelectedRecipeId] = useState<string>(
-    VALIDATED_RECIPES[0]!.id,
+    DEFAULT_VALIDATED_RECIPE.id,
   );
 
   useEffect(() => {
@@ -41,14 +42,13 @@ export function ColonyRecipeEntry() {
   }, [items, selectedWorkItemId]);
 
   const selectedWorkItem = useMemo(
-    () =>
-      items.find((it) => it.id === selectedWorkItemId) ?? items[0] ?? null,
+    () => items.find((it) => it.id === selectedWorkItemId) ?? items[0] ?? null,
     [items, selectedWorkItemId],
   );
 
   const selectedRecipe =
     VALIDATED_RECIPES.find((r) => r.id === selectedRecipeId) ??
-    VALIDATED_RECIPES[0]!;
+    DEFAULT_VALIDATED_RECIPE;
 
   if (items.length === 0 || !selectedWorkItem) {
     return (

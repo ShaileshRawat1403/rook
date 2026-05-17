@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as gitApi from "@/shared/api/git";
 import { ContextPanel } from "../ContextPanel";
@@ -524,12 +524,15 @@ describe("ContextPanel", () => {
     const worktreeNameInput = screen.getByLabelText("Worktree name");
     const branchNameInput = screen.getByLabelText("Branch name");
 
-    await user.type(worktreeNameInput, "demo");
+    fireEvent.change(worktreeNameInput, { target: { value: "demo" } });
     expect(branchNameInput).toHaveValue("demo");
 
-    await user.clear(branchNameInput);
-    await user.type(branchNameInput, "custom-branch");
-    await user.type(worktreeNameInput, "-next");
+    fireEvent.change(branchNameInput, {
+      target: { value: "custom-branch" },
+    });
+    fireEvent.change(worktreeNameInput, {
+      target: { value: "demo-next" },
+    });
 
     expect(worktreeNameInput).toHaveValue("demo-next");
     expect(branchNameInput).toHaveValue("custom-branch");

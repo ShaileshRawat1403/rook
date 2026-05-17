@@ -1,6 +1,16 @@
 import { create } from "zustand";
 import type { SwarmPlan, SwarmRecipe, SwarmAssignment } from "./types";
-import { createSwarmPlan as createPlan, disableAssignment, enableAssignment, updateAssignmentPrompt, reorderAssignments, addAssignment, removeAssignment, approvePlan, markPromptsCopied } from "./plan";
+import {
+  createSwarmPlan as createPlan,
+  disableAssignment,
+  enableAssignment,
+  updateAssignmentPrompt,
+  reorderAssignments,
+  addAssignment,
+  removeAssignment,
+  approvePlan,
+  markPromptsCopied,
+} from "./plan";
 import type { SwarmPlanEditResult } from "./types";
 
 const getError = (result: SwarmPlanEditResult): string | undefined => {
@@ -32,9 +42,11 @@ export const useSwarmStore = create<SwarmStore>((set, get) => ({
   currentPlan: null,
   error: null,
 
-  selectRecipe: (recipe) => set({ selectedRecipe: recipe, currentPlan: null, error: null }),
+  selectRecipe: (recipe) =>
+    set({ selectedRecipe: recipe, currentPlan: null, error: null }),
 
-  clearSelection: () => set({ selectedRecipe: null, currentPlan: null, error: null }),
+  clearSelection: () =>
+    set({ selectedRecipe: null, currentPlan: null, error: null }),
 
   generatePlan: (userIntent) => {
     const { selectedRecipe } = get();
@@ -62,7 +74,12 @@ export const useSwarmStore = create<SwarmStore>((set, get) => ({
       order: index,
     }));
 
-    const plan = createPlan(selectedRecipe.id, selectedRecipe.version, userIntent, assignments);
+    const plan = createPlan(
+      selectedRecipe.id,
+      selectedRecipe.version,
+      userIntent,
+      assignments,
+    );
     set({ currentPlan: plan, error: null });
   },
 
@@ -70,7 +87,9 @@ export const useSwarmStore = create<SwarmStore>((set, get) => ({
     const { currentPlan } = get();
     if (!currentPlan) return;
 
-    const assignment = currentPlan.assignments.find((a) => a.id === assignmentId);
+    const assignment = currentPlan.assignments.find(
+      (a) => a.id === assignmentId,
+    );
     if (!assignment) return;
 
     const result = assignment.enabled

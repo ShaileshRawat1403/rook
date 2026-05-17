@@ -1,4 +1,5 @@
 import type React from "react";
+import { useTranslation } from "react-i18next";
 import type { RookSkill } from "../registry/types";
 import { SkillSuggestionCard } from "./SkillSuggestionCard";
 
@@ -15,6 +16,8 @@ export const SkillSuggestionList: React.FC<SkillSuggestionListProps> = ({
   onApprove,
   onSkip,
 }) => {
+  const { t } = useTranslation("skills");
+
   if (!suggestions || suggestions.length === 0) {
     return null;
   }
@@ -22,7 +25,7 @@ export const SkillSuggestionList: React.FC<SkillSuggestionListProps> = ({
   return (
     <div className="flex flex-col gap-4 mb-4 mx-4">
       <div className="text-muted-foreground font-medium">
-        Rook can suggest skills for this request. Nothing runs until you approve.
+        {t("suggestions.intro")}
       </div>
       {suggestions.map(({ skill, whySuggested }) => (
         <SkillSuggestionCard

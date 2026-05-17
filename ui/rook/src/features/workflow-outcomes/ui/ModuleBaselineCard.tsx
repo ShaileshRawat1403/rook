@@ -80,9 +80,7 @@ export function ModuleBaselineCard({
   return (
     <div className="mt-1 space-y-0.5 text-[11px] text-muted-foreground">
       <p>
-        <span className="font-medium text-foreground/80">
-          {baseline.total}
-        </span>{" "}
+        <span className="font-medium text-foreground/80">{baseline.total}</span>{" "}
         {baseline.total === 1 ? "run" : "runs"} ·{" "}
         <span className="font-medium text-foreground/80">
           {formatPercent(baseline.reviewerApprovalRate)}

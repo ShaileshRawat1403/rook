@@ -321,8 +321,15 @@ describe("colonyStore — lifecycle and close (v0.5 F7)", () => {
       workItemId: "wi-1",
       recipeId: REPO_REVIEW_RECIPE.id,
     });
-    const fromSeatId = colony.seats[0]!.id;
-    const toSeatId = colony.seats[colony.seats.length - 1]!.id;
+    const fromSeat = colony.seats[0];
+    const toSeat = colony.seats.at(-1);
+    expect(fromSeat).toBeDefined();
+    expect(toSeat).toBeDefined();
+    if (!fromSeat || !toSeat) {
+      throw new Error("Expected recipe seats");
+    }
+    const fromSeatId = fromSeat.id;
+    const toSeatId = toSeat.id;
 
     colonyStore.getState().closeColony(colony.id);
 
@@ -345,13 +352,11 @@ describe("colonyStore — lifecycle and close (v0.5 F7)", () => {
     colonyStore.getState().closeColony(colony.id);
 
     colonyStore.getState().updateTaskStatus(colony.id, task.id, "done");
-    colonyStore
-      .getState()
-      .createArtifact(colony.id, {
-        title: "Should not be added",
-        kind: "note",
-        content: "blocked",
-      });
+    colonyStore.getState().createArtifact(colony.id, {
+      title: "Should not be added",
+      kind: "note",
+      content: "blocked",
+    });
 
     const stored = colonyStore
       .getState()
@@ -389,7 +394,9 @@ describe("colonyStore — additional recipe contract validation (v0.7)", () => {
     expect(recipe.id).toBe("release-readiness");
     expect(typeof recipe.version).toBe("string");
     expect(recipe.version.length).toBeGreaterThan(0);
-    expect(SUPPORTED_ARTIFACT_TYPES).toContain(recipe.finalArtifact.artifactType);
+    expect(SUPPORTED_ARTIFACT_TYPES).toContain(
+      recipe.finalArtifact.artifactType,
+    );
     expect(SUPPORTED_FORMATS).toContain(recipe.finalArtifact.format);
     expect(recipe.finalArtifact.requiredSections.length).toBeGreaterThan(0);
     expect(typeof recipe.finalArtifact.evidenceRequired).toBe("boolean");
@@ -402,7 +409,9 @@ describe("colonyStore — additional recipe contract validation (v0.7)", () => {
     expect(recipe.id).toBe("docs-audit");
     expect(typeof recipe.version).toBe("string");
     expect(recipe.version.length).toBeGreaterThan(0);
-    expect(SUPPORTED_ARTIFACT_TYPES).toContain(recipe.finalArtifact.artifactType);
+    expect(SUPPORTED_ARTIFACT_TYPES).toContain(
+      recipe.finalArtifact.artifactType,
+    );
     expect(SUPPORTED_FORMATS).toContain(recipe.finalArtifact.format);
     expect(recipe.finalArtifact.requiredSections.length).toBeGreaterThan(0);
     expect(typeof recipe.finalArtifact.evidenceRequired).toBe("boolean");
@@ -575,9 +584,7 @@ describe("colonyStore — output review state (v0.8)", () => {
     const colony = colonyStore.getState().createColony("c", "Task");
     colonyStore.getState().closeColony(colony.id);
 
-    colonyStore
-      .getState()
-      .requestOutputChanges(colony.id, "should not apply");
+    colonyStore.getState().requestOutputChanges(colony.id, "should not apply");
 
     const stored = colonyStore
       .getState()

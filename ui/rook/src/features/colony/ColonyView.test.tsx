@@ -8,10 +8,7 @@ import { useWorkItemStore } from "@/features/work-items/stores/workItemStore";
 import type { WorkItem } from "@/features/work-items/types";
 import { ColonyView } from "./ColonyView";
 import { colonyStore } from "./colonyStore";
-import {
-  DOCS_AUDIT_RECIPE,
-  RELEASE_READINESS_RECIPE,
-} from "./swarm/recipes";
+import { DOCS_AUDIT_RECIPE, RELEASE_READINESS_RECIPE } from "./swarm/recipes";
 
 vi.mock("@/shared/api/sentinel", () => ({
   getConfiguredSentinelMode: vi.fn().mockResolvedValue("off"),

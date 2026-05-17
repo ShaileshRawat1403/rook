@@ -33,7 +33,7 @@ export function suggestSkills(userIntent: string): SkillSuggestion[] {
     for (const keyword of keywords) {
       if (intentLower.includes(keyword.toLowerCase())) {
         if (!seenIds.has(skillId)) {
-          const skill = BUILTIN_SKILLS.find(s => s.id === skillId);
+          const skill = BUILTIN_SKILLS.find((s) => s.id === skillId);
           if (skill) {
             seenIds.add(skillId);
             suggestions.push({

@@ -79,7 +79,10 @@ export function ColonySeatCard({
   const assignedTask = tasks?.find((t) => t.assignedSeatId === seat.id);
 
   return (
-    <Card className={`flex flex-col cursor-pointer ${isActive ? "ring-2 ring-accent" : ""}`} onClick={onSelect}>
+    <Card
+      className={`flex flex-col cursor-pointer ${isActive ? "ring-2 ring-accent" : ""}`}
+      onClick={onSelect}
+    >
       <CardHeader className="flex flex-row items-center gap-3 space-y-0 pb-2">
         <div className={`rounded-full p-2 ${roleColor}`}>
           <Icon className="h-4 w-4 text-white" />
@@ -112,9 +115,7 @@ export function ColonySeatCard({
 
             <div className="flex items-center gap-1 text-xs">
               <FileText className="h-3 w-3 text-muted-foreground" />
-              <span className="truncate font-medium">
-                {sessionInfo.title}
-              </span>
+              <span className="truncate font-medium">{sessionInfo.title}</span>
               {sessionInfo.draft && (
                 <Badge variant="outline" className="text-[10px] ml-1">
                   Draft
@@ -123,9 +124,7 @@ export function ColonySeatCard({
             </div>
 
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <span className="font-mono">
-                {sessionInfo.providerId ?? "—"}
-              </span>
+              <span className="font-mono">{sessionInfo.providerId ?? "—"}</span>
               {sessionInfo.modelName && (
                 <>
                   <span>/</span>

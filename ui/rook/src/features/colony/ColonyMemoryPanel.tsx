@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import type { ColonyMemory } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Textarea } from "@/shared/ui/textarea";
@@ -9,11 +9,20 @@ interface ColonyMemoryPanelProps {
   colonyId: string;
   memory: ColonyMemory | undefined;
   onUpdateMemory: (patch: Partial<ColonyMemory>) => void;
-  onAddItem: (section: keyof Omit<ColonyMemory, "updatedAt">, text: string) => void;
-  onRemoveItem: (section: keyof Omit<ColonyMemory, "updatedAt">, index: number) => void;
+  onAddItem: (
+    section: keyof Omit<ColonyMemory, "updatedAt">,
+    text: string,
+  ) => void;
+  onRemoveItem: (
+    section: keyof Omit<ColonyMemory, "updatedAt">,
+    index: number,
+  ) => void;
 }
 
-type MemoryListSection = Exclude<keyof ColonyMemory, "projectSummary" | "updatedAt">;
+type MemoryListSection = Exclude<
+  keyof ColonyMemory,
+  "projectSummary" | "updatedAt"
+>;
 
 const LIST_SECTIONS: MemoryListSection[] = [
   "repoNotes",
@@ -37,8 +46,13 @@ export function ColonyMemoryPanel({
   onAddItem,
   onRemoveItem,
 }: ColonyMemoryPanelProps) {
-  const [newItems, setNewItems] = useState<Partial<Record<MemoryListSection, string>>>({});
-  const [summaryDraft, setSummaryDraft] = useState(memory?.projectSummary ?? "");
+  const inputIdPrefix = useId();
+  const [newItems, setNewItems] = useState<
+    Partial<Record<MemoryListSection, string>>
+  >({});
+  const [summaryDraft, setSummaryDraft] = useState(
+    memory?.projectSummary ?? "",
+  );
 
   const handleSaveSummary = () => {
     onUpdateMemory({ projectSummary: summaryDraft });
@@ -70,13 +84,20 @@ export function ColonyMemoryPanel({
       <CardHeader className="pb-2">
         <CardTitle>Colony Memory</CardTitle>
         <p className="text-xs text-muted-foreground">
-          Persistent notes for this workspace. Visible, editable, and user-controlled.
+          Persistent notes for this workspace. Visible, editable, and
+          user-controlled.
         </p>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <div>
-          <label className="text-sm font-medium">Project Summary</label>
+          <label
+            htmlFor={`${inputIdPrefix}-summary`}
+            className="text-sm font-medium"
+          >
+            Project Summary
+          </label>
           <Textarea
+            id={`${inputIdPrefix}-summary`}
             value={summaryDraft}
             onChange={(e) => setSummaryDraft(e.target.value)}
             placeholder="What is this project about?"
@@ -96,14 +117,23 @@ export function ColonyMemoryPanel({
         {LIST_SECTIONS.map((section) => {
           const items = memory?.[section] ?? [];
           const itemsArray = Array.isArray(items) ? items : [];
+          const inputId = `${inputIdPrefix}-${section}`;
           return (
             <div key={section}>
-              <label className="text-sm font-medium">{SECTION_LABELS[section]}</label>
+              <label htmlFor={inputId} className="text-sm font-medium">
+                {SECTION_LABELS[section]}
+              </label>
               <div className="flex gap-2 mt-1">
                 <input
+                  id={inputId}
                   type="text"
                   value={newItems[section] ?? ""}
-                  onChange={(e) => setNewItems((prev) => ({ ...prev, [section]: e.target.value }))}
+                  onChange={(e) =>
+                    setNewItems((prev) => ({
+                      ...prev,
+                      [section]: e.target.value,
+                    }))
+                  }
                   onKeyDown={(e) => handleKeyDown(e, section)}
                   placeholder={`Add ${SECTION_LABELS[section].toLowerCase()}...`}
                   className="flex-1 rounded border border-border bg-background px-2 py-1 text-xs"
@@ -122,7 +152,7 @@ export function ColonyMemoryPanel({
                 <ul className="mt-2 space-y-1">
                   {itemsArray.map((item, idx) => (
                     <li
-                      key={idx}
+                      key={`${section}-${item}`}
                       className="flex items-center justify-between gap-2 rounded border border-border bg-muted/30 px-2 py-1 text-xs"
                     >
                       <span className="flex-1">{item}</span>

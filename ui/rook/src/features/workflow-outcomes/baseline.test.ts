@@ -147,11 +147,7 @@ const FIVE_REPO_REVIEW_RUNS: WorkflowRunTelemetry[] = [
 
 describe("aggregateModuleBaseline", () => {
   it("returns a zeroed baseline when no runs match", () => {
-    const baseline = aggregateModuleBaseline(
-      "repo-review",
-      "1.0.0",
-      [],
-    );
+    const baseline = aggregateModuleBaseline("repo-review", "1.0.0", []);
 
     expect(baseline.total).toBe(0);
     expect(baseline.avgDurationMs).toBeNull();
@@ -265,11 +261,10 @@ describe("aggregateModuleBaseline", () => {
       schemaVersion: "0.2.0" as WorkflowRunTelemetry["schemaVersion"],
     };
 
-    const baseline = aggregateModuleBaseline(
-      "repo-review",
-      "1.0.0",
-      [valid, future],
-    );
+    const baseline = aggregateModuleBaseline("repo-review", "1.0.0", [
+      valid,
+      future,
+    ]);
 
     expect(baseline.total).toBe(1);
     expect(warn).toHaveBeenCalledTimes(1);

@@ -287,7 +287,11 @@ interface SwarmPlanPreviewProps {
   onApprove: () => void;
   onMarkCopied: () => void;
   onCreateTask?: (assignmentId: string, role: string, prompt: string) => void;
-  onPrepareHandoff?: (assignmentId: string, role: string, prompt: string) => void;
+  onPrepareHandoff?: (
+    assignmentId: string,
+    role: string,
+    prompt: string,
+  ) => void;
 }
 
 export function SwarmPlanPreview({
@@ -334,7 +338,7 @@ export function SwarmPlanPreview({
         <div className="rounded-md border border-border bg-muted/30 p-2">
           <p className="mb-2 text-xs font-medium">Changes from recipe</p>
           <ul className="space-y-1">
-            {plan.changesFromRecipe.map((change, index) => {
+            {plan.changesFromRecipe.map((change) => {
               const isPromptChange = change.field === "taskPrompt";
               const label = isPromptChange
                 ? `${change.field.split(".")[0]} prompt edited`
@@ -343,10 +347,7 @@ export function SwarmPlanPreview({
                 ? "prompt modified"
                 : `${change.previousValue || "(none)"} → ${change.newValue}`;
               return (
-                <li
-                  key={`${change.field}-${index}`}
-                  className="text-xs text-muted-foreground"
-                >
+                <li key={change.id} className="text-xs text-muted-foreground">
                   <span className="font-medium">{label}</span>: {value}
                   <span className="text-muted"> ({change.reason})</span>
                 </li>
@@ -370,12 +371,22 @@ export function SwarmPlanPreview({
               }
               onCreateTask={
                 onCreateTask
-                  ? () => onCreateTask(assignment.id, assignment.role, assignment.taskPrompt)
+                  ? () =>
+                      onCreateTask(
+                        assignment.id,
+                        assignment.role,
+                        assignment.taskPrompt,
+                      )
                   : undefined
               }
               onPrepareHandoff={
                 onPrepareHandoff
-                  ? () => onPrepareHandoff(assignment.id, assignment.role, assignment.taskPrompt)
+                  ? () =>
+                      onPrepareHandoff(
+                        assignment.id,
+                        assignment.role,
+                        assignment.taskPrompt,
+                      )
                   : undefined
               }
               disabled={!isEditable}
@@ -407,8 +418,8 @@ export function SwarmPlanPreview({
         <div className="rounded-md border border-blue-500/30 bg-blue-500/10 p-3 text-sm text-blue-500">
           <p className="font-medium">Prompts copied.</p>
           <p className="mt-1 text-xs">
-            No handoff was created automatically. Use the Handoffs panel
-            when you are ready to move context.
+            No handoff was created automatically. Use the Handoffs panel when
+            you are ready to move context.
           </p>
         </div>
       )}

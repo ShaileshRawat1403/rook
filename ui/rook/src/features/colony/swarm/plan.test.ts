@@ -1,8 +1,24 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import type { SwarmPlan, SwarmAssignment, SwarmPlanEditResult } from "./types";
-import { createSwarmPlan, disableAssignment, enableAssignment, updateAssignmentPrompt, reorderAssignments, addAssignment, removeAssignment, approvePlan, markPromptsCopied, getEnabledAssignments } from "./plan";
+import {
+  createSwarmPlan,
+  disableAssignment,
+  enableAssignment,
+  updateAssignmentPrompt,
+  reorderAssignments,
+  addAssignment,
+  removeAssignment,
+  approvePlan,
+  markPromptsCopied,
+  getEnabledAssignments,
+} from "./plan";
 
-function createMockAssignment(id: string, role: string, order: number, enabled = true): SwarmAssignment {
+function createMockAssignment(
+  id: string,
+  role: string,
+  order: number,
+  enabled = true,
+): SwarmAssignment {
   return {
     id,
     specialistId: id,
@@ -32,16 +48,11 @@ describe("Swarm Plan Functions", () => {
   let plan: SwarmPlan;
 
   beforeEach(() => {
-    plan = createSwarmPlan(
-      "repo-review",
-      "1.0.0",
-      "Review this repo",
-      [
-        createMockAssignment("spec-1", "Explorer", 0),
-        createMockAssignment("spec-2", "Inspector", 1),
-        createMockAssignment("spec-3", "Reviewer", 2),
-      ],
-    );
+    plan = createSwarmPlan("repo-review", "1.0.0", "Review this repo", [
+      createMockAssignment("spec-1", "Explorer", 0),
+      createMockAssignment("spec-2", "Inspector", 1),
+      createMockAssignment("spec-3", "Reviewer", 2),
+    ]);
   });
 
   const getError = (result: SwarmPlanEditResult): string | undefined => {
@@ -85,13 +96,18 @@ describe("Swarm Plan Functions", () => {
     it("disables the assignment", () => {
       const result = disableAssignment(plan, plan.assignments[1].id);
       expect(isSuccess(result)).toBe(true);
-      const assignment = result.plan.assignments.find((a) => a.id === plan.assignments[1].id);
+      const assignment = result.plan.assignments.find(
+        (a) => a.id === plan.assignments[1].id,
+      );
       expect(assignment?.enabled).toBe(false);
     });
 
     it("records a plan change on success", () => {
       const result = disableAssignment(plan, plan.assignments[1].id);
       expect(isSuccess(result)).toBe(true);
+      expect("change" in result && result.change?.id).toEqual(
+        expect.any(String),
+      );
       expect("change" in result && result.change?.field).toBe("enabled");
     });
 
@@ -112,7 +128,9 @@ describe("Swarm Plan Functions", () => {
       const disabled = disableAssignment(plan, plan.assignments[1].id).plan;
       const result = enableAssignment(disabled, plan.assignments[1].id);
       expect(isSuccess(result)).toBe(true);
-      const assignment = result.plan.assignments.find((a) => a.id === plan.assignments[1].id);
+      const assignment = result.plan.assignments.find(
+        (a) => a.id === plan.assignments[1].id,
+      );
       expect(assignment?.enabled).toBe(true);
     });
 
@@ -126,29 +144,49 @@ describe("Swarm Plan Functions", () => {
   describe("updateAssignmentPrompt", () => {
     it("updates the prompt", () => {
       const newPrompt = "Custom prompt for Explorer";
-      const result = updateAssignmentPrompt(plan, plan.assignments[0].id, newPrompt);
+      const result = updateAssignmentPrompt(
+        plan,
+        plan.assignments[0].id,
+        newPrompt,
+      );
       expect(isSuccess(result)).toBe(true);
-      const assignment = result.plan.assignments.find((a) => a.id === plan.assignments[0].id);
+      const assignment = result.plan.assignments.find(
+        (a) => a.id === plan.assignments[0].id,
+      );
       expect(assignment?.taskPrompt).toBe(newPrompt);
     });
 
     it("preserves previous value for diff", () => {
       const originalPrompt = plan.assignments[0].taskPrompt;
-      const result = updateAssignmentPrompt(plan, plan.assignments[0].id, "New prompt");
+      const result = updateAssignmentPrompt(
+        plan,
+        plan.assignments[0].id,
+        "New prompt",
+      );
       expect(isSuccess(result)).toBe(true);
-      expect("change" in result && result.change?.previousValue).toBe(originalPrompt);
+      expect("change" in result && result.change?.previousValue).toBe(
+        originalPrompt,
+      );
     });
 
     it("returns error if plan not editable", () => {
       const approved = approvePlan(plan);
-      const result = updateAssignmentPrompt(approved, plan.assignments[0].id, "New prompt");
+      const result = updateAssignmentPrompt(
+        approved,
+        plan.assignments[0].id,
+        "New prompt",
+      );
       expect(getError(result)).toBe("Plan is not editable");
     });
   });
 
   describe("reorderAssignments", () => {
     it("reorders assignments", () => {
-      const ids = [plan.assignments[2].id, plan.assignments[0].id, plan.assignments[1].id];
+      const ids = [
+        plan.assignments[2].id,
+        plan.assignments[0].id,
+        plan.assignments[1].id,
+      ];
       const result = reorderAssignments(plan, ids);
       expect(isSuccess(result)).toBe(true);
       expect(result.plan.assignments[0].id).toBe(ids[0]);
@@ -157,7 +195,11 @@ describe("Swarm Plan Functions", () => {
     });
 
     it("updates order values", () => {
-      const ids = [plan.assignments[2].id, plan.assignments[0].id, plan.assignments[1].id];
+      const ids = [
+        plan.assignments[2].id,
+        plan.assignments[0].id,
+        plan.assignments[1].id,
+      ];
       const result = reorderAssignments(plan, ids);
       expect(isSuccess(result)).toBe(true);
       expect(result.plan.assignments[0].order).toBe(0);
@@ -166,18 +208,29 @@ describe("Swarm Plan Functions", () => {
     });
 
     it("rejects missing IDs", () => {
-      const result = reorderAssignments(plan, [plan.assignments[0].id, plan.assignments[1].id]);
+      const result = reorderAssignments(plan, [
+        plan.assignments[0].id,
+        plan.assignments[1].id,
+      ]);
       expect(getError(result)).toContain("must include all assignments");
     });
 
     it("rejects unknown IDs", () => {
-      const result = reorderAssignments(plan, [plan.assignments[0].id, plan.assignments[1].id, "unknown-id"]);
+      const result = reorderAssignments(plan, [
+        plan.assignments[0].id,
+        plan.assignments[1].id,
+        "unknown-id",
+      ]);
       expect(getError(result)).toContain("Unknown assignment ID");
     });
 
     it("returns error if plan not editable", () => {
       const approved = approvePlan(plan);
-      const ids = [approved.assignments[2].id, approved.assignments[0].id, approved.assignments[1].id];
+      const ids = [
+        approved.assignments[2].id,
+        approved.assignments[0].id,
+        approved.assignments[1].id,
+      ];
       const result = reorderAssignments(approved, ids);
       expect(getError(result)).toBe("Plan is not editable");
     });
@@ -195,12 +248,18 @@ describe("Swarm Plan Functions", () => {
       const newAssignment = createMockAssignment("spec-4", "NewSpecialist", 0);
       const result = addAssignment(plan, newAssignment);
       expect(isSuccess(result)).toBe(true);
-      const added = result.plan.assignments.find((a) => a.specialistId === "spec-4");
+      const added = result.plan.assignments.find(
+        (a) => a.specialistId === "spec-4",
+      );
       expect(added?.order).toBe(3);
     });
 
     it("rejects duplicate ID", () => {
-      const newAssignment = createMockAssignment(plan.assignments[0].id, "Duplicate", 0);
+      const newAssignment = createMockAssignment(
+        plan.assignments[0].id,
+        "Duplicate",
+        0,
+      );
       const result = addAssignment(plan, newAssignment);
       expect(getError(result)).toBe("Assignment ID already exists");
     });
@@ -218,7 +277,9 @@ describe("Swarm Plan Functions", () => {
       const result = removeAssignment(plan, plan.assignments[1].id);
       expect(isSuccess(result)).toBe(true);
       expect(result.plan.assignments.length).toBe(2);
-      expect(result.plan.assignments.find((a) => a.id === plan.assignments[1].id)).toBeUndefined();
+      expect(
+        result.plan.assignments.find((a) => a.id === plan.assignments[1].id),
+      ).toBeUndefined();
     });
 
     it("returns error if not found", () => {
@@ -255,7 +316,9 @@ describe("Swarm Plan Functions", () => {
 
     it("returns error if not approved", () => {
       const result = markPromptsCopied(plan);
-      expect(getError(result)).toBe("Plan must be approved before copying prompts");
+      expect(getError(result)).toBe(
+        "Plan must be approved before copying prompts",
+      );
     });
   });
 
@@ -264,11 +327,17 @@ describe("Swarm Plan Functions", () => {
       const disabled = disableAssignment(plan, plan.assignments[1].id).plan;
       const enabled = getEnabledAssignments(disabled);
       expect(enabled.length).toBe(2);
-      expect(enabled.find((a) => a.id === plan.assignments[1].id)).toBeUndefined();
+      expect(
+        enabled.find((a) => a.id === plan.assignments[1].id),
+      ).toBeUndefined();
     });
 
     it("sorts by order", () => {
-      const ids = [plan.assignments[2].id, plan.assignments[0].id, plan.assignments[1].id];
+      const ids = [
+        plan.assignments[2].id,
+        plan.assignments[0].id,
+        plan.assignments[1].id,
+      ];
       const reordered = reorderAssignments(plan, ids).plan;
       const enabled = getEnabledAssignments(reordered);
       expect(enabled[0].id).toBe(ids[0]);
@@ -280,13 +349,17 @@ describe("Swarm Plan Functions", () => {
   describe("Original plan is not mutated", () => {
     it("disabling does not affect original", () => {
       disableAssignment(plan, plan.assignments[1].id);
-      const original = plan.assignments.find((a) => a.id === plan.assignments[1].id);
+      const original = plan.assignments.find(
+        (a) => a.id === plan.assignments[1].id,
+      );
       expect(original?.enabled).toBe(true);
     });
 
     it("editing does not affect original", () => {
       updateAssignmentPrompt(plan, plan.assignments[0].id, "New");
-      const original = plan.assignments.find((a) => a.id === plan.assignments[0].id);
+      const original = plan.assignments.find(
+        (a) => a.id === plan.assignments[0].id,
+      );
       expect(original?.taskPrompt).not.toBe("New");
     });
   });

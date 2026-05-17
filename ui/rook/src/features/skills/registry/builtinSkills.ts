@@ -4,9 +4,14 @@ export const BUILTIN_SKILLS: RookSkill[] = [
   {
     id: "commit-risk-review",
     name: "Commit Risk Review",
-    description: "Evaluates the latest commit for potential security, performance, or structural risks.",
+    description:
+      "Evaluates the latest commit for potential security, performance, or structural risks.",
     category: "context",
-    triggerExamples: ["check this commit", "summarize the risk", "what is wrong with this commit"],
+    triggerExamples: [
+      "check this commit",
+      "summarize the risk",
+      "what is wrong with this commit",
+    ],
     requiredContext: ["commit hash", "changed files", "optional ticket"],
     outputContract: "summary, risks, evidence, recommended next action",
     riskLevel: "low",
@@ -16,11 +21,21 @@ export const BUILTIN_SKILLS: RookSkill[] = [
   {
     id: "jira-commit-trace",
     name: "Jira Commit Trace",
-    description: "Maps a commit to its originating Jira ticket and summarizes the impact.",
+    description:
+      "Maps a commit to its originating Jira ticket and summarizes the impact.",
     category: "context",
-    triggerExamples: ["map this commit to jira", "find the ticket for this change"],
-    requiredContext: ["commit hash", "branch name", "Jira ticket key if detected", "changed files"],
-    outputContract: "ticket link, commit summary, impact note, handoff-ready summary",
+    triggerExamples: [
+      "map this commit to jira",
+      "find the ticket for this change",
+    ],
+    requiredContext: [
+      "commit hash",
+      "branch name",
+      "Jira ticket key if detected",
+      "changed files",
+    ],
+    outputContract:
+      "ticket link, commit summary, impact note, handoff-ready summary",
     riskLevel: "medium",
     approvalRequired: true,
     evidenceEvents: ["skill_suggested", "skill_approved", "skill_used"],
@@ -28,11 +43,17 @@ export const BUILTIN_SKILLS: RookSkill[] = [
   {
     id: "prd-builder",
     name: "PRD Builder",
-    description: "Turns an idea or raw notes into a structured Product Requirements Document.",
+    description:
+      "Turns an idea or raw notes into a structured Product Requirements Document.",
     category: "prompt",
-    triggerExamples: ["write a PRD for this", "turn this idea into a product plan", "spec this out"],
+    triggerExamples: [
+      "write a PRD for this",
+      "turn this idea into a product plan",
+      "spec this out",
+    ],
     requiredContext: ["user intent", "assumptions", "target user"],
-    outputContract: "PRD outline, scope, non-goals, functional requirements, acceptance criteria, risks",
+    outputContract:
+      "PRD outline, scope, non-goals, functional requirements, acceptance criteria, risks",
     riskLevel: "low",
     approvalRequired: true,
     evidenceEvents: ["skill_suggested", "skill_approved", "skill_used"],
@@ -40,11 +61,17 @@ export const BUILTIN_SKILLS: RookSkill[] = [
   {
     id: "repo-explorer",
     name: "Repo Explorer",
-    description: "Maps project structure, entry points, and stale areas for orientation.",
+    description:
+      "Maps project structure, entry points, and stale areas for orientation.",
     category: "context",
-    triggerExamples: ["explore this repo", "what is the structure of this project", "find entry points"],
+    triggerExamples: [
+      "explore this repo",
+      "what is the structure of this project",
+      "find entry points",
+    ],
     requiredContext: ["workspace path", "git status"],
-    outputContract: "directory tree summary, key entry points, architecture overview",
+    outputContract:
+      "directory tree summary, key entry points, architecture overview",
     riskLevel: "medium",
     approvalRequired: true,
     evidenceEvents: ["skill_suggested", "skill_approved", "skill_used"],
@@ -52,9 +79,14 @@ export const BUILTIN_SKILLS: RookSkill[] = [
   {
     id: "stakeholder-summary",
     name: "Stakeholder Summary",
-    description: "Creates a non-technical update of recent changes for managers or DevOps.",
+    description:
+      "Creates a non-technical update of recent changes for managers or DevOps.",
     category: "prompt",
-    triggerExamples: ["summarize this for my boss", "write a non-technical update", "stakeholder report"],
+    triggerExamples: [
+      "summarize this for my boss",
+      "write a non-technical update",
+      "stakeholder report",
+    ],
     requiredContext: ["commit summary", "impact notes", "recent changes"],
     outputContract: "non-technical update, key achievements, risks addressed",
     riskLevel: "low",
@@ -64,11 +96,16 @@ export const BUILTIN_SKILLS: RookSkill[] = [
   {
     id: "reviewer-checklist",
     name: "Reviewer Checklist",
-    description: "Generates a structured checklist for human reviewers based on the PR content.",
+    description:
+      "Generates a structured checklist for human reviewers based on the PR content.",
     category: "prompt",
-    triggerExamples: ["create a review checklist", "what should I check before merging"],
+    triggerExamples: [
+      "create a review checklist",
+      "what should I check before merging",
+    ],
     requiredContext: ["changed files", "PR description", "commit messages"],
-    outputContract: "ordered checklist of edge cases, testing instructions, required approvals",
+    outputContract:
+      "ordered checklist of edge cases, testing instructions, required approvals",
     riskLevel: "low",
     approvalRequired: true,
     evidenceEvents: ["skill_suggested", "skill_approved", "skill_used"],
@@ -76,9 +113,14 @@ export const BUILTIN_SKILLS: RookSkill[] = [
   {
     id: "release-readiness",
     name: "Release Readiness",
-    description: "Evaluates if the current branch is ready for release to production.",
+    description:
+      "Evaluates if the current branch is ready for release to production.",
     category: "context",
-    triggerExamples: ["are we ready to ship", "release readiness check", "prepare for release"],
+    triggerExamples: [
+      "are we ready to ship",
+      "release readiness check",
+      "prepare for release",
+    ],
     requiredContext: ["git log", "open PRs", "test status"],
     outputContract: "go/no-go recommendation, missing checks, unmerged PRs",
     riskLevel: "medium",
@@ -88,13 +130,22 @@ export const BUILTIN_SKILLS: RookSkill[] = [
   {
     id: "handoff-builder",
     name: "Handoff Builder",
-    description: "Summarizes current state and remaining tasks for the next engineer.",
+    description:
+      "Summarizes current state and remaining tasks for the next engineer.",
     category: "prompt",
-    triggerExamples: ["prepare a handoff", "write a summary for the next person", "where did I leave off"],
-    requiredContext: ["git status", "recent task descriptions", "uncommitted changes"],
+    triggerExamples: [
+      "prepare a handoff",
+      "write a summary for the next person",
+      "where did I leave off",
+    ],
+    requiredContext: [
+      "git status",
+      "recent task descriptions",
+      "uncommitted changes",
+    ],
     outputContract: "context summary, next steps, open questions, blockers",
     riskLevel: "low",
     approvalRequired: true,
     evidenceEvents: ["skill_suggested", "skill_approved", "skill_used"],
-  }
+  },
 ];

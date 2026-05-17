@@ -26,6 +26,7 @@ import { recordWorkflowSourceEvent } from "@/features/workflow-outcomes/sourceEv
 // Pre-set message ID for the next live stream per rook session
 const presetMessageIds = new Map<string, string>();
 const pendingUsageUpdates = new Map<string, SessionUpdate[]>();
+let pendingUsageSubscriptionReady = false;
 
 function shouldBufferPendingUpdate(update: SessionUpdate): boolean {
   return update.sessionUpdate === "usage_update";
@@ -63,9 +64,16 @@ function flushPendingUsageUpdates(
   }
 }
 
-subscribeToSessionRegistration((localSessionId, rookSessionId) => {
-  flushPendingUsageUpdates(localSessionId, rookSessionId);
-});
+function ensurePendingUsageSubscription(): void {
+  if (pendingUsageSubscriptionReady) {
+    return;
+  }
+
+  subscribeToSessionRegistration((localSessionId, rookSessionId) => {
+    flushPendingUsageUpdates(localSessionId, rookSessionId);
+  });
+  pendingUsageSubscriptionReady = true;
+}
 
 // Per-session perf counters for replay/live streaming.
 interface ReplayPerf {
@@ -113,6 +121,7 @@ export function clearActiveMessageId(rookSessionId: string): void {
 export async function handleSessionNotification(
   notification: SessionNotification,
 ): Promise<void> {
+  ensurePendingUsageSubscription();
   const rookSessionId = notification.sessionId;
   const { update } = notification;
   const localSessionId = getLocalSessionId(rookSessionId);

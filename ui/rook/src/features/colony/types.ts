@@ -128,13 +128,7 @@ export type ColonyOutputContract = {
   source: "recipe";
   recipeId: string;
   recipeVersion: string;
-  artifactType:
-    | "report"
-    | "prd"
-    | "strategy"
-    | "checklist"
-    | "audit"
-    | "sow";
+  artifactType: "report" | "prd" | "strategy" | "checklist" | "audit" | "sow";
   format: "markdown" | "json" | "checklist";
   requiredSections: string[];
   evidenceRequired: boolean;

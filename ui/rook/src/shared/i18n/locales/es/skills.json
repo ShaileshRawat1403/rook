@@ -13,6 +13,19 @@
     "newTitle": "Nueva skill",
     "saving": "Guardando..."
   },
+  "suggestions": {
+    "approvalRequired": "Aprobación requerida",
+    "approve": "Aprobar",
+    "approvedForMessage": "Aprobada para este mensaje.",
+    "contextUsed": "Contexto utilizado",
+    "intro": "Rook puede sugerir habilidades para esta solicitud. Nada se ejecuta hasta que lo apruebes.",
+    "output": "Resultado",
+    "risk": "Riesgo",
+    "skip": "Omitir",
+    "skipped": "Omitida.",
+    "suggestedSkill": "Habilidad sugerida",
+    "whySuggested": "Por qué se sugirió"
+  },
   "view": {
     "deleteDescription": "¿Seguro que quieres eliminar \"{{name}}\"? Esto no se puede deshacer.",
     "deleteTitle": "¿Eliminar skill?",

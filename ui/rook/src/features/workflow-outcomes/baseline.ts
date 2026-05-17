@@ -99,8 +99,7 @@ export function aggregateModuleBaseline(
   }
 
   const matching = valid.filter(
-    (run) =>
-      run.moduleId === moduleId && run.moduleVersion === moduleVersion,
+    (run) => run.moduleId === moduleId && run.moduleVersion === moduleVersion,
   );
 
   if (matching.length === 0) {
