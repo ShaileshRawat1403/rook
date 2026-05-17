@@ -17,7 +17,7 @@ Read alongside:
 2. **Preflight reports state; it does not heal it.** No auto-fix attempts. No auto-rebuild, no auto-install, no auto-create of missing directories beyond the obvious. The user gets recovery actions; the user runs them.
 3. **Every failure has a recovery action.** Per §6 of the journey doc, no preflight failure surfaces a raw error without translation.
 4. **Preflight is fast.** Target: completes in under 500ms on a warm system. No network calls in v0.1 — all six checks are local-only.
-5. **Preflight is idempotent.** Running it ten times produces the same result and writes nothing to the filesystem.
+5. **Preflight is idempotent.** Running it ten times produces the same result. It writes nothing to the filesystem except the safe creation of `~/.rook/artifacts/` when that directory is missing (the one allowance in C3). No other filesystem writes are permitted from any check.
 
 ## The six checks
 
@@ -40,6 +40,8 @@ Each check has a stable identifier, a binary pass/fail outcome, and a recovery a
 
 **Implementation note:** filesystem check for local; presence-only check for credentials. **No network call in v0.1.**
 
+**Relationship to the journey doc's "selected model available":** `ROOK_USER_JOURNEYS_V0_1.md` § Preflight contract names "selected model available" as a check. v0.1 checks **provider/runtime readiness only**, not model reachability — the latter requires a network round-trip and is deferred to v0.2. Future contributors should not add a "is the chosen model actually reachable" check to v0.1; that's a separate slice with its own timeout, retry, and offline-mode questions.
+
 ### C3 — Artifact directory writable
 
 **Pass condition:** `~/.rook/artifacts/` exists and the process has write permission. If it doesn't exist, attempt to create it (this is the one self-healing allowance — directory creation is unambiguous and safe).
@@ -61,6 +63,8 @@ Each check has a stable identifier, a binary pass/fail outcome, and a recovery a
 **Failure recovery:** "This workflow needs more input. Missing: [list]." Each missing field is named.
 
 **Implementation note:** the Work Item attached to the Colony is the source. If no Work Item is attached, this check fails with a single missing reason: "no Work Item attached".
+
+**Work Item Description field constraint:** the live SOW run surfaced that the Work Item intake UI does not clearly expose a Description field even though the data model supports it. C5 implementation must read description **only** from `WorkItem.description` — not from Colony memory, not from project summary, not from any fallback source. If the field is hard to fill in the current UI, **fix the intake UI as part of this slice** (small affordance: visible Description input on Work Item creation). Do not work around the gap by accepting description from elsewhere; that hides a real product issue.
 
 ### C6 — Output contract known
 
@@ -197,3 +201,4 @@ Six steps, each with a single stop condition. Order matters: types → checks �
 ## Changelog
 
 - **v0.1 (2026-05-17):** Initial scope lock. Six local-only checks, one banner, one wire point at module selection. No network, no auto-fix beyond directory creation, no telemetry. Triggered by the live SOW Builder run that surfaced `Failed to spawn rook serve binary…` as a user-facing error.
+- **v0.1.1 (2026-05-17):** Pre-implementation clarifications based on doc review. (a) C3 directory-creation allowance is now named explicitly in the idempotency rule. (b) C2 documents its relationship to the journey doc's "selected model available" check — v0.1 stops at provider/runtime readiness; live model reachability is v0.2. (c) C5 explicitly requires reading description from `WorkItem.description` only; if the intake UI hides the field, fix the UI as part of this slice rather than accepting the description from a fallback source.
